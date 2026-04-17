@@ -3,7 +3,7 @@ description: 指定 commit 生成 peer-request 內容
 ---
 
 1. 根據指定 commit 內的檔案異動生成 peer-review 格式
-2. 格式如下並確保內容是可以被複製的 code block
+2. 格式如下，生成 markdown 後置於 code block 以便複製
 
 ---
 
