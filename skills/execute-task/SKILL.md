@@ -105,3 +105,4 @@ description: 根據 Implementation Plan Decomposition 執行指定的 Phase 或 
 * 避免同時處理多個 Task
 * 若任務依賴尚未完成的 Task，需明確指出
 * 若發現架構問題或設計衝突，需在 Summary 中說明
+* 結果輸出到與 Implementation Plan 相同資料夾檔案內
