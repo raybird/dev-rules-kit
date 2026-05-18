@@ -53,10 +53,10 @@ dev-rules-kit/
    ```
 
 2. **依環境選用內容**  
-   - 若使用 **Windsurf**：將 `rules/` 中的內容合併至 `.windsurfrules`，將 `workflows/shared/` 中的流程複製至 `.windsurf/workflows/`
-   - 若使用 **OpenCode**：將 `workflows/shared/` 中的流程匯入對應的 command 面板
-   - 若使用 **Antigravity**：將 `workflows/shared/` 中的流程複製至 `global_workflows/`
-   - 若使用 **Claude**：載入 `skills/` 中各子目錄的 `SKILL.md` 作為技能定義
+   - 若使用 **Claude Code**：參考 [docs/setup/claude.md](./docs/setup/claude.md)
+   - 若使用 **OpenCode**：參考 [docs/setup/opencode.md](./docs/setup/opencode.md)
+   - 若使用 **Antigravity**：參考 [docs/setup/antigravity.md](./docs/setup/antigravity.md)
+   - 若使用 **Windsurf**：參考 [docs/setup/windsurf.md](./docs/setup/windsurf.md)
 
 3. **自訂與擴充**  
    根據個人或團隊需求修改／新增檔案，並定期同步回此倉庫作為中心範本。
@@ -70,6 +70,13 @@ dev-rules-kit/
 | **[Serena](https://github.com/oraios/serena)** | 程式碼分析與符號查詢 MCP 伺服器 | 支援 LSP 層級的符號搜尋、重構、診斷等功能，可深度理解程式碼結構 |
 | **[GitNexus](https://github.com/abhigyanpatwari/GitNexus)** | 程式碼知識圖譜分析工具 | 建立程式碼知識圖譜，支援影響分析、路由對應、API 形狀檢查等進階查詢 |
 | **[Superpowers](https://github.com/obra/superpowers)** | AI 開發能力提升框架 | 強化 AI Agent 的開發能力，提供更豐富的上下文理解與操作介面 |
+
+各平台完整安裝步驟：
+
+- **Claude Code**：[docs/setup/claude.md](./docs/setup/claude.md)
+- **OpenCode**：[docs/setup/opencode.md](./docs/setup/opencode.md)
+- **Antigravity**：[docs/setup/antigravity.md](./docs/setup/antigravity.md)
+- **Windsurf**：[docs/setup/windsurf.md](./docs/setup/windsurf.md)
 
 ## 貢獻
 
