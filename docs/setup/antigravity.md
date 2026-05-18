@@ -130,4 +130,4 @@ ls ~/.gemini/antigravity/skills            # 應看到 dev-rules-kit + superpowe
 
 - [Antigravity 官方](https://antigravity.google)
 - 各工具官方專案：[Serena](https://github.com/oraios/serena) · [GitNexus](https://github.com/abhigyanpatwari/GitNexus) · [Superpowers](https://github.com/obra/superpowers)
-- 其他平台：[Claude Code](./claude.md) · [OpenCode](./opencode.md) · [Windsurf](./windsurf.md)
+- 其他平台：[Claude Code](./claude.md) · [OpenCode](./opencode.md) · [Windsurf](./windsurf.md) · [Cursor](./cursor.md)

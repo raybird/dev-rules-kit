@@ -196,4 +196,4 @@ rm -rf ~/.claude/hooks/gitnexus/
 - [Serena GitHub](https://github.com/oraios/serena) · [uv 官方文件](https://docs.astral.sh/uv/)
 - [GitNexus GitHub](https://github.com/abhigyanpatwari/GitNexus) · [Claude Code Hooks 文件](https://docs.claude.com/claude-code/hooks)
 - [Superpowers GitHub](https://github.com/obra/superpowers) · [Claude Plugins marketplace](https://github.com/anthropics/claude-plugins-official)
-- 其他平台：[OpenCode](./opencode.md) · [Antigravity](./antigravity.md) · [Windsurf](./windsurf.md)
+- 其他平台：[OpenCode](./opencode.md) · [Antigravity](./antigravity.md) · [Windsurf](./windsurf.md) · [Cursor](./cursor.md)

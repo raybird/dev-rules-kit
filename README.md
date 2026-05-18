@@ -57,6 +57,7 @@ dev-rules-kit/
    - 若使用 **OpenCode**：參考 [docs/setup/opencode.md](./docs/setup/opencode.md)
    - 若使用 **Antigravity**：參考 [docs/setup/antigravity.md](./docs/setup/antigravity.md)
    - 若使用 **Windsurf**：參考 [docs/setup/windsurf.md](./docs/setup/windsurf.md)
+   - 若使用 **Cursor**：參考 [docs/setup/cursor.md](./docs/setup/cursor.md)
 
 3. **自訂與擴充**  
    根據個人或團隊需求修改／新增檔案，並定期同步回此倉庫作為中心範本。
@@ -77,6 +78,7 @@ dev-rules-kit/
 - **OpenCode**：[docs/setup/opencode.md](./docs/setup/opencode.md)
 - **Antigravity**：[docs/setup/antigravity.md](./docs/setup/antigravity.md)
 - **Windsurf**：[docs/setup/windsurf.md](./docs/setup/windsurf.md)
+- **Cursor**：[docs/setup/cursor.md](./docs/setup/cursor.md)
 
 ## 貢獻
 

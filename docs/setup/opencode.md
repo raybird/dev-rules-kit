@@ -138,4 +138,4 @@ ls ~/.config/opencode/commands  # 應看到本 kit 的 *.md
 - [OpenCode GitHub](https://github.com/sst/opencode)
 - [OpenCode Config Schema](https://opencode.ai/config.json)
 - 各工具官方專案：[Serena](https://github.com/oraios/serena) · [GitNexus](https://github.com/abhigyanpatwari/GitNexus) · [Superpowers](https://github.com/obra/superpowers)
-- 其他平台：[Claude Code](./claude.md) · [Antigravity](./antigravity.md) · [Windsurf](./windsurf.md)
+- 其他平台：[Claude Code](./claude.md) · [Antigravity](./antigravity.md) · [Windsurf](./windsurf.md) · [Cursor](./cursor.md)

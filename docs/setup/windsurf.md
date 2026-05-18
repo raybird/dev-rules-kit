@@ -130,4 +130,4 @@ cat ~/.codeium/windsurf/memories/global_rules.md | head  # 確認規則套用
 
 - [Windsurf 官方文件](https://docs.windsurf.com)
 - 各工具官方專案：[Serena](https://github.com/oraios/serena) · [GitNexus](https://github.com/abhigyanpatwari/GitNexus) · [Superpowers](https://github.com/obra/superpowers)
-- 其他平台：[Claude Code](./claude.md) · [OpenCode](./opencode.md) · [Antigravity](./antigravity.md)
+- 其他平台：[Claude Code](./claude.md) · [OpenCode](./opencode.md) · [Antigravity](./antigravity.md) · [Cursor](./cursor.md)
