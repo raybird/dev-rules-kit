@@ -71,6 +71,7 @@ dev-rules-kit/
 | **[Serena](https://github.com/oraios/serena)** | 程式碼分析與符號查詢 MCP 伺服器 | 支援 LSP 層級的符號搜尋、重構、診斷等功能，可深度理解程式碼結構 |
 | **[GitNexus](https://github.com/abhigyanpatwari/GitNexus)** | 程式碼知識圖譜分析工具 | 建立程式碼知識圖譜，支援影響分析、路由對應、API 形狀檢查等進階查詢 |
 | **[Superpowers](https://github.com/obra/superpowers)** | AI 開發能力提升框架 | 強化 AI Agent 的開發能力，提供更豐富的上下文理解與操作介面 |
+| **[Wave Terminal](https://github.com/wavetermdev/waveterm)** | AI 整合跨平台終端機 | 開源且內建 AI 助手，支援多種模型（OpenAI、Claude、Ollama 等），提供持久 SSH 連線、區塊化工作區與遠端檔案編輯 |
 
 各平台完整安裝步驟：
 
