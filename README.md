@@ -1,6 +1,8 @@
 # dev-rules-kit
 
-通用開發規則、工作流程與技能範本庫，適用於 **Windsurf**、**OpenCode**、**Antigravity** 等開發環境。
+一套給 AI 開發環境使用的規則、工作流程與技能範本庫，集中整理 `rules`、`workflows`、`skills` 三類 Markdown 資產，方便在 **Windsurf**、**OpenCode**、**Claude Code**、**Antigravity** 等工具中重複使用與維護。
+
+這個 repo 的重點不是執行程式，而是提供可直接複製、調整、同步的開發規範與操作流程，讓個人或團隊能用一致方式管理 AI agent 的行為、工作流程與文件產出。
 
 ## 目錄結構
 
@@ -30,6 +32,8 @@ dev-rules-kit/
 
 ## 用途
 
+此 repo 主要提供可跨平台重用的 Markdown 範本，依用途拆分為以下幾類：
+
 - **`docs/`**  
   技術文件與規範說明，包含文件資料夾結構規範（AGENTS.md）與 issue 文件模板。  
 
@@ -52,7 +56,7 @@ dev-rules-kit/
    git clone https://github.com/raybird/dev-rules-kit.git
    ```
 
-2. **依環境選用內容**  
+2. **依平台選用內容**  
    - 若使用 **Claude Code**：參考 [docs/setup/claude.md](./docs/setup/claude.md)
    - 若使用 **OpenCode**：參考 [docs/setup/opencode.md](./docs/setup/opencode.md)
    - 若使用 **Antigravity**：參考 [docs/setup/antigravity.md](./docs/setup/antigravity.md)
@@ -60,7 +64,7 @@ dev-rules-kit/
    - 若使用 **Cursor**：參考 [docs/setup/cursor.md](./docs/setup/cursor.md)
 
 3. **自訂與擴充**  
-   根據個人或團隊需求修改／新增檔案，並定期同步回此倉庫作為中心範本。
+   根據個人或團隊需求修改／新增檔案，並把這個 repo 當作集中維護規則、流程與技能範本的來源。
 
 ## 推薦工具
 

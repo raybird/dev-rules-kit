@@ -7,8 +7,7 @@
 ```
 workflows/
 ├── shared/           # 共通工作流程
-├── antigravity/      # Antigravity 平台特定工作流程
-└── opencode/         # OpenCode 平台特定工作流程
+└── antigravity/      # Antigravity 平台特定工作流程
 ```
 
 ## Shared Workflows
@@ -19,7 +18,7 @@ workflows/
 - **create-commit.md** - 根據 git staged 生成符合 commit convention 1.0.0 規範的精簡版條列訊息
 - **create-pr.md** - 根據指定 commit 生成 peer-request 內容
 - **decompose.md** - 將 Implementation Plan 細化為可執行的開發階段（Phase）與任務（Task）
-- **execute.md** - 根據 Implementation Plan Decomposition 執行指定的 Phase 或 Task
+- **execute-task.md** - 根據 Implementation Plan Decomposition 執行指定的 Phase 或 Task
 - **new-issue.md** - 依照目前專案既有的 coding style 與架構需求分析新需求
 - **review.md** - 審查當前分支提交的程式碼變更，確認是否符合需求並提出改進建議
 
