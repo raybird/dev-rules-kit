@@ -75,6 +75,7 @@ description: 一句話描述用途
 ## Conventions
 
 - **語言**：所有 Markdown 內容使用**繁體中文（台灣）**，包含 commit message 與 PR description
+- **Commit 訊息**：Commit 絕對不添加相關 `Co-Authored-By: Claude` 在 message 內
 - **日期**：文件內任何日期都使用系統當下日期，格式 `YYYY-MM-DD`
 - **平台特定流程**：放在 `workflows/<platform>/`，不要混進 `workflows/shared/`
 - **檔名與資料夾**：skill 用 kebab-case；skill 資料夾名、workflow 檔名、frontmatter 中 description 三者語意必須一致

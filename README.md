@@ -49,6 +49,30 @@ dev-rules-kit/
   儲存可被 AI 或工具呼叫的「技能」，以子目錄形式組織，每個子目錄包含 `SKILL.md` 定義。  
   每個 skill 檔案應包含清晰的輸入、輸出與使用範例。
 
+## 開發閉環
+
+`workflows/shared/` 與 `skills/` 內的七個工作流剛好構成一個完整的日常開發循環：
+
+```
+new-issue        ← 分析需求、建立 issue 文件
+    ↓
+decompose        ← 將 implementation plan 拆解為 Phase / Task
+    ↓
+execute-task  ←──────────────────────────────┐
+    ↓                                        │
+code-simplify    ← 精煉程式碼，提升可讀性        │
+    ↓                                        │
+create-commit    ← 生成 commit 訊息            │
+    ↓                                        │
+create-pr        ← 生成 PR 說明內容            │
+    ↓                                        │
+review           ← 審查變更，發現問題回頭修正 ───┘
+    ↓
+  通過合併
+```
+
+review 發現需要修正時，回到 execute-task 修正後再走一次 commit → PR → review，循環直到通過。
+
 ## 使用方式
 
 1. **複製整個範本庫**  
