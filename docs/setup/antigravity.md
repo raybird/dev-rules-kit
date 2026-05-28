@@ -33,6 +33,8 @@ cp dev-rules-kit/rules/AGENTS.zh-TW.md ~/.gemini/GEMINI.md
 
 驗證：於 Antigravity 內輸入 `/`，應出現 `decompose`、`create-commit`、`new-issue`、`fix-webview-conflict` 等指令。
 
+> **`dev-cycle` 使用方式**：`dev-cycle` 是 orchestration skill，**不會出現在 `/` 指令清單**（它沒有 workflow 對應檔）。使用方式：在對話中直接說「issue 3396 到哪了」（查詢）或「繼續 3396」（推進），AI 會讀取 `skills/dev-cycle/SKILL.md` 並執行對應行為。若未自動載入，可手動告知 AI 參考該檔案。
+
 ## 設定 Serena（MCP）
 
 [Serena](https://github.com/oraios/serena) 是 LSP 層級的程式碼分析 MCP 伺服器。需先安裝 [uv](https://docs.astral.sh/uv/)；首次啟動 `uvx` 會下載 Python 與相依套件，耗時數分鐘屬正常。

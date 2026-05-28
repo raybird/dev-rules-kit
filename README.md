@@ -24,6 +24,7 @@ dev-rules-kit/
     ├── create-commit/
     ├── create-pr/
     ├── decompose/
+    ├── dev-cycle/
     ├── execute-task/
     ├── new-issue/
     ├── review/

@@ -20,7 +20,9 @@
 cp -r dev-rules-kit/skills/* ~/.claude/skills/
 ```
 
-驗證：於 Claude Code 內輸入 `/`，應出現 `decompose`、`create-commit`、`new-issue` 等指令。
+驗證：於 Claude Code 內輸入 `/`，應出現 `decompose`、`create-commit`、`new-issue`、`dev-cycle` 等指令。
+
+> **`dev-cycle` 使用方式**：這是一個 orchestration skill，透過自然語言觸發而非固定 slash command。直接對 AI 說「issue 3396 到哪了」（查詢模式）或「繼續 3396」（推進模式），AI 會自動偵測 issue 目前所在階段並執行下一步。
 
 ## 設定 Serena（MCP）
 
