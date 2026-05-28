@@ -39,6 +39,14 @@ done
 
 只有 frontmatter 與少數平台無關語意差異是允許的，其餘內容應一致。新增 skill 時，務必同時建立兩份。
 
+#### Orchestration Skill 例外
+
+部分 skill 的核心能力是「理解意圖 + 讀取環境狀態 + 呼叫子 skill」，這類 **orchestration skill** 在任何載入其 SKILL.md 的 AI 平台上都能正常運作，不需要 `workflows/shared/` 對應檔。
+
+新增 orchestration skill 時，只建 `skills/<name>/SKILL.md`，**不**建 `workflows/shared/<name>.md`。
+
+目前的 orchestration skill 清單：`dev-cycle`
+
 ### Frontmatter 格式
 
 `SKILL.md` 與 `workflows/shared/*.md` 都用同一種 YAML frontmatter：
