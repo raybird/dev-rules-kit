@@ -90,7 +90,10 @@ review 發現需要修正時，回到 execute-task 修正後再走一次 commit 
    - 若使用 **Windsurf**：參考 [docs/setup/windsurf.md](./docs/setup/windsurf.md)
    - 若使用 **Cursor**：參考 [docs/setup/cursor.md](./docs/setup/cursor.md)
 
-3. **自訂與擴充**  
+3. **了解日常使用方式**  
+   參考 [docs/usage.md](./docs/usage.md) 查看完整閉環示範與各 skill 快速參考。
+
+4. **自訂與擴充**  
    根據個人或團隊需求修改／新增檔案，並把這個 repo 當作集中維護規則、流程與技能範本的來源。
 
 ## 推薦工具
