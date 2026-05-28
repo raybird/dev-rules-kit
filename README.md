@@ -73,6 +73,8 @@ review           ← 審查變更，發現問題回頭修正 ───┘
 
 review 發現需要修正時，回到 execute-task 修正後再走一次 commit → PR → review，循環直到通過。
 
+若想以 issue 為中心自動推進整個閉環，可使用 `dev-cycle` skill：輸入 issue ID，AI 自動偵測目前所在階段並執行下一步，循環直到 PR merged。也支援查詢模式（如「issue 3396 到哪了」），只回報進度不推進。
+
 ## 使用方式
 
 1. **複製整個範本庫**  
