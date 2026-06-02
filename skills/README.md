@@ -17,6 +17,7 @@ dev-rules-kit/
 │   ├── decompose/
 │   ├── dev-cycle/       # orchestration skill（無 workflow 對應檔）
 │   ├── execute-task/
+│   ├── git-squash/
 │   ├── new-issue/
 │   └── review/
 └── workflows/           # 工作流程（Windsurf、OpenCode 使用）
@@ -58,12 +59,13 @@ dev-rules-kit/
 
 | 日期 | 異動 | 說明 |
 |------|------|------|
+| 2026-06-02 | 新增 git-squash | 新增 git-squash 技能，對應新增的 git-squash 工作流程 |
 | 2026-05-08 | 文件建立 | 建立 `skills/README.md`，說明 skills 與 workflows 的關係 |
-| 2026-05-08 | 整合說明 | Claude 內部將 commands 功能整合至 skills 架構使用 |
+| 2026-05-08 | 整合說明 | Claude 內部將 commands 功能整合至 skills架構使用 |
 
 ---
 
 **建立日期**: 2026-05-08  
-**最後更新**: 2026-05-08  
-**文件版本**: 1.0  
+**最後更新**: 2026-06-02  
+**文件版本**: 1.1  
 **適用範圍**: `skills/` 資料夾所有技能

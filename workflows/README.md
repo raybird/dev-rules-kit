@@ -19,6 +19,7 @@ workflows/
 - **create-pr.md** - 根據指定 commit 生成 peer-request 內容
 - **decompose.md** - 將 Implementation Plan 細化為可執行的開發階段（Phase）與任務（Task）
 - **execute-task.md** - 根據 Implementation Plan Decomposition 執行指定的 Phase 或 Task
+- **git-squash.md** - 分析目前分支與基準分支的差異，並自動整理 Squash 的 Commit 訊息與提供合併建議
 - **new-issue.md** - 依照目前專案既有的 coding style 與架構需求分析新需求
 - **review.md** - 審查當前分支提交的程式碼變更，確認是否符合需求並提出改進建議
 

@@ -26,6 +26,7 @@ dev-rules-kit/
     ├── decompose/
     ├── dev-cycle/
     ├── execute-task/
+    ├── git-squash/
     ├── new-issue/
     ├── review/
     └── README.md
