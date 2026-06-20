@@ -32,7 +32,7 @@ execute-task    new-issue       review
 **修改任何一份時，必須同步更新另一份**。可用以下指令快速比對所有配對是否同步（`-w` 忽略空白差異，避免尾端換行造成誤報）：
 
 ```bash
-for n in code-simplify create-commit create-pr decompose new-issue review execute-task; do
+for n in code-simplify create-commit create-pr decompose new-issue review execute-task git-squash; do
   diff -qw "skills/$n/SKILL.md" "workflows/shared/$n.md"
 done
 ```
