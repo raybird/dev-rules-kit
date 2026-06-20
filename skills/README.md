@@ -2,9 +2,21 @@
 
 此目錄包含各種開發技能（skills），用於標準化 AI Agent 的開發輔助功能。
 
-## 整合說明
+## 整合說明與架構由來
 
-Claude 已將 `commands/` 的功能整合為 `skills/` 的一部分。目前 `skills/` 與 `workflows/` 並存，根據不同平台需求選用。
+Claude 已將原先 `commands/` 的功能整合為 `skills/` 的一部分。目前 `skills/` 與 `workflows/` 並存，根據不同平台需求選用。
+
+### 為什麼區分 Skills 與 Workflows？
+
+這兩者的並存源於 **CLI AI 助理** 與 **IDE 視覺化助理** 在運作機制上的本質不同：
+
+1. **Skills (適用於 Claude Code 等 CLI 平台)**：
+   Claude Code 本身是一個運行於終端機的自主 Agent，不具備 IDE 視覺化步驟的 UI 介面。它運作時，是透過讀取並內化 `SKILL.md` 中的步驟描述來擴充自身的行為規則，當對話遇到相關情境時，以「技能 (Skill)」的自主方式在對話中執行。因此需要以 `skills/<name>/SKILL.md` 的資料夾結構來存放。
+2. **Workflows (適用於 Windsurf / OpenCode / Antigravity 等 IDE 平台)**：
+   IDE 平台有與編輯器深度整合的 UI 介面。它們需要單一的 `.md` 檔案來解析成輸入框的 Slash Command，並在 IDE UI 畫面上呈現視覺化的互動步驟清單，引導使用者與 AI 協同確認。因此適合存放在 `workflows/` 中。
+
+為了解決這個跨平台重用的格式限制，本專案設計了雙子星對照結構，並提供 `scripts/sync-skills.py` 腳本，讓我們能在一處（`skills/`）開發，並一鍵自動產生/同步至各平台所需的 `workflows/` 格式。
+
 
 ## 專案目錄結構
 
