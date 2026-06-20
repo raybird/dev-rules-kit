@@ -9,17 +9,22 @@
 ```
 dev-rules-kit/
 ├── README.md              # 本說明文件
+├── CLAUDE.md              # AI 維護指引
+├── scripts/               # 自動化工具
+│   └── sync-skills.py     # 雙子星自動同步腳本
 ├── docs/                  # 技術文件與規範說明
-│   └── AGENTS.md          # 文件資料夾說明（AGENTS）
+│   ├── AGENTS.md          # 文件資料夾說明（AGENTS）
+│   ├── usage.md           # 使用指南（含開發閉環步驟）
+│   └── _templates/        # 實體文件模板（架構、領域、Changelog）
 ├── rules/                 # 靜態規則檔（agents、coding style、linting 等）
 │   ├── AGENTS.md
 │   ├── AGENTS.zh-TW.md
 │   └── README.md
 ├── workflows/             # 可執行的命令或工作流程（command/workflow）
-│   ├── shared/            # 共通工作流程
-│   ├── antigravity/       # Antigravity 平台特定工作流程
+│   ├── shared/            # 共通工作流程（含 dev-cycle.md 等 9 個工作流）
+│   ├── antigravity/       # Antigravity 特定工作流程
 │   └── README.md
-└── skills/                # 可重複使用的技能定義（skill）
+└── skills/                # 可重複使用的技能定義（skill，共 9 個技能）
     ├── code-simplify/
     ├── create-commit/
     ├── create-pr/
@@ -28,8 +33,7 @@ dev-rules-kit/
     ├── execute-task/
     ├── git-squash/
     ├── new-issue/
-    ├── review/
-    └── README.md
+    └── review/
 ```
 
 ## 用途
@@ -53,7 +57,7 @@ dev-rules-kit/
 
 ## 開發閉環
 
-`workflows/shared/` 與 `skills/` 內的七個工作流剛好構成一個完整的日常開發循環：
+`workflows/shared/` 與 `skills/` 內的開發工具（包含 9 個雙子星對照技能/工作流）構成了一個開發閉環。其中核心的七個工作流構成日常開發循環：
 
 ```
 new-issue        ← 分析需求、建立 issue 文件
@@ -75,7 +79,7 @@ review           ← 審查變更，發現問題回頭修正 ───┘
 
 review 發現需要修正時，回到 execute-task 修正後再走一次 commit → PR → review，循環直到通過。
 
-若想以 issue 為中心自動推進整個閉環，可使用 `dev-cycle` skill：輸入 issue ID，AI 自動偵測目前所在階段並執行下一步，循環直到 PR merged。也支援查詢模式（如「issue 3396 到哪了」），只回報進度不推進。
+若想以 issue 為中心自動推進整個閉環，可使用 `dev-cycle` 工作流或技能：輸入 issue ID，AI 自動偵測目前所在階段並執行下一步，循環直到 PR merged。也支援查詢模式（如「issue 3396 到哪了」），只回報進度不推進。
 
 ## 使用方式
 
@@ -95,7 +99,11 @@ review 發現需要修正時，回到 execute-task 修正後再走一次 commit 
    參考 [docs/usage.md](./docs/usage.md) 查看完整閉環示範與各 skill 快速參考。
 
 4. **自訂與擴充**  
-   根據個人或團隊需求修改／新增檔案，並把這個 repo 當作集中維護規則、流程與技能範本的來源。
+   根據個人或團隊需求，修改或新增 `skills/` 底下的技能定義，修改後於根目錄執行：
+   ```bash
+   python3 scripts/sync-skills.py
+   ```
+   即可自動同步並生成 `workflows/shared/` 目錄中對應的工作流程檔案。
 
 ## 推薦工具
 
