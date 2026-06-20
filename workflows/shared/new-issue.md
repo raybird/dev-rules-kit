@@ -32,19 +32,15 @@ description: 分析需求並建立 issue 文件
 - 禁止修改區域
 - 可能風險
 
-3. 依照 `docs/AGENTS.md`
-建立或更新：
+3. 依照 `docs/AGENTS.md` 中的「文件動態分級規範」，評估任務複雜度級別：
+- **Small (輕量級)**：針對單一檔案、簡單 bugfix 或文字/日誌/設定微調。
+  → 僅建立或更新 `README.md`（採用輕量級格式，將分析與步驟合併寫在 README 內，不另外產生分析與計畫檔案）。
+- **Medium (中量級)**：針對局部功能、無架構變更的中型任務。
+  → 僅建立或更新 `README.md` (標準格式) 與 `implementation-plan.md`（省略單獨的分析文件，將分析概要併入實作計畫的前置章節）。
+- **Large (重量級)**：針對跨多個模組/服務、新增資料庫、複雜重構或大型功能。
+  → 建立完整四件套：`README.md`、`requirement-analysis.md`、`technical-analysis.md`、`implementation-plan.md`。
 
-`docs/issues/issue-{編號}/`
-
-至少包含：
-- README.md
-- requirement-analysis.md
-- technical-analysis.md
-- implementation-plan.md
-
-所有文件格式、狀態、timeline、changelog、日期格式與維護方式，
-全部遵守 `docs/AGENTS.md`。
+所有文件格式、狀態、timeline、changelog、日期格式與維護方式，全部遵守 `docs/AGENTS.md`。
 
 若需求資訊不足：
 - 不得自行腦補

@@ -20,7 +20,7 @@
 
 **AI 產出**：
 
-建立 `docs/issues/issue-101/`，輸出四份文件：
+建立 `docs/issues/issue-101/`。由於此任務涉及 OAuth 與架構整合，被評估為 **Large (重量級)**，因而建立完整四份文件：
 - `README.md`：需求概覽、timeline
 - `requirement-analysis.md`：使用者流程、新舊行為差異、待確認事項
 - `technical-analysis.md`：OAuth 2.0 flow 分析、相關模組、潛在風險
@@ -159,8 +159,8 @@ AI 自動偵測狀態，告知「目前在 create-pr 階段，準備執行 creat
 | | |
 |---|---|
 | **觸發** | `/new-issue issue:{編號} 主題:{標題} 內容:{描述}` 或直接描述需求 |
-| **產出** | `docs/issues/issue-{ID}/` 下四份文件（README、requirement-analysis、technical-analysis、implementation-plan） |
-| **注意** | 需求不足時列出待確認事項，不自行補假設 |
+| **產出** | 依任務複雜度評估為 **Small (僅 README)**、**Medium (README + 計畫)** 或 **Large (完整四件套)** 檔案 |
+| **注意** | 需求不足時列出待確認事項，不自行補假設；文件產出遵從「動態分級規範」 |
 
 #### 指令式參數格式範例：
 ```
