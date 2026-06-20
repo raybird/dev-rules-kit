@@ -246,7 +246,7 @@ issue:123
 |---|---|
 | **查詢** | 「issue {ID} 到哪了」、「{ID} 進度」 |
 | **推進** | `/dev-cycle {ID}`、「繼續 {ID}」 |
-| **注意** | Orchestration skill，不出現在 `/` 指令清單；非 Claude 平台需手動載入 `skills/dev-cycle/SKILL.md` |
+| **注意** | 本技能在所有平台均已提供對應的引導工作流程 |
 
 ---
 

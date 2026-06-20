@@ -20,32 +20,26 @@ This file provides guidance to Claude Code (claude.ai/code) when working with co
 | `skills/<name>/SKILL.md` | Claude 用的 skill 定義 | Claude Code skills |
 | `docs/AGENTS.md` | issue 文件結構規範 | 套用此 kit 的下游專案的 `docs/` 目錄 |
 
-### Skill ↔ Workflow 配對（最重要的維護規則）
+### Skill ↔ Workflow 同步機制（最重要的維護規則）
 
-`skills/<name>/SKILL.md` 與 `workflows/shared/<name>.md` 是**同一份內容的兩份拷貝**，分別給 Claude 和其他平台讀取。配對清單：
+`skills/<name>/SKILL.md` 與 `workflows/shared/<name>.md` 是對應的技能與工作流程。
 
-```
-code-simplify   create-commit   create-pr   decompose
-execute-task    new-issue       review
-```
-
-**修改任何一份時，必須同步更新另一份**。可用以下指令快速比對所有配對是否同步（`-w` 忽略空白差異，避免尾端換行造成誤報）：
+**請勿手動進行兩邊的檔案複製**。當你修改或新增 `skills/` 底下的技能時，請一律在根目錄執行同步腳本來自動更新工作流程：
 
 ```bash
-for n in code-simplify create-commit create-pr decompose new-issue review execute-task git-squash; do
+python3 scripts/sync-skills.py
+```
+
+在 PR 合併前，可執行以下指令快速比對所有配對是否同步（`-w` 忽略空白差異）：
+
+```bash
+for n in code-simplify create-commit create-pr decompose dev-cycle execute-task git-squash new-issue review; do
   diff -qw "skills/$n/SKILL.md" "workflows/shared/$n.md"
 done
 ```
 
-只有 frontmatter 與少數平台無關語意差異是允許的，其餘內容應一致。新增 skill 時，務必同時建立兩份。
+只有 frontmatter 與少數平台無關語意差異是允許的，其餘內容應一致。
 
-#### Orchestration Skill 例外
-
-部分 skill 的核心能力是「理解意圖 + 讀取環境狀態 + 呼叫子 skill」，這類 **orchestration skill** 在任何載入其 SKILL.md 的 AI 平台上都能正常運作，不需要 `workflows/shared/` 對應檔。
-
-新增 orchestration skill 時，只建 `skills/<name>/SKILL.md`，**不**建 `workflows/shared/<name>.md`。
-
-目前的 orchestration skill 清單：`dev-cycle`
 
 ### Frontmatter 格式
 

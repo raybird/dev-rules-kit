@@ -15,7 +15,7 @@ dev-rules-kit/
 │   ├── create-commit/
 │   ├── create-pr/
 │   ├── decompose/
-│   ├── dev-cycle/       # orchestration skill（無 workflow 對應檔）
+│   ├── dev-cycle/       # 追蹤與推進開發閉環的協調技能
 │   ├── execute-task/
 │   ├── git-squash/
 │   ├── new-issue/
@@ -34,8 +34,6 @@ dev-rules-kit/
 | **OpenCode** | `workflows/` | 原 `commands/` 功能已整合至 `workflows/shared/` |
 | **Antigravity** | `workflows/` 或 `skills/` | 視功能需求選用 |
 | **Claude** | `skills/` | 主要使用 skills 目錄結構 |
-
-> **Orchestration skill 注意事項**：`dev-cycle` 等 orchestration skill 只有 `SKILL.md`，沒有 `workflows/shared/` 對應檔，因此**不會出現在 `/` 指令清單**。非 Claude 平台需手動將 SKILL.md 加入 AI context，再以自然語言觸發（如「issue 3396 到哪了」）。
 
 ## 使用方式
 
