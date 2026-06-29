@@ -105,6 +105,36 @@ review 發現需要修正時，回到 execute-task 修正後再走一次 commit 
    ```
    即可自動同步並生成 `workflows/shared/` 目錄中對應的工作流程檔案。
 
+## 下游專案掛載規則（Claude Code）
+
+`rules/AGENTS.md` 是要複製到**下游專案**的可攜行為規則。在 **Windsurf / Cursor** 直接貼進 `.windsurfrules` / `.cursorrules` 即可；但 **Claude Code 只讀 `CLAUDE.md`，不會自動載入 `AGENTS.md`**，且子目錄的記憶體檔僅在存取該目錄時才「按需」載入，因此需要用 `@` 匯入語法手動掛載：
+
+1. **複製規則檔到專案**（建議放根目錄，維持檔名 `AGENTS.md`）
+   ```
+   your-project/
+   ├── AGENTS.md        ← 從本 kit 複製
+   └── CLAUDE.md        ← /init 生成
+   ```
+
+2. **執行 `/init`** 生成專案特定的 `CLAUDE.md`（build / test / 架構說明）。
+
+3. **在 `CLAUDE.md` 開頭加一行 `@` 匯入**，讓通用規則當基底、專案特定內容接在後面補充：
+   ```markdown
+   # CLAUDE.md
+
+   @AGENTS.md
+
+   ## （以下為 /init 生成的專案特定內容）
+   ...
+   ```
+
+`@` 的路徑相對於 `CLAUDE.md` 所在位置：放根目錄寫 `@AGENTS.md`，放子目錄則寫 `@docs/rules/AGENTS.md`。注意 `@` 必須獨立成一行，且不能包在反引號或程式碼區塊裡，否則不會被解析。
+
+> [!NOTE]
+> 重跑 `/init` 可能覆蓋 `CLAUDE.md`、洗掉手動加的匯入行。對策：重跑後再補一次，或不用 `/init`、自行維護精簡的 `CLAUDE.md` 只放專案指令加 `@AGENTS.md`。
+
+採「`AGENTS.md` 當可攜規則 + `CLAUDE.md` 匯入」的分離法，日後本 kit 更新規則時，下游專案只要重新複製 `AGENTS.md` 一個檔即可，不必改動 `CLAUDE.md`。
+
 ## 推薦工具
 
 以下為搭配本範本庫使用的推薦開發輔助工具：
