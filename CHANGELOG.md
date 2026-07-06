@@ -12,7 +12,7 @@
 
 ---
 
-## [Unreleased]
+## [1.1.0] - 2026-07-06
 
 ### 變更（`skills/`、`workflows/shared/` — 下游建議重新複製）
 
