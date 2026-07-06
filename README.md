@@ -55,7 +55,7 @@ dev-rules-kit/
 
 - **`skills/`**  
   儲存可被 AI 或工具呼叫的「技能」，以子目錄形式組織，每個子目錄包含 `SKILL.md` 定義。  
-  每個 skill 檔案應包含清晰的輸入、輸出與使用範例。
+  重量級 skill（如 `review`、`decompose`）包含完整的輸入、輸出規範與使用範例；輕量 skill（如 `create-commit`）僅列執行步驟，維持簡潔。
 
 ## 開發閉環
 
