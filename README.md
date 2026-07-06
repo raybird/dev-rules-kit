@@ -9,6 +9,7 @@
 ```
 dev-rules-kit/
 ├── README.md              # 本說明文件
+├── CHANGELOG.md           # 變更紀錄（下游更新參考）
 ├── CLAUDE.md              # AI 維護指引
 ├── scripts/               # 自動化工具
 │   ├── sync-skills.py     # 雙子星自動同步腳本（--check 可驗證同步狀態）
@@ -154,6 +155,10 @@ review 發現需要修正時，回到 execute-task 修正後再走一次 commit 
 - **Antigravity**：[docs/setup/antigravity.md](./docs/setup/antigravity.md)
 - **Windsurf**：[docs/setup/windsurf.md](./docs/setup/windsurf.md)
 - **Cursor**：[docs/setup/cursor.md](./docs/setup/cursor.md)
+
+## 版本與更新
+
+下游專案更新已複製的檔案前，請先查閱 [CHANGELOG.md](./CHANGELOG.md)：每個條目標注影響的目錄，Major 版本代表破壞性變更（更新前應檢視自己的客製內容），Minor / Patch 可安全重新複製。
 
 ## 貢獻
 
