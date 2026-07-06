@@ -53,7 +53,15 @@ description: 以 issue 為中心追蹤並推進開發閉環，支援查詢進度
    | create-pr | 確認所有 Task 已完成並已 commit 後，呼叫 `create-pr` |
    | review | 呼叫 `review` |
    | execute-task（修正） | 說明「PR 有 request changes，需修正後重新 commit」，呼叫 `execute-task` |
-   | 完成 | 恭喜並提示可以 merge PR，結束 |
+   | 完成 | 依 `docs/AGENTS.md` 收尾 issue 文件：README 狀態標記為已完成、timeline 補記 merge 日期，然後恭喜並結束 |
 
 4. 子步驟完成後回到步驟 1 繼續偵測
 5. 循環直到 PR merged 或使用者中斷
+
+## 推進模式下的自動執行
+
+推進模式由 dev-cycle 全自動驅動，不需人工把關：
+
+- `execute-task` 完成後，依 `code-simplify` 精煉程式碼、依 `create-commit` 規範生成訊息並**直接執行 commit**
+- `create-pr` 產出內容後**直接建立 PR**
+- `create-commit` 的「不要直接提交、訊息放 code block 供複製」僅適用於**單獨呼叫**該 skill 時；在 dev-cycle 推進模式下不適用

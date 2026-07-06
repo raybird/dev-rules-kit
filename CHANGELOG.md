@@ -12,6 +12,14 @@
 
 ---
 
+## [Unreleased]
+
+### 變更（`skills/`、`workflows/shared/` — 下游建議重新複製）
+
+- `execute-task`：新增「確認工作分支」為第一步，明定分支命名規範（`issue-{ID}` 開頭，可加描述後綴）
+- `dev-cycle`：完成階段新增 issue 文件收尾動作（README 狀態、timeline 補記）；明示推進模式為全自動執行（直接 commit、直接建 PR），`create-commit` 的人工把關僅適用於單獨呼叫
+- README 開發閉環章節註明 `git-squash` 為閉環外的獨立輔助工具
+
 ## [1.0.0] - 2026-07-06
 
 首個正式版本，作為下游專案的更新基準點。
