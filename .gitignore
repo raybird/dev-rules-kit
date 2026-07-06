@@ -1,0 +1,3 @@
+# 本機執行期狀態，不進版控
+*.db
+.claude/settings.local.json
