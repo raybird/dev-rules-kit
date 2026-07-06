@@ -11,7 +11,8 @@ dev-rules-kit/
 ├── README.md              # 本說明文件
 ├── CLAUDE.md              # AI 維護指引
 ├── scripts/               # 自動化工具
-│   └── sync-skills.py     # 雙子星自動同步腳本
+│   ├── sync-skills.py     # 雙子星自動同步腳本（--check 可驗證同步狀態）
+│   └── check-links.py     # Markdown 相對連結檢查
 ├── docs/                  # 技術文件與規範說明
 │   ├── AGENTS.md          # 文件資料夾說明（AGENTS）
 │   ├── usage.md           # 使用指南（含開發閉環步驟）

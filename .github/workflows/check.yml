@@ -1,0 +1,16 @@
+name: check
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+
+jobs:
+  check:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - name: 檢查 skill/workflow 同步與雙語規則章節數
+        run: python3 scripts/sync-skills.py --check
+      - name: 檢查 Markdown 相對連結
+        run: python3 scripts/check-links.py

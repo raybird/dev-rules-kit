@@ -30,12 +30,10 @@ This file provides guidance to Claude Code (claude.ai/code) when working with co
 python3 scripts/sync-skills.py
 ```
 
-在 PR 合併前，可執行以下指令快速比對所有配對是否同步（`-w` 忽略空白差異）：
+在 PR 合併前，執行檢查模式驗證所有配對是否同步（會自動掃描全部配對，不需維護名單；CI 也會跑同一支檢查）：
 
 ```bash
-for n in code-simplify create-commit create-pr decompose dev-cycle execute-task git-squash new-issue review; do
-  diff -qw "skills/$n/SKILL.md" "workflows/shared/$n.md"
-done
+python3 scripts/sync-skills.py --check
 ```
 
 同步腳本為逐位元組複製，兩邊內容應完全一致。不要手動修改 `workflows/shared/` 端的配對檔案——任何差異都會在下次同步時被覆蓋。
