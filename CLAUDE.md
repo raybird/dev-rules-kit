@@ -38,7 +38,7 @@ for n in code-simplify create-commit create-pr decompose dev-cycle execute-task 
 done
 ```
 
-只有 frontmatter 與少數平台無關語意差異是允許的，其餘內容應一致。
+同步腳本為逐位元組複製，兩邊內容應完全一致。不要手動修改 `workflows/shared/` 端的配對檔案——任何差異都會在下次同步時被覆蓋。
 
 
 ### Frontmatter 格式

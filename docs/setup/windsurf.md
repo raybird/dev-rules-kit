@@ -31,7 +31,7 @@ cp dev-rules-kit/rules/AGENTS.zh-TW.md ~/.codeium/windsurf/memories/global_rules
 
 驗證：於 Windsurf Cascade 內輸入 `/`，應出現 `decompose`、`create-commit`、`new-issue` 等指令。
 
-> **`dev-cycle` 使用方式**：`dev-cycle` 是 orchestration skill，**不會出現在 `/` 指令清單**（它沒有 workflow 對應檔）。使用方式：在對話中直接說「issue 3396 到哪了」（查詢）或「繼續 3396」（推進），Cascade AI 會讀取 `skills/dev-cycle/SKILL.md` 並執行對應行為。若未自動載入，可手動告知 AI 參考該檔案。
+> **`dev-cycle` 使用方式**：`dev-cycle` 是 orchestration skill，除了 `/dev-cycle` 指令外，也可在對話中直接說「issue 3396 到哪了」（查詢）或「繼續 3396」（推進），Cascade AI 會讀取 `skills/dev-cycle/SKILL.md` 並執行對應行為。若未自動載入，可手動告知 AI 參考該檔案。
 
 ## 設定 Serena（MCP）
 
