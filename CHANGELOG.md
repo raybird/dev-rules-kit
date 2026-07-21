@@ -12,6 +12,18 @@
 
 ---
 
+## [1.3.2] - 2026-07-21
+
+### 變更（`scripts/`、`workflows/README.md` — 下游若未複製 scripts 可略過）
+
+補上守門機制的缺口：`workflows/README.md` 不在同步腳本的複製範圍內，其描述文字過去只能靠人工比對，實際已累積漂移。
+
+- `scripts/sync-skills.py --check` 新增 `check_workflow_readme()`：驗證 `workflows/README.md` 的 Shared Workflows 清單與 `skills/` 一一對應，且每條描述等於對應 `SKILL.md` `description` 的第一句；可偵測描述漂移、漏列、多列孤兒三種情況
+- `workflows/README.md`：修正啟用檢查後抓到的 5 條既有漂移（`create-commit` 仍寫著 commit convention 1.0.0、`new-issue` 停留在舊描述等），並加註此清單的維護規則
+- `CLAUDE.md`：Conventions 新增 description 撰寫原則（同時寫出做什麼與何時使用）與 `workflows/README.md` 清單的首句約定
+
+CI 既有的 `sync-skills.py --check` 步驟會自動套用新檢查，無需調整 workflow 設定。
+
 ## [1.3.1] - 2026-07-21
 
 ### 變更（`skills/`、`workflows/shared/`、`docs/AGENTS.md` — 下游建議重新複製）
