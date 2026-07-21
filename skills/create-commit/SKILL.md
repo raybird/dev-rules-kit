@@ -1,5 +1,5 @@
 ---
-description: 根據 git staged 生成 commit 訊息
+description: 根據 git staged 的異動生成符合 Conventional Commits 規範的中文 commit 訊息。已 git add 待提交檔案、需要撰寫提交訊息時使用。
 ---
 
 1. 看 git status 的 staged 檔案列表

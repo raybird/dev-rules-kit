@@ -16,6 +16,8 @@
 
 ## 文件動態分級規範 (Issue Document Tiering)
 
+> **本節是分級規則的唯一權威定義（single source of truth）。** `new-issue`、`dev-cycle`、`execute-task`、`decompose` 等 skill / workflow 內的分級說明皆為方便閱讀的摘要，若有出入一律以本節為準；調整分級規則時必須先改本節，再同步各 skill 摘要。
+
 為了在保障開發正確性的同時避免「小變更、重文件」的繁重負擔，文件產生應依任務複雜度動態評估（Small / Medium / Large 三級），只產出對應的必要文件：
 
 | 分級 | 適用場景 | 產出檔案 |

@@ -19,7 +19,7 @@ description: 以 issue 為中心追蹤並推進開發閉環，支援查詢進度
 
 ## 分級判定
 
-讀取 `docs/issues/issue-{ID}/README.md` 結尾 metadata 的 `**分級**` 欄位，決定任務清單來源：
+讀取 `docs/issues/issue-{ID}/README.md` 結尾 metadata 的 `**分級**` 欄位，決定任務清單來源（分級規則的權威定義見 `docs/AGENTS.md`「文件動態分級規範」，下表為摘要）：
 
 | 分級 | 任務清單來源 | decompose |
 |---|---|---|

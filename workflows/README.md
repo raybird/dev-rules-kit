@@ -16,7 +16,7 @@ workflows/
 
 - **code-simplify.md** - 在保留所有功能的前提下，簡化並精煉程式碼，提升清晰度、一致性與可維護性
 - **create-commit.md** - 根據 git staged 生成符合 commit convention 1.0.0 規範的精簡版條列訊息
-- **create-pr.md** - 根據指定 commit 生成 peer-request 內容
+- **create-pr.md** - 根據指定 commit 範圍生成 Pull Request 說明內容
 - **decompose.md** - 將 Implementation Plan 細化為可執行的開發階段（Phase）與任務（Task），僅適用 Large issue
 - **dev-cycle.md** - 以 issue 為中心追蹤並推進開發閉環，支援查詢進度或自動執行下一步
 - **execute-task.md** - 根據 issue 的任務清單執行指定的實作步驟或 Phase / Task

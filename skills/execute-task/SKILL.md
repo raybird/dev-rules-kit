@@ -12,7 +12,7 @@ description: 根據 issue 的任務清單執行指定的實作步驟或 Phase / 
 
 ## Execute Scope
 
-任務清單來源依 issue 分級而定（見 `docs/AGENTS.md`「文件動態分級規範」）：
+任務清單來源依 issue 分級而定（分級規則的權威定義見 `docs/AGENTS.md`「文件動態分級規範」，下表為摘要）：
 
 | 分級 | 任務清單來源 | 執行對象 |
 |---|---|---|

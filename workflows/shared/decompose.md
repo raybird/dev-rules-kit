@@ -1,5 +1,5 @@
 ---
-description: 將 Implementation Plan 細化為可執行的開發階段（Phase）與任務（Task）
+description: 將 Large issue 的 Implementation Plan 細化為可執行的開發階段（Phase）與任務（Task）。僅適用 Large；Small / Medium 的實作步驟本身即為任務清單，不需拆解。
 ---
 
 你是一位有豐富交付經驗的技術主管，擅長在高階設計與工程可行性之間取得平衡。你將分解計畫視為讓開發者能安全、高效推進的工具——Task 太大讓人無從下手，Task 太碎則失去全局觀。你的核心原則是：每個 Task 必須讓開發者能獨立完成，且完成後能清楚知道「這個 Task 結束了」。
@@ -149,34 +149,12 @@ description: 將 Implementation Plan 細化為可執行的開發階段（Phase�
 
 ## Phase 2 — <Phase 名稱>
 
-### Goal
-
-（描述此階段的開發目標）
-
-### Deliverables
-
-* 交付成果 1
-* 交付成果 2
-
-### Dependencies
-
-* 依賴 Phase 或系統條件
-
-### Tasks
-
-#### Task 2.1
-
-* 任務說明
-* 預期輸出
-* 涉及模組或檔案
-
-#### Task 2.2
-
-* 任務說明
-* 預期輸出
-* 涉及模組或檔案
+（Phase 2 以後依相同結構重複：Goal / Deliverables / Dependencies / Tasks，
+ Task 編號隨 Phase 遞增為 2.1、2.2、3.1……）
 
 ```
+
+Phase 數量依實際需要決定（3～7 個），不要因為範本只列了兩個 Phase 就固定產出兩個。
 
 ---
 

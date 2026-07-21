@@ -1,8 +1,8 @@
 ---
-description: 指定 commit 生成 peer-request 內容
+description: 根據指定的 commit 範圍生成 Pull Request 說明內容（背景、實作方法、變更清單與測試驗證）。變更已提交、準備開 PR 時使用。
 ---
 
-1. 根據指定 commit 內的檔案異動生成 peer-request 格式
+1. 根據指定 commit 內的檔案異動生成 Pull Request 說明
 2. 格式如下，生成 markdown 後置於 code block 以便複製
 
 ---
@@ -17,7 +17,7 @@ description: 指定 commit 生成 peer-request 內容
 
 ## 實際變更（做了什麼）
 
-<!-- 強調此合併請求中實作的主要變更。具體說明您更改了什麼以及為什麼。 -->
+<!-- 強調此 PR 中實作的主要變更。具體說明您更改了什麼以及為什麼。 -->
 
 - [ ] 功能/變更 1
 - [ ] 功能/變更 2
