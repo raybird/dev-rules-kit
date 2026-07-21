@@ -12,6 +12,22 @@
 
 ---
 
+## [1.2.0] - 2026-07-21
+
+### 變更（`skills/`、`workflows/shared/`、`docs/AGENTS.md` — 下游建議重新複製）
+
+依 issue 分級決定是否需要 `decompose`，修正 Small 級別在閉環中缺少任務清單來源、以及 Medium 級別把實作步驟寫兩遍的問題。
+
+- `docs/AGENTS.md`：新增「任務清單來源」對照表；分級**必須**寫入 `README.md` 結尾 metadata 的 `**分級**` 欄位（兩份 README 範本已加上該欄位）；明訂 Small / Medium 不再產生額外的分解文件
+- `new-issue`：將評估出的分級寫回 README；要求實作步驟寫成可直接執行的任務清單（每項有明確產出與完成判準）
+- `dev-cycle`：新增「分級判定」小節，僅 Large 觸發 `decompose`，Small / Medium 直接進入 `execute-task`；舊 issue 缺少 `**分級**` 欄位時可由現有檔案回推並補寫
+- `decompose`：新增「適用範圍」，標明僅適用 Large
+- `execute-task`：description 與 Input 改為依分級查表取得任務清單，不再寫死 Implementation Plan Decomposition
+
+### 下游更新注意事項
+
+既有 issue 文件不需回頭補 `**分級**` 欄位，`dev-cycle` 會依實際存在的檔案自動回推；但新建立的 issue 一律會帶此欄位。
+
 ## [1.1.0] - 2026-07-06
 
 ### 變更（`skills/`、`workflows/shared/` — 下游建議重新複製）
