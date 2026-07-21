@@ -12,6 +12,15 @@
 
 ---
 
+## [1.3.4] - 2026-07-21
+
+### 變更（`skills/`、`workflows/shared/` — 下游建議重新複製）
+
+四個「生成可複製內容」的 skill 統一加上檔案路徑規範，並改善 `git-squash` 的指令複製體驗。
+
+- **相對路徑規範**（`review`、`create-pr`、`create-commit`、`git-squash`）：產出內容中的檔案路徑一律使用相對於 repo root 的路徑（如 `src/auth/login.ts`），不得使用絕對路徑或 `~` 開頭；需指出具體位置時附行號（如 `src/auth/login.ts:42`）。這些內容會貼到 PR、issue 或聊天工具供他人在不同環境閱讀，絕對路徑無法對應，也會洩漏本機目錄結構
+- **`git-squash` 指令拆分**：合併方案的三個步驟改為**各自獨立的 code block**（原本是巢狀清單中的行內指令，複製時會沾到說明文字），並明文禁止合併成單一 block；Step 3 改用兩個 `-m`（subject + body），已實測可完整保留 `#` 開頭的 issue 編號
+
 ## [1.3.3] - 2026-07-21
 
 ### 修正（`skills/`、`workflows/shared/`、`docs/` — 下游建議重新複製）
