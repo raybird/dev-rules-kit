@@ -80,3 +80,5 @@ description: 一句話描述用途
 - **日期**：文件內任何日期都使用系統當下日期，格式 `YYYY-MM-DD`
 - **平台特定流程**：放在 `workflows/<platform>/`，不要混進 `workflows/shared/`
 - **檔名與資料夾**：skill 用 kebab-case；skill 資料夾名、workflow 檔名、frontmatter 中 description 三者語意必須一致
+- **description 撰寫**：`description` 是唯一常駐於 agent context 的內容，也是 agent 判斷「是否載入整份 skill」的依據，應同時寫出**做什麼**與**何時使用／適用範圍**（例如 `decompose` 標明僅適用 Large）
+- **workflows/README.md 清單**：該檔不在同步腳本的複製範圍內，其 Shared Workflows 清單中每條描述必須等於對應 `SKILL.md` `description` 的**第一句**；改動 description 時要一併更新，`sync-skills.py --check` 會驗證
