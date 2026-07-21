@@ -10,6 +10,8 @@
 
 以「為現有 web app 新增 OAuth 登入功能」（issue-101）為例，完整走過七個步驟。
 
+> 此範例被評估為 **Large**，因此包含 Step 2 的 `decompose`。**Small 與 Medium 的 issue 會跳過該步驟**，由 `new-issue` 直接進入 `execute-task`，全程六步——它們的實作步驟本身即為可執行的任務清單，不需再拆解。詳見 [AGENTS.md 的「文件動態分級規範」](./AGENTS.md#文件動態分級規範-issue-document-tiering)。
+
 ### Step 1 — `new-issue`
 
 **觸發**：
@@ -152,6 +154,8 @@ AI 自動偵測狀態，告知「目前在 create-pr 階段，準備執行 creat
 
 **關鍵行為**：`dev-cycle` 從 filesystem 與 git 狀態推斷進度，跨 session 重新呼叫也能正確恢復，不依賴對話記憶。
 
+**分級分流**：`dev-cycle` 會先讀 `README.md` 的 `**分級**` 欄位決定路徑——Large 才經過 `decompose`，Small 與 Medium 直接從 `new-issue` 進入 `execute-task`。若是舊 issue 沒有該欄位，會依現存檔案回推分級並補寫回 README。
+
 ---
 
 ## 各 Skill 快速參考
@@ -248,7 +252,7 @@ issue:123
 |---|---|
 | **查詢** | 「issue {ID} 到哪了」、「{ID} 進度」 |
 | **推進** | `/dev-cycle {ID}`、「繼續 {ID}」 |
-| **注意** | 本技能在所有平台均已提供對應的引導工作流程 |
+| **注意** | 依 README 的 `**分級**` 欄位分流：僅 Large 經過 `decompose`；本技能在所有平台均已提供對應的引導工作流程 |
 
 ---
 
@@ -269,12 +273,13 @@ A: 請參考 [docs/AGENTS.md](./AGENTS.md) 中的「快速檢查清單」以及�
 
 | 日期 | 異動 | 負責人 |
 |------|------|--------|
+| 2026-07-21 | 補上分級分流說明（僅 Large 經過 decompose）；示範的 decompose 產出改為垂直切片 | - |
 | 2026-06-20 | 整合 USAGE.md 說明內容，修復大小寫檔案衝突 | - |
 | 2026-05-19 | 建立 new-issue 使用說明文件與指南 | - |
 
 ---
 
 **建立日期**: 2026-05-19  
-**最後更新**: 2026-06-20  
-**文件版本**: 1.1  
+**最後更新**: 2026-07-21  
+**文件版本**: 1.2  
 

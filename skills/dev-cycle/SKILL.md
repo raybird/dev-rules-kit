@@ -27,7 +27,13 @@ description: 以 issue 為中心追蹤並推進開發閉環，支援查詢進度
 | Medium | `implementation-plan.md` 的「實作步驟」 | 跳過 |
 | Large | 拆解後的 Decomposition 文件 | 需要 |
 
-若 README 沒有 `**分級**` 欄位（舊文件），依實際存在的檔案回推：只有 README → Small；有 `implementation-plan.md` 但無 `requirement-analysis.md` → Medium；四件套齊全 → Large。回推後將分級補寫回 README。
+若 README 沒有 `**分級**` 欄位（舊文件），依實際存在的檔案依序回推（三條互斥且涵蓋所有組合，取第一個成立者）：
+
+1. 存在 `requirement-analysis.md` 或 `technical-analysis.md` → **Large**
+2. 否則存在 `implementation-plan.md` → **Medium**
+3. 否則 → **Small**
+
+回推後將分級補寫回 README。
 
 ## 狀態偵測
 

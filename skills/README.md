@@ -69,13 +69,15 @@ dev-rules-kit/
 
 | 日期 | 異動 | 說明 |
 |------|------|------|
+| 2026-07-21 | 分級分流與 description 規範 | 依 issue 分級決定是否需要 `decompose`；`description` 補齊觸發時機與適用範圍 |
 | 2026-06-02 | 新增 git-squash | 新增 git-squash 技能，對應新增的 git-squash 工作流程 |
+| 2026-05-28 | 新增 dev-cycle | 新增 dev-cycle 協調技能，以 issue 為中心追蹤並推進開發閉環 |
 | 2026-05-08 | 文件建立 | 建立 `skills/README.md`，說明 skills 與 workflows 的關係 |
-| 2026-05-08 | 整合說明 | Claude 內部將 commands 功能整合至 skills架構使用 |
+| 2026-05-08 | 整合說明 | Claude 內部將 commands 功能整合至 skills 架構使用 |
 
 ---
 
 **建立日期**: 2026-05-08  
-**最後更新**: 2026-06-02  
-**文件版本**: 1.1  
+**最後更新**: 2026-07-21  
+**文件版本**: 1.2  
 **適用範圍**: `skills/` 資料夾所有技能
