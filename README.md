@@ -64,7 +64,7 @@ dev-rules-kit/
 ```
 new-issue        ← 分析需求、建立 issue 文件
     ↓
-decompose        ← 將 implementation plan 拆解為 Phase / Task
+decompose        ← 將 implementation plan 拆解為 Phase / Task（僅 Large）
     ↓
 execute-task  ←──────────────────────────────┐
     ↓                                        │
@@ -78,6 +78,8 @@ review           ← 審查變更，發現問題回頭修正 ───┘
     ↓
   通過合併
 ```
+
+`decompose` 只在 issue 被評估為 **Large** 時執行；Small 與 Medium 的實作步驟本身即為可執行的任務清單，會由 `new-issue` 直接接到 `execute-task`。
 
 review 發現需要修正時，回到 execute-task 修正後再走一次 commit → PR → review，循環直到通過。
 

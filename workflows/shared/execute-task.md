@@ -1,22 +1,26 @@
 ---
-description: 根據 Implementation Plan Decomposition 執行指定的 Phase 或 Task 並實作程式碼
+description: 根據 issue 的任務清單執行指定的實作步驟或 Phase / Task 並實作程式碼
 ---
 
 ## Input
 
 請先讀取以下內容：
 
-- Implementation Plan
-- Implementation Plan Decomposition
+- issue 的 `README.md`（取得 `**分級**` 欄位）
+- 該分級對應的任務清單（見下方 Execute Scope）
 - 專案現有程式碼
 
 ## Execute Scope
 
-請根據以下來源執行開發任務：
+任務清單來源依 issue 分級而定（見 `docs/AGENTS.md`「文件動態分級規範」）：
 
-* 來源：**Implementation Plan Decomposition**
-* 執行對象：指定的 **Phase / Task**
-* 目標：實作對應功能並產出完整且可運行的程式碼
+| 分級 | 任務清單來源 | 執行對象 |
+|---|---|---|
+| Small | `README.md` 的「實作與驗證步驟」 | 指定的**步驟** |
+| Medium | `implementation-plan.md` 的「實作步驟」 | 指定的**步驟** |
+| Large | Implementation Plan Decomposition | 指定的 **Phase / Task** |
+
+目標：實作對應功能並產出完整且可運行的程式碼。
 
 執行時應遵守以下原則：
 
@@ -37,7 +41,7 @@ description: 根據 Implementation Plan Decomposition 執行指定的 Phase 或 
 
 2. **理解任務內容**
 
-   * 讀取指定 Phase 與 Task
+   * 讀取指定的步驟（Small / Medium）或 Phase 與 Task（Large）
    * 確認任務目標與預期輸出
    * 確認相關模組與檔案
 
@@ -77,11 +81,11 @@ description: 根據 Implementation Plan Decomposition 執行指定的 Phase 或 
 
 ## Phase
 
-<Phase 名稱>
+<Phase 名稱；Small / Medium 可省略此區塊>
 
 ## Task
 
-<Task 名稱>
+<Task 名稱，或 Small / Medium 的步驟名稱>
 
 ## Summary
 
@@ -107,8 +111,8 @@ description: 根據 Implementation Plan Decomposition 執行指定的 Phase 或 
 
 ## 注意事項
 
-* 僅實作指定 Task
-* 避免同時處理多個 Task
-* 若任務依賴尚未完成的 Task，需明確指出
+* 僅實作指定的步驟 / Task
+* 避免同時處理多個步驟 / Task
+* 若任務依賴尚未完成的步驟 / Task，需明確指出
 * 若發現架構問題或設計衝突，需在 Summary 中說明
-* 結果輸出到與 Implementation Plan 相同資料夾檔案內
+* 結果輸出到該 issue 的 `docs/issues/issue-{ID}/` 資料夾內

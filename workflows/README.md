@@ -17,9 +17,9 @@ workflows/
 - **code-simplify.md** - 在保留所有功能的前提下，簡化並精煉程式碼，提升清晰度、一致性與可維護性
 - **create-commit.md** - 根據 git staged 生成符合 commit convention 1.0.0 規範的精簡版條列訊息
 - **create-pr.md** - 根據指定 commit 生成 peer-request 內容
-- **decompose.md** - 將 Implementation Plan 細化為可執行的開發階段（Phase）與任務（Task）
+- **decompose.md** - 將 Implementation Plan 細化為可執行的開發階段（Phase）與任務（Task），僅適用 Large issue
 - **dev-cycle.md** - 以 issue 為中心追蹤並推進開發閉環，支援查詢進度或自動執行下一步
-- **execute-task.md** - 根據 Implementation Plan Decomposition 執行指定的 Phase 或 Task
+- **execute-task.md** - 根據 issue 的任務清單執行指定的實作步驟或 Phase / Task
 - **git-squash.md** - 分析目前分支與基準分支的差異，並自動整理 Squash 的 Commit 訊息與提供合併建議
 - **new-issue.md** - 分析需求並建立 issue 文件
 - **review.md** - 審查當前分支提交的程式碼變更，確認是否符合需求並提出改進建議

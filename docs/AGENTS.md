@@ -24,6 +24,16 @@
 | **中量級 (Medium)** | 局部功能的 Feature 開發、不涉及複雜架構調整的重構、多檔案但邏輯直觀的修改 | **`README.md`** + **`implementation-plan.md`**（分析併入實作計畫的前置章節，省略單獨分析文件） |
 | **重量級 (Large)** | 跨多個模組/服務、新增資料庫 schema、複雜系統遷移、重大架構變更或大型功能模組開發 | 完整四件套：**`README.md`**、**`requirement-analysis.md`**、**`technical-analysis.md`**、**`implementation-plan.md`** |
 
+分級一經評估，**必須寫入 `README.md` 結尾 metadata 的 `**分級**` 欄位**（值只能是 `Small`、`Medium`、`Large` 三者之一）。此欄位是後續流程判斷的唯一依據：
+
+| 分級 | 任務清單來源 | 是否需要額外拆解 |
+|------|-------------|----------------|
+| **Small** | `README.md` 的「實作與驗證步驟」 | 否 |
+| **Medium** | `implementation-plan.md` 的「實作步驟」 | 否 |
+| **Large** | `implementation-plan.md` → 另行拆解為 Phase / Task | 是 |
+
+Small 與 Medium 的實作步驟本身即為可執行的任務清單，**不應再產生額外的分解文件**（避免同一份步驟寫兩遍）。僅 Large 因跨模組、任務量大，才需要進一步拆解為 Phase / Task。
+
 ## 總體架構
 
 ```
@@ -158,6 +168,7 @@ docs/
 **建立日期**: YYYY-MM-DD  
 **最後更新**: YYYY-MM-DD  
 **文件版本**: X.X  
+**分級**: Medium | Large  
 **狀態**: {狀態}
 ```
 
@@ -186,6 +197,7 @@ docs/
 ---
 **建立日期**: YYYY-MM-DD  
 **最後更新**: YYYY-MM-DD  
+**分級**: Small  
 **狀態**: 已完成
 ```
 
@@ -282,6 +294,7 @@ docs/
 建立新 issue 文件時，確認：
 - [ ] 已建立 `issue-{編號}/` 資料夾
 - [ ] 已依任務分級建立對應文件（見「文件動態分級規範」）
+- [ ] `README.md` 結尾 metadata 已填寫 `**分級**` 欄位
 - [ ] 文件內容涵蓋對應章節（見「文件類型與內容規範」）
 - [ ] 日期皆為系統當下日期、格式 `YYYY-MM-DD`（見「日期規範」）
 - [ ] 維護紀錄反映各次實際變更時間

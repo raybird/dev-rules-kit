@@ -39,6 +39,10 @@ description: 分析需求並建立 issue 文件
 - **Large (重量級)**：針對跨多個模組/服務、新增資料庫、複雜重構或大型功能。
   → 建立完整四件套：`README.md`、`requirement-analysis.md`、`technical-analysis.md`、`implementation-plan.md`。
 
+評估出的分級**必須寫入 `README.md` 結尾 metadata 的 `**分級**` 欄位**（`Small` / `Medium` / `Large`），後續流程會依此欄位判斷是否需要額外拆解。
+
+Small 的「實作與驗證步驟」與 Medium/Large 的 `implementation-plan.md` 「實作步驟」，都應寫成**可直接執行的任務清單**（每項有明確產出與完成判準），不要只寫抽象方向。
+
 所有文件格式、狀態、timeline、changelog、日期格式與維護方式，全部遵守 `docs/AGENTS.md`。
 
 若需求資訊不足：

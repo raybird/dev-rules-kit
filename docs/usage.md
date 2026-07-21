@@ -32,6 +32,8 @@
 
 ### Step 2 — `decompose`
 
+> 此步驟**僅適用 Large issue**。Small 與 Medium 的實作步驟已經是可執行的任務清單，會直接跳到 Step 3。
+
 **觸發**：
 
 ```
@@ -160,7 +162,7 @@ AI 自動偵測狀態，告知「目前在 create-pr 階段，準備執行 creat
 |---|---|
 | **觸發** | `/new-issue issue:{編號} 主題:{標題} 內容:{描述}` 或直接描述需求 |
 | **產出** | 依任務複雜度評估為 **Small (僅 README)**、**Medium (README + 計畫)** 或 **Large (完整四件套)** 檔案 |
-| **注意** | 需求不足時列出待確認事項，不自行補假設；文件產出遵從「動態分級規範」 |
+| **注意** | 需求不足時列出待確認事項，不自行補假設；文件產出遵從「動態分級規範」；分級會寫入 README 的 `**分級**` 欄位，後續步驟依此判斷是否需要 `decompose` |
 
 #### 指令式參數格式範例：
 ```
@@ -186,7 +188,7 @@ issue:123
 |---|---|
 | **觸發** | `/decompose` |
 | **產出** | `docs/issues/issue-{ID}/implementation-plan-decomposition.md`，Phase + Task 結構 |
-| **注意** | 需先有 `implementation-plan.md`；Task 粒度控制在 1–3 小時 |
+| **注意** | **僅適用 Large**；Small / Medium 的實作步驟本身即為任務清單，不需拆解。需先有 `implementation-plan.md`；Task 粒度控制在 1–3 小時 |
 
 ---
 
@@ -194,9 +196,9 @@ issue:123
 
 | | |
 |---|---|
-| **觸發** | `/execute-task Phase {N} Task {N.M}` |
-| **產出** | 實作對應 Task 的程式碼變更，輸出修改摘要 |
-| **注意** | 一次執行一個 Task；需先有 decomposition 文件 |
+| **觸發** | `/execute-task Phase {N} Task {N.M}`（Large）或 `/execute-task 步驟 {N}`（Small / Medium） |
+| **產出** | 實作對應步驟 / Task 的程式碼變更，輸出修改摘要 |
+| **注意** | 一次執行一個步驟 / Task；任務清單來源依分級而定（Small 讀 README、Medium 讀 implementation-plan、Large 讀 decomposition） |
 
 ---
 

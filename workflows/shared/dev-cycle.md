@@ -17,6 +17,18 @@ description: 以 issue 為中心追蹤並推進開發閉環，支援查詢進度
 輸入含疑問詞或狀態關鍵字（到哪了、狀態、進度、如何、了嗎）→ **查詢模式**
 否則 → **推進模式**
 
+## 分級判定
+
+讀取 `docs/issues/issue-{ID}/README.md` 結尾 metadata 的 `**分級**` 欄位，決定任務清單來源：
+
+| 分級 | 任務清單來源 | decompose |
+|---|---|---|
+| Small | README 的「實作與驗證步驟」 | 跳過 |
+| Medium | `implementation-plan.md` 的「實作步驟」 | 跳過 |
+| Large | 拆解後的 Decomposition 文件 | 需要 |
+
+若 README 沒有 `**分級**` 欄位（舊文件），依實際存在的檔案回推：只有 README → Small；有 `implementation-plan.md` 但無 `requirement-analysis.md` → Medium；四件套齊全 → Large。回推後將分級補寫回 README。
+
 ## 狀態偵測
 
 依序檢查下列條件，第一個不符合的條件即為當前階段：
@@ -24,7 +36,7 @@ description: 以 issue 為中心追蹤並推進開發閉環，支援查詢進度
 | 偵測條件 | 下一步 |
 |---|---|
 | `docs/issues/issue-{ID}/README.md` 不存在 | `new-issue` |
-| `docs/issues/issue-{ID}/` 內無含「Decomposition」標題的 `.md` 檔 | `decompose` |
+| 分級為 Large 且 `docs/issues/issue-{ID}/` 內無含「Decomposition」標題的 `.md` 檔 | `decompose` |
 | 無含 issue ID 的 branch 或 commit（搜尋 branch 名稱與 commit message） | `execute-task` |
 | 無 open PR | `create-pr` |
 | PR 有 request changes | `execute-task`（修正） |
@@ -48,8 +60,8 @@ description: 以 issue 為中心追蹤並推進開發閉環，支援查詢進度
    | 階段 | 動作 |
    |---|---|
    | new-issue | 呼叫 `new-issue` |
-   | decompose | 呼叫 `decompose` |
-   | execute-task | 詢問要執行哪個 Phase / Task 後，呼叫 `execute-task` |
+   | decompose | 呼叫 `decompose`（僅 Large） |
+   | execute-task | 依「分級判定」取得任務清單，詢問要執行哪個步驟 / Phase / Task 後，呼叫 `execute-task` |
    | create-pr | 確認所有 Task 已完成並已 commit 後，呼叫 `create-pr` |
    | review | 呼叫 `review` |
    | execute-task（修正） | 說明「PR 有 request changes，需修正後重新 commit」，呼叫 `execute-task` |
