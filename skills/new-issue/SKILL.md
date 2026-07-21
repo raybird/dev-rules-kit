@@ -41,7 +41,9 @@ description: 分析需求並建立 issue 文件
 
 評估出的分級**必須寫入 `README.md` 結尾 metadata 的 `**分級**` 欄位**（`Small` / `Medium` / `Large`），後續流程會依此欄位判斷是否需要額外拆解。
 
-Small 的「實作與驗證步驟」與 Medium/Large 的 `implementation-plan.md` 「實作步驟」，都應寫成**可直接執行的任務清單**（每項有明確產出與完成判準），不要只寫抽象方向。
+分級的自我校驗：若在規劃 Medium 的實作步驟時，發現其中的未知大到需要獨立的探索或驗證階段（例如外部整合行為完全未知、需先做技術驗證才能決定設計），代表分級評估過輕，應**升級為 Large** 並補齊分析文件。
+
+Small 的「實作與驗證步驟」與 Medium/Large 的 `implementation-plan.md` 「實作步驟」，都應寫成**可直接執行的任務清單**（每項有明確產出與完成判準），不要只寫抽象方向；步驟排序遵守 `docs/AGENTS.md` 的「實作步驟的排序原則」。
 
 所有文件格式、狀態、timeline、changelog、日期格式與維護方式，全部遵守 `docs/AGENTS.md`。
 

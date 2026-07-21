@@ -46,13 +46,13 @@ AI 讀取 `docs/issues/issue-101/implementation-plan.md` 後自動執行。
 
 建立 `docs/issues/issue-101/implementation-plan-decomposition.md`：
 
-- **Phase 1 — OAuth 基礎建設**（Google API 設定、callback 路由）
-- **Phase 2 — 帳號整合**（建立/綁定本地帳號邏輯）
-- **Phase 3 — UI 整合**（登入按鈕、錯誤訊息）
+- **Phase 1 — 登入最小路徑**（登入按鈕 → Google callback → 取得真實 profile → 建立新帳號 → 登入成功）
+- **Phase 2 — 既有帳號綁定與衝突處理**（Step 1 標為「未知，待確認」的部分）
+- **Phase 3 — 錯誤處理與邊界情境**（授權被拒、email 未驗證、token 過期）
 
 每個 Phase 下細分 2–4 個 Task，每個 Task 預估 1–3 小時。
 
-**關鍵行為**：Task 有明確的「預期產出」，讓開發者知道何時算完成，避免無邊界的工作。
+**關鍵行為**：Phase 1 就端到端跑通一條窄路徑，讓「Google 實際回傳什麼」這個最大假設在第一階段就被驗證，而不是切成「資料層 → API 層 → UI 層」把整合風險留到最後。Task 有明確的「預期產出」，讓開發者知道何時算完成，避免無邊界的工作。
 
 ---
 

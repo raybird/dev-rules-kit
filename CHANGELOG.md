@@ -12,6 +12,19 @@
 
 ---
 
+## [1.3.0] - 2026-07-21
+
+### 變更（`skills/`、`workflows/shared/`、`docs/AGENTS.md` — 下游建議重新複製）
+
+為任務切分加入「風險優先」原則，避免 Phase / 步驟被切成技術分層而把整合風險留到最後。深度依分級遞減。
+
+- `decompose`（Large）：新增「Phase 切分原則」——**Phase 1 應優先打通風險最高、假設最未經驗證的那條路徑**，垂直切片為手段而非目的；依未知的類型（外部整合／重構／資料遷移／需求已凍結）給出對應切法，並附正反對照。需求文件標為「未知／待確認」的事項即為排序第一依據
+- `docs/AGENTS.md`（Medium / Large）：`implementation-plan.md` 章節新增「實作步驟的排序原則」，未經驗證的假設應排在最前面
+- `new-issue`：新增分級自我校驗——規劃 Medium 步驟時若發現未知大到需要獨立探索階段，應升級為 Large 並補齊分析文件
+- `docs/usage.md`：示範的 decompose 產出由技術分層改為垂直切片，與新原則一致
+
+Small 級別不受影響。
+
 ## [1.2.0] - 2026-07-21
 
 ### 變更（`skills/`、`workflows/shared/`、`docs/AGENTS.md` — 下游建議重新複製）
