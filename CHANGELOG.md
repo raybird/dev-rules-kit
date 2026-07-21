@@ -12,6 +12,22 @@
 
 ---
 
+## [1.3.1] - 2026-07-21
+
+### 變更（`skills/`、`workflows/shared/`、`docs/AGENTS.md` — 下游建議重新複製）
+
+針對 AI agent 的載入機制優化 skill 文件：`description` 是唯一常駐於 context 的部分，也是 agent 判斷「是否要載入整份 skill」的唯一依據，因此補齊觸發時機與適用範圍。
+
+- **description 補齊觸發條件**：
+  - `decompose`：明示**僅適用 Large**，agent 不必載入整份 body 即可排除 Small / Medium 的誤觸發
+  - `create-pr`：`peer-request`（非通用術語）更正為 **Pull Request**，內文與 `workflows/README.md` 的殘留一併清除
+  - `new-issue`：補上產出位置與觸發時機、三級產出說明
+  - `create-commit`：補上 Conventional Commits 與「已 git add 後使用」
+- **`decompose` 範本去重**：Output 範本中逐字重複的 Phase 2 結構改為結構說明，並加註「不要因為範本只列兩個 Phase 就固定產出兩個」（189 → 167 行）
+- **分級規範 single source**：`docs/AGENTS.md`「文件動態分級規範」標示為唯一權威定義，`dev-cycle`、`execute-task` 內的分級表標注為摘要並指向該節
+
+未引入多檔案 progressive disclosure：`sync-skills.py` 為單檔逐位元組複製，SKILL.md 若引用外部檔案會在其他平台的 workflow 端斷鏈。
+
 ## [1.3.0] - 2026-07-21
 
 ### 變更（`skills/`、`workflows/shared/`、`docs/AGENTS.md` — 下游建議重新複製）
