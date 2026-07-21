@@ -78,7 +78,9 @@ description: 審查當前分支提交的程式碼變更，確認是否符合需�
 
 ## Output
 
-請僅輸出 Markdown 審查報告，並遵循以下格式：
+請僅輸出 Markdown 審查報告，並遵循以下格式。
+
+**檔案路徑規範**：報告中所有檔案路徑一律使用**相對於 repo root 的路徑**（如 `src/auth/login.ts`），不得使用絕對路徑（如 `/home/user/project/src/...`）或 `~` 開頭的路徑；需指出具體位置時附上行號（如 `src/auth/login.ts:42`）。審查報告會被貼到 PR、issue 或聊天工具供他人閱讀，絕對路徑在他人環境中無法對應，也會洩漏本機目錄結構。
 
 ```markdown
 # 程式碼審查報告

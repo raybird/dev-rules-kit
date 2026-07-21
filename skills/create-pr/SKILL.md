@@ -3,7 +3,8 @@ description: 根據指定的 commit 範圍生成 Pull Request 說明內容（背
 ---
 
 1. 根據指定 commit 內的檔案異動生成 Pull Request 說明
-2. 格式如下，生成 markdown 後置於 code block 以便複製
+2. 內容中所有檔案路徑一律使用**相對於 repo root 的路徑**（如 `src/auth/login.ts`），不得使用絕對路徑（如 `/home/user/project/src/...`）或 `~` 開頭的路徑；需指出具體位置時附上行號（如 `src/auth/login.ts:42`）。PR 說明供他人在不同環境閱讀，絕對路徑無法對應，也會洩漏本機目錄結構
+3. 格式如下，生成 markdown 後置於 code block 以便複製
 
 ---
 

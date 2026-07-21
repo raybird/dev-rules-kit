@@ -16,10 +16,33 @@ description: 分析目前分支與基準分支的差異，並自動整理 Squash
    - 分析上述 commits 的訊息，將其歸納為結構化的 Commit 訊息。
    - 格式必須符合專案規範：`#<issue_number> <type>(<scope>): <subject>`（例如 `#3403 feat(member): 實作...`）。
    - 在 Body 中依範疇（如 docs, feat, refactor, fix）條列說明具體的異動內容。
+   - 訊息中若提及檔案路徑，一律使用**相對於 repo root 的路徑**（如 `src/auth/login.ts`），不得使用絕對路徑或 `~` 開頭的路徑。
 
 4. **提供合併方案（git merge --squash）**：
    - 一律使用 `git merge --squash` 方案進行合併，避免互動式 rebase 的複雜操作。
-   - 提供以下步驟指令：
-     1. 切換至基準分支：`git checkout <base-branch>`
-     2. 進行 Squash 合併：`git merge --squash <your-branch>`
-     3. 進行 Commit 提交（直接提供帶有生成好 Commit 訊息的 `git commit -m "..."` 指令，確保 `#` 符號完美保留）。
+   - **三個步驟必須各自獨立成一個 code block**，讓使用者能逐步複製執行，不要合併成單一 block，也不要與說明文字混排。
+   - 依下列格式輸出（分支名稱與訊息替換為實際內容）：
+
+````markdown
+**Step 1 — 切換至基準分支**
+
+```bash
+git checkout dev
+```
+
+**Step 2 — Squash 合併**
+
+```bash
+git merge --squash feature/your-branch
+```
+
+**Step 3 — 提交**
+
+```bash
+git commit -m "#3403 feat(member): 實作會員登入流程" -m "- feat: 新增 OAuth 授權與 callback 處理
+- refactor: 抽離 session 建立邏輯
+- docs: 補充環境變數設定說明"
+```
+````
+
+   - Step 3 使用兩個 `-m`（第一個為 subject，第二個為 body），可確保 `#` 符號完整保留且不需跳脫。
