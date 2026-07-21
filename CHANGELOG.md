@@ -12,6 +12,21 @@
 
 ---
 
+## [1.3.3] - 2026-07-21
+
+### 修正（`skills/`、`workflows/shared/`、`docs/` — 下游建議重新複製）
+
+以模擬 issue 目錄乾跑 `dev-cycle` 的分級判定後，修正兩個會實際卡住流程的漏洞：
+
+- **`dev-cycle` 分級回推規則不完備**：舊規則（只有 README → Small；有 plan 但無 requirement-analysis → Medium；四件套齊全 → Large）在六種常見檔案組合中有三種無法判定（如 `README + requirement-analysis`、`README + plan + requirement-analysis`），會導致舊 issue 卡在分級判定。改為三條互斥且完備的有序 fallback：有分析文件 → Large；否則有 implementation-plan → Medium；否則 Small
+- **Small 範本把「已完成」寫死**：`docs/AGENTS.md` 輕量級 README 範本的 `**狀態**` 欄原本固定為「已完成」，但 `new-issue` 是閉環第一步，實作尚未開始；且 `dev-cycle` 需依此欄位追蹤進度。改為 `{狀態}` 佔位並加註不得預先標記完成
+
+### 文件
+
+- `docs/AGENTS.md`：新增 `## 修訂紀錄 (Changelog)`（此前僅要求其他文件撰寫、自身缺漏），metadata 更新至 v1.2
+- `docs/usage.md`：註明完整七步示範為 Large 路徑、Small / Medium 跳過 `decompose` 走六步；`dev-cycle` 章節補上分級分流說明
+- `skills/README.md`：維護紀錄補記 `dev-cycle` 加入與本輪變更
+
 ## [1.3.2] - 2026-07-21
 
 ### 變更（`scripts/`、`workflows/README.md` — 下游若未複製 scripts 可略過）
