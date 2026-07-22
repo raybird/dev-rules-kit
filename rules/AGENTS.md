@@ -58,15 +58,40 @@ When your changes create orphans:
 
 ---
 
-## 5. Workflow Triage
+## 5. Workflow Scale and Risk
 
-**Use the lightest workflow that can complete the task correctly.**
+**Scale determines workflow weight; risk determines verification order. Never infer one from the other.**
 
-- **Small / localized tasks** (single file, clear changes, low risk)  
-  → Execute directly. No need for a full plan or long documentation.
+Choose workflow weight from change scope and structural complexity:
 
-- **Large tasks** (multiple files, ambiguous requirements, high risk, or spanning multiple services)  
-  → Briefly plan first: list steps and verification points, then execute.
+- **Small / localized tasks** (focused scope, low structural complexity, limited work volume) → Execute directly. No need for a full plan or long documentation.
+
+- **Medium tasks** (multiple related files, a bounded feature, or moderate structural complexity) → State brief steps and verification points, then execute.
+
+- **Large tasks** (broad scope, major architectural change, or multiple services) → Create a phased plan with boundaries, dependencies, and verification points, then execute.
+
+If several scale conditions apply, use the highest applicable level. For example, a change spanning multiple services is large even if each individual edit is clear.
+
+Assess risk separately based on uncertainty and failure consequences:
+
+- **Low risk**: Behavior and dependencies are known, impact is limited, and recovery is easy. Follow normal dependency order.
+- **Medium risk**: An important unknown exists, or failure would cause limited rework. Validate that unknown before the main implementation.
+- **High risk**: The change involves data loss, security or authorization, irreversible operations, broad impact, or unknown core external behavior. The first substantive validation step must produce evidence that reduces the largest risk.
+
+If several risk conditions apply, use the highest applicable level. Any high-risk condition overrides medium risk.
+
+A small task can be high risk, and a large task can be low risk. Do not add documentation merely because risk is high, and do not skip necessary verification merely because the change is small.
+
+Before implementing, identify the largest unverified assumption or most severe failure consequence, then choose the most direct validation method:
+
+- Unknown external API or library contract → Contract test, minimal real request, or compatibility probe
+- Unknown existing data shape → Data profiling, distribution query, or small-sample dry run
+- Unknown performance or capacity → Benchmark, load test, or minimal technical experiment
+- Existing behavior may break → Characterization test, snapshot, comparison script, or regression safety net
+- Unknown end-to-end integration or user behavior → Vertical slice through the narrowest real path
+- No meaningful unknown → Follow normal technical dependency order
+
+**Do not choose a vertical slice first and invent a justification afterward.** Use it only when end-to-end integration or user behavior is the largest unknown. A vertical slice is one candidate technique, not a synonym for risk-first development. Whichever method you choose, define observable, repeatable completion evidence first.
 
 Do not turn a small task into a full spec, long plan, or broad rewrite.
 
