@@ -10,7 +10,7 @@
 
 以「為現有 web app 新增 OAuth 登入功能」（issue-101）為例，完整走過七個步驟。
 
-> 此範例被評估為 **Large**，因此包含 Step 2 的 `decompose`。**Small 與 Medium 的 issue 會跳過該步驟**，由 `new-issue` 直接進入 `execute-task`，全程六步——它們的實作步驟本身即為可執行的任務清單，不需再拆解。詳見 [AGENTS.md 的「文件動態分級規範」](./AGENTS.md#文件動態分級規範-issue-document-tiering)。
+> 此範例的規模為 **Large**、風險為 **High**。Large 來自跨模組與登入架構整合，因此包含 Step 2 的 `decompose`；High 來自真實 callback 與帳號綁定行為尚未確認，因此首要活動必須取得解除該未知的證據。**Small 與 Medium 的 issue 會跳過 `decompose`**，風險高低不會改變文件數量。詳見 [AGENTS.md 的「文件動態分級規範」](./AGENTS.md#文件動態分級規範-issue-document-tiering)。
 
 ### Step 1 — `new-issue`
 
@@ -22,13 +22,13 @@
 
 **AI 產出**：
 
-建立 `docs/issues/issue-101/`。由於此任務涉及 OAuth 與架構整合，被評估為 **Large (重量級)**，因而建立完整四份文件：
+建立 `docs/issues/issue-101/`。由於此任務涉及 OAuth 與架構整合，規模被評估為 **Large**，因而建立完整四份文件；真實 callback 與帳號綁定行為尚未確認，風險另評估為 **High**：
 - `README.md`：需求概覽、timeline
 - `requirement-analysis.md`：使用者流程、新舊行為差異、待確認事項
 - `technical-analysis.md`：OAuth 2.0 flow 分析、相關模組、潛在風險
 - `implementation-plan.md`：高階實作方向
 
-**關鍵行為**：需求有模糊地帶時（例如「帳號衝突如何處理？」），AI 會在文件中明確標注「未知，待確認」，而非自行填入假設。
+**關鍵行為**：需求有模糊地帶時（例如「帳號衝突如何處理？」），AI 會在文件中明確標注「未知，待確認」，並分別記錄規模、風險、首要驗證與完成證據，而非自行填入假設。
 
 ---
 
@@ -54,7 +54,7 @@ AI 讀取 `docs/issues/issue-101/implementation-plan.md` 後自動執行。
 
 每個 Phase 下細分 2–4 個 Task，每個 Task 預估 1–3 小時。
 
-**關鍵行為**：Phase 1 就端到端跑通一條窄路徑，讓「Google 實際回傳什麼」這個最大假設在第一階段就被驗證，而不是切成「資料層 → API 層 → UI 層」把整合風險留到最後。Task 有明確的「預期產出」，讓開發者知道何時算完成，避免無邊界的工作。
+**關鍵行為**：此例的最大未知是 callback 與本地帳號流程能否端到端成立，所以選擇垂直切片。若未知只有 Google API 的欄位或錯誤碼，應先做最小真實請求的契約驗證，不必先串完整登入流程。垂直切片是候選手段，不是風險優先的預設答案。
 
 ---
 
@@ -156,6 +156,13 @@ AI 自動偵測狀態，告知「目前在 create-pr 階段，準備執行 creat
 
 **分級分流**：`dev-cycle` 會先讀 `README.md` 的 `**分級**` 欄位決定路徑——Large 才經過 `decompose`，Small 與 Medium 直接從 `new-issue` 進入 `execute-task`。若是舊 issue 沒有該欄位，會依現存檔案回推分級並補寫回 README。
 
+**風險排序**：README 的 `**風險**` 欄位只影響任務順序與驗證方式，不形成新的 `dev-cycle` 分支。舊 issue 缺少風險時不由分級推測，只有重新規劃或新增步驟時才補評估。
+
+兩軸可以自由組合：
+
+- **Small + High**：單行權限條件修正仍只產出 README，但第一步先建立能重現越權問題的回歸案例。
+- **Large + Low**：規格已凍結的跨模組機械式搬移仍建立完整文件並執行 `decompose`，但可按一般技術相依順序執行。
+
 ---
 
 ## 各 Skill 快速參考
@@ -166,7 +173,7 @@ AI 自動偵測狀態，告知「目前在 create-pr 階段，準備執行 creat
 |---|---|
 | **觸發** | `/new-issue issue:{編號} 主題:{標題} 內容:{描述}` 或直接描述需求 |
 | **產出** | 依任務複雜度評估為 **Small (僅 README)**、**Medium (README + 計畫)** 或 **Large (完整四件套)** 檔案 |
-| **注意** | 需求不足時列出待確認事項，不自行補假設；文件產出遵從「動態分級規範」；分級會寫入 README 的 `**分級**` 欄位，後續步驟依此判斷是否需要 `decompose` |
+| **注意** | 分別評估規模與風險：`**分級**` 決定文件與 `decompose`，`**風險**` 決定首要驗證及完成證據；兩軸不得互相推導 |
 
 #### 指令式參數格式範例：
 ```
@@ -192,7 +199,7 @@ issue:123
 |---|---|
 | **觸發** | `/decompose` |
 | **產出** | `docs/issues/issue-{ID}/implementation-plan-decomposition.md`，Phase + Task 結構 |
-| **注意** | **僅適用 Large**；Small / Medium 的實作步驟本身即為任務清單，不需拆解。需先有 `implementation-plan.md`；Task 粒度控制在 1–3 小時 |
+| **注意** | **僅適用 Large**；先辨識最大未知並比較驗證手段，不預設採用垂直切片。需先有 `implementation-plan.md`；Task 粒度控制在 1–3 小時 |
 
 ---
 
@@ -273,6 +280,7 @@ A: 請參考 [docs/AGENTS.md](./AGENTS.md) 中的「快速檢查清單」以及�
 
 | 日期 | 異動 | 負責人 |
 |------|------|--------|
+| 2026-07-22 | Issue 評估改為規模與風險雙軸；補上驗證手段選擇及垂直切片適用條件 | - |
 | 2026-07-21 | 補上分級分流說明（僅 Large 經過 decompose）；示範的 decompose 產出改為垂直切片 | - |
 | 2026-06-20 | 整合 USAGE.md 說明內容，修復大小寫檔案衝突 | - |
 | 2026-05-19 | 建立 new-issue 使用說明文件與指南 | - |
@@ -280,6 +288,5 @@ A: 請參考 [docs/AGENTS.md](./AGENTS.md) 中的「快速檢查清單」以及�
 ---
 
 **建立日期**: 2026-05-19  
-**最後更新**: 2026-07-21  
-**文件版本**: 1.2  
-
+**最後更新**: 2026-07-22\
+**文件版本**: 1.3
