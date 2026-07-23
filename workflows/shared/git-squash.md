@@ -21,28 +21,31 @@ description: 分析目前分支與基準分支的差異，並自動整理 Squash
 4. **提供合併方案（git merge --squash）**：
    - 一律使用 `git merge --squash` 方案進行合併，避免互動式 rebase 的複雜操作。
    - **三個步驟必須各自獨立成一個 code block**，讓使用者能逐步複製執行，不要合併成單一 block，也不要與說明文字混排。
+   - 所有動態 Shell 參數（基準分支、功能分支、subject、body）一律使用 POSIX shell 單引號包住，避免 `$()`、backtick、變數與雙引號被 Shell 展開。
+   - 動態內容中的每個單引號 `'` 必須轉成 `'\''`：先結束單引號、以反斜線引用該字元，再重新開始單引號。例如 `feature/o'brien` 必須輸出成 `'feature/o'\''brien'`。
+   - 輸出前逐一檢查所有動態參數；任一值未安全引用時，不得輸出可執行命令。
    - 依下列格式輸出（分支名稱與訊息替換為實際內容）：
 
 ````markdown
 **Step 1 — 切換至基準分支**
 
 ```bash
-git checkout dev
+git checkout 'dev'
 ```
 
 **Step 2 — Squash 合併**
 
 ```bash
-git merge --squash feature/your-branch
+git merge --squash 'feature/your-branch'
 ```
 
 **Step 3 — 提交**
 
 ```bash
-git commit -m "#3403 feat(member): 實作會員登入流程" -m "- feat: 新增 OAuth 授權與 callback 處理
+git commit -m '#3403 feat(member): 實作會員登入流程' -m '- feat: 新增 OAuth 授權與 callback 處理
 - refactor: 抽離 session 建立邏輯
-- docs: 補充環境變數設定說明"
+- docs: 補充環境變數設定說明'
 ```
 ````
 
-   - Step 3 使用兩個 `-m`（第一個為 subject，第二個為 body），可確保 `#` 符號完整保留且不需跳脫。
+   - Step 3 使用兩個 `-m`：第一個承載 subject，第二個承載 body，Git 會將兩者分成不同段落。

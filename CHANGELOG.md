@@ -12,6 +12,23 @@
 
 ---
 
+## [1.5.0] - 2026-07-23
+
+### 變更（`docs/`、`skills/`、`workflows/shared/` — 下游建議重新複製）
+
+強化 skill 的輸入證據、完成判準與跨文件狀態回寫，降低 Agent 提前完成、破壞契約或產生無證據內容的風險。
+
+- **契約安全**（`code-simplify`）：公開 API、跨模組、DI、反射／序列化、override 與 callback 簽章優先於簡化規則；無法證明安全時保留原狀
+- **文件單一真相來源**（`docs/AGENTS.md`、`new-issue`）：Small／Medium／Large 的初始文件集合、README 連結、Timeline 與 Agent 工作時序保持一致；`new-issue` 改為引用權威規範並使用完整性 gate
+- **Task 完成閉環**（`execute-task`）：完成判準、必要驗證、原任務狀態、驗證證據、README Timeline 與 Changelog 全部回寫後才能宣稱完成；移除未命名的獨立實作報告與程式碼副本
+- **拆解覆蓋責任**（`decompose`）：每個 Task 新增完成判準、驗證方式、覆蓋項目與責任角色，並檢查需求、交付成果及風險證據都有唯一責任 Task
+- **Shell 安全引用**（`git-squash`）：所有動態參數使用 POSIX 單引號，正確處理內含單引號及 `$()`、backtick、環境變數與雙引號
+- **PR 證據追溯**（`create-pr`）：Why、How、變更與測試聲明都必須有來源；沒有測試證據時明列未執行項目、原因與殘餘風險
+
+### 相容性
+
+Skill 名稱、目錄結構與 frontmatter description 保持不變。`execute-task` 與 `create-pr` 的輸出契約更嚴格，下游若有依賴舊版實作報告或固定 PR placeholder，更新前應先調整整合方式。
+
 ## [1.4.1] - 2026-07-22
 
 ### 變更（`rules/` — 下游建議重新複製）
