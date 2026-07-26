@@ -87,6 +87,34 @@ review 發現需要修正時，回到 execute-task 修正後再走一次 commit 
 
 `git-squash` 是**閉環之外的獨立輔助工具**：需要整理分支 commit（如 merge 前壓縮瑣碎提交）時單獨呼叫，不屬於閉環的固定步驟。
 
+## Superpowers 整合與安裝建議
+
+Superpowers 是本 kit 的**選用流程增強套件，不是必要依賴**。未安裝時，`new-issue`、`decompose`、`execute-task`、`review`、`create-pr` 仍會執行各自內建的等價流程，Gherkin 核准、BDD / TDD 紅綠燈、獨立審查與 Proof of Test 等硬性 gate 不會降低。
+
+若要使用 Superpowers，建議安裝[完整套件](https://github.com/obra/superpowers)，不要只複製單一 skill。核心流程會在下列 skills 可用時優先調用：
+
+| Superpowers skill | 對應節點 | 用途 | 未安裝時 |
+|---|---|---|---|
+| `brainstorming` | `new-issue` | 一次一題澄清需求、比較方案並取得 Gherkin 核准 | 執行 `new-issue` 內建澄清與核准流程 |
+| `writing-plans` | `decompose` | 將 Scenario 拆成 BDD 外迴圈與 TDD 內迴圈 | 執行 `decompose` 內建 Phase / Task 與覆蓋規則 |
+| `test-driven-development` | `execute-task` | 強制紅燈、最小實作、綠燈與重構 | 執行 `execute-task` 內建雙迴圈狀態機 |
+| `requesting-code-review` | `review` | 將變更交給獨立 reviewer | 使用宿主原生 subagent / task；沒有獨立 reviewer 能力時仍會阻塞 |
+| `verification-before-completion` | `create-pr` | 在產生 PR 前重新查驗完成證據 | 執行 `create-pr` 內建 Evidence Rules 與 Completion Gate |
+
+以下 skills 不屬於閉環的必要映射，但安裝完整套件後建議搭配使用：
+
+| Superpowers skill | 建議使用時機 |
+|---|---|
+| `using-superpowers` | 在任務開始時判斷應優先載入哪個流程型 skill |
+| `systematic-debugging` | 測試失敗、錯誤來源不明或修正前需要先定位根因 |
+| `receiving-code-review` | 收到 review 意見後先驗證合理性，再進入修正流程 |
+| `subagent-driven-development` | 宿主支援 subagent，且要依計畫逐 Task 隔離執行與審查 |
+| `executing-plans` | 無 subagent 或需要在同一 session 依既有計畫批次執行 |
+
+PRD 中常見的 `implementation-plan`、`critic`、`architectural-compliance`、`pull-request-spec` 不是本整合要求安裝的實際 skill 名稱；其能力已分別映射到 `writing-plans`、`requesting-code-review` 加架構 gate，以及 `create-pr` 的內建規格。
+
+各平台安裝完整套件的方式不同，請依環境參考：[Claude Code](./docs/setup/claude.md#設定-superpowersplugin)、[OpenCode](./docs/setup/opencode.md#設定-superpowersplugin)、[Antigravity](./docs/setup/antigravity.md#設定-superpowers手動安裝)、[Windsurf](./docs/setup/windsurf.md#設定-superpowers手動安裝)、[Cursor](./docs/setup/cursor.md#設定-superpowers手動安裝)。
+
 ## 使用方式
 
 1. **複製整個範本庫**  
@@ -149,7 +177,7 @@ review 發現需要修正時，回到 execute-task 修正後再走一次 commit 
 |------|------|----------|
 | **[Serena](https://github.com/oraios/serena)** | 程式碼分析與符號查詢 MCP 伺服器 | 支援 LSP 層級的符號搜尋、重構、診斷等功能，可深度理解程式碼結構 |
 | **[GitNexus](https://github.com/abhigyanpatwari/GitNexus)** | 程式碼知識圖譜分析工具 | 建立程式碼知識圖譜，支援影響分析、路由對應、API 形狀檢查等進階查詢 |
-| **[Superpowers](https://github.com/obra/superpowers)** | AI 開發能力提升框架 | 強化 AI Agent 的開發能力，提供更豐富的上下文理解與操作介面 |
+| **[Superpowers](https://github.com/obra/superpowers)** | 選用的 AI 開發流程增強框架 | 提供 brainstorming、TDD、review 與交付驗證等流程型 skills；未安裝時由本 kit 執行內建等價 gate |
 | **[Wave Terminal](https://github.com/wavetermdev/waveterm)** | AI 整合跨平台終端機 | 開源且內建 AI 助手，支援多種模型（OpenAI、Claude、Ollama 等），提供持久 SSH 連線、區塊化工作區與遠端檔案編輯 |
 
 各平台完整安裝步驟：

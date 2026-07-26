@@ -55,7 +55,7 @@ description: 一句話描述用途
 
 `docs/AGENTS.md` 是給**下游專案的 `docs/` 目錄**用的規範（不是本 repo 自身），定義了：
 
-- `docs/issues/issue-{ID}/` 結構：`README.md`、`requirement-analysis.md`、`technical-analysis.md`、`implementation-plan.md` 至少四件
+- `docs/issues/issue-{ID}/` 依規模分級：Small 僅 `README.md`，Medium 加 `implementation-plan.md`，Large 才使用 `README.md`、`requirement-analysis.md`、`technical-analysis.md`、`implementation-plan.md` 四件套
 - **Timeline 保留原則**：實作時如發現與舊文件描述不符，**不可直接覆寫**舊內容。應在 README 的 Timeline 加上日期、在原文件用 `> [!NOTE]` 標日期補充、並在各檔末尾的 `## 修訂紀錄 (Changelog)` 補記
 - 日期一律使用**系統當下日期**的 `YYYY-MM-DD`，禁止手寫或統一日期
 
@@ -71,6 +71,22 @@ description: 一句話描述用途
 - **Token economy**：對小任務不要產出長篇分析
 
 新增規則或 workflow 時，先檢查能否擴充既有檔案；不要為單一場景再開一份近似檔。
+
+## BDD + TDD 與 Superpowers 映射
+
+核心開發閉環採 Gherkin BDD 外迴圈與 TDD 內迴圈。Superpowers 是選用增強，不是執行期必要依賴；已安裝時優先調用，未安裝時由本地 skill 執行等價流程。維護相關 skill 時，必須保留下列映射與本地硬性 gate：
+
+| 節點 | 可用時優先調用的 Superpowers skill | 不可跳過的本地證據 |
+|---|---|---|
+| `new-issue` | `brainstorming` | 一次一題的需求澄清、使用者核准、具 Scenario ID 的 Gherkin |
+| `decompose` | `writing-plans` | 每個 Scenario 的 BDD 外迴圈與 TDD 內迴圈映射 |
+| `execute-task` | `test-driven-development` | BDD 紅燈、單元測試紅燈、最小實作後全綠、重構後全綠 |
+| `review` | `requesting-code-review` | 獨立 reviewer、架構符合度、至少 3 個破壞性邊界案例與流程判定 |
+| `create-pr` | `verification-before-completion` | 可追溯至 Gherkin 原文與實際成功命令的 Proof of Test |
+
+PRD 或文件若使用 `implementation-plan`、`critic`、`architectural-compliance`、`pull-request-spec` 等非現有 Superpowers skill 名稱，不得直接寫成不可執行依賴：語意分別映射至上表的 `writing-plans`、`requesting-code-review` 加架構 gate，以及 `create-pr` 內建規格加 `verification-before-completion`。未安裝 Superpowers 時執行各節點已明訂的本地等價流程。
+
+`docs/AGENTS.md` 是 Gherkin 存放位置、Scenario ID 與紅綠燈證據格式的單一真相來源。修改任一節點時，同時檢查 `dev-cycle` 是否仍能阻止跨階段繞過；不得只加提示文字而沒有完成 gate。
 
 ## Conventions
 

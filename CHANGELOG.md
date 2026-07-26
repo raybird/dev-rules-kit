@@ -12,6 +12,47 @@
 
 ---
 
+## [2.0.0] - 2026-07-26
+
+### 破壞性變更（`rules/`、`docs/`、`skills/`、`workflows/shared/` — 下游更新前需檢查）
+
+開發閉環改為 Gherkin BDD 外迴圈與 TDD 內迴圈，並以可持久化證據阻止 Agent 跳過需求核准、失敗測試、獨立審查或 PR 驗收。既有 issue 若缺少下列資料，`dev-cycle` 會退回對應階段補齊，不再依舊格式直接推進：
+
+- README 中具唯一 Scenario ID 的 Gherkin 驗收劇本
+- 核准狀態、日期、來源、完整 Scenario ID 集合與 Gherkin SHA-256
+- BDD 紅燈、單元測試紅燈、最小實作後全綠及重構後全綠證據
+- 對目前 PR HEAD 的獨立 review artifact
+- 與核准 Scenario 集合完全一致的 PR Proof of Test
+
+`execute-task`、`review`、`create-pr` 的輸入與完成契約因此比 1.x 嚴格。下游若有依賴舊版任務格式、只記錄「測試通過」、使用待測 checkbox 作為 PR 驗證，或未保存 review 結果，更新前需先調整。
+
+### BDD + TDD 硬性閉環
+
+- **需求規格化**（`new-issue`、`docs/AGENTS.md`）：一次只問一個問題，取得使用者明確核准後，將驗收標準寫成具 Scenario ID 的 Gherkin；以 SHA-256 綁定核准內容，Given / When / Then 異動後必須重新核准
+- **雙迴圈拆解**（`decompose`）：每個 Scenario 映射至 BDD feature / Step Definitions、底層單元測試、預期紅燈原因、最小 production code 與重構後回歸命令
+- **紅綠重構狀態機**（`execute-task`）：沒有相關 BDD 紅燈與單元測試紅燈前禁止修改 production code；最小實作與重構後都必須取得全綠證據
+- **測試防作弊**（`execute-task`、`review`）：禁止為取得綠燈而刪除、略過、弱化或註解測試，也禁止過度 mock、硬編碼答案或空 assertion
+- **雙重審查**（`review`）：要求獨立 reviewer、架構符合度、至少三個破壞性邊界案例，以及包含 Reviewed HEAD SHA 的持久化 PR review / comment
+- **測試通過證明**（`create-pr`）：PR Proof of Test 必須完整覆蓋核准 Scenario 集合，並附 Gherkin 原文、hash、實際成功命令及結果
+- **跨階段防繞過**（`dev-cycle`）：以 Gherkin 核准、紅綠燈證據、目前 HEAD review 與完整 Proof of Test 判斷下一階段
+
+### Superpowers 相容策略
+
+Superpowers 改為選用的流程增強套件，不是執行期必要依賴：
+
+- 已安裝時優先使用 `brainstorming`、`writing-plans`、`test-driven-development`、`requesting-code-review`、`verification-before-completion`
+- 未安裝時由本 kit 的 skills 執行內建等價流程，所有核准、測試、獨立審查與完成 gate 維持強制
+- README 新增核心 skill 對應、建議輔助 skills 與五個平台的完整套件安裝入口
+- PRD 中不存在的 skill 名稱改為可執行能力映射，不形成無法安裝的外部依賴
+
+### 下游更新
+
+- 建議重新複製 `rules/AGENTS.md` 或 `rules/AGENTS.zh-TW.md`
+- 重新複製 `skills/` 或其對應的 `workflows/shared/`
+- 以新版 `docs/AGENTS.md` 更新 issue 文件規範
+- 既有進行中 issue 應先補齊 Gherkin 核准紀錄與雙迴圈證據，再啟用新版 `dev-cycle`
+- Superpowers 可選擇不安裝；若安裝，建議使用完整套件而非散裝複製單一 skill
+
 ## [1.5.0] - 2026-07-23
 
 ### 變更（`docs/`、`skills/`、`workflows/shared/` — 下游建議重新複製）

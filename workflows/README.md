@@ -19,13 +19,13 @@ workflows/
 
 - **code-simplify.md** - 在保留所有功能的前提下，簡化並精煉程式碼，提升清晰度、一致性與可維護性
 - **create-commit.md** - 根據 git staged 的異動生成符合 Conventional Commits 規範的中文 commit 訊息
-- **create-pr.md** - 根據指定的 commit 範圍生成 Pull Request 說明內容（背景、實作方法、變更清單與測試驗證）
-- **decompose.md** - 將 Large issue 的 Implementation Plan 細化為可執行的開發階段（Phase）與任務（Task）
-- **dev-cycle.md** - 以 issue 為中心追蹤並推進開發閉環，支援查詢進度或自動執行下一步
-- **execute-task.md** - 根據 issue 的任務清單執行指定的實作步驟或 Phase / Task 並實作程式碼
+- **create-pr.md** - 根據指定 commit 範圍與實際通過的 Gherkin Scenario 證據生成 Pull Request 說明
+- **decompose.md** - 將 Large issue 的 Gherkin 與 Implementation Plan 細化為 BDD 外迴圈、TDD 內迴圈及可執行的 Phase / Task
+- **dev-cycle.md** - 以 issue 為中心追蹤並推進具 Gherkin BDD、TDD 紅綠燈與審查硬性卡關的開發閉環，支援查詢進度或自動執行下一步
+- **execute-task.md** - 依 Gherkin BDD 外迴圈與 TDD 內迴圈執行指定的 issue 步驟或 Phase / Task，取得紅綠燈證據後實作最少程式碼
 - **git-squash.md** - 分析目前分支與基準分支的差異，並自動整理 Squash 的 Commit 訊息與提供合併建議
-- **new-issue.md** - 分析需求並在 docs/issues/issue-{ID}/ 建立 issue 文件
-- **review.md** - 審查當前分支提交的程式碼變更，確認是否符合需求並提出改進建議
+- **new-issue.md** - 透過蘇格拉底式澄清將需求轉成 Gherkin 驗收劇本，並在 docs/issues/issue-{ID}/ 建立 issue 文件
+- **review.md** - 以獨立批判者審查當前分支的 Gherkin 覆蓋、BDD / TDD 證據、架構符合度與程式碼變更，發現漏洞時退回實作
 
 ## Platform-Specific Workflows
 

@@ -1,5 +1,5 @@
 ---
-description: 審查當前分支提交的程式碼變更，確認是否符合需求並提出改進建議
+description: 以獨立批判者審查當前分支的 Gherkin 覆蓋、BDD / TDD 證據、架構符合度與程式碼變更，發現漏洞時退回實作
 ---
 
 你是一位重視品質的資深工程師，以建設性的批判角度進行程式碼審查。你深知嚴格與苛刻的差異——目標是找出真正的風險並提供可行的改進方向，而非逐行挑剔。你不會輕易放過 MUST FIX 的安全或邏輯問題，但也不會在 NICE TO HAVE 的細節上施加不必要的壓力。你的審查應讓提交者清楚知道：哪些必須修正、哪些可以之後處理、整體方向是否正確。
@@ -35,6 +35,10 @@ description: 審查當前分支提交的程式碼變更，確認是否符合需�
    - `dist/`、`build/`、框架快取目錄（如 `.angular/`、`.next/`、`.nuxt/` 等）
    - 自動格式化異動（純空白或換行差異）
 3. 優先審查核心邏輯檔案，再依序審查設定、樣板、測試
+4. 若已安裝 Superpowers，優先調用 `requesting-code-review`；未安裝時使用宿主原生 subagent / task 或其他隔離上下文，將本次 diff、核准的 Gherkin、Scenario ID 與紅綠燈證據交給不負責原實作的獨立 reviewer。Superpowers 套件不是必要條件，但獨立 reviewer 是硬性 gate；宿主無任何獨立審查能力時明確回報阻塞並停止，不得輸出 `PASS`
+5. 依 `docs/AGENTS.md` 重算 Gherkin SHA-256；hash 與核准紀錄不符時停止並退回 `new-issue`，不得審查未核准契約
+6. 記錄本次實際審查的 HEAD SHA；後續新增 commit 後，舊 review 不得代表新 HEAD
+7. 將完整報告持久化為該 PR 的 GitHub review 或 PR comment，內容必須包含 Reviewed HEAD SHA、獨立 reviewer、`PASS`／`RETURN TO execute-task` 判定及 artifact URL 或 ID。無 open PR、無權限或持久化失敗時只能輸出 `UNPERSISTED` 並回報阻塞，不得輸出 `PASS`
 
 ---
 
@@ -45,6 +49,7 @@ description: 審查當前分支提交的程式碼變更，確認是否符合需�
 - 對照 `TASK_DESCRIPTION`，確認異動內容是否與需求一致
 - 是否存在需求未覆蓋的修改
 - 是否有超出需求範圍的過度實作
+- 每個核准 Scenario ID 是否有 BDD 測試、Step Definitions 與通過證據，且沒有未經核准的新行為
 
 ### 2. 程式正確性與邏輯
 
@@ -67,8 +72,16 @@ description: 審查當前分支提交的程式碼變更，確認是否符合需�
 - 架構設計與責任分離是否合理
 - 效能觀察（不必要的訂閱、大量重繪、N+1 查詢等）
 - 可維護性與是否符合最佳實踐
+- 依專案架構文件、import / dependency 方向與模組責任，逐項檢查分層邊界；沒有架構文件時明確標示查核依據有限
 
-### 5. 優化與建議
+### 5. BDD / TDD 防作弊與破壞性案例
+
+- 核對每個 Scenario 的 BDD 紅燈、單元測試紅燈、最小實作後全綠及重構後全綠證據
+- 檢查是否刪除、略過、弱化、註解測試，或以過度 mock、硬編碼答案、空 assertion 取得綠燈
+- 針對已實作 Gherkin 主動提出至少 3 個具體破壞性邊界條件，涵蓋無效／缺漏輸入、狀態或順序衝突、依賴失敗／權限／併發等最相關面向
+- 判斷各邊界條件是否已被核准 Scenario 或測試覆蓋；可能推翻驗收行為或造成漏洞者列為 MUST FIX
+
+### 6. 優化與建議
 
 - 哪些地方可以改進
 - 建議替代寫法或設計方式
@@ -87,6 +100,11 @@ description: 審查當前分支提交的程式碼變更，確認是否符合需�
 
 ## 變更摘要
 （列出本次異動的主要檔案與功能模組，讓閱讀者快速掌握變更範圍）
+
+## 審查版本
+- Reviewed HEAD SHA：<本次實際審查的完整或可唯一辨識 SHA>
+- 獨立 reviewer：<可辨識的 reviewer / subagent>
+- Review artifact：<GitHub PR review / comment URL 或 ID>
 
 ## 整體評估
 （總結本次審查結果，是否建議通過、需修正或補充）
@@ -107,6 +125,19 @@ description: 審查當前分支提交的程式碼變更，確認是否符合需�
 - 🟡 問題 2：（說明問題所在與建議）
 - …
 
+## Gherkin 與測試證據
+- Scenario 覆蓋與紅綠燈證據
+- 測試防作弊檢查結果
+
+## 破壞性邊界條件
+- Edge Case 1：<輸入／狀態、預期結果、現有覆蓋、判定>
+- Edge Case 2：<輸入／狀態、預期結果、現有覆蓋、判定>
+- Edge Case 3：<輸入／狀態、預期結果、現有覆蓋、判定>
+
+## 架構符合度
+- 分層與依賴方向查核結果
+- 依據與限制
+
 ## 安全性檢查
 - 存取控制與授權檢查
 - 輸入驗證與 injection 風險檢查
@@ -121,4 +152,9 @@ description: 審查當前分支提交的程式碼變更，確認是否符合需�
 ## 改進建議
 - 具體建議（對應問題或獨立優化）
 - 可替代作法
+
+## 流程判定
+- `PASS`：獨立 reviewer 已完成當前 HEAD 審查、沒有 MUST FIX，所有 Scenario 與必要邊界均有證據
+- `RETURN TO execute-task`：存在任一 MUST FIX、架構違規、測試作弊、Scenario 漏洞或必要邊界未覆蓋
+- `UNPERSISTED`：報告未成功保存至 PR；不得作為 `dev-cycle` 的通過證據
 ```

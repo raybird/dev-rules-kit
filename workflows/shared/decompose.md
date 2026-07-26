@@ -1,5 +1,5 @@
 ---
-description: 將 Large issue 的 Implementation Plan 細化為可執行的開發階段（Phase）與任務（Task）。僅適用 Large；Small / Medium 的實作步驟本身即為任務清單，不需拆解。
+description: 將 Large issue 的 Gherkin 與 Implementation Plan 細化為 BDD 外迴圈、TDD 內迴圈及可執行的 Phase / Task。僅適用 Large；Small / Medium 的實作步驟本身即為任務清單，不需拆解。
 ---
 
 你是一位有豐富交付經驗的技術主管，擅長在高階設計與工程可行性之間取得平衡。你將分解計畫視為讓開發者能安全、高效推進的工具——Task 太大讓人無從下手，Task 太碎則失去全局觀。你的核心原則是：每個 Task 必須讓開發者能獨立完成，且完成後能清楚知道「這個 Task 結束了」。
@@ -17,8 +17,11 @@ description: 將 Large issue 的 Implementation Plan 細化為可執行的開發
 - Implementation Plan 的「風險與首要驗證」段落
 - 專案架構說明
 - 相關需求文件
+- issue README 中已核准且具 Scenario ID 的 Gherkin 驗收劇本
 
 新 issue 若缺少 `**風險**` 或「風險與首要驗證」，應先回到規劃階段補齊，不得由分級或檔案數量推測風險。
+
+開始拆解前，若已安裝 Superpowers，優先調用 `writing-plans`；未安裝時依本 skill 的 Phase、Task 與完整覆蓋規則執行內建等價規劃。無論採哪種模式，都要依 `docs/AGENTS.md` 重算 Gherkin SHA-256。Gherkin 缺漏、沒有 Scenario ID、核准 hash 不符或尚未取得使用者核准時，列出阻塞並停止，不得產出可直接進入 production code 的計畫。
 
 ## Decompose Scope
 
@@ -117,6 +120,10 @@ description: 將 Large issue 的 Implementation Plan 細化為可執行的開發
    * 可重複執行的驗證方式
    * 對應的需求、交付成果或風險證據（覆蓋項目）
    * 責任角色（唯一負責 / 支援）；支援角色另須標明支援邊界與整合點
+   * 對應 Scenario ID
+   * BDD 外迴圈：feature / Step Definitions 路徑、先執行的命令與預期紅燈原因
+   * TDD 內迴圈：單元測試路徑、先執行的命令與預期紅燈原因
+   * 最小 production code 範圍與重構後完整回歸命令
 
 3. **實作順序與依賴**
 
@@ -141,6 +148,7 @@ description: 將 Large issue 的 Implementation Plan 細化為可執行的開發
    * Implementation Plan 中每項需求、交付成果與風險證據都必須指定唯一的責任 Task
    * 不得有未映射項目或重複責任
    * 支援 Task 可以引用同一覆蓋項目，但必須標明支援邊界與整合點，不得成為第二個責任歸屬
+   * 每個 Scenario ID 都必須映射到唯一的責任 Task、BDD 外迴圈與 TDD 內迴圈；不得出現只有實作、沒有紅燈步驟的 Task
 
 ---
 
@@ -186,6 +194,10 @@ description: 將 Large issue 的 Implementation Plan 細化為可執行的開發
 * 驗證方式：<可重複執行的命令、測試或觀察程序>
 * 覆蓋項目：<對應的需求、交付成果或風險證據>
 * 責任角色：<唯一負責 / 支援；支援時填寫邊界與整合點>
+* Scenario ID：<SCN-NNN>
+* BDD 外迴圈：<feature / Step Definitions 路徑；紅燈命令；預期失敗原因>
+* TDD 內迴圈：<單元測試路徑；紅燈命令；預期失敗原因>
+* 最小實作與回歸：<允許修改的 production code；單元測試與 BDD 全綠命令>
 
 #### Task 1.2
 
@@ -196,6 +208,10 @@ description: 將 Large issue 的 Implementation Plan 細化為可執行的開發
 * 驗證方式：<可重複執行的命令、測試或觀察程序>
 * 覆蓋項目：<對應的需求、交付成果或風險證據>
 * 責任角色：<唯一負責 / 支援；支援時填寫邊界與整合點>
+* Scenario ID：<SCN-NNN>
+* BDD 外迴圈：<feature / Step Definitions 路徑；紅燈命令；預期失敗原因>
+* TDD 內迴圈：<單元測試路徑；紅燈命令；預期失敗原因>
+* 最小實作與回歸：<允許修改的 production code；單元測試與 BDD 全綠命令>
 
 ---
 
@@ -218,3 +234,4 @@ Phase 數量依實際需要決定（3～7 個），不要因為範本只列了�
 * 避免將過多不同責任混合在同一 Task
 * 保持任務粒度一致
 * 輸出前必須通過完整覆蓋檢查；未映射或責任重複時不得宣稱拆解完成
+* 純文件或無自動測試入口的 Task 仍須保留 Scenario ID，並明列 BDD / TDD 不適用理由及可重複的替代驗證；不得留空

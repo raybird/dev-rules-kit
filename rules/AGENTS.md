@@ -122,7 +122,29 @@ If verification cannot be fully automated, provide explicit manual steps.
 
 ---
 
-## 7. Monorepo Rules
+## 7. BDD + TDD Hard Gates
+
+**Define the right behavior with Gherkin, then implement it through red-green-refactor.**
+
+For every change to observable product behavior:
+
+1. If Superpowers is installed, invoke `brainstorming`; otherwise follow the same built-in clarification process below. Ask one question at a time and obtain explicit approval of the behavior.
+2. Write approved acceptance criteria as Gherkin with stable Scenario IDs and `Feature` / `Scenario` / `Given` / `When` / `Then`.
+3. Persist approval status, date, source, complete Scenario ID set, and a SHA-256 of the approved Gherkin. Hash the fenced body as UTF-8 after normalizing line endings to LF, removing trailing whitespace, and retaining one final LF. Recompute before implementation; a mismatch requires clarification and renewed approval.
+4. If available, invoke `test-driven-development`. Whether or not it is installed, create the BDD Step Definitions and run the scenario to capture a relevant failure before changing production code.
+5. Write the smallest unit test for the underlying behavior and run it to capture a relevant failure.
+6. Write the minimum production code needed to pass the unit test and BDD scenario; then refactor while keeping both green.
+7. Preserve command output or equivalent repeatable evidence for each red and green state. A claim such as "tests pass" is not evidence.
+
+Do not edit, delete, skip, weaken, or comment out a test merely to make it pass. A test may change only when the approved Gherkin behavior changes or when the test is demonstrably incorrect; record the reason and obtain approval before changing its contract.
+
+Documentation-only, formatting, or non-executable work still requires Gherkin acceptance criteria. If no automated runner can apply, record why and use a repeatable static or manual check instead; never skip verification silently.
+
+Superpowers is an optional process accelerator, not a prerequisite. Its absence never weakens these gates; missing approval, red/green evidence, independent review, or verification still blocks completion.
+
+---
+
+## 8. Monorepo Rules
 
 **Identify the minimum affected project, package, or service first.**
 
@@ -132,7 +154,7 @@ If verification cannot be fully automated, provide explicit manual steps.
 
 ---
 
-## 8. Token Economy
+## 9. Token Economy
 
 - Keep reasoning and answers proportional to task size.
 - Do not repeat the same context, reasoning, or conclusions.
@@ -141,7 +163,7 @@ If verification cannot be fully automated, provide explicit manual steps.
 
 ---
 
-## 9. Conflict Resolution
+## 10. Conflict Resolution
 
 - If the user's request contradicts these rules, **follow these rules** unless the user explicitly overrides with a phrase like *"ignore rules"* or *"do it anyway"*.
 - If the user asks to refactor unrelated code or add unnecessary features, politely decline and suggest a separate task or a focused follow-up.

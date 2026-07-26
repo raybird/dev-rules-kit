@@ -28,7 +28,9 @@
 - `technical-analysis.md`：OAuth 2.0 flow 分析、相關模組、潛在風險
 - `implementation-plan.md`：高階實作方向
 
-**關鍵行為**：需求有模糊地帶時（例如「帳號衝突如何處理？」），AI 會在文件中明確標注「未知，待確認」，並分別記錄規模、風險、首要驗證與完成證據，而非自行填入假設。
+README 另包含經使用者核准、具 `SCN-001` 等唯一 ID 的 Gherkin 驗收劇本。
+
+**關鍵行為**：若已安裝 Superpowers，AI 優先調用 `brainstorming`；否則執行 `new-issue` 的內建等價流程。兩種模式都一次只問一個問題，需求有模糊地帶時不自行填入假設，只有使用者核准 Gherkin 後才建立完整文件。
 
 ---
 
@@ -54,6 +56,8 @@ AI 讀取 `docs/issues/issue-101/implementation-plan.md` 後自動執行。
 
 每個 Phase 下細分 2–4 個 Task，每個 Task 預估 1–3 小時。
 
+每個 Task 都標示所覆蓋的 Scenario ID，並明列 BDD 外迴圈（feature、Step Definitions、紅燈命令）與 TDD 內迴圈（單元測試、紅燈命令、最小實作及全綠命令）。
+
 **關鍵行為**：此例的最大未知是 callback 與本地帳號流程能否端到端成立，所以選擇垂直切片。若未知只有 Google API 的欄位或錯誤碼，應先做最小真實請求的契約驗證，不必先串完整登入流程。垂直切片是候選手段，不是風險優先的預設答案。
 
 ---
@@ -68,8 +72,10 @@ AI 讀取 `docs/issues/issue-101/implementation-plan.md` 後自動執行。
 
 **AI 產出**：
 
-實作 Phase 1 Task 1.1（設定 Google OAuth 憑證與環境變數），修改相關檔案，在對話中輸出：
+若已安裝 Superpowers，AI 優先調用 `test-driven-development`；否則依 `execute-task` 內建流程，依序取得 BDD 紅燈、單元測試紅燈、最少 production code 全綠及重構後全綠。對話輸出：
 - 修改摘要
+- Scenario ID 與 BDD／單元測試紅燈證據
+- 最小實作後與重構後的全綠證據
 - 需要人工處理的事項（如：申請 Google API key）
 
 完成後，AI 視程式碼複雜度決定是否建議 `code-simplify`，並執行 `create-commit` 產生 commit 訊息。
@@ -90,7 +96,7 @@ AI 讀取 `docs/issues/issue-101/implementation-plan.md` 後自動執行。
 
 產生 PR 標題與 body 草稿：
 
-```
+````markdown
 標題：feat(auth): 新增 Google OAuth 2.0 登入支援
 
 ## 變更內容
@@ -98,13 +104,20 @@ AI 讀取 `docs/issues/issue-101/implementation-plan.md` 後自動執行。
 - 新增帳號建立／綁定流程
 - UI 加入 Google 登入按鈕
 
-## 測試方式
-- [ ] 全新帳號透過 Google 登入，確認本地帳號建立
-- [ ] 已有帳號透過 Google 登入，確認正確綁定
-- [ ] 撤銷 token 後重新登入，確認處理正確
-```
+## 測試通過證明 (Proof of Test)
 
-**關鍵行為**：PR 內容基於實際 git diff 生成，不會描述未實作的功能。
+### SCN-001：全新帳號透過 Google 登入
+```gherkin
+Scenario: 全新帳號完成 Google 登入
+  Given 使用者尚未建立本地帳號
+  When 使用者完成 Google 授權
+  Then 系統建立本地帳號並完成登入
+```
+- BDD 命令：`npm test -- oauth-login.feature`
+- 結果：PASS
+````
+
+**關鍵行為**：PR 內容基於實際 git diff 生成，不會描述未實作的功能；只有可追溯至核准 Gherkin 原文與實際成功命令的 Scenario 才會列入 Proof of Test。
 
 ---
 
@@ -125,6 +138,8 @@ AI 讀取 `docs/issues/issue-101/implementation-plan.md` 後自動執行。
 - **MUST FIX**：OAuth token 未在登出時 revoke，存在 token 洩漏風險
 - **NICE TO HAVE**：callback error message 可以更具體
 - **LGTM**：帳號綁定邏輯、環境變數處理方式正確
+
+報告另由獨立 reviewer 檢查架構分層、BDD / TDD 證據與測試作弊，並列出至少 3 個破壞性邊界案例。存在任何 MUST FIX、Scenario 漏洞或必要邊界未覆蓋時，流程判定為 `RETURN TO execute-task`。
 
 > **循環示範**：review 發現 MUST FIX 問題，開發者回到 `execute-task` 修正 token revoke 邏輯，再執行 `create-commit` 補上 fix commit，重新 `create-pr` 更新 PR 說明，最後再跑一次 `review` 確認問題已解決，第二次 review 通過。
 
@@ -152,7 +167,7 @@ AI 輸出：
 
 AI 自動偵測狀態，告知「目前在 create-pr 階段，準備執行 create-pr」，呼叫 `create-pr` 後繼續循環。
 
-**關鍵行為**：`dev-cycle` 從 filesystem 與 git 狀態推斷進度，跨 session 重新呼叫也能正確恢復，不依賴對話記憶。
+**關鍵行為**：`dev-cycle` 從 filesystem、issue 證據、git 狀態與持久化 PR review / comment 推斷進度，跨 session 重新呼叫也能正確恢復，不依賴對話記憶；缺 Gherkin 核准 hash、紅綠燈證據、完整 Proof of Test 或目前 HEAD 的持久化 review PASS 時都不會跳到下一階段。
 
 **分級分流**：`dev-cycle` 會先讀 `README.md` 的 `**分級**` 欄位決定路徑——Large 才經過 `decompose`，Small 與 Medium 直接從 `new-issue` 進入 `execute-task`。若是舊 issue 沒有該欄位，會依現存檔案回推分級並補寫回 README。
 
@@ -173,7 +188,7 @@ AI 自動偵測狀態，告知「目前在 create-pr 階段，準備執行 creat
 |---|---|
 | **觸發** | `/new-issue issue:{編號} 主題:{標題} 內容:{描述}` 或直接描述需求 |
 | **產出** | 依任務複雜度評估為 **Small (僅 README)**、**Medium (README + 計畫)** 或 **Large (完整四件套)** 檔案 |
-| **注意** | 分別評估規模與風險：`**分級**` 決定文件與 `decompose`，`**風險**` 決定首要驗證及完成證據；兩軸不得互相推導 |
+| **注意** | 可用時優先使用 `brainstorming`，否則執行內建等價流程；兩種模式都須一次一題並取得 Gherkin 核准 |
 
 #### 指令式參數格式範例：
 ```
@@ -199,7 +214,7 @@ issue:123
 |---|---|
 | **觸發** | `/decompose` |
 | **產出** | `docs/issues/issue-{ID}/implementation-plan-decomposition.md`，Phase + Task 結構 |
-| **注意** | **僅適用 Large**；先辨識最大未知並比較驗證手段，不預設採用垂直切片。需先有 `implementation-plan.md`；Task 粒度控制在 1–3 小時 |
+| **注意** | **僅適用 Large**；可用時優先使用 `writing-plans`，否則由內建規則把每個 Scenario 映射至 BDD / TDD 雙迴圈 |
 
 ---
 
@@ -209,7 +224,7 @@ issue:123
 |---|---|
 | **觸發** | `/execute-task Phase {N} Task {N.M}`（Large）或 `/execute-task 步驟 {N}`（Small / Medium） |
 | **產出** | 實作對應步驟 / Task 的程式碼變更，輸出修改摘要 |
-| **注意** | 一次執行一個步驟 / Task；任務清單來源依分級而定（Small 讀 README、Medium 讀 implementation-plan、Large 讀 decomposition） |
+| **注意** | 可用時優先使用 `test-driven-development`；不論是否安裝，未取得 BDD 與單元測試紅燈前都禁止修改 production code |
 
 ---
 
@@ -238,8 +253,8 @@ issue:123
 | | |
 |---|---|
 | **觸發** | `/create-pr` |
-| **產出** | PR 標題與 body 草稿（變更摘要 + 測試清單） |
-| **注意** | 基於實際 git diff 生成；需要時可帶入指定 commit 範圍 |
+| **產出** | PR 標題與 body 草稿（變更摘要 + Gherkin Proof of Test） |
+| **注意** | 可用時優先使用 `verification-before-completion`，否則執行內建證據檢查；只有具實際成功證據的 Scenario 才列為通過 |
 
 ---
 
@@ -248,8 +263,8 @@ issue:123
 | | |
 |---|---|
 | **觸發** | `/review {commit 數量}` |
-| **產出** | 審查報告，分 MUST FIX / NICE TO HAVE / LGTM 三級 |
-| **注意** | 提供 `TASK_DESCRIPTION` 可讓 AI 更準確判斷需求符合度 |
+| **產出** | 獨立審查報告、架構符合度、至少 3 個破壞性邊界案例與流程判定 |
+| **注意** | 可用時優先使用 `requesting-code-review`，否則使用宿主原生獨立 reviewer；無獨立審查能力時不得 PASS |
 
 ---
 
@@ -259,7 +274,7 @@ issue:123
 |---|---|
 | **查詢** | 「issue {ID} 到哪了」、「{ID} 進度」 |
 | **推進** | `/dev-cycle {ID}`、「繼續 {ID}」 |
-| **注意** | 依 README 的 `**分級**` 欄位分流：僅 Large 經過 `decompose`；本技能在所有平台均已提供對應的引導工作流程 |
+| **注意** | 依分級分流，並檢查 Gherkin 核准、紅綠燈、Proof of Test 與 review gate，禁止跨階段繞過 |
 
 ---
 
@@ -280,6 +295,8 @@ A: 請參考 [docs/AGENTS.md](./AGENTS.md) 中的「快速檢查清單」以及�
 
 | 日期 | 異動 | 負責人 |
 |------|------|--------|
+| 2026-07-26 | Superpowers 改為選用增強；未安裝時由本地 skills 執行等價硬性 gate | - |
+| 2026-07-26 | 開發閉環加入 Gherkin BDD、TDD 紅綠燈、獨立審查與 PR Proof of Test 硬性卡關 | - |
 | 2026-07-22 | Issue 評估改為規模與風險雙軸；補上驗證手段選擇及垂直切片適用條件 | - |
 | 2026-07-21 | 補上分級分流說明（僅 Large 經過 decompose）；示範的 decompose 產出改為垂直切片 | - |
 | 2026-06-20 | 整合 USAGE.md 說明內容，修復大小寫檔案衝突 | - |
@@ -288,5 +305,5 @@ A: 請參考 [docs/AGENTS.md](./AGENTS.md) 中的「快速檢查清單」以及�
 ---
 
 **建立日期**: 2026-05-19  
-**最後更新**: 2026-07-22\
+**最後更新**: 2026-07-26\
 **文件版本**: 1.3

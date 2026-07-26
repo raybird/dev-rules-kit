@@ -86,6 +86,29 @@ Small 與 Medium 的實作步驟本身即為可執行的任務清單，**不應�
 
 若無法回答，應重新選擇首要驗證手段。
 
+## BDD 驗收規格與 TDD 證據
+
+所有 issue 都必須先在 `README.md` 建立 `## Gherkin 驗收劇本`，作為驗收標準的單一真相來源。規模只影響其他文件數量，不得用 Small、低風險或非程式任務為由省略驗收劇本。
+
+每個 Scenario 必須：
+
+- 使用唯一且穩定的 ID（例如 `SCN-001`），供計畫、測試、review 與 PR 追蹤。
+- 使用標準 `Feature`、`Scenario`、`Given`、`When`、`Then`；需要共用前置條件時可使用 `Background`，資料組合才使用 `Scenario Outline` 與 `Examples`。
+- 描述外部可觀察行為，不綁定函式名稱、資料表或內部實作。
+- 至少包含主要成功路徑及已知的重要失敗路徑；尚未取得共識的行為不得自行補寫。
+
+建立或修改劇本前，必須進行蘇格拉底式澄清，一次只問一個問題；已安裝 Superpowers 時優先使用 `brainstorming`，未安裝時執行 `new-issue` 內建的等價流程。只有使用者明確核准需求與劇本後才能完成 issue 文件；未核准時維持阻塞，不得進入 production code 實作。
+
+核准結果必須持久化在 README 的 `## Gherkin 核准紀錄`，包含 `**狀態**: 已核准`、系統當下日期、核准的 Scenario ID 完整清單、Gherkin SHA-256 及可追溯來源（例如「使用者於目前對話明確核准」）。SHA-256 以 `gherkin` code fence 內文的 UTF-8 bytes 計算：換行正規化為 LF、保留縮排、移除行尾空白，結尾保留一個 LF。缺少任一欄位或重算 hash 不符都視為尚未核准；任何 Given / When / Then 異動都必須重新進入澄清流程，Superpowers 可用時優先調用 `brainstorming`，否則使用 `new-issue` 內建流程，取得核准並更新 hash。不得只保留原 Scenario ID 來沿用舊核准。
+
+實作計畫必須以 Scenario ID 建立雙迴圈追蹤：
+
+- **BDD 外迴圈**：Gherkin feature、Step Definitions、BDD runner 命令及預期紅燈原因。
+- **TDD 內迴圈**：驅動底層行為的單元測試、預期紅燈原因、最小 production code 與重構後回歸命令。
+- **證據**：記錄實際命令、紅燈失敗原因、綠燈結果；只有「測試已通過」的文字不構成證據。
+
+純文件、排版或無可執行行為且專案沒有測試入口的任務，仍須用 Gherkin 定義驗收標準；可用可重複的靜態檢查或明確手動步驟替代 BDD runner，但必須在計畫中記錄不適用理由與替代證據，不得默默略過。
+
 ## 總體架構
 
 ```
@@ -132,6 +155,7 @@ docs/
 議題的入口文件。所有分級都必須包含：
 
 - 議題概述
+- Gherkin 驗收劇本（具唯一 Scenario ID）
 - 涉及檔案清單
 - 風險與首要驗證
 - 可執行步驟或其權威來源
@@ -164,6 +188,7 @@ Medium / Large 另須包含文件清單與用途、快速導覽及關鍵差異�
 - 實作步驟（分階段，標記完成狀態）
 - 使用方式對照（變更前後）
 - 測試策略
+- Scenario ID 對應的 BDD 外迴圈與 TDD 內迴圈
 - 風險與首要驗證（最大風險、風險等級與理由、首要驗證、選擇理由、完成證據）
 - 檢查清單
 
@@ -206,7 +231,7 @@ Medium / Large 另須包含文件清單與用途、快速導覽及關鍵差異�
 
 其餘共用內容使用以下格式：
 
-```markdown
+````markdown
 # Issue {編號} - {標題}
 
 ## 概述
@@ -226,6 +251,25 @@ Medium / Large 另須包含文件清單與用途、快速導覽及關鍵差異�
 ## 涉及檔案
 ### {模組名稱}
 - `{檔案路徑}` - {說明}
+
+## Gherkin 驗收劇本
+
+```gherkin
+Feature: {可觀察的業務能力}
+
+  @SCN-001
+  Scenario: {具體行為}
+    Given {已確認的初始狀態}
+    When {使用者或系統執行的動作}
+    Then {可觀察且可驗證的結果}
+```
+
+## Gherkin 核准紀錄
+- **狀態**: 已核准
+- **核准日期**: YYYY-MM-DD
+- **Scenario IDs**: SCN-001
+- **Gherkin SHA-256**: {核准 Gherkin 正規化內文的 SHA-256}
+- **核准來源**: 使用者於目前對話明確核准
 
 ## 重構步驟概要
 1. ✅ **步驟 1** - {狀態}
@@ -250,13 +294,13 @@ Medium / Large 另須包含文件清單與用途、快速導覽及關鍵差異�
 **分級**: Medium | Large  
 **風險**: Low | Medium | High\
 **狀態**: {狀態}
-```
+````
 
 ### 輕量級格式（Small 級別專用）
 
 若為 **Small** 級別的任務，所有的分析與實作計畫將會合併在單一 `README.md` 中：
 
-```markdown
+````markdown
 # Issue {編號} - {標題} (Small)
 
 ## 概述
@@ -264,6 +308,25 @@ Medium / Large 另須包含文件清單與用途、快速導覽及關鍵差異�
 
 ## 涉及檔案
 - `{檔案路徑}` - {修改說明}
+
+## Gherkin 驗收劇本
+
+```gherkin
+Feature: {可觀察的業務能力}
+
+  @SCN-001
+  Scenario: {具體行為}
+    Given {已確認的初始狀態}
+    When {使用者或系統執行的動作}
+    Then {可觀察且可驗證的結果}
+```
+
+## Gherkin 核准紀錄
+- **狀態**: 已核准
+- **核准日期**: YYYY-MM-DD
+- **Scenario IDs**: SCN-001
+- **Gherkin SHA-256**: {核准 Gherkin 正規化內文的 SHA-256}
+- **核准來源**: 使用者於目前對話明確核准
 
 ## 風險與首要驗證
 - **最大風險**：{未驗證假設或最嚴重失敗後果}
@@ -273,8 +336,12 @@ Medium / Large 另須包含文件清單與用途、快速導覽及關鍵差異�
 - **完成證據**：{可觀察、可重複確認的通過條件}
 
 ## 實作與驗證步驟
-1. ⏳ **修正** - {修改邏輯}
-2. ⏳ **驗證** - {驗證方式，如執行特定單元測試或手動檢驗}
+1. ⏳ **SCN-001：{行為名稱}**
+   - BDD 外迴圈：{feature / Step Definitions 路徑；紅燈命令；預期失敗原因}
+   - TDD 內迴圈：{單元測試路徑；紅燈命令；預期失敗原因}
+   - 最小實作：{允許修改的 production code 與目標行為}
+   - 全綠與重構：{單元測試、BDD 與相關回歸命令}
+   - 完成證據：{實際紅綠燈輸出回寫位置}
 
 ## Timeline
 | 日期 | 異動 | 負責人 |
@@ -287,7 +354,7 @@ Medium / Large 另須包含文件清單與用途、快速導覽及關鍵差異�
 **分級**: Small  
 **風險**: Low | Medium | High\
 **狀態**: {狀態}
-```
+````
 
 > [!NOTE]
 > `**狀態**` 欄位在建立當下應填寫實際狀態（例如「待實作」），**不要預先寫成「已完成」**——`dev-cycle` 依此欄位追蹤進度，並在 PR merged 後才將其標記為已完成。Timeline 同理，建立與實作完成應是兩筆不同日期的記錄。
@@ -332,13 +399,14 @@ Medium / Large 另須包含文件清單與用途、快速導覽及關鍵差異�
 
 1. **接收與理解**：閱讀 User Request，確認 issue ID 與核心目標；必要輸入不足時先詢問，不得猜測。
 2. **探索與分級**：閱讀 workspace 現況，分別判定規模與風險，據此決定文件集合與首要驗證。
-3. **初步建立**：建立 `README.md`，填寫 metadata、已知資訊與初始 Timeline。
-4. **依規模建立文件**：
+3. **澄清與核准**：若 Superpowers 可用則優先調用 `brainstorming`，否則執行 `new-issue` 內建流程；一次只問一個問題，將共識轉成具 Scenario ID 的 Gherkin，取得使用者核准後才繼續。
+4. **初步建立**：建立 `README.md`，填寫 Gherkin、metadata、已知資訊與初始 Timeline。
+5. **依規模建立文件**：
    - Small：不建立其他文件，將需求、風險及可執行步驟寫入 README。
    - Medium：建立 `implementation-plan.md`，將分析概要、實作步驟與驗證寫入該檔。
    - Large：依序建立 `requirement-analysis.md`、`technical-analysis.md` 與 `implementation-plan.md`。
-5. **完整性檢查**：確認實際文件集合、README 連結、metadata 與任務清單符合分級規範。
-6. **執行與更新 (重要)**：開始 Coding 後，若發現原始分析與現狀不符，**不應直接抹除舊文件的歷史描述**，而是：
+6. **完整性檢查**：確認實際文件集合、README 連結、Gherkin、metadata 與任務清單符合分級規範。
+7. **執行與更新 (重要)**：開始 Coding 後，若發現原始分析與現狀不符，**不應直接抹除舊文件的歷史描述**，而是：
    - 在 `README.md` 的 `Timeline` 區塊加上開發進度與日期。
    - 在 `implementation-plan.md` 或其他文件的對應段落，使用 Github Alert 語法（如 `> [!NOTE]`）加上標有日期的補充說明，指出何時的 commit 已經改變了先前的 As-Is 狀態。
    - README 以 Timeline 記錄異動；其他受影響文件則將異動簡述更新於 `Changelog` 中。
@@ -393,6 +461,10 @@ Medium / Large 另須包含文件清單與用途、快速導覽及關鍵差異�
 - [ ] `README.md` 結尾 metadata 已填寫 `**分級**` 欄位
 - [ ] `README.md` 結尾 metadata 已填寫 `**風險**` 欄位，且未由規模推導風險
 - [ ] 已記錄最大風險、首要驗證、選擇理由與完成證據，並將首要驗證排在主要實作前
+- [ ] 已用一次一題的流程完成澄清，且使用者已核准需求與 Gherkin；若使用 Superpowers，已記錄 `brainstorming` 調用
+- [ ] README 的 Gherkin 核准紀錄包含已核准狀態、系統日期、完整 Scenario ID 清單、與目前劇本相符的 Gherkin SHA-256 及可追溯來源
+- [ ] README 的每個 Scenario 都有唯一 ID、標準 Given / When / Then 與可觀察結果
+- [ ] 實作步驟已將每個 Scenario 映射至 BDD 外迴圈、TDD 內迴圈與紅綠燈證據
 - [ ] 文件內容涵蓋對應章節（見「文件類型與內容規範」）
 - [ ] 日期皆為系統當下日期、格式 `YYYY-MM-DD`（見「日期規範」）
 - [ ] Timeline 反映各次實際變更時間
@@ -402,14 +474,15 @@ Medium / Large 另須包含文件清單與用途、快速導覽及關鍵差異�
 ---
 
 **建立日期**: 2026-04-27  
-**最後更新**: 2026-07-23\
-**文件版本**: 1.4\
+**最後更新**: 2026-07-26\
+**文件版本**: 1.5\
 **適用範圍**: `docs/` 資料夾所有文件
 
 ## 修訂紀錄 (Changelog)
 
 | 日期 | 版本 | 異動 |
 |------|------|------|
+| 2026-07-26 | 1.5 | 新增 Gherkin BDD 驗收規格、Scenario ID 追蹤、TDD 雙迴圈證據與無測試入口時的替代驗證規則 |
 | 2026-07-23 | 1.4 | README 文件清單與 Agent 工作時序依 Small／Medium／Large 分流，避免建立不存在的文件連結或固定四件套 |
 | 2026-07-22 | 1.3 | 將 issue 評估改為規模與風險雙軸；新增 Low / Medium / High、風險優先決策流程、驗證手段選擇與垂直切片防誤用規則；README 範本新增風險 metadata 與驗證證據欄位 |
 | 2026-07-21 | 1.2 | 分級規範標示為 single source of truth；規定分級須寫入 `README.md` 的 `**分級**` 欄位並補入兩份範本；新增分級與任務清單來源的對照；`implementation-plan.md` 新增「實作步驟的排序原則」 |
