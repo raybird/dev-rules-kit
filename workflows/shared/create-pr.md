@@ -10,9 +10,9 @@ description: 根據指定 commit 範圍與實際通過的驗收標準證據生�
 2. 該範圍的 commit 訊息、淨 diff 與異動檔案清單。
 3. 可取得的 issue、需求、任務或設計文件。
 4. 實際執行的測試與驗證紀錄。
-5. issue README 中核准的驗收標準（完整 Gherkin 與逐 Scenario 核准表，或 Small + Low 的輕量驗收條件），以及各項的外迴圈 / 單元測試全綠證據。採完整 Gherkin 時，另依 `docs/AGENTS.md`「規格修訂的查核」執行 `git diff {核准 commit}..HEAD` 確認核准表反映目前劇本。不改變可觀察行為的任務改取變更前後同一組測試的全綠輸出，或不適用理由與替代驗證結果。
+5. issue README 中核准的驗收標準（完整 Gherkin 與逐 Scenario 核准表，或 Small + Low 的輕量驗收條件），以及各項的外迴圈 / 單元測試全綠證據。採完整 Gherkin 時，另依 `docs/AGENTS.md`「規格修訂的查核」確認核准表反映目前劇本。不改變可觀察行為的任務改取變更前後同一組測試的全綠輸出，或不適用理由與替代驗證結果。
 6. issue README 的 `## Gate 豁免紀錄`（若有）：被豁免的項目不需 Proof，但必須在 PR 中揭露豁免內容與殘餘風險。
-7. 若已安裝 Superpowers，優先調用 `verification-before-completion`；未安裝時依本 skill 的 Evidence Rules 與 Completion Gate 逐項重跑命令、讀取最新輸出並核對證據。缺少套件不構成阻塞，但任一驗證失敗或無法取得最新證據時必須停止，不得生成看似已驗收的 PR 說明。
+7. Superpowers 可用時優先調用 `verification-before-completion`；未安裝時依本 skill 的 Evidence Rules 與 Completion Gate 逐項重跑命令、讀取最新輸出並核對證據。任一驗證失敗或無法取得最新證據時必須停止，不得生成看似已驗收的 PR 說明。
 
 ## Evidence Rules
 

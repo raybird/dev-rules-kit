@@ -21,7 +21,7 @@ description: 將 Large issue 的 Gherkin 與 Implementation Plan 細化為 BDD �
 
 新 issue 若缺少 `**風險**` 或「風險與首要驗證」，應先回到規劃階段補齊，不得由分級或檔案數量推測風險。
 
-開始拆解前，若已安裝 Superpowers，優先調用 `writing-plans`；未安裝時依本 skill 的 Phase、Task 與完整覆蓋規則執行內建等價規劃。無論採哪種模式，都要依 `docs/AGENTS.md`「規格修訂的查核」以 `git diff {核准 commit}..HEAD` 比對 issue README：差異觸及 Gherkin 且改變條件、動作或預期結果時，將該 Scenario 標為待重新核准並停止，不得把未核准的行為寫進計畫。Gherkin 缺漏、沒有 Scenario ID 或核准表有 `待重新核准` 項目時同樣停止，不得產出可直接進入 production code 的計畫。
+開始拆解前，Superpowers 可用時優先調用 `writing-plans`；未安裝時依本 skill 的 Phase、Task 與完整覆蓋規則執行內建等價規劃。無論採哪種模式，都要依 `docs/AGENTS.md`「規格修訂的查核」比對 issue README。Gherkin 缺漏、沒有 Scenario ID，或核准表存在 `待重新核准` 項目時，列出阻塞並停止，不得產出可直接進入 production code 的計畫。
 
 ## Decompose Scope
 

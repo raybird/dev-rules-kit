@@ -46,7 +46,7 @@ README 的 `**風險**` 欄位只影響任務順序與驗證方式，**不影響
 | `docs/issues/issue-{ID}/README.md` 不存在 | `new-issue` |
 | README 缺少該規模與風險對應的驗收標準或其核准紀錄（Small + Low 為輕量驗收條件加核准日期與來源；其餘為具唯一 Scenario ID 的 Gherkin 加核准 commit 與逐項核准表），或核准表存在 `待重新核准` 項目 | `new-issue`（繼續澄清與核准，不得實作） |
 | 分級為 Large 且 `docs/issues/issue-{ID}/` 內無含「Decomposition」標題的 `.md` 檔 | `decompose` |
-| 任務清單有未完成項目，或指定項目缺少對應證據（會改變行為者需外迴圈紅燈、單元測試紅燈、實作後全綠、重構後全綠；不改變行為者需等價證據） | `execute-task` |
+| 任務清單有未完成項目，或指定項目缺少對應證據（會改變行為者需完整紅綠重構證據，不改變行為者需等價證據） | `execute-task` |
 | 無含 issue ID 的 branch 或 commit（搜尋 branch 名稱與 commit message） | `execute-task` |
 | PR 已 merged | 完成 |
 | 無 open PR | `create-pr` |
@@ -55,9 +55,9 @@ README 的 `**風險**` 欄位只影響任務順序與驗證方式，**不影響
 | 目前 HEAD 的 review 結果為 `RETURN TO execute-task`／request changes，或有 MUST FIX、架構違規、不實回報、驗收標準／必要邊界漏洞 | `execute-task`（修正後產生新 commit，再審查新 HEAD） |
 | 目前 HEAD 的 review 結果為 `PASS` | 等待合併 |
 
-證據必須包含驗收標準編號、實際命令、exit code 或結果摘要及與目標行為相關的失敗／成功原因。只有狀態符號、commit 存在或「測試通過」文字不得讓流程前進。純重構與純文件等情況必須具有 `docs/AGENTS.md` 要求的等價證據或不適用理由。編號集合比較採完全相等，不只檢查核准編號是否存在，也拒絕任何額外未核准編號。
+紅綠重構證據、等價證據與假綠燈的定義見 `docs/AGENTS.md`。只有狀態符號、commit 存在或「測試通過」文字不得讓流程前進。編號集合比較採完全相等，不只檢查核准編號是否存在，也拒絕任何額外未核准編號。
 
-**規格修訂**：採完整 Gherkin 的 issue，以 `git diff {核准 commit}..HEAD -- docs/issues/issue-{ID}/README.md` 判斷規格是否在核准後被修訂。差異未觸及 Gherkin 時不影響任何偵測條件；觸及且改變條件、動作或預期結果時，只有受影響的 Scenario 退回 `new-issue`，其餘 Scenario 可繼續推進。規格被修訂本身不是錯誤，未取得同意才是。
+**規格修訂**：採完整 Gherkin 的 issue，依 `docs/AGENTS.md`「規格修訂的查核」判斷規格是否在核准後被修訂。差異未觸及 Gherkin 時不影響任何偵測條件；受影響的 Scenario 退回 `new-issue`，其餘可繼續推進。規格被修訂本身不是錯誤，未取得同意才是。
 
 **Gate 豁免**：issue README 的 `## Gate 豁免紀錄` 中已記錄的項目，不再作為卡關條件——該筆紀錄本身即為通過該偵測條件的依據。豁免只對紀錄中明列的項目生效，不擴及其他 gate；沒有紀錄時不得推定豁免。
 
@@ -92,7 +92,7 @@ README 的 `**風險**` 欄位只影響任務順序與驗證方式，**不影響
 
 推進模式由 dev-cycle 全自動驅動，不需人工把關：
 
-- `execute-task` 只有在核准的驗收標準與對應證據齊全時（會改變行為者需紅綠燈證據，不改變行為者需等價證據），才依 `code-simplify` 精煉程式碼、依 `create-commit` 規範生成訊息並**直接執行 commit**
+- `execute-task` 只有在核准的驗收標準與對應證據齊全時，才依 `code-simplify` 精煉程式碼、依 `create-commit` 規範生成訊息並**直接執行 commit**
 - `create-pr` 在 Superpowers 可用時先通過 `verification-before-completion`，未安裝時改通過 `create-pr` 內建 Completion Gate；兩種模式都必須確認 PR body 含可追溯的完整 Proof of Test，才可**直接建立或更新 PR**
 - `review` 只有在獨立 reviewer 的報告成功持久化為目前 HEAD 的 artifact 時才接受結果；`UNPERSISTED` 必須停止
 - `create-commit` 的「不要直接提交、訊息放 code block 供複製」僅適用於**單獨呼叫**該 skill 時；在 dev-cycle 推進模式下不適用

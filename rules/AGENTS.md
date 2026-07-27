@@ -139,11 +139,13 @@ Both require explicit user approval before implementation; an agent must never t
 
 1. If Superpowers is installed, invoke `brainstorming`; otherwise follow the same built-in clarification process below. Ask one question at a time and obtain explicit approval of the behavior.
 2. Write approved acceptance criteria as Gherkin with stable Scenario IDs and `Feature` / `Scenario` / `Given` / `When` / `Then`.
-3. Persist the approval source, the commit carrying the approved content, and a per-Scenario approval date and status. Before implementing, run `git diff {approval commit}..HEAD` on the issue document to see whether the spec was revised after approval.
+3. Persist the approval source, the commit carrying the approved content, and a per-Scenario approval date and status. Before implementing, check whether the spec was revised after approval (see "Handling Spec Revisions").
 4. If available, invoke `test-driven-development`. Whether or not it is installed, create the BDD Step Definitions and run the scenario to capture a relevant failure before changing production code. When the project has no BDD runner, use an integration or end-to-end test tagged with the Scenario ID as the outer loop; a missing tool never justifies skipping the outer loop.
 5. Write the smallest unit test for the underlying behavior and run it to capture a relevant failure.
 6. Write the minimum production code needed to pass the unit test and BDD scenario; then refactor while keeping both green.
 7. Preserve command output or equivalent repeatable evidence for each red and green state. A claim such as "tests pass" is not evidence.
+
+Outer-loop red, unit-test red, green after the minimal implementation, and green after refactoring together form the **red-green-refactor evidence**; missing any one segment makes it incomplete. Producing a green that does not stand for correct behavior — deleting, skipping, weakening, commenting out, partially running, or rewriting an existing test; mocking away the behavior under acceptance; hardcoding expected data; asserting nothing — is a **fake green** and never counts as evidence.
 
 ### Work That Does Not Change Observable Behavior
 
@@ -156,7 +158,7 @@ Claiming that work does not change observable behavior is a commitment that the 
 
 ### Handling Spec Revisions
 
-**Revising the spec during implementation is the expected outcome of the outer loop, not a violation.** What must hold is not "the text is unchanged" but "it changed, it was seen, and it was agreed". Check with `git diff {approval commit}..HEAD` on the issue document; do not use a content hash:
+**Revising the spec during implementation is the expected outcome of the outer loop, not a violation.** What must hold is not "the text is unchanged" but "it changed, it was seen, and it was agreed". Check with `git diff {approval commit}..HEAD` on the issue document, letting git rather than the agent act as witness; do not use a content hash:
 
 - **The diff does not touch the acceptance criteria**: approval stands; continue.
 - **A condition, action, or expected result changed, or a Scenario was added or removed**: mark only the **affected Scenario** as pending re-approval and re-enter clarification. Scenarios the diff did not touch keep their approval.
@@ -170,7 +172,7 @@ These gates exist to stop an agent from lowering its own standards, not to const
 
 Never assume an exemption: user silence, time pressure, and a task that looks small are not exemptions.
 
-**The only thing that can never be exempted is honest reporting.** An exemption skips a process; it never permits recording an unrun verification as passed or an unreviewed change as reviewed, nor deleting, skipping, weakening, or commenting out a test and then claiming tests pass. When the user asks to modify or remove a test, comply — but record the true reason (behavior changed / test was incorrect / user-granted exemption) rather than logging it as a passing verification.
+**The only thing that can never be exempted is honest reporting.** An exemption skips a process; it never permits recording an unrun verification as passed, an unreviewed change as reviewed, or a fake green as a passing test. When the user asks to modify or remove a test, comply — but record the true reason (behavior changed / test was incorrect / user-granted exemption).
 
 ### Superpowers
 

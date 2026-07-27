@@ -12,6 +12,21 @@
 
 ---
 
+## [2.1.1] - 2026-07-27
+
+### 變更（`rules/`、`docs/`、`skills/`、`workflows/shared/` — 下游建議重新複製）
+
+行為與 gate 完全不變，只收攏重複敘述。導入兩個具名用語，把散落各檔的列舉收成單一定義，消除措辭漂移。
+
+- **「紅綠重構證據」**：外迴圈紅燈、單元測試紅燈、最小實作後全綠、重構後全綠四段的合稱。原本這串列舉在 `dev-cycle`、`execute-task`、`review` 逐字複述，`docs/AGENTS.md`、`decompose`、`create-pr`、`rules` 還各有變體且措辭不一致（「實作後全綠」／「最小實作後全綠」）。現在定義於 `docs/AGENTS.md` 與 `rules/`，其餘檔案直接使用該詞
+- **「假綠燈」**：以任何方式製造出不代表行為正確的綠燈（刪改測試、mock 掉受測行為、硬編碼答案、空 assertion）。取代原本分散在 `execute-task`、`review`、`rules` 的九項列舉；`execute-task` 的「誠實回報與防作弊檢查」步驟改名為「假綠燈檢查」
+- **`git diff` 查核回歸單一真相來源**：2.1.0 把完整指令與三條分支邏輯複製到六個檔案，措辭各有出入。現在只留在 `docs/AGENTS.md`「規格修訂的查核」與 `rules/`（規則檔需自足），五個 skill 改為引用該節
+- **Superpowers 樣板去重**：各 skill 不再重複解釋「選用增強、缺少套件不構成阻塞、gate 不降低」——該政策已在 `rules/` 定義，skill 端只保留「可用時優先調用 `{skill}`」
+
+### 效果
+
+六個 skill 合計減少 763 字元（約 2.8%）；`docs/AGENTS.md` 與 `rules/` 因納入定義而增加，全部檔案淨變化約 +168 字元。**主要收益是一致性而非 token**：同一概念先前在六個檔案有六種寫法，正是 `sync-skills.py --check` 抓不到的那類漂移。
+
 ## [2.1.0] - 2026-07-27
 
 ### 變更（`rules/`、`docs/`、`skills/`、`workflows/shared/` — 下游建議重新複製）
