@@ -28,9 +28,9 @@
 - `technical-analysis.md`：OAuth 2.0 flow 分析、相關模組、潛在風險
 - `implementation-plan.md`：高階實作方向
 
-README 另包含經使用者核准、具 `SCN-001` 等唯一 ID 的 Gherkin 驗收劇本。
+README 另包含經使用者核准、具 `SCN-001` 等唯一 ID 的 Gherkin 驗收劇本。**Small + Low 的 issue 改用輕量驗收條件**（`AC-1` 起，一句話結果加檢查方式），不需 Gherkin 語法與逐項核准表。
 
-**關鍵行為**：若已安裝 Superpowers，AI 優先調用 `brainstorming`；否則執行 `new-issue` 的內建等價流程。兩種模式都一次只問一個問題，需求有模糊地帶時不自行填入假設，只有使用者核准 Gherkin 後才建立完整文件。
+**關鍵行為**：若已安裝 Superpowers，AI 優先調用 `brainstorming`；否則執行 `new-issue` 的內建等價流程。兩種模式都一次只問一個問題，需求有模糊地帶時不自行填入假設，只有使用者核准驗收標準後才建立完整文件。
 
 ---
 
@@ -117,7 +117,7 @@ Scenario: 全新帳號完成 Google 登入
 - 結果：PASS
 ````
 
-**關鍵行為**：PR 內容基於實際 git diff 生成，不會描述未實作的功能；只有可追溯至核准 Gherkin 原文與實際成功命令的 Scenario 才會列入 Proof of Test。
+**關鍵行為**：PR 內容基於實際 git diff 生成，不會描述未實作的功能；只有可追溯至核准驗收標準原文與實際成功命令的項目才會列入 Proof of Test。issue 有 Gate 豁免紀錄時，PR 會另闢「豁免項目」段落如實揭露，而非把它寫成已通過。
 
 ---
 
@@ -167,7 +167,7 @@ AI 輸出：
 
 AI 自動偵測狀態，告知「目前在 create-pr 階段，準備執行 create-pr」，呼叫 `create-pr` 後繼續循環。
 
-**關鍵行為**：`dev-cycle` 從 filesystem、issue 證據、git 狀態與持久化 PR review / comment 推斷進度，跨 session 重新呼叫也能正確恢復，不依賴對話記憶；缺 Gherkin 核准 hash、紅綠燈證據、完整 Proof of Test 或目前 HEAD 的持久化 review PASS 時都不會跳到下一階段。
+**關鍵行為**：`dev-cycle` 從 filesystem、issue 證據、git 狀態與持久化 review artifact 推斷進度，跨 session 重新呼叫也能正確恢復，不依賴對話記憶；缺驗收標準核准、紅綠燈或等價證據、完整 Proof of Test 或目前 HEAD 的持久化 review PASS 時都不會跳到下一階段。已寫入 `## Gate 豁免紀錄` 的項目則依該紀錄放行。
 
 **分級分流**：`dev-cycle` 會先讀 `README.md` 的 `**分級**` 欄位決定路徑——Large 才經過 `decompose`，Small 與 Medium 直接從 `new-issue` 進入 `execute-task`。若是舊 issue 沒有該欄位，會依現存檔案回推分級並補寫回 README。
 
@@ -188,7 +188,7 @@ AI 自動偵測狀態，告知「目前在 create-pr 階段，準備執行 creat
 |---|---|
 | **觸發** | `/new-issue issue:{編號} 主題:{標題} 內容:{描述}` 或直接描述需求 |
 | **產出** | 依任務複雜度評估為 **Small (僅 README)**、**Medium (README + 計畫)** 或 **Large (完整四件套)** 檔案 |
-| **注意** | 可用時優先使用 `brainstorming`，否則執行內建等價流程；兩種模式都須一次一題並取得 Gherkin 核准 |
+| **注意** | 可用時優先使用 `brainstorming`，否則執行內建等價流程；兩種模式都須一次一題並取得驗收標準核准（Small + Low 為輕量驗收條件） |
 
 #### 指令式參數格式範例：
 ```
@@ -253,8 +253,8 @@ issue:123
 | | |
 |---|---|
 | **觸發** | `/create-pr` |
-| **產出** | PR 標題與 body 草稿（變更摘要 + Gherkin Proof of Test） |
-| **注意** | 可用時優先使用 `verification-before-completion`，否則執行內建證據檢查；只有具實際成功證據的 Scenario 才列為通過 |
+| **產出** | PR 標題與 body 草稿（變更摘要 + Proof of Test） |
+| **注意** | 可用時優先使用 `verification-before-completion`，否則執行內建證據檢查；只有具實際成功證據的項目才列為通過 |
 
 ---
 
@@ -274,7 +274,7 @@ issue:123
 |---|---|
 | **查詢** | 「issue {ID} 到哪了」、「{ID} 進度」 |
 | **推進** | `/dev-cycle {ID}`、「繼續 {ID}」 |
-| **注意** | 依分級分流，並檢查 Gherkin 核准、紅綠燈、Proof of Test 與 review gate，禁止跨階段繞過 |
+| **注意** | 依分級分流，並檢查驗收標準核准、證據、Proof of Test 與 review gate，禁止跨階段繞過；已記錄的 Gate 豁免依紀錄放行 |
 
 ---
 
@@ -295,6 +295,7 @@ A: 請參考 [docs/AGENTS.md](./AGENTS.md) 中的「快速檢查清單」以及�
 
 | 日期 | 異動 | 負責人 |
 |------|------|--------|
+| 2026-07-27 | 加入 Gate 豁免機制；驗收標準形式依規模與風險分級，純重構改用等價證據 | - |
 | 2026-07-26 | Superpowers 改為選用增強；未安裝時由本地 skills 執行等價硬性 gate | - |
 | 2026-07-26 | 開發閉環加入 Gherkin BDD、TDD 紅綠燈、獨立審查與 PR Proof of Test 硬性卡關 | - |
 | 2026-07-22 | Issue 評估改為規模與風險雙軸；補上驗證手段選擇及垂直切片適用條件 | - |

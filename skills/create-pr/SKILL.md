@@ -1,5 +1,5 @@
 ---
-description: 根據指定 commit 範圍與實際通過的 Gherkin Scenario 證據生成 Pull Request 說明。變更已提交、準備以 Proof of Test 供 reviewer 驗收時使用。
+description: 根據指定 commit 範圍與實際通過的驗收標準證據生成 Pull Request 說明。變更已提交、準備以 Proof of Test 供 reviewer 驗收時使用。
 ---
 
 ## Input Evidence
@@ -10,8 +10,9 @@ description: 根據指定 commit 範圍與實際通過的 Gherkin Scenario 證�
 2. 該範圍的 commit 訊息、淨 diff 與異動檔案清單。
 3. 可取得的 issue、需求、任務或設計文件。
 4. 實際執行的測試與驗證紀錄。
-5. issue README 中核准的 Gherkin、完整 Scenario ID 清單、Gherkin SHA-256，以及各 Scenario 的 BDD / 單元測試全綠證據；先依 `docs/AGENTS.md` 重算 hash，確認劇本內容未在核准後異動。符合非程式任務例外者，改取得不適用理由、替代驗證命令或步驟及成功結果。
-6. 若已安裝 Superpowers，優先調用 `verification-before-completion`；未安裝時依本 skill 的 Evidence Rules 與 Completion Gate 逐項重跑命令、讀取最新輸出並核對證據。缺少套件不構成阻塞，但任一驗證失敗或無法取得最新證據時必須停止，不得生成看似已驗收的 PR 說明。
+5. issue README 中核准的驗收標準（完整 Gherkin 與逐 Scenario 核准表，或 Small + Low 的輕量驗收條件），以及各項的外迴圈 / 單元測試全綠證據。採完整 Gherkin 時，另依 `docs/AGENTS.md`「規格修訂的查核」執行 `git diff {核准 commit}..HEAD` 確認核准表反映目前劇本。不改變可觀察行為的任務改取變更前後同一組測試的全綠輸出，或不適用理由與替代驗證結果。
+6. issue README 的 `## Gate 豁免紀錄`（若有）：被豁免的項目不需 Proof，但必須在 PR 中揭露豁免內容與殘餘風險。
+7. 若已安裝 Superpowers，優先調用 `verification-before-completion`；未安裝時依本 skill 的 Evidence Rules 與 Completion Gate 逐項重跑命令、讀取最新輸出並核對證據。缺少套件不構成阻塞，但任一驗證失敗或無法取得最新證據時必須停止，不得生成看似已驗收的 PR 說明。
 
 ## Evidence Rules
 
@@ -19,10 +20,10 @@ description: 根據指定 commit 範圍與實際通過的 Gherkin Scenario 證�
 - **How**：只能描述淨 diff 與相關文件能證實的實作方式及決策。無法證實決策理由時省略理由。
 - **實際變更**：以淨 diff 為準，涵蓋新增、修改、刪除、rename、測試與文件變更。
 - **測試驗證**：只有實際紀錄才能標示為已執行或通過。沒有證據時使用下方固定的未執行格式。
-- **Proof of Test 完整性**：README 核准紀錄中的每個 Scenario ID 都必須各有一個 Proof 區塊，且集合必須完全一致；不可省略缺證據的 Scenario、加入未核准 Scenario，或只用一個案例代表其餘案例。
-- **核准完整性**：重算的 Gherkin SHA-256 必須與 README 核准紀錄一致；hash 不符時停止並退回 `new-issue`，不得產生 Proof of Test。
-- **自動化證據**：一般任務只有同時具備核准 Gherkin、Scenario ID、實際 BDD 命令與成功輸出及相關單元測試成功輸出才能列為通過。單元測試不能取代 BDD 驗收證據；不得把待測 checkbox 當成通過證明。
-- **替代證據**：只有 issue 計畫已依 `docs/AGENTS.md` 記錄無可執行行為／測試入口的不適用理由時，才可列出可重複的靜態命令或手動步驟與實際成功結果；不得把此例外用於存在測試入口的產品行為。
+- **Proof of Test 完整性**：README 核准的每項驗收標準都必須各有一個 Proof 區塊，且集合必須完全一致；不可省略缺證據的項目、加入未核准項目，或只用一個案例代表其餘案例。已記錄 Gate 豁免者改列於「豁免項目」段落，不算缺漏。
+- **核准完整性**：採完整 Gherkin 時，核准表必須涵蓋所有現存 Scenario 且全部為 `已核准`。存在 `待重新核准` 項目時停止並退回 `new-issue`，不得產生 Proof of Test。
+- **自動化證據**：會改變可觀察行為的任務，只有同時具備核准的驗收標準、實際外迴圈命令與成功輸出及相關單元測試成功輸出才能列為通過。單元測試不能取代外迴圈驗收證據；不得把待測 checkbox 當成通過證明。
+- **等價證據**：不改變可觀察行為的任務，改列變更前後執行同一組既有測試的實際命令與全綠輸出（純重構），或可重複的靜態命令 / 手動步驟與實際成功結果及不適用理由（純文件、無可執行行為）。不得把此路徑用於實際有行為變更的 diff。
 - 所有檔案路徑使用相對於 repo root 的路徑；指出位置時附行號。不得輸出絕對路徑或 `~` 開頭路徑。
 
 ## Output
@@ -52,19 +53,27 @@ description: 根據指定 commit 範圍與實際通過的 Gherkin Scenario 證�
 
 ### 測試通過證明 (Proof of Test)
 
-- **Gherkin SHA-256**：`<README 核准紀錄中的 hash>`
+- **核准 commit**：`<README 核准紀錄中的 commit；採輕量驗收條件時整行省略>`
 
-#### <SCN-NNN：Scenario 名稱>
+#### <SCN-NNN 或 AC-N：驗收標準名稱>
 
 ```gherkin
-<issue 文件中核准的 Scenario 原文>
+<issue 文件中核准的 Scenario 原文；輕量驗收條件改用一般文字列出該條件>
 ```
 
-- **BDD 命令**：`<實際執行命令>`
+- **外迴圈命令**：`<實際執行命令>`
 - **結果**：PASS（<可追溯的成功摘要>）
 - **底層測試**：`<實際執行的相關單元測試命令與成功摘要>`
 
-<!-- 非程式任務只在符合權威例外時，以「替代驗證」與「不適用理由」取代 BDD 命令及底層測試；最終輸出移除此註解。 -->
+<!-- 不改變可觀察行為時，以「變更前 / 變更後同一組測試」的命令與全綠輸出，或「替代驗證」與「不適用理由」取代上述三行；最終輸出移除此註解。 -->
+
+### 豁免項目
+
+<!-- 只有 issue README 存在 Gate 豁免紀錄時才保留本節；不適用時整節省略。 -->
+
+- **豁免項目**：<被跳過的 gate>
+- **依據**：<使用者原話>
+- **殘餘風險**：<因此未被驗證的事項>
 ````
 
 截圖或錄影、補充說明、相關連結只有在有實質內容時才加入；不適用時整段省略。
@@ -76,7 +85,8 @@ description: 根據指定 commit 範圍與實際通過的 Gherkin Scenario 證�
 - commit 範圍有效，且所有淨變更都已檢查。
 - Why、How、變更與測試的每項事實都有可追溯來源。
 - 未執行的測試已列出原因與殘餘風險，沒有暗示其已通過。
-- 目前 Gherkin 的 SHA-256 與核准紀錄一致，且 Proof of Test 的 Scenario ID 集合與 README 核准紀錄完全一致；每個 Scenario 都能追溯至 issue 原文及最新自動化成功輸出，或符合權威例外的替代驗證。任一項不符時停止，不輸出 PR 說明。
+- 採完整 Gherkin 時，核准表涵蓋所有現存 Scenario 且無 `待重新核准`；Proof of Test 的驗收標準編號集合與 README 核准內容完全一致（已記錄豁免者列於「豁免項目」）；每一項都能追溯至 issue 原文及最新成功輸出，或符合權威規範的等價證據。任一項不符時停止，不輸出 PR 說明。
+- issue 存在 Gate 豁免紀錄時，PR 已如實揭露豁免項目與殘餘風險，未將其寫成已通過。
 - 所有範例 placeholder 與 HTML 註解都已移除。
 - 選用區塊沒有空標題，檔案路徑均為 repo-relative。
 

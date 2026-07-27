@@ -21,7 +21,7 @@ description: 將 Large issue 的 Gherkin 與 Implementation Plan 細化為 BDD �
 
 新 issue 若缺少 `**風險**` 或「風險與首要驗證」，應先回到規劃階段補齊，不得由分級或檔案數量推測風險。
 
-開始拆解前，若已安裝 Superpowers，優先調用 `writing-plans`；未安裝時依本 skill 的 Phase、Task 與完整覆蓋規則執行內建等價規劃。無論採哪種模式，都要依 `docs/AGENTS.md` 重算 Gherkin SHA-256。Gherkin 缺漏、沒有 Scenario ID、核准 hash 不符或尚未取得使用者核准時，列出阻塞並停止，不得產出可直接進入 production code 的計畫。
+開始拆解前，若已安裝 Superpowers，優先調用 `writing-plans`；未安裝時依本 skill 的 Phase、Task 與完整覆蓋規則執行內建等價規劃。無論採哪種模式，都要依 `docs/AGENTS.md`「規格修訂的查核」以 `git diff {核准 commit}..HEAD` 比對 issue README：差異觸及 Gherkin 且改變條件、動作或預期結果時，將該 Scenario 標為待重新核准並停止，不得把未核准的行為寫進計畫。Gherkin 缺漏、沒有 Scenario ID 或核准表有 `待重新核准` 項目時同樣停止，不得產出可直接進入 production code 的計畫。
 
 ## Decompose Scope
 
@@ -121,7 +121,8 @@ description: 將 Large issue 的 Gherkin 與 Implementation Plan 細化為 BDD �
    * 對應的需求、交付成果或風險證據（覆蓋項目）
    * 責任角色（唯一負責 / 支援）；支援角色另須標明支援邊界與整合點
    * 對應 Scenario ID
-   * BDD 外迴圈：feature / Step Definitions 路徑、先執行的命令與預期紅燈原因
+   * 是否會改變可觀察行為（標為否時，以下三項改填等價證據）
+   * BDD 外迴圈：feature / Step Definitions 路徑、先執行的命令與預期紅燈原因；專案無 BDD runner 時改用標註 Scenario ID 的整合或端對端測試並註明替代方式
    * TDD 內迴圈：單元測試路徑、先執行的命令與預期紅燈原因
    * 最小 production code 範圍與重構後完整回歸命令
 
@@ -148,7 +149,8 @@ description: 將 Large issue 的 Gherkin 與 Implementation Plan 細化為 BDD �
    * Implementation Plan 中每項需求、交付成果與風險證據都必須指定唯一的責任 Task
    * 不得有未映射項目或重複責任
    * 支援 Task 可以引用同一覆蓋項目，但必須標明支援邊界與整合點，不得成為第二個責任歸屬
-   * 每個 Scenario ID 都必須映射到唯一的責任 Task、BDD 外迴圈與 TDD 內迴圈；不得出現只有實作、沒有紅燈步驟的 Task
+   * 每個 Scenario ID 都必須映射到唯一的責任 Task、BDD 外迴圈與 TDD 內迴圈；會改變可觀察行為的 Task 不得只有實作而沒有紅燈步驟
+   * 標為不改變可觀察行為的 Task（純重構、純文件），必須改填等價證據：變更前後同一組既有測試的回歸命令，或替代靜態／手動檢查與不適用理由
 
 ---
 
@@ -195,9 +197,10 @@ description: 將 Large issue 的 Gherkin 與 Implementation Plan 細化為 BDD �
 * 覆蓋項目：<對應的需求、交付成果或風險證據>
 * 責任角色：<唯一負責 / 支援；支援時填寫邊界與整合點>
 * Scenario ID：<SCN-NNN>
-* BDD 外迴圈：<feature / Step Definitions 路徑；紅燈命令；預期失敗原因>
+* 改變可觀察行為：<是 / 否；填「否」時下列三項改填等價證據>
+* BDD 外迴圈：<feature / Step Definitions 或標註 Scenario ID 的整合測試路徑；紅燈命令；預期失敗原因>
 * TDD 內迴圈：<單元測試路徑；紅燈命令；預期失敗原因>
-* 最小實作與回歸：<允許修改的 production code；單元測試與 BDD 全綠命令>
+* 最小實作與回歸：<允許修改的 production code；單元測試與外迴圈全綠命令>
 
 #### Task 1.2
 
@@ -209,9 +212,10 @@ description: 將 Large issue 的 Gherkin 與 Implementation Plan 細化為 BDD �
 * 覆蓋項目：<對應的需求、交付成果或風險證據>
 * 責任角色：<唯一負責 / 支援；支援時填寫邊界與整合點>
 * Scenario ID：<SCN-NNN>
-* BDD 外迴圈：<feature / Step Definitions 路徑；紅燈命令；預期失敗原因>
+* 改變可觀察行為：<是 / 否；填「否」時下列三項改填等價證據>
+* BDD 外迴圈：<feature / Step Definitions 或標註 Scenario ID 的整合測試路徑；紅燈命令；預期失敗原因>
 * TDD 內迴圈：<單元測試路徑；紅燈命令；預期失敗原因>
-* 最小實作與回歸：<允許修改的 production code；單元測試與 BDD 全綠命令>
+* 最小實作與回歸：<允許修改的 production code；單元測試與外迴圈全綠命令>
 
 ---
 
@@ -234,4 +238,5 @@ Phase 數量依實際需要決定（3～7 個），不要因為範本只列了�
 * 避免將過多不同責任混合在同一 Task
 * 保持任務粒度一致
 * 輸出前必須通過完整覆蓋檢查；未映射或責任重複時不得宣稱拆解完成
-* 純文件或無自動測試入口的 Task 仍須保留 Scenario ID，並明列 BDD / TDD 不適用理由及可重複的替代驗證；不得留空
+* 不改變可觀察行為的 Task（純重構、純文件）仍須保留 Scenario ID，並明列不適用理由及等價證據——純重構填變更前後同一組既有測試的回歸命令，純文件填可重複的替代驗證；不得留空
+* 專案缺少 BDD runner 不是省略外迴圈的理由，改用標註 Scenario ID 的整合或端對端測試並註明替代方式

@@ -122,25 +122,59 @@ If verification cannot be fully automated, provide explicit manual steps.
 
 ---
 
-## 7. BDD + TDD Hard Gates
+## 7. BDD + TDD Gates and Exemptions
 
 **Define the right behavior with Gherkin, then implement it through red-green-refactor.**
 
-For every change to observable product behavior:
+### Acceptance Criteria Strength Follows Size and Risk
+
+| Combination | Form of acceptance criteria |
+|-------------|----------------------------|
+| **Small + Low** | Lightweight acceptance condition: one sentence describing the observable outcome plus a repeatable way to check it. Gherkin syntax, Scenario IDs, and the per-Scenario approval table are not required |
+| **All other combinations** | Full Gherkin with stable Scenario IDs and an approval record |
+
+Both require explicit user approval before implementation; an agent must never treat approval as implied.
+
+### Work That Changes Observable Behavior
 
 1. If Superpowers is installed, invoke `brainstorming`; otherwise follow the same built-in clarification process below. Ask one question at a time and obtain explicit approval of the behavior.
 2. Write approved acceptance criteria as Gherkin with stable Scenario IDs and `Feature` / `Scenario` / `Given` / `When` / `Then`.
-3. Persist approval status, date, source, complete Scenario ID set, and a SHA-256 of the approved Gherkin. Hash the fenced body as UTF-8 after normalizing line endings to LF, removing trailing whitespace, and retaining one final LF. Recompute before implementation; a mismatch requires clarification and renewed approval.
-4. If available, invoke `test-driven-development`. Whether or not it is installed, create the BDD Step Definitions and run the scenario to capture a relevant failure before changing production code.
+3. Persist the approval source, the commit carrying the approved content, and a per-Scenario approval date and status. Before implementing, run `git diff {approval commit}..HEAD` on the issue document to see whether the spec was revised after approval.
+4. If available, invoke `test-driven-development`. Whether or not it is installed, create the BDD Step Definitions and run the scenario to capture a relevant failure before changing production code. When the project has no BDD runner, use an integration or end-to-end test tagged with the Scenario ID as the outer loop; a missing tool never justifies skipping the outer loop.
 5. Write the smallest unit test for the underlying behavior and run it to capture a relevant failure.
 6. Write the minimum production code needed to pass the unit test and BDD scenario; then refactor while keeping both green.
 7. Preserve command output or equivalent repeatable evidence for each red and green state. A claim such as "tests pass" is not evidence.
 
-Do not edit, delete, skip, weaken, or comment out a test merely to make it pass. A test may change only when the approved Gherkin behavior changes or when the test is demonstrably incorrect; record the reason and obtain approval before changing its contract.
+### Work That Does Not Change Observable Behavior
 
-Documentation-only, formatting, or non-executable work still requires Gherkin acceptance criteria. If no automated runner can apply, record why and use a repeatable static or manual check instead; never skip verification silently.
+Pure refactoring and documentation work are exempt from the red-light requirement — by definition neither should produce a failing test:
 
-Superpowers is an optional process accelerator, not a prerequisite. Its absence never weakens these gates; missing approval, red/green evidence, independent review, or verification still blocks completion.
+- **Pure refactoring** (moving, renaming, extracting, formatting): use "the same existing tests pass both before and after the change" as equivalent evidence, recording both command outputs. If existing tests do not cover the behavior being refactored, add characterization tests first.
+- **Documentation-only or non-executable work**: substitute a repeatable static check or explicit manual steps, recording why automation does not apply and the actual result.
+
+Claiming that work does not change observable behavior is a commitment that the diff contains no behavioral change; review verifies it on that basis.
+
+### Handling Spec Revisions
+
+**Revising the spec during implementation is the expected outcome of the outer loop, not a violation.** What must hold is not "the text is unchanged" but "it changed, it was seen, and it was agreed". Check with `git diff {approval commit}..HEAD` on the issue document; do not use a content hash:
+
+- **The diff does not touch the acceptance criteria**: approval stands; continue.
+- **A condition, action, or expected result changed, or a Scenario was added or removed**: mark only the **affected Scenario** as pending re-approval and re-enter clarification. Scenarios the diff did not touch keep their approval.
+- **Wording, formatting, or indentation only**: no re-approval; record the date and the nature of the revision in the document Timeline.
+
+When revising, do not overwrite earlier statements; preserve the sequence with dated supplementary notes.
+
+### Gate Exemptions
+
+These gates exist to stop an agent from lowering its own standards, not to constrain the user's decisions. When the user explicitly asks to skip a gate ("no Gherkin this time", "just change it, skip the test first"), comply, and record the date, the exempted gate, the user's own words, and the residual risk under `## Gate 豁免紀錄` in the issue `README.md`.
+
+Never assume an exemption: user silence, time pressure, and a task that looks small are not exemptions.
+
+**The only thing that can never be exempted is honest reporting.** An exemption skips a process; it never permits recording an unrun verification as passed or an unreviewed change as reviewed, nor deleting, skipping, weakening, or commenting out a test and then claiming tests pass. When the user asks to modify or remove a test, comply — but record the true reason (behavior changed / test was incorrect / user-granted exemption) rather than logging it as a passing verification.
+
+### Superpowers
+
+Superpowers is an optional process accelerator, not a prerequisite. Its absence never weakens these gates; missing approval, required evidence, independent review, or verification still blocks completion or must follow the exemption process above.
 
 ---
 

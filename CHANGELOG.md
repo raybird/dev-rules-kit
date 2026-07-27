@@ -12,6 +12,32 @@
 
 ---
 
+## [2.1.0] - 2026-07-27
+
+### 變更（`rules/`、`docs/`、`skills/`、`workflows/shared/` — 下游建議重新複製）
+
+2.0.0 的 gate 對「agent 自行降低標準」與「使用者自主決策」一視同仁，導致小任務與純重構付出不成比例的流程成本。本版把 gate 的對象收斂回 agent，並讓證據強度重新服從既有的規模與風險雙軸。**所有既有 issue 的格式仍然有效**，本版只放寬要求、不新增必填欄位。
+
+- **Gate 豁免機制**（`rules/`、`docs/AGENTS.md`、全部閉環 skill）：使用者明確要求跳過某項 gate 時，agent 必須照做，並在 issue README 的 `## Gate 豁免紀錄` 寫下日期、豁免項目、使用者原話與殘餘風險；`dev-cycle` 依該紀錄放行，`review` 與 `create-pr` 如實揭露而非視為缺失。不得自行推定豁免——沉默、時間壓力或任務看起來很小都不算
+- **唯一不可豁免的是誠實回報**：豁免可以跳過流程，但不得把未執行的驗證寫成已通過、未審查的變更寫成已審查。使用者要求刪改測試時照做，但必須記錄真實理由
+- **驗收標準依規模與風險分級**（`docs/AGENTS.md`、`new-issue`）：**Small + Low** 改用輕量驗收條件（`AC-1` 起，一句話可觀察結果加可重複執行的檢查方式），不需 Gherkin 語法、Scenario ID 與逐項核准表；其餘組合維持完整 Gherkin。仍須取得使用者明確核准，風險升級時補齊 Gherkin
+- **純重構免紅燈**（`rules/`、`docs/AGENTS.md`、`execute-task`、`decompose`、`review`）：紅燈要求只適用於會改變可觀察行為的任務。純重構改以「變更前後執行同一組既有測試皆綠」為等價證據，既有測試不足時先補 characterization test。標為不改變行為即承諾 diff 無行為變更，`review` 會據此查核
+- **移除 Gherkin SHA-256，改以 git 見證規格修訂**（`docs/AGENTS.md`、`execute-task`、`decompose`、`review`、`create-pr`、`dev-cycle`）：內容雜湊只對「無法重算 hash 的對手」有效，而 agent 依設計就是唯一的計算者——它同時負責改規格、重算 hash 與判定變更性質，形成自我認證的循環；且自然語言規格本來就該在實作中演進，用防竄改機制約束它是類別錯誤。改為：
+  - 核准紀錄記錄 `**核准 commit**` 與**逐 Scenario** 的核准日期與狀態（`已核准` / `待重新核准`），取代單一 hash
+  - 查核改用 `git diff {核准 commit}..HEAD -- docs/issues/issue-{ID}/README.md`。見證者是 git 而非 agent，輸出是可讀的 diff 而非布林值，判定交給 reviewer 覆核同一份 diff
+  - 差異未觸及 Gherkin 即直接繼續；改變條件、動作或預期結果時**只有受影響的 Scenario** 退回重新核准，其餘不受牽連；純措辭調整於 Timeline 補記即可
+  - 明文寫入「規格在實作中被修訂是外迴圈的預期結果，不是違規」，與 kit 既有的 Timeline 保留原則一致
+- **Review artifact 不綁特定平台**（`docs/AGENTS.md`、`review`、`dev-cycle`）：優先使用專案的 code review 平台（GitHub、GitLab、Gitea 等）；平台不可用、無權限或純本機流程時，改寫入 `docs/issues/issue-{ID}/review-{HEAD 前 7 碼}.md` 並隨變更提交。兩者都必須含 Reviewed HEAD SHA 與獨立 reviewer，兩種方式都無法完成時才輸出 `UNPERSISTED`
+- **BDD runner 不再是硬性工具依賴**（`rules/`、`docs/AGENTS.md`、`execute-task`、`decompose`）：專案沒有 BDD runner 時，以標註 Scenario ID 的整合或端對端測試充當外迴圈。缺少特定工具不構成省略外迴圈的理由
+
+### 相容性與遷移
+
+除核准紀錄外，驗收標準、Proof of Test 與 review artifact 的既有格式全部保持有效，本版只增加可選路徑。既有 Small issue 若已寫完整 Gherkin，不需改寫成輕量格式。
+
+**唯一需要轉換的是 2.0.0 建立的 `## Gherkin 核准紀錄`**：`**狀態**`、`**核准日期**`、`**Scenario IDs**`、`**Gherkin SHA-256**` 四個欄位改為 `**核准 commit**` 加逐 Scenario 核准表。轉換為機械式改寫，核准來源與已取得的核准本身不受影響；`**核准 commit**` 填寫承載該次核准內容的 issue 文件提交（未提交時填 `待提交`，首次提交後回填）。
+
+`docs/AGENTS.md` 更新至 v1.7。
+
 ## [2.0.0] - 2026-07-26
 
 ### 破壞性變更（`rules/`、`docs/`、`skills/`、`workflows/shared/` — 下游更新前需檢查）

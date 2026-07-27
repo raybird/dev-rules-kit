@@ -74,19 +74,21 @@ description: 一句話描述用途
 
 ## BDD + TDD 與 Superpowers 映射
 
-核心開發閉環採 Gherkin BDD 外迴圈與 TDD 內迴圈。Superpowers 是選用增強，不是執行期必要依賴；已安裝時優先調用，未安裝時由本地 skill 執行等價流程。維護相關 skill 時，必須保留下列映射與本地硬性 gate：
+核心開發閉環採 BDD 外迴圈與 TDD 內迴圈。Superpowers 是選用增強，不是執行期必要依賴；已安裝時優先調用，未安裝時由本地 skill 執行等價流程。維護相關 skill 時，必須保留下列映射與本地 gate：
 
 | 節點 | 可用時優先調用的 Superpowers skill | 不可跳過的本地證據 |
 |---|---|---|
-| `new-issue` | `brainstorming` | 一次一題的需求澄清、使用者核准、具 Scenario ID 的 Gherkin |
+| `new-issue` | `brainstorming` | 一次一題的需求澄清、使用者核准、依規模與風險決定形式的驗收標準 |
 | `decompose` | `writing-plans` | 每個 Scenario 的 BDD 外迴圈與 TDD 內迴圈映射 |
-| `execute-task` | `test-driven-development` | BDD 紅燈、單元測試紅燈、最小實作後全綠、重構後全綠 |
+| `execute-task` | `test-driven-development` | 外迴圈紅燈、單元測試紅燈、最小實作後全綠、重構後全綠（不改變可觀察行為者改用等價證據） |
 | `review` | `requesting-code-review` | 獨立 reviewer、架構符合度、至少 3 個破壞性邊界案例與流程判定 |
-| `create-pr` | `verification-before-completion` | 可追溯至 Gherkin 原文與實際成功命令的 Proof of Test |
+| `create-pr` | `verification-before-completion` | 可追溯至驗收標準原文與實際成功命令的 Proof of Test |
 
 PRD 或文件若使用 `implementation-plan`、`critic`、`architectural-compliance`、`pull-request-spec` 等非現有 Superpowers skill 名稱，不得直接寫成不可執行依賴：語意分別映射至上表的 `writing-plans`、`requesting-code-review` 加架構 gate，以及 `create-pr` 內建規格加 `verification-before-completion`。未安裝 Superpowers 時執行各節點已明訂的本地等價流程。
 
-`docs/AGENTS.md` 是 Gherkin 存放位置、Scenario ID 與紅綠燈證據格式的單一真相來源。修改任一節點時，同時檢查 `dev-cycle` 是否仍能阻止跨階段繞過；不得只加提示文字而沒有完成 gate。
+`docs/AGENTS.md` 是驗收標準形式、Scenario ID、紅綠燈與等價證據格式、review artifact 存放位置及 `## Gate 豁免紀錄` 的單一真相來源。修改任一節點時，同時檢查 `dev-cycle` 是否仍能阻止跨階段繞過；不得只加提示文字而沒有完成 gate。
+
+**gate 的對象是 agent，不是使用者。** 所有 gate 都必須同時滿足兩件事：agent 不得自行降低標準；使用者明確要求豁免時必須照做並留下 `## Gate 豁免紀錄`。新增 gate 時一併確認它有豁免路徑，且豁免後 `dev-cycle` 能據紀錄放行。唯一不可豁免的是誠實回報——不得把未執行的驗證寫成已通過。
 
 ## Conventions
 

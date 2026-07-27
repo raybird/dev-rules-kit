@@ -89,13 +89,16 @@ review 發現需要修正時，回到 execute-task 修正後再走一次 commit 
 
 ## Superpowers 整合與安裝建議
 
-Superpowers 是本 kit 的**選用流程增強套件，不是必要依賴**。未安裝時，`new-issue`、`decompose`、`execute-task`、`review`、`create-pr` 仍會執行各自內建的等價流程，Gherkin 核准、BDD / TDD 紅綠燈、獨立審查與 Proof of Test 等硬性 gate 不會降低。
+Superpowers 是本 kit 的**選用流程增強套件，不是必要依賴**。未安裝時，`new-issue`、`decompose`、`execute-task`、`review`、`create-pr` 仍會執行各自內建的等價流程，驗收標準核准、紅綠燈證據、獨立審查與 Proof of Test 等 gate 不會降低。
+
+> [!NOTE]
+> 這些 gate 防的是 AI 自行降低標準，不是限制你的決策。驗收標準的形式會依規模與風險自動調整（Small + Low 只需輕量驗收條件），純重構與純文件任務改用等價證據；需要更快時，直接說「這次不用寫 Gherkin」或「不用先寫測試」即可豁免，AI 會照做並在 issue README 留下 `## Gate 豁免紀錄`。
 
 若要使用 Superpowers，建議安裝[完整套件](https://github.com/obra/superpowers)，不要只複製單一 skill。核心流程會在下列 skills 可用時優先調用：
 
 | Superpowers skill | 對應節點 | 用途 | 未安裝時 |
 |---|---|---|---|
-| `brainstorming` | `new-issue` | 一次一題澄清需求、比較方案並取得 Gherkin 核准 | 執行 `new-issue` 內建澄清與核准流程 |
+| `brainstorming` | `new-issue` | 一次一題澄清需求、比較方案並取得驗收標準核准 | 執行 `new-issue` 內建澄清與核准流程 |
 | `writing-plans` | `decompose` | 將 Scenario 拆成 BDD 外迴圈與 TDD 內迴圈 | 執行 `decompose` 內建 Phase / Task 與覆蓋規則 |
 | `test-driven-development` | `execute-task` | 強制紅燈、最小實作、綠燈與重構 | 執行 `execute-task` 內建雙迴圈狀態機 |
 | `requesting-code-review` | `review` | 將變更交給獨立 reviewer | 使用宿主原生 subagent / task；沒有獨立 reviewer 能力時仍會阻塞 |
