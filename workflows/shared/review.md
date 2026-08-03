@@ -36,10 +36,11 @@ description: 以獨立批判者審查當前分支的驗收標準覆蓋、測試�
    - 自動格式化異動（純空白或換行差異）
 3. 優先審查核心邏輯檔案，再依序審查設定、樣板、測試
 4. Superpowers 可用時優先調用 `requesting-code-review`；未安裝時使用宿主原生 subagent / task 或其他隔離上下文，將本次 diff、核准的驗收標準與紅綠重構證據交給不負責原實作的獨立 reviewer。獨立 reviewer 本身是硬性 gate——宿主無任何獨立審查能力時明確回報阻塞並停止，不得輸出 `PASS`
-5. 採完整 Gherkin 時，依 `docs/AGENTS.md`「規格修訂的查核」比對 issue README，並就同一份 diff 覆核實作者的判定：被歸類為「措辭調整」但實際改變了條件、動作或預期結果的 Scenario，以及標為 `待重新核准` 卻已被實作的 Scenario，都列為 MUST FIX
+5. 依 `docs/AGENTS.md`「規格修訂的查核」比對 issue README（Small + Medium / High 的輕量驗收條件套用同一查核，殘留 `（待重新核准）` 標註卻已被實作者列為 MUST FIX），並就同一份 diff 覆核實作者的判定：被歸類為「措辭調整」但實際改變了條件、動作或預期結果的 Scenario，以及標為 `待核准` 或 `待重新核准` 卻已被實作的 Scenario，都列為 MUST FIX
 6. 記錄本次實際審查的 HEAD SHA；後續新增 commit 後，舊 review 不得代表新 HEAD
 7. 依 `docs/AGENTS.md`「Review artifact 的存放」將完整報告持久化：優先使用專案的 code review 平台（GitHub PR review / comment、GitLab MR discussion、Gitea review 等）；平台不可用、無權限或純本機流程時，寫入 `docs/issues/issue-{ID}/review-{HEAD 前 7 碼}.md` 並隨變更提交。內容必須包含 Reviewed HEAD SHA、獨立 reviewer、`PASS`／`RETURN TO execute-task` 判定及 artifact 位置（URL、ID 或檔案路徑）。兩種方式都無法完成時才輸出 `UNPERSISTED` 並回報阻塞，不得輸出 `PASS`
 8. 讀取 issue README 的 `## Gate 豁免紀錄`（若有）：已豁免的項目不列為缺失，但必須在報告中複述豁免項目與殘餘風險，並確認實際跳過的範圍未超出豁免內容
+9. 讀取 issue README 的 `## 待確認事項`（若有）：仍為 `待確認` 的項目複述於報告並評估對本次變更的風險，不因此判 MUST FIX；標為 `已解決` 或 `不影響本次交付` 者覆核其結論或判定理由是否成立，理由缺漏或與 diff 相矛盾時列為 MUST FIX
 
 ---
 

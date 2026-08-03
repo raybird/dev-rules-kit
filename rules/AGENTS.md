@@ -126,21 +126,23 @@ If verification cannot be fully automated, provide explicit manual steps.
 
 **Define the right behavior with Gherkin, then implement it through red-green-refactor.**
 
-### Acceptance Criteria Strength Follows Size and Risk
+### Size Decides the Form, Risk Decides the Strength
 
-| Combination | Form of acceptance criteria |
-|-------------|----------------------------|
-| **Small + Low** | Lightweight acceptance condition: one sentence describing the observable outcome plus a repeatable way to check it. Gherkin syntax, Scenario IDs, and the per-Scenario approval table are not required |
-| **All other combinations** | Full Gherkin with stable Scenario IDs and an approval record |
+| Size | Form of acceptance criteria |
+|------|----------------------------|
+| **Small** | Lightweight acceptance condition: one sentence describing the observable outcome plus a repeatable way to check it. Gherkin syntax, Scenario IDs, and the per-Scenario approval table are not required |
+| **Medium / Large** | Full Gherkin with stable Scenario IDs and an approval record |
 
-Both require explicit user approval before implementation; an agent must never treat approval as implied.
+Risk never changes the form — high risk calls for stronger evidence, not heavier formatting. A Small issue at Medium or High risk keeps the lightweight form but adds three things: an explicit failure path per condition, at least one condition covering the largest stated risk, and an approval commit so spec revisions can be checked.
+
+Both forms require explicit user approval before implementation; an agent must never treat approval as implied. Approval may be granted in batches — unapproved Scenarios stay marked as pending and must not be implemented, and every Scenario must be approved before opening a PR.
 
 ### Work That Changes Observable Behavior
 
 1. If Superpowers is installed, invoke `brainstorming`; otherwise follow the same built-in clarification process below. Ask one question at a time and obtain explicit approval of the behavior.
 2. Write approved acceptance criteria as Gherkin with stable Scenario IDs and `Feature` / `Scenario` / `Given` / `When` / `Then`.
 3. Persist the approval source, the commit carrying the approved content, and a per-Scenario approval date and status. Before implementing, check whether the spec was revised after approval (see "Handling Spec Revisions").
-4. If available, invoke `test-driven-development`. Whether or not it is installed, create the BDD Step Definitions and run the scenario to capture a relevant failure before changing production code. When the project has no BDD runner, use an integration or end-to-end test tagged with the Scenario ID as the outer loop; a missing tool never justifies skipping the outer loop.
+4. If available, invoke `test-driven-development`. Whether or not it is installed, create the BDD Step Definitions and run the scenario to capture a relevant failure before changing production code. When the project has no BDD runner, use an integration or end-to-end test tagged with the Scenario ID as the outer loop and record the substitute chosen; a missing tool never justifies skipping the outer loop.
 5. Write the smallest unit test for the underlying behavior and run it to capture a relevant failure.
 6. Write the minimum production code needed to pass the unit test and BDD scenario; then refactor while keeping both green.
 7. Preserve command output or equivalent repeatable evidence for each red and green state. A claim such as "tests pass" is not evidence.
@@ -151,8 +153,8 @@ Outer-loop red, unit-test red, green after the minimal implementation, and green
 
 Pure refactoring and documentation work are exempt from the red-light requirement — by definition neither should produce a failing test:
 
-- **Pure refactoring** (moving, renaming, extracting, formatting): use "the same existing tests pass both before and after the change" as equivalent evidence, recording both command outputs. If existing tests do not cover the behavior being refactored, add characterization tests first.
-- **Documentation-only or non-executable work**: substitute a repeatable static check or explicit manual steps, recording why automation does not apply and the actual result.
+- **Pure refactoring** (moving, renaming, extracting, formatting): use "the same existing tests pass both before and after the change" as equivalent evidence, recording both command outputs. If existing tests do not cover the behavior being refactored, add characterization tests and get them green before starting the refactor.
+- **Documentation, formatting, or non-executable work**: substitute a repeatable static check or explicit manual steps, recording why automation does not apply and the actual result.
 
 Claiming that work does not change observable behavior is a commitment that the diff contains no behavioral change; review verifies it on that basis.
 

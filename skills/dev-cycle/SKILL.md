@@ -44,11 +44,12 @@ README 的 `**風險**` 欄位只影響任務順序與驗證方式，**不影響
 | 偵測條件 | 下一步 |
 |---|---|
 | `docs/issues/issue-{ID}/README.md` 不存在 | `new-issue` |
-| README 缺少該規模與風險對應的驗收標準或其核准紀錄（Small + Low 為輕量驗收條件加核准日期與來源；其餘為具唯一 Scenario ID 的 Gherkin 加核准 commit 與逐項核准表），或核准表存在 `待重新核准` 項目 | `new-issue`（繼續澄清與核准，不得實作） |
+| README 缺少該規模與風險對應的驗收標準或其核准紀錄（Small 為輕量驗收條件加核准日期與來源，風險 Medium / High 另需核准 commit；Medium / Large 為具唯一 Scenario ID 的 Gherkin 加核准 commit 與逐項核准表。既有 Small issue 已採完整 Gherkin 者依其實際形式查核，不因形式規則調整而退回），或核准表沒有任何 `已核准` 項目，或存在 `待重新核准` 項目 | `new-issue`（繼續澄清與核准，不得實作） |
 | 分級為 Large 且 `docs/issues/issue-{ID}/` 內無含「Decomposition」標題的 `.md` 檔 | `decompose` |
 | 任務清單有未完成項目，或指定項目缺少對應證據（會改變行為者需完整紅綠重構證據，不改變行為者需等價證據） | `execute-task` |
 | 無含 issue ID 的 branch 或 commit（搜尋 branch 名稱與 commit message） | `execute-task` |
 | PR 已 merged | 完成 |
+| 核准表存在 `待核准` 項目 | `new-issue`（補齊剩餘 Scenario 核准，或由使用者裁示刪除該 Scenario，之後再回到 `execute-task`） |
 | 無 open PR | `create-pr` |
 | open PR body 的 Proof of Test 編號集合與 README 核准清單不完全相等（已記錄豁免者除外） | `create-pr`（更新 PR 說明，不得進入 review） |
 | 找不到針對目前 HEAD SHA 的持久化 review artifact（code review 平台或 `docs/issues/issue-{ID}/review-{短SHA}.md`） | `review`（對話中的報告或舊 commit review 不構成證據） |
@@ -57,7 +58,11 @@ README 的 `**風險**` 欄位只影響任務順序與驗證方式，**不影響
 
 紅綠重構證據、等價證據與假綠燈的定義見 `docs/AGENTS.md`。只有狀態符號、commit 存在或「測試通過」文字不得讓流程前進。編號集合比較採完全相等，不只檢查核准編號是否存在，也拒絕任何額外未核准編號。
 
-**規格修訂**：採完整 Gherkin 的 issue，依 `docs/AGENTS.md`「規格修訂的查核」判斷規格是否在核准後被修訂。差異未觸及 Gherkin 時不影響任何偵測條件；受影響的 Scenario 退回 `new-issue`，其餘可繼續推進。規格被修訂本身不是錯誤，未取得同意才是。
+**規格修訂**：依 `docs/AGENTS.md`「規格修訂的查核」判斷規格是否在核准後被修訂。採完整 Gherkin 時，差異未觸及 Gherkin 不影響任何偵測條件，受影響的 Scenario 退回 `new-issue`，其餘可繼續推進；Small + Medium / High 的輕量驗收條件套用同一查核，被標註 `（待重新核准）` 的條目退回 `new-issue`。Small + Low 沒有核准 commit，不套用查核。規格被修訂本身不是錯誤，未取得同意才是。
+
+**分批核准**：依 `docs/AGENTS.md`「分批核准」，`待核准` 的 Scenario 不阻擋其他已核准 Scenario 的實作——只要核准表至少有一項 `已核准`，閉環就繼續推進到 `execute-task`。`待核准` 在**開 PR 前**才收口：任務推進完畢仍有 `待核准` 時退回 `new-issue`，因此它延後的是核准時機，不是核准要求。
+
+**待確認事項**：`## 待確認事項` 是揭露機制，**不作為任何偵測條件**。仍為 `待確認` 的項目不阻擋 `create-pr`，但 `create-pr` 必須在 PR 揭露；狀態的變更只能來自實際結論或可寫出的判定理由，自動模式下不得為了推進而改寫。
 
 **Gate 豁免**：issue README 的 `## Gate 豁免紀錄` 中已記錄的項目，不再作為卡關條件——該筆紀錄本身即為通過該偵測條件的依據。豁免只對紀錄中明列的項目生效，不擴及其他 gate；沒有紀錄時不得推定豁免。
 
