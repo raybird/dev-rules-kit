@@ -92,7 +92,7 @@ review 發現需要修正時，回到 execute-task 修正後再走一次 commit 
 Superpowers 是本 kit 的**選用流程增強套件，不是必要依賴**。未安裝時，`new-issue`、`decompose`、`execute-task`、`review`、`create-pr` 仍會執行各自內建的等價流程，驗收標準核准、紅綠燈證據、獨立審查與 Proof of Test 等 gate 不會降低。
 
 > [!NOTE]
-> 這些 gate 防的是 AI 自行降低標準，不是限制你的決策。驗收標準的形式會依規模與風險自動調整（Small + Low 只需輕量驗收條件），純重構與純文件任務改用等價證據；需要更快時，直接說「這次不用寫 Gherkin」或「不用先寫測試」即可豁免，AI 會照做並在 issue README 留下 `## Gate 豁免紀錄`。
+> 這些 gate 防的是 AI 自行降低標準，不是限制你的決策。驗收標準的形式依規模自動調整（Small 只需輕量驗收條件，風險高時補失敗路徑而不是改寫成 Gherkin），Scenario 多時可以分批核准，純重構與純文件任務改用等價證據；需要更快時，直接說「這次不用寫 Gherkin」或「不用先寫測試」即可豁免，AI 會照做並在 issue README 留下 `## Gate 豁免紀錄`。
 
 若要使用 Superpowers，建議安裝[完整套件](https://github.com/obra/superpowers)，不要只複製單一 skill。核心流程會在下列 skills 可用時優先調用：
 

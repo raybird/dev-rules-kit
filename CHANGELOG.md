@@ -12,6 +12,20 @@
 
 ---
 
+## [2.2.1] - 2026-08-03
+
+### 修正（`README.md`、`docs/usage.md` — 下游不需重新複製）
+
+2.2.0 更新了 `rules/`、`docs/AGENTS.md` 與全部 skill，但漏掉三處不在 `sync-skills.py` 範圍、需手動維護的使用者文件，導致它們仍在描述舊規則：
+
+- `README.md`：「驗收標準的形式會依規模與風險自動調整（Small + Low 只需輕量驗收條件）」——形式已改為只由規模決定
+- `docs/usage.md`：同一處過時敘述出現兩次（Step 1 說明與 `new-issue` 參考表），一併補上分批核准的說明
+- `docs/usage.md`：將 `requirement-analysis.md` 的內容描述中的「待確認事項」改為「問題點與涉及檔案」。`docs/AGENTS.md` 對該檔的規範從未包含待確認事項，而 2.2.0 起 `## 待確認事項` 明確屬於 README，留著會誤導寫入位置
+
+另將 `docs/AGENTS.md`「實作步驟的排序原則」中的未知來源指向 README 的 `## 待確認事項`，使其與 2.2.0 新增的區段一致。
+
+`workflows/` 下的手動檔案（`README.md` 的清單、`antigravity/fix-webview-conflict.md`）經檢查無過時內容。`docs/superpowers/` 下的歷史規劃與設計文件依 Timeline 保留原則不修改。
+
 ## [2.2.0] - 2026-08-03
 
 ### 新增（`rules/`、`docs/`、`skills/`、`workflows/shared/` — 下游建議重新複製）
