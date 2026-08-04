@@ -49,6 +49,8 @@ cp dev-rules-kit/rules/AGENTS.zh-TW.md ~/.config/opencode/AGENTS.md
 
 **Claude Code 的掛載方式**：Claude Code 只讀 `CLAUDE.md`，不會自動載入 `AGENTS.md`。將本檔複製到專案根目錄後，需在 `CLAUDE.md` 開頭加一行獨立的 `@AGENTS.md`（不可包在反引號或程式碼區塊內）。完整步驟與 `/init` 覆寫的注意事項見[根目錄 README](../README.md#下游專案掛載規則claude-code)。
 
+**OpenCode 的載入順序**：先找 local（自當前目錄往上遍歷的 `AGENTS.md`），再找全域 `~/.config/opencode/AGENTS.md`，最後才是 Claude Code 相容 fallback（`CLAUDE.md`、`~/.claude/CLAUDE.md`）。因此若專案已為 Claude Code 準備了 `AGENTS.md`，OpenCode 會直接沿用同一份，不需重複設定。
+
 外部工具（Serena / GitNexus / Superpowers）的設定見 [docs/setup/tools.md](../docs/setup/tools.md)。
 
 ---
