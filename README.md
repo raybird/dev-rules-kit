@@ -17,15 +17,16 @@ dev-rules-kit/
 ├── docs/                  # 技術文件與規範說明
 │   ├── AGENTS.md          # 文件資料夾說明（AGENTS）
 │   ├── usage.md           # 使用指南（含開發閉環步驟）
+│   ├── setup/tools.md     # 外部工具設定（Serena / GitNexus / Superpowers）
 │   └── _templates/        # 實體文件模板（架構、領域、Changelog）
 ├── rules/                 # 靜態規則檔（agents、coding style、linting 等）
-│   ├── AGENTS.md
+│   ├── AGENTS.md          # 安裝路徑見 rules/README.md
 │   ├── AGENTS.zh-TW.md
 │   └── README.md
 ├── workflows/             # 可執行的命令或工作流程（command/workflow）
 │   ├── shared/            # 共通工作流程（含 dev-cycle.md 等 9 個工作流）
 │   ├── antigravity/       # Antigravity 特定工作流程
-│   └── README.md
+│   └── README.md          # 各平台 workflows 安裝路徑
 └── skills/                # 可重複使用的技能定義（skill，共 9 個技能）
     ├── code-simplify/
     ├── create-commit/
@@ -116,7 +117,7 @@ Superpowers 是本 kit 的**選用流程增強套件，不是必要依賴**。�
 
 PRD 中常見的 `implementation-plan`、`critic`、`architectural-compliance`、`pull-request-spec` 不是本整合要求安裝的實際 skill 名稱；其能力已分別映射到 `writing-plans`、`requesting-code-review` 加架構 gate，以及 `create-pr` 的內建規格。
 
-各平台安裝完整套件的方式不同，請依環境參考：[Claude Code](./docs/setup/claude.md#設定-superpowersplugin)、[OpenCode](./docs/setup/opencode.md#設定-superpowersplugin)、[Antigravity](./docs/setup/antigravity.md#設定-superpowers手動安裝)、[Windsurf](./docs/setup/windsurf.md#設定-superpowers手動安裝)、[Cursor](./docs/setup/cursor.md#設定-superpowers手動安裝)。
+各平台安裝完整套件的方式不同（Claude Code 用 plugin marketplace、OpenCode 用 git URL、其餘平台需手動 clone 加 symlink），請參考 [docs/setup/tools.md 的 Superpowers 章節](./docs/setup/tools.md#設定-superpowers)。
 
 ## 使用方式
 
@@ -125,17 +126,19 @@ PRD 中常見的 `implementation-plan`、`critic`、`architectural-compliance`�
    git clone https://github.com/raybird/dev-rules-kit.git
    ```
 
-2. **依平台選用內容**  
-   - 若使用 **Claude Code**：參考 [docs/setup/claude.md](./docs/setup/claude.md)
-   - 若使用 **OpenCode**：參考 [docs/setup/opencode.md](./docs/setup/opencode.md)
-   - 若使用 **Antigravity**：參考 [docs/setup/antigravity.md](./docs/setup/antigravity.md)
-   - 若使用 **Windsurf**：參考 [docs/setup/windsurf.md](./docs/setup/windsurf.md)
-   - 若使用 **Cursor**：參考 [docs/setup/cursor.md](./docs/setup/cursor.md)
+2. **把需要的資產複製到你的平台**  
+   三個資料夾各自的 README 都載明五個平台（Claude Code / OpenCode / Windsurf / Antigravity / Cursor）的實際路徑與複製指令：
+   - 規則檔：[rules/README.md](./rules/README.md#安裝方式)
+   - 工作流程：[workflows/README.md](./workflows/README.md#安裝方式)
+   - 技能：[skills/README.md](./skills/README.md#安裝方式)
 
-3. **了解日常使用方式**  
+3. **（選用）設定外部工具**  
+   Serena、GitNexus、Superpowers 的各平台設定見 [docs/setup/tools.md](./docs/setup/tools.md)。
+
+4. **了解日常使用方式**  
    參考 [docs/usage.md](./docs/usage.md) 查看完整閉環示範與各 skill 快速參考。
 
-4. **自訂與擴充**  
+5. **自訂與擴充**  
    根據個人或團隊需求，修改或新增 `skills/` 底下的技能定義，修改後於根目錄執行：
    ```bash
    python3 scripts/sync-skills.py
@@ -183,13 +186,7 @@ PRD 中常見的 `implementation-plan`、`critic`、`architectural-compliance`�
 | **[Superpowers](https://github.com/obra/superpowers)** | 選用的 AI 開發流程增強框架 | 提供 brainstorming、TDD、review 與交付驗證等流程型 skills；未安裝時由本 kit 執行內建等價 gate |
 | **[Wave Terminal](https://github.com/wavetermdev/waveterm)** | AI 整合跨平台終端機 | 開源且內建 AI 助手，支援多種模型（OpenAI、Claude、Ollama 等），提供持久 SSH 連線、區塊化工作區與遠端檔案編輯 |
 
-各平台完整安裝步驟：
-
-- **Claude Code**：[docs/setup/claude.md](./docs/setup/claude.md)
-- **OpenCode**：[docs/setup/opencode.md](./docs/setup/opencode.md)
-- **Antigravity**：[docs/setup/antigravity.md](./docs/setup/antigravity.md)
-- **Windsurf**：[docs/setup/windsurf.md](./docs/setup/windsurf.md)
-- **Cursor**：[docs/setup/cursor.md](./docs/setup/cursor.md)
+五個平台的完整設定步驟（MCP 設定檔位置、JSON 範例、驗證與移除）：[docs/setup/tools.md](./docs/setup/tools.md)
 
 ## 版本與更新
 

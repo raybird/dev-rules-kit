@@ -12,6 +12,16 @@
 
 ---
 
+## [2.3.0] - 2026-08-04
+
+### 變更（`docs/setup/`、`rules/README.md`、`workflows/README.md`、`skills/README.md`、`README.md`、`docs/usage.md` — 下游不需重新複製）
+
+- **五份平台安裝指南合併為一份工具設定指南**：原 `docs/setup/{claude,opencode,windsurf,antigravity,cursor}.md`（共 755 行）中，真正屬於本 kit 安裝教學的只有「路徑速查」與「安裝 dev-rules-kit」兩節，其餘 100+ 行都是 Serena / GitNexus / Superpowers 的環境設定，且五份之間高度重複（三個 IDE 平台的 MCP JSON 完全相同）。現改為：
+  - 本 kit 的安裝路徑收攏到對應資料夾的 README——[`rules/README.md`](rules/README.md#安裝方式)、[`workflows/README.md`](workflows/README.md#安裝方式)、[`skills/README.md`](skills/README.md#安裝方式)，各自以表格列出五平台路徑與複製指令
+  - 外部工具設定合併為單一 [`docs/setup/tools.md`](docs/setup/tools.md)，以工具為主軸、平台為分支，並新增 MCP 設定檔位置對照表
+- **修正 `dev-cycle` 的過時敘述**：原 `opencode.md` 與 `antigravity.md` 稱 `dev-cycle`「不會出現在 `/` 指令清單（它沒有 workflow 對應檔）」，但 `workflows/shared/dev-cycle.md` 自 2.0 起即存在。合併後統一為「除 `/dev-cycle` 指令外，也可用自然語言觸發」
+- **補上 `rules/` 的安裝說明**：原五份 setup 只有 Windsurf / Antigravity / Cursor 三平台寫了規則檔怎麼套用，`rules/README.md` 本身完全沒提。現補齊五平台對照表（OpenCode 一列為新增內容）
+
 ## [2.2.1] - 2026-08-03
 
 ### 修正（`README.md`、`docs/usage.md` — 下游不需重新複製）

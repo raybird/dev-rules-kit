@@ -33,17 +33,38 @@ workflows/
 
 - **fix-webview-conflict.md** - 清除 Antigravity 與 Windsurf 衝突導致的 WebView 快取與 Service Worker 錯誤
 
+## 安裝方式
+
+各平台的 slash command 目錄不同，將 `shared/*.md` 複製過去即可（Antigravity 另需複製 `antigravity/*.md`）：
+
+| 平台 | 全域路徑 | 專案層路徑 |
+|------|---------|-----------|
+| **Windsurf** | `~/.codeium/windsurf/global_workflows/*.md` | `.windsurf/workflows/*.md`（當前工作區、子目錄或父目錄直到 git root） |
+| **Antigravity** | `~/.gemini/antigravity/global_workflows/*.md` | — |
+| **OpenCode** | `~/.config/opencode/commands/*.md` | `.opencode/commands/*.md` |
+| **Cursor** | `~/.cursor/commands/*.md` | — |
+| **Claude Code** | 不使用 workflows，改用 `~/.claude/skills/`（見 [skills/README.md](../skills/README.md#安裝方式)） | — |
+
+```bash
+# Windsurf
+cp dev-rules-kit/workflows/shared/*.md ~/.codeium/windsurf/global_workflows/
+
+# Antigravity（含平台專屬工作流）
+cp dev-rules-kit/workflows/shared/*.md ~/.gemini/antigravity/global_workflows/
+cp dev-rules-kit/workflows/antigravity/*.md ~/.gemini/antigravity/global_workflows/
+
+# OpenCode
+cp dev-rules-kit/workflows/shared/*.md ~/.config/opencode/commands/
+
+# Cursor
+mkdir -p ~/.cursor/commands
+cp dev-rules-kit/workflows/shared/*.md ~/.cursor/commands/
+```
+
+驗證：於 AI 對話框輸入 `/`，應出現 `decompose`、`create-commit`、`new-issue` 等指令（Antigravity 另有 `fix-webview-conflict`）。
+
+規則檔的安裝位置見 [rules/README.md](../rules/README.md#安裝方式)；外部工具（Serena / GitNexus / Superpowers）見 [docs/setup/tools.md](../docs/setup/tools.md)。
+
 ## 使用方式
 
-根據您的 IDE 平台選擇對應的工作流程，或使用 shared/ 目錄中的共通工作流程。
-
-### 平台路徑對應
-
-根據各平台官方文件：
-
-- **Antigravity**: 預設路徑為 `global_workflows/`，目前支援 shared/ 共通工作流及 antigravity/ 平台特定工作流
-- **OpenCode**: 預設路徑為 `commands/` 或 `.opencode/commands/`，目前支援 shared/ 共通工作流（原平台特定工作流已整合至 shared/）
-- **Windsurf**:
-  - Workspace: `.windsurf/workflows/*.md`（在當前工作區、子目錄或父目錄直到 git root）
-  - Global: `~/.codeium/windsurf/global_workflows/*.md`（在機器上的所有工作區可用）
-  - 目前支援 shared/ 共通工作流
+根據您的 IDE 平台選擇對應的工作流程，或使用 shared/ 目錄中的共通工作流程。工作流程檔案在平台啟動時載入，新增或修改後需重新載入視窗才會生效。

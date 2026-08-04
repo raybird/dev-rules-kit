@@ -38,14 +38,32 @@ dev-rules-kit/
     └── README.md
 ```
 
-## 各平台使用方式
+## 安裝方式
 
-| 平台 | 使用目錄 | 說明 |
-|------|----------|------|
-| **Windsurf** | `workflows/` | 使用 `.windsurf/workflows/` 路徑 |
-| **OpenCode** | `workflows/` | 原 `commands/` 功能已整合至 `workflows/shared/` |
-| **Antigravity** | `workflows/` 或 `skills/` | 視功能需求選用 |
-| **Claude** | `skills/` | 主要使用 skills 目錄結構 |
+各平台的全域 skills 目錄如下，複製後每個技能會成為 `<平台 skills 目錄>/<name>/SKILL.md`：
+
+| 平台 | skills 目錄 | 備註 |
+|------|------------|------|
+| **Claude Code** | `~/.claude/skills/` | 主要使用 skills，不需另外安裝 workflows |
+| **OpenCode** | `~/.config/opencode/skills/` | 另需複製 `workflows/shared/` 到 `commands/` |
+| **Windsurf** | `~/.codeium/windsurf/skills/` | 另需複製 `workflows/shared/` 到 `global_workflows/` |
+| **Antigravity** | `~/.gemini/antigravity/skills/` | 另需複製 `workflows/` 到 `global_workflows/` |
+| **Cursor** | `~/.cursor/skills/` | 另需複製 `workflows/shared/` 到 `commands/` |
+
+```bash
+# Claude Code
+cp -r dev-rules-kit/skills/* ~/.claude/skills/
+
+# 其他平台（以 Windsurf 為例，替換路徑即可）
+mkdir -p ~/.codeium/windsurf/skills
+cp -r dev-rules-kit/skills/* ~/.codeium/windsurf/skills/
+```
+
+驗證：於 AI 對話框輸入 `/`，應出現 `decompose`、`create-commit`、`new-issue`、`dev-cycle` 等指令。
+
+> **`dev-cycle` 使用方式**：這是一個 orchestration skill，除了 `/dev-cycle` 指令外，也可用自然語言觸發——直接說「issue 3396 到哪了」（查詢模式）或「繼續 3396」（推進模式），AI 會自動偵測 issue 目前所在階段並執行下一步。若未自動載入，可手動告知 AI 參考 `skills/dev-cycle/SKILL.md`。
+
+workflows 的安裝路徑見 [workflows/README.md](../workflows/README.md#安裝方式)；規則檔見 [rules/README.md](../rules/README.md#安裝方式)；外部工具（Serena / GitNexus / Superpowers）見 [docs/setup/tools.md](../docs/setup/tools.md)。
 
 ## 使用方式
 
@@ -69,6 +87,7 @@ dev-rules-kit/
 
 | 日期 | 異動 | 說明 |
 |------|------|------|
+| 2026-08-04 | 收攏安裝路徑 | 新增「安裝方式」章節，取代原 `docs/setup/<platform>.md` 的「安裝 dev-rules-kit」段落 |
 | 2026-07-21 | 分級分流與 description 規範 | 依 issue 分級決定是否需要 `decompose`；`description` 補齊觸發時機與適用範圍 |
 | 2026-06-02 | 新增 git-squash | 新增 git-squash 技能，對應新增的 git-squash 工作流程 |
 | 2026-05-28 | 新增 dev-cycle | 新增 dev-cycle 協調技能，以 issue 為中心追蹤並推進開發閉環 |
@@ -78,6 +97,6 @@ dev-rules-kit/
 ---
 
 **建立日期**: 2026-05-08  
-**最後更新**: 2026-07-21  
-**文件版本**: 1.2  
+**最後更新**: 2026-08-04  
+**文件版本**: 1.3  
 **適用範圍**: `skills/` 資料夾所有技能

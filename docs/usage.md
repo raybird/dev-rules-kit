@@ -2,7 +2,7 @@
 
 這套 kit 提供一組可跨平台重用的 rules、workflows 與 skills，讓 AI agent 在你的開發環境中按照一致的工作流程運作——從需求分析、實作規劃、程式碼撰寫，到 commit、PR、review，形成一個完整的開發閉環。
 
-**前置條件**：請先依照你使用的平台完成安裝：[Claude Code](./setup/claude.md) · [Windsurf](./setup/windsurf.md) · [OpenCode](./setup/opencode.md) · [Antigravity](./setup/antigravity.md)
+**前置條件**：請先把需要的資產複製到你的平台——[規則檔](../rules/README.md#安裝方式) · [工作流程](../workflows/README.md#安裝方式) · [技能](../skills/README.md#安裝方式)，各 README 都載明五個平台的實際路徑。外部工具（Serena / GitNexus / Superpowers）的設定為選用，見 [setup/tools.md](./setup/tools.md)。
 
 ---
 

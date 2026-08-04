@@ -24,6 +24,33 @@
 - `AGENTS.md` - AI 開發助理核心規則（英文版）
 - `AGENTS.zh-TW.md` - AI 開發助理核心規則（繁體中文版）
 
+## 安裝方式
+
+各平台讀取全域規則的位置不同，擇一複製即可（繁中環境建議用 `AGENTS.zh-TW.md`）：
+
+| 平台 | 全域規則位置 | 專案層覆寫 |
+|------|-------------|-----------|
+| **Claude Code** | 不自動載入 `AGENTS.md`，需在 `CLAUDE.md` 用 `@AGENTS.md` 匯入（見下方） | 專案根目錄 `AGENTS.md` |
+| **Windsurf** | `~/.codeium/windsurf/memories/global_rules.md` | `.windsurfrules`（疊加而非覆寫） |
+| **Antigravity** | `~/.gemini/GEMINI.md` | — |
+| **Cursor** | 無檔案系統層級設定，需在 Settings → **Rules** → **User Rules** 貼上內容 | `.cursor/rules/*.mdc`（`.cursorrules` 為舊版單檔格式，仍可用） |
+| **OpenCode** | `~/.config/opencode/AGENTS.md` | 專案根目錄 `AGENTS.md` |
+
+```bash
+# Windsurf
+cp dev-rules-kit/rules/AGENTS.zh-TW.md ~/.codeium/windsurf/memories/global_rules.md
+
+# Antigravity
+cp dev-rules-kit/rules/AGENTS.zh-TW.md ~/.gemini/GEMINI.md
+
+# OpenCode
+cp dev-rules-kit/rules/AGENTS.zh-TW.md ~/.config/opencode/AGENTS.md
+```
+
+**Claude Code 的掛載方式**：Claude Code 只讀 `CLAUDE.md`，不會自動載入 `AGENTS.md`。將本檔複製到專案根目錄後，需在 `CLAUDE.md` 開頭加一行獨立的 `@AGENTS.md`（不可包在反引號或程式碼區塊內）。完整步驟與 `/init` 覆寫的注意事項見[根目錄 README](../README.md#下游專案掛載規則claude-code)。
+
+外部工具（Serena / GitNexus / Superpowers）的設定見 [docs/setup/tools.md](../docs/setup/tools.md)。
+
 ---
 
 **建立日期**: 2026-05-08  
