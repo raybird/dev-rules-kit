@@ -52,6 +52,8 @@ dev-rules-kit/
 
 > **OpenCode 的單複數目錄**：OpenCode（1.18.14 實測）掃描的 glob 是 `{skill,skills}/**/SKILL.md`，單數 `skill/` 與複數 `skills/` 都會載入。兩個目錄同時存在時同名技能會被載入兩次，請擇一使用。
 
+> **frontmatter 的 `name:` 為必填**：OpenCode 與 Antigravity 要求 `SKILL.md` 的 frontmatter 具備 `name:`，缺少時整份技能會**靜默不載入**——不報錯，也不出現在技能清單中。Claude Code 則可由資料夾名推導，有無皆可。本 kit 自 2.4.0 起所有技能一律附帶 `name:`，從舊版更新時請重新複製全部技能。
+
 > **Antigravity 的路徑遷移**：舊版路徑為 `~/.gemini/antigravity/skills/`，現行路徑是 `~/.gemini/config/skills/`（2026-05-20 遷移，三個 Antigravity 產品共用）。裝在舊路徑的技能不保證會被載入。
 
 > **OpenCode 是否需要兩邊都裝**：`skills/` 與 `workflows/shared/` 的內容逐位元組相同，OpenCode 會同時載入兩者，等於同一份內容有 skill 與 slash command 兩個入口，而 skill 的 `description` 常駐 context。若已安裝 `commands/`，一般不需再複製全部技能；例外是 `dev-cycle`，它的價值在自然語言觸發，可單獨安裝。

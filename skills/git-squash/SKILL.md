@@ -1,4 +1,5 @@
 ---
+name: git-squash
 description: 分析目前分支與基準分支的差異，並自動整理 Squash 的 Commit 訊息與提供合併建議
 ---
 

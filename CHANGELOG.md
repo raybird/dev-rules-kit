@@ -12,6 +12,18 @@
 
 ---
 
+## [2.4.0] - 2026-08-07
+
+### 修正（`skills/`、`workflows/shared/`、`CLAUDE.md`、`skills/README.md` — **下游需重新複製全部技能與工作流程**）
+
+- **所有 `SKILL.md` 與 `workflows/shared/*.md` 補上 `name:` frontmatter 欄位**：原規範寫明「不要加 `name:` 欄位 — 名稱由檔名／資料夾名決定」，該敘述僅對 Claude Code 成立。OpenCode 1.18.14 與 Antigravity CLI（`agy` 1.1.7）**要求 frontmatter 具備 `name:`，缺少時整份 skill 會靜默不載入**——不報錯、不出現在 skill 清單、也無任何警告，因此本 kit 的 9 個技能過去在這兩個平台上其實從未生效（只有 slash command 那條路徑有作用）。
+
+  實測依據：同一個 `~/.claude/skills/` 目錄下（OpenCode 會一併掃描），具備 `name:` 的第三方技能全數載入，本 kit 缺 `name:` 的 9 個全數未載入；Antigravity 端為同一份 `dev-cycle` 補上 `name:` 前後對照，補上後才出現在技能清單。
+
+  workflow 端一併帶上 `name:` 無副作用：OpenCode 解析 slash command 時先以檔名推導 `name`，再以 frontmatter 覆寫，兩者同名故結果一致，且 schema 本就包含該欄位。
+
+- **`CLAUDE.md` 的 Frontmatter 規範改為 `name:` 必填**，並記錄三平台的行為差異，避免日後再依「檔名即名稱」的假設移除該欄位。
+
 ## [2.3.1] - 2026-08-07
 
 ### 修正（`rules/README.md`、`skills/README.md`、`workflows/README.md`、`docs/setup/tools.md` — 下游不需重新複製）

@@ -1,4 +1,5 @@
 ---
+name: new-issue
 description: 透過蘇格拉底式澄清將需求轉成使用者核准的驗收標準，並在 docs/issues/issue-{ID}/ 建立 issue 文件。接到新需求或 issue 編號、需要釐清範圍與產出分析文件時使用；依 Small / Medium / Large 規模決定文件與驗收標準形式，並依 Low / Medium / High 風險決定驗收標準強度與驗證順序。
 ---
 

@@ -1,4 +1,5 @@
 ---
+name: create-pr
 description: 根據指定 commit 範圍與實際通過的驗收標準證據生成 Pull Request 說明。變更已提交、準備以 Proof of Test 供 reviewer 驗收時使用。
 ---
 

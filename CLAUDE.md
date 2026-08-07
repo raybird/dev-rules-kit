@@ -45,11 +45,14 @@ python3 scripts/sync-skills.py --check
 
 ```markdown
 ---
+name: 與資料夾名／檔名相同
 description: 一句話描述用途
 ---
 ```
 
-不要加 `name:` 欄位 — 名稱由檔名／資料夾名決定。
+`name:` 必填，且必須與 skill 資料夾名（`skills/<name>/`）及 workflow 檔名（`workflows/shared/<name>.md`）完全一致。
+
+**不要省略 `name:`。** Claude Code 會從資料夾名推導名稱，省略也能運作；但 OpenCode 與 Antigravity **要求 frontmatter 具備 `name:`，缺少時整份 skill 會靜默不載入**，既不報錯也不出現在 skill 清單中（2026-08-07 於 OpenCode 1.18.14、Antigravity CLI `agy` 1.1.7 實測確認）。workflow 端加上 `name:` 無副作用——OpenCode 解析 slash command 時先以檔名推導 `name`，再讓 frontmatter 覆寫，兩者同名故結果一致。
 
 ## 文件規範（套用此 kit 的下游專案）
 

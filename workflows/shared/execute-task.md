@@ -1,4 +1,5 @@
 ---
+name: execute-task
 description: 依驗收標準的 BDD 外迴圈與 TDD 內迴圈執行指定的 issue 步驟或 Phase / Task，取得紅綠燈或等價證據後實作最少程式碼
 ---
 

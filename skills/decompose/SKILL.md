@@ -1,4 +1,5 @@
 ---
+name: decompose
 description: 將 Large issue 的 Gherkin 與 Implementation Plan 細化為 BDD 外迴圈、TDD 內迴圈及可執行的 Phase / Task。僅適用 Large；Small / Medium 的實作步驟本身即為任務清單，不需拆解。
 ---
 
