@@ -40,18 +40,22 @@ workflows/
 | 平台 | 全域路徑 | 專案層路徑 |
 |------|---------|-----------|
 | **Windsurf** | `~/.codeium/windsurf/global_workflows/*.md` | `.windsurf/workflows/*.md`（當前工作區、子目錄或父目錄直到 git root） |
-| **Antigravity** | `~/.gemini/antigravity/global_workflows/*.md` | — |
+| **Antigravity** | `~/.gemini/config/global_workflows/*.md` | — |
 | **OpenCode** | `~/.config/opencode/commands/*.md` | `.opencode/commands/*.md` |
 | **Cursor** | `~/.cursor/commands/*.md` | — |
 | **Claude Code** | 不使用 workflows，改用 `~/.claude/skills/`（見 [skills/README.md](../skills/README.md#安裝方式)） | — |
+
+> **OpenCode 的單複數目錄**：官方文件只列複數 `commands/`，但 OpenCode（1.18.14 實測）掃描的 glob 是 `{command,commands}/**/*.md`，單數 `command/` 同樣有效。兩個目錄同時存在時內容會被載入兩次，請擇一使用。
+
+> **Antigravity 的路徑遷移**：舊版路徑為 `~/.gemini/antigravity/global_workflows/`，自 `~/.gemini/config/.migrated`（2026-05-20）起改為 `~/.gemini/config/global_workflows/`，由 Antigravity、Antigravity IDE 與 Antigravity CLI（`agy`）三者共用。舊路徑仍可能被當作 fallback 讀取，更新後建議清空，避免載入到遷移前的舊版流程。
 
 ```bash
 # Windsurf
 cp dev-rules-kit/workflows/shared/*.md ~/.codeium/windsurf/global_workflows/
 
 # Antigravity（含平台專屬工作流）
-cp dev-rules-kit/workflows/shared/*.md ~/.gemini/antigravity/global_workflows/
-cp dev-rules-kit/workflows/antigravity/*.md ~/.gemini/antigravity/global_workflows/
+cp dev-rules-kit/workflows/shared/*.md ~/.gemini/config/global_workflows/
+cp dev-rules-kit/workflows/antigravity/*.md ~/.gemini/config/global_workflows/
 
 # OpenCode
 cp dev-rules-kit/workflows/shared/*.md ~/.config/opencode/commands/

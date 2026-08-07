@@ -47,8 +47,14 @@ dev-rules-kit/
 | **Claude Code** | `~/.claude/skills/` | 主要使用 skills，不需另外安裝 workflows |
 | **OpenCode** | `~/.config/opencode/skills/` | 另需複製 `workflows/shared/` 到 `commands/` |
 | **Windsurf** | `~/.codeium/windsurf/skills/` | 另需複製 `workflows/shared/` 到 `global_workflows/` |
-| **Antigravity** | `~/.gemini/antigravity/skills/` | 另需複製 `workflows/` 到 `global_workflows/` |
+| **Antigravity** | `~/.gemini/config/skills/` | 另需複製 `workflows/` 到 `global_workflows/` |
 | **Cursor** | `~/.cursor/skills/` | 另需複製 `workflows/shared/` 到 `commands/` |
+
+> **OpenCode 的單複數目錄**：OpenCode（1.18.14 實測）掃描的 glob 是 `{skill,skills}/**/SKILL.md`，單數 `skill/` 與複數 `skills/` 都會載入。兩個目錄同時存在時同名技能會被載入兩次，請擇一使用。
+
+> **Antigravity 的路徑遷移**：舊版路徑為 `~/.gemini/antigravity/skills/`，現行路徑是 `~/.gemini/config/skills/`（2026-05-20 遷移，三個 Antigravity 產品共用）。裝在舊路徑的技能不保證會被載入。
+
+> **OpenCode 是否需要兩邊都裝**：`skills/` 與 `workflows/shared/` 的內容逐位元組相同，OpenCode 會同時載入兩者，等於同一份內容有 skill 與 slash command 兩個入口，而 skill 的 `description` 常駐 context。若已安裝 `commands/`，一般不需再複製全部技能；例外是 `dev-cycle`，它的價值在自然語言觸發，可單獨安裝。
 
 ```bash
 # Claude Code
@@ -87,6 +93,8 @@ workflows 的安裝路徑見 [workflows/README.md](../workflows/README.md#安裝
 
 | 日期 | 異動 | 說明 |
 |------|------|------|
+| 2026-08-07 | 修正 Antigravity 路徑 | 改為遷移後的 `~/.gemini/config/skills/`，舊路徑不保證載入 |
+| 2026-08-07 | 補 OpenCode 安裝細節 | 註明 `{skill,skills}` glob 單複數皆生效，以及與 `commands/` 重複安裝的取捨 |
 | 2026-08-04 | 收攏安裝路徑 | 新增「安裝方式」章節，取代原 `docs/setup/<platform>.md` 的「安裝 dev-rules-kit」段落 |
 | 2026-07-21 | 分級分流與 description 規範 | 依 issue 分級決定是否需要 `decompose`；`description` 補齊觸發時機與適用範圍 |
 | 2026-06-02 | 新增 git-squash | 新增 git-squash 技能，對應新增的 git-squash 工作流程 |
@@ -97,6 +105,6 @@ workflows 的安裝路徑見 [workflows/README.md](../workflows/README.md#安裝
 ---
 
 **建立日期**: 2026-05-08  
-**最後更新**: 2026-08-04  
-**文件版本**: 1.3  
+**最後更新**: 2026-08-07  
+**文件版本**: 1.4  
 **適用範圍**: `skills/` 資料夾所有技能

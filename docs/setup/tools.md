@@ -22,10 +22,12 @@ Serena 與 GitNexus 都以 MCP server 形式整合，各平台的設定檔與 JS
 | Claude Code | 透過 `claude mcp add` 指令登錄 | — |
 | OpenCode | `~/.config/opencode/config.json` | `mcp` |
 | Windsurf | `~/.codeium/windsurf/mcp_config.json` | `mcpServers` |
-| Antigravity | `~/.gemini/antigravity/mcp_config.json` | `mcpServers` |
+| Antigravity | `~/.gemini/config/mcp_config.json` | `mcpServers` |
 | Cursor | `~/.cursor/mcp.json` | `mcpServers` |
 
 Windsurf / Antigravity / Cursor 三者的 JSON 格式完全相同，可直接互相沿用。
+
+> **Antigravity 的路徑遷移**：`~/.gemini/antigravity/` 底下的 `mcp_config.json` 與 `skills/` 是 2026-05-20 遷移前的舊路徑，現行設定統一在 `~/.gemini/config/`，由 Antigravity、Antigravity IDE 與 Antigravity CLI（`agy`）共用。從舊版升級時記得比對兩處內容，避免遺漏遷移後才加入的 server。
 
 ## 設定 Serena（MCP）
 
@@ -221,7 +223,7 @@ git clone https://github.com/obra/superpowers.git ~/Tools/superpowers
 
 # 2. 將 skills 連結（或複製）到平台的 skills 目錄
 ln -s ~/Tools/superpowers/skills/* ~/.codeium/windsurf/skills/     # Windsurf
-ln -s ~/Tools/superpowers/skills/* ~/.gemini/antigravity/skills/   # Antigravity
+ln -s ~/Tools/superpowers/skills/* ~/.gemini/config/skills/        # Antigravity
 ln -s ~/Tools/superpowers/skills/* ~/.cursor/skills/               # Cursor
 ```
 

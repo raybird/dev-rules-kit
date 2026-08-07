@@ -12,6 +12,17 @@
 
 ---
 
+## [2.3.1] - 2026-08-07
+
+### 修正（`rules/README.md`、`skills/README.md`、`workflows/README.md`、`docs/setup/tools.md` — 下游不需重新複製）
+
+2.3.0 收攏安裝路徑時沿用了既有敘述，其中 Antigravity 的路徑早已失效，OpenCode 的目錄慣例也與官方文件不符。本次以各平台實際安裝版本實測後更正：
+
+- **Antigravity 全域路徑已遷移**：`~/.gemini/config/.migrated`（2026-05-20）之後，設定統一在 `~/.gemini/config/`，由 Antigravity、Antigravity IDE 與 Antigravity CLI（`agy`）三者共用。四處舊路徑一併更正——workflows 改為 `~/.gemini/config/global_workflows/`、skills 改為 `~/.gemini/config/skills/`、MCP 設定改為 `~/.gemini/config/mcp_config.json`，以及 `docs/setup/tools.md` 中把 Superpowers symlink 到舊 skills 目錄的指令（照舊指令安裝的技能不會被載入）
+- **Antigravity 規則檔位置**：全域規則改記 `~/.gemini/config/AGENTS.md`，與 `~/.gemini/GEMINI.md` **同時載入**而非擇一（`agy` 1.1.7 以 marker 實測）。官方文件只記載 `GEMINI.md`，但放在 `config/AGENTS.md` 可與個人規則分離，重新複製規則檔時不會蓋掉個人設定。官方文件所述的專案層 `.agents/rules/*.md` 於 CLI 非互動模式實測未生效，已標注但保留記載
+- **OpenCode 目錄單複數皆生效**：1.18.14 掃描的 glob 為 `{command,commands}/**/*.md` 與 `{skill,skills}/**/SKILL.md`，官方文件只列複數。兩種目錄同時存在會重複載入，README 補上擇一使用的提醒
+- **OpenCode 不需 skills 與 commands 兩邊都裝**：兩者內容逐位元組相同且會同時載入，等於同一份內容有兩個入口，而 skill 的 `description` 常駐 context。已於 `skills/README.md` 說明取捨，並指出 `dev-cycle` 是值得單獨安裝的例外
+
 ## [2.3.0] - 2026-08-04
 
 ### 變更（`docs/setup/`、`rules/README.md`、`workflows/README.md`、`skills/README.md`、`README.md`、`docs/usage.md` — 下游不需重新複製）
