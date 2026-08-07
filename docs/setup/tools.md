@@ -227,7 +227,19 @@ ln -s ~/Tools/superpowers/skills/* ~/.gemini/config/skills/        # Antigravity
 ln -s ~/Tools/superpowers/skills/* ~/.cursor/skills/               # Cursor
 ```
 
-建議使用 symlink，後續於 `~/Tools/superpowers/` 執行 `git pull` 即可更新。
+建議使用 symlink 而非複製，更新時只需拉取來源：
+
+```bash
+# 更新 Superpowers（symlink 安裝時）
+cd ~/Tools/superpowers && git pull
+
+# 上游若「新增」技能才需要補連結；既有連結不受影響
+ln -sfn ~/Tools/superpowers/skills/* ~/.gemini/config/skills/
+```
+
+symlink 指向來源目錄，`git pull` 後既有技能的內容即刻生效，不必重新連結；只有上游新增技能時原本的 `skills/*` 展開清單才會漏掉它。補連結指令是冪等的——`-f` 覆蓋既有連結、`-n` 避免連進目錄內部，重複執行不會產生巢狀，也不會動到同目錄下非 Superpowers 的技能。
+
+Claude Code 與 OpenCode 走各自的 plugin 機制自動更新，不需要這份 clone。
 
 **使用注意事項**：
 

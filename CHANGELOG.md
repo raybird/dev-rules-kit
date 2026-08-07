@@ -12,6 +12,12 @@
 
 ---
 
+## [2.4.1] - 2026-08-07
+
+### 補充（`docs/setup/tools.md` — 下游不需重新複製）
+
+- **補上 Superpowers 的更新指令與 symlink 限制**：原文只寫「後續於 `~/Tools/superpowers/` 執行 `git pull` 即可更新」，漏掉一個實際會踩到的點——安裝指令的 `skills/*` 是展開當下的清單，上游**新增**技能時不會自動產生對應連結。現補上 `ln -sfn` 補連結指令，並說明其冪等性（`-f` 覆蓋既有連結、`-n` 避免連進目錄內部，重複執行不產生巢狀，也不影響同目錄下非 Superpowers 的技能）。另註明 Claude Code 與 OpenCode 走各自的 plugin 機制自動更新，不需要這份 clone，避免誤以為三個平台都得手動維護。
+
 ## [2.4.0] - 2026-08-07
 
 ### 修正（`skills/`、`workflows/shared/`、`CLAUDE.md`、`skills/README.md` — **下游需重新複製全部技能與工作流程**）
