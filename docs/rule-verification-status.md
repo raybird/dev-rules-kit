@@ -70,6 +70,12 @@
 | `rules/` 補上五項落差（單迴圈合併、證據持久力、查核作用域、觀測式驗收、合法狀態） | 僅靜態撰寫 | googleBooking 已同步進其 CLAUDE.md，但尚未在實作中套用 |
 | `CLAUDE.md` 單一真相來源清單補齊 | 僅靜態撰寫 | — |
 
+## v2.10.0 — 同義反覆
+
+| 規則 | 狀態 | 驗證來源 |
+|---|---|---|
+| 「假綠燈」新增同義反覆（tautological）條目與獨立真相來源要求 | 僅靜態撰寫 | 來源為 [mattpocock/skills](https://github.com/mattpocock/skills) 的 `engineering/tdd` anti-patterns（2026-08-18 閱讀）——屬**外部規範借鑑**，非本 kit 下游的實跑發現，尚未在實作中套用 |
+
 ## 已知的驗證限制
 
 - **樣本數 n=2，且同源**：line-oa-plus 與 googleBooking 同屬一位使用者、跑同一套 kit、工作流程相近。**兩者共有的盲點照不出來**——例如多人並行 review、非中文協作者、非 Firebase 系技術棧的情境，今天完全沒有覆蓋。

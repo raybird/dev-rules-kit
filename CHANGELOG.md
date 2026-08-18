@@ -12,6 +12,18 @@
 
 ---
 
+## [2.10.0] - 2026-08-18
+
+### 新增（`docs/AGENTS.md`、`rules/`、`skills/`、`workflows/shared/` — **下游需重新複製規範、規則檔與 `execute-task`、`review`**）
+
+- **「假綠燈」新增同義反覆（tautological）條目**：原清單涵蓋了刪測試、mock 掉待驗收行為、硬編碼答案、無 assertion，但漏掉一個更隱蔽的變體——**斷言以與被測程式碼相同的方式重算期望值**（`expect(add(a, b)).toBe(a + b)`、以手算重跑一次相同實作邏輯得到的 snapshot）。它 passes by construction，永遠不可能與程式碼意見不合，因此測不出任何東西，而它的紅綠燈看起來完全正常。
+
+  現要求**期望值必須來自獨立的真相來源**（已知良好的字面值、人工推導的實例、規格原文、或另一條不共用實作的取得路徑），判斷方式是問「**這個斷言有沒有可能與程式碼意見不合？**」——不可能，它就不是測試。`execute-task` 在 TDD 內迴圈紅燈階段即要求，`review` 對同義反覆列 MUST FIX，雙語規則檔一併補上。
+
+  規範同時點明它與 2.8.0「觀測式驗收」反向自檢是**同一機制的兩種形態**：同義反覆是斷言與實作不獨立，觀測式假綠燈是判準與失敗模式不相交，兩者的綠燈都來自判準本身失效而非行為正確。
+
+  來源：[mattpocock/skills](https://github.com/mattpocock/skills) 的 `engineering/tdd` 技能，其 anti-patterns 章節將 tautological 與 implementation-coupled、horizontal slicing 並列。
+
 ## [2.9.1] - 2026-08-18
 
 ### 新增（`docs/rule-verification-status.md`、`CLAUDE.md` — 下游不需重新複製）
