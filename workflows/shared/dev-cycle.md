@@ -89,7 +89,7 @@ README 的 `**風險**` 欄位只影響任務順序與驗證方式，**不影響
    | create-pr | 確認所有 Task 已完成、證據齊全並已 commit 後，呼叫 `create-pr`；Proof of Test 未完整覆蓋核准的驗收標準時更新 PR body。另依 `docs/AGENTS.md`「常青文件更新責任」確認本次變更觸發的常青文件已更新，未更新時先回到 `execute-task` 補上再開 PR |
    | review | 對目前 PR HEAD 呼叫 `review` 並依 `docs/AGENTS.md` 持久化報告；只有該 SHA 的持久化 `PASS` artifact 才能等待合併，`RETURN TO execute-task` 修正並產生新 commit 後重新審查 |
    | execute-task（修正） | 說明「目前 HEAD 的 review 未通過，需修正並建立新 commit 後重新審查」，呼叫 `execute-task` |
-   | 完成 | 依 `docs/AGENTS.md` 收尾 issue 文件：README 狀態標記為已完成、timeline 補記 merge 日期，然後恭喜並結束 |
+   | 完成 | 依 `docs/AGENTS.md` 收尾 issue 文件：README 狀態標記為已完成、timeline 補記 merge 日期；採 squash / rebase 合併時，依「規格修訂的查核」以後續 commit 回填 `**核准 commit**` 並以 `git merge-base --is-ancestor` 驗證可達，然後恭喜並結束 |
 
 4. 子步驟完成後回到步驟 1 繼續偵測
 5. 循環直到 PR merged 或使用者中斷

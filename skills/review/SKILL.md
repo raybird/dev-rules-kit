@@ -37,7 +37,7 @@ description: 以獨立批判者審查當前分支的驗收標準覆蓋、測試�
    - 自動格式化異動（純空白或換行差異）
 3. 優先審查核心邏輯檔案，再依序審查設定、樣板、測試
 4. Superpowers 可用時優先調用 `requesting-code-review`；未安裝時使用宿主原生 subagent / task 或其他隔離上下文，將本次 diff、核准的驗收標準與紅綠重構證據交給不負責原實作的獨立 reviewer。獨立 reviewer 本身是硬性 gate——宿主無任何獨立審查能力時明確回報阻塞並停止，不得輸出 `PASS`
-5. 依 `docs/AGENTS.md`「規格修訂的查核」比對 issue README（Small + Medium / High 的輕量驗收條件套用同一查核，殘留 `（待重新核准）` 標註卻已被實作者列為 MUST FIX），並就同一份 diff 覆核實作者的判定：被歸類為「措辭調整」但實際改變了條件、動作或預期結果的 Scenario，以及標為 `待核准` 或 `待重新核准` 卻已被實作的 Scenario，都列為 MUST FIX
+5. 依 `docs/AGENTS.md`「規格修訂的查核」比對 issue README（該查核的作用域為實作期間；核准 commit 已因 squash / rebase 失效時，依該節先回填並以 `git merge-base --is-ancestor` 驗證，不得以此為由略過查核）（Small + Medium / High 的輕量驗收條件套用同一查核，殘留 `（待重新核准）` 標註卻已被實作者列為 MUST FIX），並就同一份 diff 覆核實作者的判定：被歸類為「措辭調整」但實際改變了條件、動作或預期結果的 Scenario，以及標為 `待核准` 或 `待重新核准` 卻已被實作的 Scenario，都列為 MUST FIX
 6. 記錄本次實際審查的 HEAD SHA；後續新增 commit 後，舊 review 不得代表新 HEAD
 7. 依 `docs/AGENTS.md`「Review artifact 的存放」將完整報告持久化：優先使用專案的 code review 平台（GitHub PR review / comment、GitLab MR discussion、Gitea review 等）；平台不可用、無權限或純本機流程時，寫入 `docs/issues/issue-{ID}/review-{HEAD 前 7 碼}.md` 並隨變更提交。內容必須包含 Reviewed HEAD SHA、獨立 reviewer、`PASS`／`RETURN TO execute-task` 判定及 artifact 位置（URL、ID 或檔案路徑）。兩種方式都無法完成時才輸出 `UNPERSISTED` 並回報阻塞，不得輸出 `PASS`
 8. 讀取 issue README 的 `## Gate 豁免紀錄`（若有）：已豁免的項目不列為缺失，但必須在報告中複述豁免項目與殘餘風險，並確認實際跳過的範圍未超出豁免內容
@@ -80,8 +80,10 @@ description: 以獨立批判者審查當前分支的驗收標準覆蓋、測試�
 ### 5. 測試證據與破壞性案例
 
 - 核對每項驗收標準的紅綠重構證據
+- 核准表為單行省略形式時，確認 README 確實沒有任何 `待核准` / `待重新核准` 的 Scenario；分批情境卻使用單行形式列為 MUST FIX（該誤用會讓核准查核靜默通過）
 - 標為「不改變可觀察行為」的任務：查核 diff 是否真的不含行為變更，並核對變更前後同一組測試的全綠輸出。發現行為變更卻只提供等價證據時列為 MUST FIX
 - 依 `docs/AGENTS.md`「假綠燈」檢查證據真偽。有對應 Gate 豁免紀錄或已標明真實理由者不算假綠燈，但把未驗證項目記錄成通過一律列為 MUST FIX
+- 依 `docs/AGENTS.md`「證據持久力」分開判定守門的穩固度：紅燈為真、綠燈由目標行為驅動，但探針或斷言綁在易變細節上者，列 SHOULD FIX 並提出更穩固的替代斷言——**不得判 MUST FIX、不得歸入假綠燈、不得據此退回實作**；實作者主動揭露的測試限制不列為缺失
 - Small 採單迴圈合併者：覆核其層級選擇理由——diff 中實際存在另一層級的可觀察行為（如整合面行為）卻被合併為單迴圈時，列為 MUST FIX
 - 針對已實作的驗收標準主動提出至少 3 個具體破壞性邊界條件，涵蓋無效／缺漏輸入、狀態或順序衝突、依賴失敗／權限／併發等最相關面向
 - 判斷各邊界條件是否已被核准的驗收標準或測試覆蓋；可能推翻驗收行為或造成漏洞者列為 MUST FIX
