@@ -83,13 +83,13 @@ description: 一句話描述用途
 |---|---|---|
 | `new-issue` | `brainstorming` | 一次一題的需求澄清、使用者核准、依規模決定形式且依風險決定強度的驗收標準 |
 | `decompose` | `writing-plans` | 每個 Scenario 的 BDD 外迴圈與 TDD 內迴圈映射 |
-| `execute-task` | `test-driven-development` | 外迴圈紅燈、單元測試紅燈、最小實作後全綠、重構後全綠（不改變可觀察行為者改用等價證據；Small 層級重合時依單迴圈合併縮為三段） |
+| `execute-task` | `test-driven-development` | 外迴圈紅燈、單元測試紅燈、最小實作後全綠、重構後全綠（不改變可觀察行為者改用等價證據；Small 層級重合時依單迴圈合併縮為三段；判準為生產環境觀測者另須通過反向自檢） |
 | `review` | `requesting-code-review` | 獨立 reviewer、架構符合度、至少 3 個破壞性邊界案例與流程判定 |
 | `create-pr` | `verification-before-completion` | 可追溯至驗收標準原文與實際成功命令的 Proof of Test |
 
 PRD 或文件若使用 `implementation-plan`、`critic`、`architectural-compliance`、`pull-request-spec` 等非現有 Superpowers skill 名稱，不得直接寫成不可執行依賴：語意分別映射至上表的 `writing-plans`、`requesting-code-review` 加架構 gate，以及 `create-pr` 內建規格加 `verification-before-completion`。未安裝 Superpowers 時執行各節點已明訂的本地等價流程。
 
-`docs/AGENTS.md` 是驗收標準形式與強度、分批核准、Scenario ID、紅綠燈與等價證據格式、review artifact 存放位置、`## 待確認事項` 及 `## Gate 豁免紀錄` 的單一真相來源。修改任一節點時，同時檢查 `dev-cycle` 是否仍能阻止跨階段繞過；不得只加提示文字而沒有完成 gate。
+`docs/AGENTS.md` 是驗收標準形式與強度、分批核准、Scenario ID、紅綠燈與等價證據格式、假綠燈與**證據持久力**的分界、**觀測式驗收**與反向自檢、**合法的中間狀態與終態**、review artifact 存放位置、`## 待確認事項`、`## Gate 豁免紀錄`，以及**客製邊界與同步策略**（核心／應客製／可調整三層與核心層齊備性檢查）的單一真相來源。修改任一節點時，同時檢查 `dev-cycle` 是否仍能阻止跨階段繞過；不得只加提示文字而沒有完成 gate。
 
 **gate 的對象是 agent，不是使用者。** 所有 gate 都必須同時滿足兩件事：agent 不得自行降低標準；使用者明確要求豁免時必須照做並留下 `## Gate 豁免紀錄`。新增 gate 時一併確認它有豁免路徑，且豁免後 `dev-cycle` 能據紀錄放行。唯一不可豁免的是誠實回報——不得把未執行的驗證寫成已通過。
 
@@ -104,4 +104,4 @@ PRD 或文件若使用 `implementation-plan`、`critic`、`architectural-complia
 - **description 撰寫**：`description` 是唯一常駐於 agent context 的內容，也是 agent 判斷「是否載入整份 skill」的依據，應同時寫出**做什麼**與**何時使用／適用範圍**（例如 `decompose` 標明僅適用 Large）
 - **workflows/README.md 清單**：該檔不在同步腳本的複製範圍內，其 Shared Workflows 清單中每條描述必須等於對應 `SKILL.md` `description` 的**第一句**；改動 description 時要一併更新，`sync-skills.py --check` 會驗證
 - **安裝路徑的真相來源**：各平台的實際安裝路徑寫在 `rules/README.md`、`workflows/README.md`、`skills/README.md` 的「安裝方式」章節，外部工具（Serena / GitNexus / Superpowers）寫在 `docs/setup/tools.md`。新增平台或路徑變動時要同步這四處；`README.md` 與 `docs/usage.md` 只放指向它們的連結，不要複製路徑內容
-- **手動維護的使用者文件**：`README.md` 與 `docs/usage.md` **完全不在** `sync-skills.py` 的檢查範圍。修改 `docs/AGENTS.md` 的規則章節（分級、風險、驗收標準形式與強度、核准流程、README 區段）時，必須一併檢查這兩份是否仍在描述舊規則。**`--check` 通過不代表全 repo 一致**——它只驗證 skill/workflow 配對、frontmatter `name:`、`workflows/README.md` 描述與雙語章節數這四件事
+- **手動維護的使用者文件**：`README.md` 與 `docs/usage.md` **完全不在** `sync-skills.py` 的檢查範圍。修改 `docs/AGENTS.md` 的規則章節（分級、風險、驗收標準形式與強度、核准流程、README 區段）時，必須一併檢查這兩份是否仍在描述舊規則。**`--check` 通過不代表全 repo 一致**——它只驗證 skill/workflow 配對、frontmatter `name:`、skill 的 `docs/AGENTS.md` 版本宣告、`workflows/README.md` 描述與雙語章節數這五件事

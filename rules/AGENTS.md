@@ -8,6 +8,8 @@ These rules integrate practical experience and common LLM pitfalls, suitable for
 
 ## 1. Language
 
+> **Project-customizable.** Set the language your project requires; the rest of this file is not language-specific.
+
 - Always respond in **Traditional Chinese (Taiwan style)** using common Taiwan expressions and terminology.  
   *(Note: This section is kept as-is for the English version, but the rule remains to output Traditional Chinese. If you need an English-only version, delete this rule.)*
 - When writing documents or comments, explicitly state the system date whenever time is referenced.
@@ -120,6 +122,10 @@ For multi-step tasks, state a brief plan:
 
 If verification cannot be fully automated, provide explicit manual steps.
 
+**When the criterion is a production observation rather than a test**, ask the reverse question for every criterion: **"If this had failed, would this criterion still be green?"** If the answer is not a clear "no", the criterion is unusable — change it or add one. Observational evidence has no red baseline: a test fails at least once to prove it can detect the problem, an observation never does, so a criterion that has stopped reflecting reality looks exactly like correct behavior. Validate the criterion itself first against a control set with a known result, then record the query, the range, and the actual values.
+
+**Not every task ends in a merge, and "no new commits" does not mean stuck.** Waiting on an external verification window (a weekly batch night, a month-end close, a reconciliation date) and a deliberate decision not to fix are both legitimate states: record the expected window and what will be observed, or the rationale and how it will be tracked. Neither may be used to hide verification that could already have been done.
+
 ---
 
 ## 7. BDD + TDD Gates and Exemptions
@@ -149,6 +155,10 @@ Both forms require explicit user approval before implementation; an agent must n
 
 Outer-loop red, unit-test red, green after the minimal implementation, and green after refactoring together form the **red-green-refactor evidence**; missing any one segment makes it incomplete. Producing a green that does not stand for correct behavior — deleting, skipping, weakening, commenting out, partially running, or rewriting an existing test; mocking away the behavior under acceptance; hardcoding expected data; asserting nothing — is a **fake green** and never counts as evidence.
 
+For a **Small** task whose outer and inner loops fall on the same test layer, the two red lights may be merged into one, reducing the evidence to three segments; record why that layer is where the behavior is observable. Keep both loops when the layers genuinely differ.
+
+**Evidence durability is judged separately from fake greens.** The fake-green test is whether *this* green stands for correct behavior — not whether it will still catch a regression later. A probe bound to a volatile detail of the code under test (a specific string, a log message) is fragile, but as long as the red was real and the green was driven by the target behavior, the evidence is valid for this acceptance: report it as a suggestion with a sturdier alternative assertion, never as a blocking defect. **Disclosing a test's limitations is never a fault** — a rule that makes honesty more dangerous than silence damages the very thing it protects.
+
 ### Work That Does Not Change Observable Behavior
 
 Pure refactoring and documentation work are exempt from the red-light requirement — by definition neither should produce a failing test:
@@ -160,7 +170,7 @@ Claiming that work does not change observable behavior is a commitment that the 
 
 ### Handling Spec Revisions
 
-**Revising the spec during implementation is the expected outcome of the outer loop, not a violation.** What must hold is not "the text is unchanged" but "it changed, it was seen, and it was agreed". Check with `git diff {approval commit}..HEAD` on the issue document, letting git rather than the agent act as witness; do not use a content hash:
+**Revising the spec during implementation is the expected outcome of the outer loop, not a violation.** What must hold is not "the text is unchanged" but "it changed, it was seen, and it was agreed". Check with `git diff {approval commit}..HEAD` on the issue document, letting git rather than the agent act as witness; do not use a content hash. This check applies **during implementation**, on the issue branch before merge, where the approval commit is always reachable; any operation that rewrites commit hashes (squash, rebase, amend, cherry-pick) invalidates it afterwards, so backfill the approval commit in a **later** commit and verify reachability against the **merge target branch**, not the current `HEAD`:
 
 - **The diff does not touch the acceptance criteria**: approval stands; continue.
 - **A condition, action, or expected result changed, or a Scenario was added or removed**: mark only the **affected Scenario** as pending re-approval and re-enter clarification. Scenarios the diff did not touch keep their approval.
@@ -183,6 +193,8 @@ Superpowers is an optional process accelerator, not a prerequisite. Its absence 
 ---
 
 ## 8. Monorepo Rules
+
+> **Project-customizable.** Replace the service and package names below with your repository's actual boundaries.
 
 **Identify the minimum affected project, package, or service first.**
 

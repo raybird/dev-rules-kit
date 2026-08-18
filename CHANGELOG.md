@@ -12,6 +12,26 @@
 
 ---
 
+## [2.9.0] - 2026-08-18
+
+### 修正（`docs/AGENTS.md`、`skills/`、`workflows/shared/`、`scripts/` — **下游需重新複製規範與全部技能**）
+
+- **核心層齊備性檢查補上 skill 端的版本宣告**：2.8.0 要求 agent 在規範版本落後時停下來問，判斷依據卻只定義了 `docs/AGENTS.md` **一端**的版本——skill 那端沒有任何版本標記，agent 無從知道手上這支依據的是哪一版，**該檢查實際上執行不了**。下游實跑時唯一的辦法是 grep 特徵字串反推版本，而特徵字串每版不同、寫不進規範，沒有上下文的 agent 也推不出來。現於六支引用規範的 skill（`new-issue`、`execute-task`、`dev-cycle`、`create-pr`、`review`、`decompose`）在 frontmatter 後宣告依據版本，規範明訂比對方式為「讀 skill 宣告值 vs 讀本檔檔尾版本」並禁止以特徵字串反推；`sync-skills.py --check` 新增驗證：引用規範的 skill 必須有宣告，且宣告值需等於當前 `docs/AGENTS.md` 版本。
+
+  宣告刻意寫在**內文而非 frontmatter**：2.4.0 已踩過 OpenCode 與 Antigravity 對 frontmatter 的嚴格性（缺 `name:` 整份靜默不載入），未知欄位若被 schema 擋下會是同一種災難，而內文宣告零平台風險且同樣可被 `--check` 驗證。
+
+### 新增（`rules/AGENTS.md`、`rules/AGENTS.zh-TW.md`、`rules/README.md`、`CLAUDE.md` — **下游需重新複製規則檔**）
+
+盤點發現 2.6.0–2.8.0 的五個新概念在雙語規則檔中**完全零覆蓋**，其中三處會與技能互相矛盾——agent 讀規則檔與讀技能會得到兩套指令：
+
+- **Small 單迴圈合併**（原本無條件要求外迴圈與內迴圈各一份紅燈證據）
+- **證據持久力與假綠燈的分界**，含「實作者主動揭露測試限制永遠不構成缺失」（原本只有假綠燈定義，寒蟬效應照樣存在）
+- **規格修訂查核的作用域**與 hash 改寫後的回填（原本 `git diff {核准 commit}..HEAD` 沒有作用域說明）
+- **觀測式驗收與反向自檢**「若這件事失敗了，這個判準會不會仍然是綠的？」——規則檔的適用範圍比技能更廣（未跑 issue 閉環時也生效），缺它比技能缺它影響更大
+- **合法的中間狀態與終態**（原本「Loop until verified」可被讀成永不停止）
+
+另補 `rules/` 自身的客製邊界：「語言規範」與「Monorepo 規則」兩節標為專案客製，`rules/README.md` 新增「客製邊界」段說明核心章節與 skill gate 一一對應、單邊改寫會產生互斥指令且不報錯。`CLAUDE.md` 的單一真相來源清單補齊 2.7.0–2.8.0 的四項（證據持久力、觀測式驗收、合法中間狀態與終態、客製邊界與同步策略），`--check` 範圍說明更新為五件事。
+
 ## [2.8.0] - 2026-08-18
 
 ### 新增（`docs/AGENTS.md` — **下游需重新複製**；`skills/`、`workflows/shared/` — **需重新複製 `new-issue`、`execute-task`、`dev-cycle`、`review`**）

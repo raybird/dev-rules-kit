@@ -3,6 +3,7 @@ name: create-pr
 description: 根據指定 commit 範圍與實際通過的驗收標準證據生成 Pull Request 說明。變更已提交、準備以 Proof of Test 供 reviewer 驗收時使用。
 ---
 
+> 本 skill 依據 `docs/AGENTS.md` **1.14**。專案的該檔版本低於此值、或引用的章節不存在或語意不符時，依「核心層齊備性檢查」明確說出缺什麼並停下來問，不得自行套用預設值繼續。
 ## Input Evidence
 
 依序取得以下證據：
