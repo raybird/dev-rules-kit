@@ -49,6 +49,8 @@ README 的 `**風險**` 欄位只影響任務順序與驗證方式，**不影響
 | 分級為 Large 且 `docs/issues/issue-{ID}/` 內無含「Decomposition」標題的 `.md` 檔 | `decompose` |
 | 任務清單有未完成項目，或指定項目缺少對應證據（會改變行為者需完整紅綠重構證據，不改變行為者需等價證據） | `execute-task` |
 | 無含 issue ID 的 branch 或 commit（搜尋 branch 名稱與 commit message） | `execute-task` |
+| README `**狀態**` 為 `等待外部驗收窗`，且記錄的窗口尚未到達 | 等待外部驗收窗（回報預定窗口與待觀察判準，不推進、不判為卡住） |
+| README `**狀態**` 為 `不修復` | 完成（依 `docs/AGENTS.md` 確認判定理由與追蹤方式已記錄） |
 | PR 已 merged | 完成 |
 | 核准表存在 `待核准` 項目 | `new-issue`（補齊剩餘 Scenario 核准，或由使用者裁示刪除該 Scenario，之後再回到 `execute-task`） |
 | 無 open PR | `create-pr` |
@@ -89,7 +91,7 @@ README 的 `**風險**` 欄位只影響任務順序與驗證方式，**不影響
    | create-pr | 確認所有 Task 已完成、證據齊全並已 commit 後，呼叫 `create-pr`；Proof of Test 未完整覆蓋核准的驗收標準時更新 PR body。另依 `docs/AGENTS.md`「常青文件更新責任」確認本次變更觸發的常青文件已更新，未更新時先回到 `execute-task` 補上再開 PR |
    | review | 對目前 PR HEAD 呼叫 `review` 並依 `docs/AGENTS.md` 持久化報告；只有該 SHA 的持久化 `PASS` artifact 才能等待合併，`RETURN TO execute-task` 修正並產生新 commit 後重新審查 |
    | execute-task（修正） | 說明「目前 HEAD 的 review 未通過，需修正並建立新 commit 後重新審查」，呼叫 `execute-task` |
-   | 完成 | 依 `docs/AGENTS.md` 收尾 issue 文件：README 狀態標記為已完成、timeline 補記 merge 日期；採 squash / rebase 合併時，依「規格修訂的查核」以後續 commit 回填 `**核准 commit**` 並以 `git merge-base --is-ancestor` 驗證可達，然後恭喜並結束 |
+   | 完成 | 依 `docs/AGENTS.md` 收尾 issue 文件：README 狀態標記為已完成、timeline 補記 merge 日期；合併流程含 squash / rebase / amend / cherry-pick 等改寫 hash 的操作時，依「規格修訂的查核」以後續 commit 回填 `**核准 commit**`，並以 `git merge-base --is-ancestor {SHA} {合併目標分支}` 驗證可達（對象為合併目標分支，不是當下 `HEAD`），然後恭喜並結束 |
 
 4. 子步驟完成後回到步驟 1 繼續偵測
 5. 循環直到 PR merged 或使用者中斷
