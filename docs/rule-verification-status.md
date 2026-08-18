@@ -88,6 +88,12 @@
 |---|---|---|
 | `docs/AGENTS.md` 拆為主檔 + `agents/` 三份 pointer 觸發參考檔（主檔 797 → 534 行） | 僅靜態撰寫 | 來源為 [mattpocock/skills](https://github.com/mattpocock/skills) 的 `productivity/writing-for-agents`（2026-08-18 閱讀）——屬**外部規範借鑑**。pointer 措辭是否足以讓 agent 在該讀時確實讀到參考檔，**需下游實跑才知道**：pointer 弱化會表現為「該讀而沒讀」，且與 2.7.0–2.9.0 的缺陷同類——不會報錯 |
 
+## v2.13.0 — writing-rules 技能
+
+| 規則 | 狀態 | 驗證來源 |
+|---|---|---|
+| 新增 `writing-rules`，要求修改規範文件前先套用 | 僅靜態撰寫 | 來源為 [mattpocock/skills](https://github.com/mattpocock/skills) 的 `productivity/writing-for-agents`（2026-08-18 閱讀）。**驗證方式已知**：下次有人修改 `docs/AGENTS.md` 或任一 `SKILL.md` 時，觀察是否觸發本技能、以及該次改動後的行數與否定式數量走向 |
+
 ## 已知的驗證限制
 
 - **樣本數 n=2，且同源**：line-oa-plus 與 googleBooking 同屬一位使用者、跑同一套 kit、工作流程相近。**兩者共有的盲點照不出來**——例如多人並行 review、非中文協作者、非 Firebase 系技術棧的情境，今天完全沒有覆蓋。

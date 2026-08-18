@@ -25,6 +25,7 @@ workflows/
 - **execute-task.md** - 依驗收標準的 BDD 外迴圈與 TDD 內迴圈執行指定的 issue 步驟或 Phase / Task，取得紅綠燈或等價證據後實作最少程式碼
 - **git-squash.md** - 分析目前分支與基準分支的差異，並自動整理 Squash 的 Commit 訊息與提供合併建議
 - **new-issue.md** - 透過蘇格拉底式澄清將需求轉成使用者核准的驗收標準，並在 docs/issues/issue-{ID}/ 建立 issue 文件
+- **writing-rules.md** - 依注意力成本與觸發機制撰寫或修改 agent 會讀的規範文件
 - **review.md** - 以獨立批判者審查當前分支的驗收標準覆蓋、測試證據、架構符合度與程式碼變更，發現漏洞時退回實作
 
 ## Platform-Specific Workflows

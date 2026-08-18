@@ -12,6 +12,20 @@
 
 ---
 
+## [2.13.0] - 2026-08-18
+
+### 新增（`skills/writing-rules`、`workflows/shared/writing-rules.md`、`CLAUDE.md` — 下游可選擇性複製）
+
+- **新增 `writing-rules` 技能**：本 repo 整個就是一堆 agent 會讀的文件，卻沒有任何東西規定它們該怎麼寫——既有約定散在 `CLAUDE.md` 的 Conventions，全屬格式層（description 寫法、檔名、雙語同步），沒有一條談注意力成本與觸發機制。
+
+  後果是可觀測的：`docs/AGENTS.md` 曾在一天內從 686 行長到 797 行，其中還包含一個名為「精簡」的版本；盤點時有 46 處否定式指令、全檔零漸進揭露。v2.11.0 與 v2.12.0 修掉了結果，但**紀律本身沒有留在 repo 裡**，下次仍會以同樣方式重新累積。**沒有這道紀律時，增補永遠比刪減安全。**
+
+  本技能涵蓋：pointer 措辭決定何時被讀到（弱 pointer + 必讀材料 = 變異來源，且不報錯）、in-file 與 disclosed 的 branching 取捨與 sprawl、正面表述、完成判準的清晰度與強度及提早結案的機制（藏後續步驟只在跨 context 邊界時有效）、leading word 優先於自創詞、單一真相來源與環境即真相來源、no-op 測試（判準相對於模型而非讀者，靠跑而非辯論解決）。另含本 kit 的額外約束：核心層字串維持原樣、雙語章節數相等、改完跑 `sync-skills.py --check`。
+
+  `CLAUDE.md` 新增指向，要求修改任何規範文件前先套用。
+
+  來源：[mattpocock/skills](https://github.com/mattpocock/skills) 的 `productivity/writing-for-agents`。本版是把該檔的原則沉澱成本 repo 可重複套用的紀律，而非再做一次一次性的改寫。
+
 ## [2.12.0] - 2026-08-18
 
 ### 變更（`docs/AGENTS.md` + 新增 `docs/agents/` — **下游改為複製整個目錄**；`skills/new-issue`、`workflows/shared/new-issue.md` 需重新複製）
