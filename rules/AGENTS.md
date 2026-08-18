@@ -93,9 +93,9 @@ Before implementing, identify the largest unverified assumption or most severe f
 - Unknown end-to-end integration or user behavior → Vertical slice through the narrowest real path
 - No meaningful unknown → Follow normal technical dependency order
 
-**Do not choose a vertical slice first and invent a justification afterward.** Use it only when end-to-end integration or user behavior is the largest unknown. A vertical slice is one candidate technique, not a synonym for risk-first development. Whichever method you choose, define observable, repeatable completion evidence first.
+**Name the largest unknown first, and let it pick the technique.** A vertical slice fits the case where end-to-end integration or user behavior is that unknown; it sits alongside the other techniques in the table, level with them. Whichever method you choose, define observable, repeatable completion evidence first.
 
-Do not turn a small task into a full spec, long plan, or broad rewrite.
+Keep the output proportional to the task: a small task earns a small change.
 
 ---
 
@@ -157,7 +157,7 @@ Outer-loop red, unit-test red, green after the minimal implementation, and green
 
 For a **Small** task whose outer and inner loops fall on the same test layer, the two red lights may be merged into one, reducing the evidence to three segments; record why that layer is where the behavior is observable. Keep both loops when the layers genuinely differ.
 
-**Evidence durability is judged separately from fake greens.** The fake-green test is whether *this* green stands for correct behavior — not whether it will still catch a regression later. A probe bound to a volatile detail of the code under test (a specific string, a log message) is fragile, but as long as the red was real and the green was driven by the target behavior, the evidence is valid for this acceptance: report it as a suggestion with a sturdier alternative assertion, never as a blocking defect. **Disclosing a test's limitations is never a fault** — a rule that makes honesty more dangerous than silence damages the very thing it protects.
+**Evidence durability is judged separately from fake greens.** The fake-green test is whether *this* green stands for correct behavior — not whether it will still catch a regression later. A probe bound to a volatile detail of the code under test (a specific string, a log message) is fragile, but as long as the red was real and the green was driven by the target behavior, the evidence is valid for this acceptance: report it as a suggestion with a sturdier alternative assertion, and let the acceptance stand. **Disclosing a test's limitations is never a fault** — a rule that makes honesty more dangerous than silence damages the very thing it protects.
 
 ### Work That Does Not Change Observable Behavior
 

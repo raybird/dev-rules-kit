@@ -12,6 +12,24 @@
 
 ---
 
+## [2.11.0] - 2026-08-18
+
+### 變更（`docs/AGENTS.md`、`rules/`、`skills/`、`workflows/shared/` — **下游需重新複製規範、規則檔與 `execute-task`、`review`**）
+
+- **將否定式指令改寫為正面目標**：以禁令操控行為有個已知的反效果——**它把被禁的行為拉進 context，反而讓那個行為更容易被觸發**（"don't think of an elephant"）。禁令是弱修飾詞，會被它所強烈啟動的概念蓋過去，半句讀起來像是在指示做那件事。
+
+  盤點後 `docs/AGENTS.md` 有 46 處否定式指令、平均每 17 行一處，`rules/AGENTS.zh-TW.md` 34 處、平均每 7 行一處。本次改寫 16 處為直述目標行為，`docs/AGENTS.md` 降至 27 處。例子：
+
+  - 「不得先決定採用垂直切片，再回頭尋找理由」→「順序是先指出最大的未驗證假設，再由它決定手段」（原句把錯誤流程完整描述了一遍）
+  - 「`待核准` 的 Scenario 不得實作」→「實作範圍僅限狀態為 `已核准` 的 Scenario」
+  - 「分批核准時不得使用單行形式」→「分批核准時一律使用逐項表格」
+  - 「不得判 MUST FIX、不得歸入假綠燈、不得據此退回實作」→「列 SHOULD FIX 並提出更穩固的替代斷言，本次驗收的判定維持通過」（連續三個否定改為一個正面目標）
+  - 「不應直接抹除舊文件的歷史描述」→「保留舊敘述並在其旁補上帶日期的說明」
+
+  **規則語意完全未變**，改的只是表述方向。保留否定的是無法正面表述的硬護欄（假綠燈不得作為證據、誠實回報不可豁免），且都已配上正面目標。
+
+  來源：[mattpocock/skills](https://github.com/mattpocock/skills) 的 `productivity/writing-for-agents`，其 Leading words 章節將 negation 列為與 leading word 並列的失效模式。
+
 ## [2.10.0] - 2026-08-18
 
 ### 新增（`docs/AGENTS.md`、`rules/`、`skills/`、`workflows/shared/` — **下游需重新複製規範、規則檔與 `execute-task`、`review`**）

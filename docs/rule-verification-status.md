@@ -76,6 +76,12 @@
 |---|---|---|
 | 「假綠燈」新增同義反覆（tautological）條目與獨立真相來源要求 | 僅靜態撰寫 | 來源為 [mattpocock/skills](https://github.com/mattpocock/skills) 的 `engineering/tdd` anti-patterns（2026-08-18 閱讀）——屬**外部規範借鑑**，非本 kit 下游的實跑發現，尚未在實作中套用 |
 
+## v2.11.0 — 否定式指令正面化
+
+| 規則 | 狀態 | 驗證來源 |
+|---|---|---|
+| 16 處否定式指令改寫為正面目標（規則語意未變） | 僅靜態撰寫 | 來源為 [mattpocock/skills](https://github.com/mattpocock/skills) 的 `productivity/writing-for-agents`（2026-08-18 閱讀）——屬**外部規範借鑑**。其效果（agent 是否更少觸發被禁行為）**在本 kit 中尚無觀測方式**，屬目前無法驗證的類別 |
+
 ## 已知的驗證限制
 
 - **樣本數 n=2，且同源**：line-oa-plus 與 googleBooking 同屬一位使用者、跑同一套 kit、工作流程相近。**兩者共有的盲點照不出來**——例如多人並行 review、非中文協作者、非 Firebase 系技術棧的情境，今天完全沒有覆蓋。
