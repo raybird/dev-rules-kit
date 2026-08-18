@@ -226,7 +226,7 @@ issue:123
 |---|---|
 | **觸發** | `/execute-task Phase {N} Task {N.M}`（Large）或 `/execute-task 步驟 {N}`（Small / Medium） |
 | **產出** | 實作對應步驟 / Task 的程式碼變更，輸出修改摘要 |
-| **注意** | 可用時優先使用 `test-driven-development`；不論是否安裝，未取得 BDD 與單元測試紅燈前都禁止修改 production code |
+| **注意** | 可用時優先使用 `test-driven-development`；不論是否安裝，未取得紅燈前都禁止修改 production code（Small 且外／內迴圈層級重合時，可依單迴圈合併取得單一紅燈） |
 
 ---
 

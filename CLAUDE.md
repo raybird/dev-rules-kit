@@ -83,7 +83,7 @@ description: 一句話描述用途
 |---|---|---|
 | `new-issue` | `brainstorming` | 一次一題的需求澄清、使用者核准、依規模決定形式且依風險決定強度的驗收標準 |
 | `decompose` | `writing-plans` | 每個 Scenario 的 BDD 外迴圈與 TDD 內迴圈映射 |
-| `execute-task` | `test-driven-development` | 外迴圈紅燈、單元測試紅燈、最小實作後全綠、重構後全綠（不改變可觀察行為者改用等價證據） |
+| `execute-task` | `test-driven-development` | 外迴圈紅燈、單元測試紅燈、最小實作後全綠、重構後全綠（不改變可觀察行為者改用等價證據；Small 層級重合時依單迴圈合併縮為三段） |
 | `review` | `requesting-code-review` | 獨立 reviewer、架構符合度、至少 3 個破壞性邊界案例與流程判定 |
 | `create-pr` | `verification-before-completion` | 可追溯至驗收標準原文與實際成功命令的 Proof of Test |
 
@@ -104,4 +104,4 @@ PRD 或文件若使用 `implementation-plan`、`critic`、`architectural-complia
 - **description 撰寫**：`description` 是唯一常駐於 agent context 的內容，也是 agent 判斷「是否載入整份 skill」的依據，應同時寫出**做什麼**與**何時使用／適用範圍**（例如 `decompose` 標明僅適用 Large）
 - **workflows/README.md 清單**：該檔不在同步腳本的複製範圍內，其 Shared Workflows 清單中每條描述必須等於對應 `SKILL.md` `description` 的**第一句**；改動 description 時要一併更新，`sync-skills.py --check` 會驗證
 - **安裝路徑的真相來源**：各平台的實際安裝路徑寫在 `rules/README.md`、`workflows/README.md`、`skills/README.md` 的「安裝方式」章節，外部工具（Serena / GitNexus / Superpowers）寫在 `docs/setup/tools.md`。新增平台或路徑變動時要同步這四處；`README.md` 與 `docs/usage.md` 只放指向它們的連結，不要複製路徑內容
-- **手動維護的使用者文件**：`README.md` 與 `docs/usage.md` **完全不在** `sync-skills.py` 的檢查範圍。修改 `docs/AGENTS.md` 的規則章節（分級、風險、驗收標準形式與強度、核准流程、README 區段）時，必須一併檢查這兩份是否仍在描述舊規則。**`--check` 通過不代表全 repo 一致**——它只驗證 skill/workflow 配對、`workflows/README.md` 描述與雙語章節數這三件事
+- **手動維護的使用者文件**：`README.md` 與 `docs/usage.md` **完全不在** `sync-skills.py` 的檢查範圍。修改 `docs/AGENTS.md` 的規則章節（分級、風險、驗收標準形式與強度、核准流程、README 區段）時，必須一併檢查這兩份是否仍在描述舊規則。**`--check` 通過不代表全 repo 一致**——它只驗證 skill/workflow 配對、frontmatter `name:`、`workflows/README.md` 描述與雙語章節數這四件事

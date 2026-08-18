@@ -57,6 +57,36 @@ def check_sync(project_root):
     return errors
 
 
+def read_frontmatter_name(skill_file):
+    """取出 SKILL.md frontmatter 中的 name，找不到回傳 None"""
+    with open(skill_file, encoding='utf-8') as f:
+        lines = f.read().splitlines()
+    if not lines or lines[0].strip() != '---':
+        return None
+    for line in lines[1:]:
+        if line.strip() == '---':
+            break
+        if line.startswith('name:'):
+            return line[len('name:'):].strip()
+    return None
+
+
+def check_skill_names(project_root):
+    """檢查每個 SKILL.md 的 frontmatter 具備 name: 且與資料夾名一致
+
+    OpenCode 與 Antigravity 要求 frontmatter 具備 name:，缺少時整份 skill 會
+    靜默不載入（2.4.0 修過一次）；此檢查防止同一問題回歸。
+    """
+    errors = []
+    for name, skill_file, _ in find_pairs(project_root):
+        fm_name = read_frontmatter_name(skill_file)
+        if fm_name is None:
+            errors.append(f"skills/{name}/SKILL.md 的 frontmatter 缺少 name:（OpenCode / Antigravity 會靜默不載入）")
+        elif fm_name != name:
+            errors.append(f"skills/{name}/SKILL.md 的 name: 為「{fm_name}」，必須等於資料夾名「{name}」")
+    return errors
+
+
 def read_description(skill_file):
     """取出 SKILL.md frontmatter 中的 description，找不到回傳 None"""
     with open(skill_file, encoding='utf-8') as f:
@@ -141,12 +171,13 @@ if __name__ == '__main__':
     project_root = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
     if '--check' in sys.argv:
         errors = (check_sync(project_root)
+                  + check_skill_names(project_root)
                   + check_workflow_readme(project_root)
                   + check_rules_parity(project_root))
         if errors:
             for e in errors:
                 print(f"FAIL: {e}")
             sys.exit(1)
-        print("OK: 所有 skill/workflow 配對已同步，workflows/README.md 描述一致，雙語規則章節數一致。")
+        print("OK: 所有 skill/workflow 配對已同步，frontmatter name 一致，workflows/README.md 描述一致，雙語規則章節數一致。")
     else:
         sync_skills(project_root)
