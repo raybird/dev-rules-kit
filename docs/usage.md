@@ -289,7 +289,7 @@ A: 系統會透過自然語言對話方式，逐步詢問引導您提供缺失�
 A: 可以，而且非常鼓勵這麼做！`new-issue` 只是提供一個基礎結構與起點，您應該根據專案實際情況，手動或透過其他 skill 來修改與補充文件內容。
 
 **Q：如何確保我的 issue 文件格式正確？**
-A: 請參考 [docs/AGENTS.md](./AGENTS.md) 中的「快速檢查清單」以及各文件類型的具體格式範例。
+A: 請參考 [docs/agents/issue-checklist.md](./agents/issue-checklist.md) 的逐項清單，以及 [docs/agents/document-types.md](./agents/document-types.md)、[docs/agents/readme-templates.md](./agents/readme-templates.md) 的內容規範與格式範本。
 
 ---
 

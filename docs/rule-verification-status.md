@@ -82,6 +82,12 @@
 |---|---|---|
 | 16 處否定式指令改寫為正面目標（規則語意未變） | 僅靜態撰寫 | 來源為 [mattpocock/skills](https://github.com/mattpocock/skills) 的 `productivity/writing-for-agents`（2026-08-18 閱讀）——屬**外部規範借鑑**。其效果（agent 是否更少觸發被禁行為）**在本 kit 中尚無觀測方式**，屬目前無法驗證的類別 |
 
+## v2.12.0 — 漸進揭露拆分
+
+| 規則 | 狀態 | 驗證來源 |
+|---|---|---|
+| `docs/AGENTS.md` 拆為主檔 + `agents/` 三份 pointer 觸發參考檔（主檔 797 → 534 行） | 僅靜態撰寫 | 來源為 [mattpocock/skills](https://github.com/mattpocock/skills) 的 `productivity/writing-for-agents`（2026-08-18 閱讀）——屬**外部規範借鑑**。pointer 措辭是否足以讓 agent 在該讀時確實讀到參考檔，**需下游實跑才知道**：pointer 弱化會表現為「該讀而沒讀」，且與 2.7.0–2.9.0 的缺陷同類——不會報錯 |
+
 ## 已知的驗證限制
 
 - **樣本數 n=2，且同源**：line-oa-plus 與 googleBooking 同屬一位使用者、跑同一套 kit、工作流程相近。**兩者共有的盲點照不出來**——例如多人並行 review、非中文協作者、非 Firebase 系技術棧的情境，今天完全沒有覆蓋。

@@ -12,6 +12,26 @@
 
 ---
 
+## [2.12.0] - 2026-08-18
+
+### 變更（`docs/AGENTS.md` + 新增 `docs/agents/` — **下游改為複製整個目錄**；`skills/new-issue`、`workflows/shared/new-issue.md` 需重新複製）
+
+- **以漸進揭露拆分 issue 文件規範**：`docs/AGENTS.md` 已長到 797 行且全部 in-file，沒有任何由 pointer 觸發的參考檔。過長本身就是一種失效——**即使每一行都有效且不重複，注意力仍會在多餘的篇幅上變薄**，而每多一行就多一行要維持相關性。
+
+  判斷哪些該推出去用的是 **branching 測試**：每條流程分支都需要的留在主檔，只有部分分支會走到的推到 pointer 後面。據此移出四塊——「文件類型與內容規範」「README.md 範本」「常見文件類型範例」（只有建立或改寫 issue 文件的分支會走到）與「快速檢查清單」（只有 `new-issue` 收尾會走到）：
+
+  | 檔案 | 何時載入 |
+  |---|---|
+  | `docs/agents/document-types.md` | 決定某份文件該寫什麼內容、查既有議題的文件組合範例 |
+  | `docs/agents/readme-templates.md` | 建立或改寫 issue README |
+  | `docs/agents/issue-checklist.md` | `new-issue` 結束前逐項驗收 |
+
+  主檔 **797 → 534 行**，留下的是每條路徑都要讀的：客製邊界、分級與風險、BDD 驗收規格與 TDD 證據、核准紀錄與查核、待確認事項、合法狀態、常青文件責任、日期規範。主檔於各原位置留下 context pointer，敘明該參考檔涵蓋什麼與何時該讀；「客製邊界與同步策略」新增目錄結構說明。
+
+  **下游同步方式改變**：本規範現在是一個目錄，複製時 `docs/AGENTS.md` 與 `docs/agents/` 一併複製。三份參考檔與主檔同屬一套規範，版本以主檔檔尾的 `**文件版本**` 為準（參考檔不各自編版）。`new-issue` 的「讀取權威規範」與完成 gate 已改為指向對應參考檔。
+
+  來源：[mattpocock/skills](https://github.com/mattpocock/skills) 的 `productivity/writing-for-agents`，其 information hierarchy 與 progressive disclosure 章節。
+
 ## [2.11.0] - 2026-08-18
 
 ### 變更（`docs/AGENTS.md`、`rules/`、`skills/`、`workflows/shared/` — **下游需重新複製規範、規則檔與 `execute-task`、`review`**）

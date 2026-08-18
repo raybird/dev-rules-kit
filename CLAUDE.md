@@ -18,7 +18,7 @@ This file provides guidance to Claude Code (claude.ai/code) when working with co
 | `workflows/shared/` | 跨平台共通 slash command 流程 | Windsurf `.windsurf/workflows/`、OpenCode `commands/`、Antigravity `global_workflows/` |
 | `workflows/<platform>/` | 平台特定 workaround（如 `antigravity/fix-webview-conflict.md`） | 對應平台專屬 |
 | `skills/<name>/SKILL.md` | Claude 用的 skill 定義 | Claude Code skills |
-| `docs/AGENTS.md` | issue 文件結構規範 | 套用此 kit 的下游專案的 `docs/` 目錄 |
+| `docs/AGENTS.md` + `docs/agents/` | issue 文件結構規範（主檔為入口，`agents/` 三份為 pointer 觸發的參考檔） | 套用此 kit 的下游專案的 `docs/` 目錄 |
 
 ### Skill ↔ Workflow 同步機制（最重要的維護規則）
 
