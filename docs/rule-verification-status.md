@@ -94,6 +94,13 @@
 |---|---|---|
 | 新增 `writing-rules`，要求修改規範文件前先套用 | 僅靜態撰寫 | 來源為 [mattpocock/skills](https://github.com/mattpocock/skills) 的 `productivity/writing-for-agents`（2026-08-18 閱讀）。**驗證方式已知**：下次有人修改 `docs/AGENTS.md` 或任一 `SKILL.md` 時，觀察是否觸發本技能、以及該次改動後的行數與否定式數量走向 |
 
+## v2.14.0 — 邊界與方案的視覺形式
+
+| 規則 | 狀態 | 驗證來源 |
+|---|---|---|
+| 「邊界與方案的視覺形式」（不可觸及區域以淺層檔案樹標示、方案差異以 diff 呈現、一份 issue 通常只畫一處） | 僅靜態撰寫 | 來源為 [humanlayer/skills](https://github.com/humanlayer/skills) 的 `show-me`（2026-08-23 閱讀）——屬**外部規範借鑑**，非本 kit 下游的實跑發現。**已知風險**：本節的完成判準（「每張圖都答得出它取代了哪一段容易含糊的敘述」）只寫在參考檔內，未在 `new-issue` 的 Completion Gate 列為獨立項目，僅由「文件格式符合 `docs/AGENTS.md`」間接涵蓋；過度套用會表現為每份 README 都長出圖，**且與 2.7.0–2.9.0 的缺陷同類——不會報錯** |
+| 「涉及檔案清單不跨檔複寫」（1.11）在 `docs/usage.md` 的漂移 | **曾失效並修正** | 規則本身正確，但 `docs/usage.md` 自 1.11（2026-08-18）起仍把「涉及檔案」列為 `requirement-analysis.md` 的內容，2026-08-23 才由 CLAUDE.md 要求的手動文件檢查掃出。**`--check` 的範圍不含 `README.md` 與 `docs/usage.md`，這類漂移只能靠人工檢查發現** |
+
 ## 已知的驗證限制
 
 - **樣本數 n=2，且同源**：line-oa-plus 與 googleBooking 同屬一位使用者、跑同一套 kit、工作流程相近。**兩者共有的盲點照不出來**——例如多人並行 review、非中文協作者、非 Firebase 系技術棧的情境，今天完全沒有覆蓋。

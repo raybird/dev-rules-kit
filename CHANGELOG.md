@@ -12,6 +12,39 @@
 
 ---
 
+## [2.14.0] - 2026-08-23
+
+### 新增（`docs/AGENTS.md`、`docs/agents/`、`skills/`、`workflows/shared/` — **下游需重新複製規範目錄與全部 skill**）
+
+- **新增「邊界與方案的視覺形式」**：`new-issue` 的兩個步驟長期只有文字產出——「界定最小邊界」列可修改與不可觸及區域、「提出並核准規格」比較 2 至 3 個方案。**文字敘述可以含糊而不報錯**：「相關的 session 模組」讀起來像有邊界，實際上沒有；三段平行散文要使用者在腦中對齊才能核准。
+
+  `docs/agents/document-types.md` 新增一節，只收兩種形式，各綁一個分支：
+
+  | 形式 | 觸發分支 | 落在哪 |
+  |---|---|---|
+  | 淺層檔案樹 | 邊界含不可觸及區域 | README 的 `## 涉及檔案` |
+  | diff | 方案差異落在同一個既有形狀上 | 對話中的方案比較、`technical-analysis.md` 的方案選型與取捨 |
+
+  取捨的依據是**該形式是否需要虛構還不存在的東西**。來源清單裡的 call tree、component tree、pseudocode 都預設「被畫的東西已經存在」，在 `new-issue` 階段套用等於要 agent 先把實作編出來，與該 skill「不以推測填補空白」相衝突——因此只保留左邊是現況、右邊是提案的兩種。diff 的對象是形狀本身，檔案配置、狀態流、呼叫順序都成立，不限於原始碼。
+
+  **一併帶入防過度套用的守門句**：「一份 issue 通常只有一處值得畫……每張圖都答得出它取代了哪一段容易含糊的敘述」。列出 N 種形式的規範最常見的失效模式就是每種都演一遍，本 kit 先前沒有等價防線。
+
+  邊界另以正面表述劃定：issue 文件的圖一律以純文字或 Mermaid 呈現，維持可被 `git diff` 讀出差異、可被 agent 直接讀取（HTML 三項全輸）；驗收標準維持 Gherkin 或輕量驗收條件的文字形式，形式的單一真相來源仍在 `docs/AGENTS.md`。順序與互動類的圖沿用 `docs/_templates/` 既有的 Mermaid，不另立形式。
+
+  `skills/new-issue` 於步驟 4、6 各加一句 pointer（SKILL.md 行數維持 63 不變）；`docs/agents/readme-templates.md` 兩種 README 範本的 `## 涉及檔案` 加上觸發註解——**不加的話範本只示範扁平清單，會與新規則矛盾，規則就變成寫得完整但執行不了**，正是 2.7.0–2.9.0 那三個缺陷的同型。
+
+  **版本宣告連動**：`docs/AGENTS.md` 升至 **1.18**，七支引用該規範的 skill 同步宣告。下游若只複製 skill 而未更新 `docs/AGENTS.md`，核心層齊備性檢查會停下來要求補齊——這是預期行為，兩者請一併複製。
+
+  來源：[humanlayer/skills](https://github.com/humanlayer/skills) 的 `show-me`。該 skill 幾乎整份由 rendered 範例構成而非敘述規則，本版借的是這個手法與其防過度套用的收尾，未引入其 HTML artifact 產出路徑。
+
+### 修正（`docs/AGENTS.md`、`docs/usage.md` — 下游影響輕微）
+
+- **`docs/AGENTS.md` 修訂紀錄的重複列**：1.17 有兩列內容近乎重複的紀錄，且兩列的行數都與實際不符。以拆分 commit `540c650` 的實測值合併為一列：主檔 **796 → 534 行**（原記為「797 → 516」與「797 → 約 520」）。
+
+- **`docs/usage.md` 的文件內容歸屬**：1.11 起「涉及檔案清單只維護在 README 的 `## 涉及檔案`，不跨檔複寫」，但 `docs/usage.md` 的範例仍把「涉及檔案」列為 `requirement-analysis.md` 的內容，漂移五天未被發現。已改為依 `document-types.md` 的實際四項（需求描述、現況分析、問題點總結、目標），「涉及檔案」移回 README 那行。
+
+  這次漂移由 `CLAUDE.md` 要求的手動文件檢查掃出，已記入 `docs/rule-verification-status.md`：**`sync-skills.py --check` 的範圍不含 `README.md` 與 `docs/usage.md`**，這兩份是 kit 裡唯一沒有自動守門的檔案。
+
 ## [2.13.0] - 2026-08-18
 
 ### 新增（`skills/writing-rules`、`workflows/shared/writing-rules.md`、`CLAUDE.md` — 下游可選擇性複製）

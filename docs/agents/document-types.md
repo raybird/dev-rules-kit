@@ -62,6 +62,35 @@ Medium / Large 另須包含文件清單（連結到實際建立的文件即可�
 - `test-cases.md` - 測試案例
 - 等等
 
+## 邊界與方案的視覺形式
+
+文字敘述可以含糊而不報錯——「相關的 session 模組」讀起來像有邊界，實際上沒有。下列兩種形式把含糊處逼成具體值，各對應一個分支：
+
+**淺層檔案樹——邊界含不可觸及區域時。** 用於 README 的 `## 涉及檔案`（界定最小邊界的產出）。深度維持在目錄或單一檔案這一層：
+
+```text
+src/
+├── commands/       # 可改：新增 handler
+├── sessions/       # 可改：擴充 state 欄位
+└── transport/      # 不可觸及：本 issue 不動傳輸層
+```
+
+**diff——方案差異落在同一個既有形狀上時。** 用於對話中提出 2 至 3 個方案，以及 `technical-analysis.md` 的「方案選型與取捨」。diff 的對象是那個形狀本身，檔案配置、狀態流、呼叫順序都成立，不限於原始碼：
+
+```diff
+ on(save)
+-  write content
++  if content is unchanged
++    return cached result
++  write new content
+```
+
+順序與互動類的圖沿用 `docs/_templates/` 既有的 Mermaid，本節不另立形式。
+
+issue 文件的圖一律以純文字或 Mermaid 呈現，維持可被 `git diff` 讀出差異、可被 agent 直接讀取。驗收標準維持 Gherkin 或輕量驗收條件的文字形式——它是可執行契約，形式的單一真相來源在 `docs/AGENTS.md`。
+
+**一份 issue 通常只有一處值得畫。** 選出最能減少來回確認的那一處；每張圖都答得出它取代了哪一段容易含糊的敘述，答不出來就改用文字。
+
 ## 常見文件類型範例
 
 > [!NOTE]

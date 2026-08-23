@@ -23,8 +23,8 @@
 **AI 產出**：
 
 建立 `docs/issues/issue-101/`。由於此任務涉及 OAuth 與架構整合，規模被評估為 **Large**，因而建立完整四份文件；真實 callback 與帳號綁定行為尚未確認，風險另評估為 **High**：
-- `README.md`：需求概覽、timeline
-- `requirement-analysis.md`：使用者流程、新舊行為差異、問題點與涉及檔案
+- `README.md`：需求概覽、涉及檔案、timeline
+- `requirement-analysis.md`：需求描述、現況分析、問題點總結與目標
 - `technical-analysis.md`：OAuth 2.0 flow 分析、相關模組、潛在風險
 - `implementation-plan.md`：高階實作方向
 
