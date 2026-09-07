@@ -58,14 +58,17 @@ dev-rules-kit/
 
 > **OpenCode 是否需要兩邊都裝**：`skills/` 與 `workflows/shared/` 的內容逐位元組相同，OpenCode 會同時載入兩者，等於同一份內容有 skill 與 slash command 兩個入口，而 skill 的 `description` 常駐 context。若已安裝 `commands/`，一般不需再複製全部技能；例外是 `dev-cycle`，它的價值在自然語言觸發，可單獨安裝。
 
-```bash
-# Claude Code
-cp -r dev-rules-kit/skills/* ~/.claude/skills/
+於 repo 根目錄執行安裝腳本即可，它會依上表複製到對應目錄：
 
-# 其他平台（以 Windsurf 為例，替換路徑即可）
-mkdir -p ~/.codeium/windsurf/skills
-cp -r dev-rules-kit/skills/* ~/.codeium/windsurf/skills/
+```bash
+# 自動偵測已安裝的平台
+bash scripts/install.sh
+
+# 只裝 Claude Code
+bash scripts/install.sh claude
 ```
+
+腳本只覆蓋本 kit 的技能資料夾，同目錄下你自己的技能不受影響。
 
 驗證：於 AI 對話框輸入 `/`，應出現 `decompose`、`create-commit`、`new-issue`、`dev-cycle` 等指令。
 

@@ -127,7 +127,14 @@ PRD 中常見的 `implementation-plan`、`critic`、`architectural-compliance`�
    ```
 
 2. **把需要的資產複製到你的平台**  
-   三個資料夾各自的 README 都載明五個平台（Claude Code / OpenCode / Windsurf / Antigravity / Cursor）的實際路徑與複製指令：
+
+   ```bash
+   bash scripts/install.sh            # 自動偵測平台，安裝 workflows 與 skills
+   bash scripts/install.sh --dry-run  # 先看會做什麼
+   bash scripts/install.sh --list     # 列出五個平台與對應路徑
+   ```
+
+   規則檔預設不安裝（該位置常有本機客製內容），需要時加 `--with-rules`。各平台的實際路徑與手動安裝方式見三個資料夾的 README：
    - 規則檔：[rules/README.md](./rules/README.md#安裝方式)
    - 工作流程：[workflows/README.md](./workflows/README.md#安裝方式)
    - 技能：[skills/README.md](./skills/README.md#安裝方式)

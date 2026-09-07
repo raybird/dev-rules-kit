@@ -46,16 +46,17 @@
 | **Cursor** | 無檔案系統層級設定，需在 Settings → **Rules** → **User Rules** 貼上內容 | `.cursor/rules/*.mdc`（`.cursorrules` 為舊版單檔格式，仍可用） |
 | **OpenCode** | `~/.config/opencode/AGENTS.md` | 專案根目錄 `AGENTS.md` |
 
+安裝腳本預設不動規則檔（該位置常有本機客製內容），需要時明確加上 `--with-rules`；若目標檔案已存在且內容不同，會先備份成 `<檔名>.bak-<時間戳>`：
+
 ```bash
-# Windsurf
-cp dev-rules-kit/rules/AGENTS.zh-TW.md ~/.codeium/windsurf/memories/global_rules.md
+# 安裝規則檔到所有偵測到的平台（預設繁中版）
+bash scripts/install.sh --with-rules
 
-# Antigravity
-cp dev-rules-kit/rules/AGENTS.zh-TW.md ~/.gemini/config/AGENTS.md
-
-# OpenCode
-cp dev-rules-kit/rules/AGENTS.zh-TW.md ~/.config/opencode/AGENTS.md
+# 只裝指定平台，並改用英文版
+bash scripts/install.sh opencode --with-rules --rules-lang en
 ```
+
+Claude Code 與 Cursor 不以檔案方式安裝全域規則，腳本會改為印出該平台的手動步驟（見下方說明）。
 
 **Claude Code 的掛載方式**：Claude Code 只讀 `CLAUDE.md`，不會自動載入 `AGENTS.md`。將本檔複製到專案根目錄後，需在 `CLAUDE.md` 開頭加一行獨立的 `@AGENTS.md`（不可包在反引號或程式碼區塊內）。完整步驟與 `/init` 覆寫的注意事項見[根目錄 README](../README.md#下游專案掛載規則claude-code)。
 

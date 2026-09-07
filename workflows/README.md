@@ -50,21 +50,20 @@ workflows/
 
 > **Antigravity 的路徑遷移**：舊版路徑為 `~/.gemini/antigravity/global_workflows/`，自 `~/.gemini/config/.migrated`（2026-05-20）起改為 `~/.gemini/config/global_workflows/`，由 Antigravity、Antigravity IDE 與 Antigravity CLI（`agy`）三者共用。舊路徑仍可能被當作 fallback 讀取，更新後建議清空，避免載入到遷移前的舊版流程。
 
+於 repo 根目錄執行安裝腳本即可，它會依上表複製到對應目錄（Antigravity 的平台專屬工作流程一併處理）：
+
 ```bash
-# Windsurf
-cp dev-rules-kit/workflows/shared/*.md ~/.codeium/windsurf/global_workflows/
+# 自動偵測已安裝的平台，安裝 workflows 與 skills
+bash scripts/install.sh
 
-# Antigravity（含平台專屬工作流）
-cp dev-rules-kit/workflows/shared/*.md ~/.gemini/config/global_workflows/
-cp dev-rules-kit/workflows/antigravity/*.md ~/.gemini/config/global_workflows/
+# 只裝指定平台
+bash scripts/install.sh windsurf antigravity
 
-# OpenCode
-cp dev-rules-kit/workflows/shared/*.md ~/.config/opencode/commands/
-
-# Cursor
-mkdir -p ~/.cursor/commands
-cp dev-rules-kit/workflows/shared/*.md ~/.cursor/commands/
+# 先確認會做什麼，不實際寫入
+bash scripts/install.sh --dry-run
 ```
+
+腳本同時安裝 skills（見 [skills/README.md](../skills/README.md#安裝方式)）；規則檔預設不動，需要時加 `--with-rules`。
 
 驗證：於 AI 對話框輸入 `/`，應出現 `decompose`、`create-commit`、`new-issue` 等指令（Antigravity 另有 `fix-webview-conflict`）。
 

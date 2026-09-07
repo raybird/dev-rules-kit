@@ -12,6 +12,16 @@
 
 ---
 
+## [2.16.0] - 2026-09-07
+
+### 新增（`scripts/`、各 README — **下游不需重新複製 rules / workflows / skills**）
+
+- **新增 `scripts/install.sh`**：五個平台的安裝改為一支腳本，取代三份 README 中各自的 `cp` 指令。無參數時自動偵測已安裝的平台，另有 `--dry-run`、`--list`、指定平台名等用法。
+
+  兩個實務上的差異：規則檔預設**不安裝**（`~/.codeium/windsurf/memories/global_rules.md` 這類位置常有本機客製內容），需要時明確加 `--with-rules`，且覆蓋前會備份成 `<檔名>.bak-<時間戳>`；技能改為逐資料夾複製，`skills/README.md` 不再被當成技能一起裝到目標目錄。
+
+- **`sync-skills.py --check` 新增第六項檢查**：驗證 `install.sh` 的目標路徑與三份 README 安裝表格中該平台那一列一致。動機是路徑真相來源有四處（三份 README 加 `docs/setup/tools.md`），新增一支帶路徑的腳本等於再開一處；Antigravity 自 2026-05-20 遷移到 `~/.gemini/config/` 後，本機的舊路徑設定殘留了三個多月沒被發現。
+
 ## [2.15.0] - 2026-08-23
 
 ### 變更（`docs/AGENTS.md`、`rules/`、`skills/dev-cycle`、`skills/review` 及對應 workflow — **下游需重新複製規範、雙語規則檔與這兩支 skill**）

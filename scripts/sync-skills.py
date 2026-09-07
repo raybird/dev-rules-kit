@@ -207,6 +207,69 @@ def check_rules_parity(project_root):
     return []
 
 
+def check_install_paths(project_root):
+    """檢查 scripts/install.sh 的目標路徑與三份 README 安裝表格中該平台那一列一致
+
+    路徑的真相來源是三份 README，install.sh 是它們的可執行副本。單邊改動會讓
+    腳本裝到錯的位置且不會報錯（settings.local.json 曾殘留 Antigravity 遷移前的
+    舊路徑）。比對限定在表格中該平台的那一列——全文比對會被「舊版路徑為 ...」
+    這類遷移說明矇混過去。本檢查為單向：README 有而腳本沒有的平台不會被抓出來。
+    """
+    display_names = {
+        'claude': 'Claude Code',
+        'windsurf': 'Windsurf',
+        'antigravity': 'Antigravity',
+        'opencode': 'OpenCode',
+        'cursor': 'Cursor',
+    }
+
+    errors = []
+    script = os.path.join(project_root, 'scripts', 'install.sh')
+    if not os.path.isfile(script):
+        return ['缺少 scripts/install.sh']
+
+    with open(script, encoding='utf-8') as f:
+        content = f.read()
+
+    # 取出各 README 安裝表格中「| **平台** | ... |」的那一列
+    readmes = {}
+    for kind, rel in (('rules', 'rules/README.md'),
+                      ('workflows', 'workflows/README.md'),
+                      ('skills', 'skills/README.md')):
+        rows = {}
+        with open(os.path.join(project_root, rel), encoding='utf-8') as f:
+            for line in f:
+                if not line.startswith('|'):
+                    continue
+                for platform, display in display_names.items():
+                    if f'**{display}**' in line:
+                        rows[platform] = line.strip()
+        readmes[kind] = (rel, rows)
+
+    # targets_for() 中每個平台一行：platform) echo "<rules>|<workflows>|<skills>" ;;
+    parsed = re.findall(r'^\s*(\w+)\)\s+echo "([^"]*\|[^"]*\|[^"]*)" ;;', content, re.M)
+    if not parsed:
+        return ['無法從 scripts/install.sh 的 targets_for() 解析出平台路徑（格式是否改過？）']
+
+    for platform, spec in parsed:
+        if platform not in display_names:
+            errors.append(f"scripts/install.sh 有未知平台「{platform}」，check_install_paths 不知道它在 README 的表格名稱")
+            continue
+        for kind, target in zip(('rules', 'workflows', 'skills'), spec.split('|')):
+            if target == '-':
+                continue  # 該平台不以檔案方式安裝這類內容
+            expected = target.replace('$HOME', '~')
+            rel, rows = readmes[kind]
+            if platform not in rows:
+                errors.append(f"{rel} 的安裝表格找不到 **{display_names[platform]}** 那一列，無從比對 install.sh 的路徑")
+            elif expected not in rows[platform]:
+                errors.append(
+                    f"scripts/install.sh 的 {platform} {kind} 路徑「{expected}」"
+                    f"與 {rel} 表格不符（路徑異動時兩邊必須一起改）\n"
+                    f"       README: {rows[platform]}")
+    return errors
+
+
 if __name__ == '__main__':
     project_root = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
     if '--check' in sys.argv:
@@ -214,11 +277,12 @@ if __name__ == '__main__':
                   + check_skill_names(project_root)
                   + check_agents_md_declarations(project_root)
                   + check_workflow_readme(project_root)
-                  + check_rules_parity(project_root))
+                  + check_rules_parity(project_root)
+                  + check_install_paths(project_root))
         if errors:
             for e in errors:
                 print(f"FAIL: {e}")
             sys.exit(1)
-        print("OK: 所有 skill/workflow 配對已同步，frontmatter name 一致，skill 的 docs/AGENTS.md 版本宣告一致，workflows/README.md 描述一致，雙語規則章節數一致。")
+        print("OK: 所有 skill/workflow 配對已同步，frontmatter name 一致，skill 的 docs/AGENTS.md 版本宣告一致，workflows/README.md 描述一致，雙語規則章節數一致，install.sh 安裝路徑與 README 一致。")
     else:
         sync_skills(project_root)
