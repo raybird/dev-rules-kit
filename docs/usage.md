@@ -22,11 +22,13 @@
 
 **AI 產出**：
 
-建立 `docs/issues/issue-101/`。由於此任務涉及 OAuth 與架構整合，規模被評估為 **Large**，因而建立完整四份文件；真實 callback 與帳號綁定行為尚未確認，風險另評估為 **High**：
+建立 `docs/issues/issue-101/`。由於此任務涉及 OAuth 與架構整合，規模被評估為 **Large**；真實 callback 與帳號綁定行為尚未確認，風險另評估為 **High**：
 - `README.md`：需求概覽、涉及檔案、timeline
-- `requirement-analysis.md`：需求描述、現況分析、問題點總結與目標
-- `technical-analysis.md`：OAuth 2.0 flow 分析、相關模組、潛在風險
 - `implementation-plan.md`：高階實作方向
+- `requirement-analysis.md`：需求描述、現況分析、問題點總結與目標——本例建立，因為現有登入流程要讀既有程式碼才寫得下來
+- `technical-analysis.md`：OAuth 2.0 flow 分析、相關模組、潛在風險——本例建立，因為 callback 有兩種接法需要取捨
+
+後兩份依 `docs/AGENTS.md`「規模分級」的觸發條件建立，Large 不一律產出。
 
 README 另包含經使用者核准、具 `SCN-001` 等唯一 ID 的 Gherkin 驗收劇本。**Small 的 issue 一律改用輕量驗收條件**（`AC-1` 起，一句話結果加檢查方式），不需 Gherkin 語法與逐項核准表；風險為 Medium / High 時每條另須寫出失敗路徑，形式不會因為風險高就升級成 Gherkin。
 
@@ -189,7 +191,7 @@ AI 自動偵測狀態，告知「目前在 create-pr 階段，準備執行 creat
 | | |
 |---|---|
 | **觸發** | `/new-issue issue:{編號} 主題:{標題} 內容:{描述}` 或直接描述需求 |
-| **產出** | 依任務複雜度評估為 **Small (僅 README)**、**Medium (README + 計畫)** 或 **Large (完整四件套)** 檔案 |
+| **產出** | 依任務複雜度評估為 **Small (僅 README)**、**Medium (README + 計畫)** 或 **Large (README + 計畫，兩份分析文件依觸發條件)** 檔案 |
 | **注意** | 可用時優先使用 `brainstorming`，否則執行內建等價流程；兩種模式都須一次一題並取得驗收標準核准（Small 為輕量驗收條件；Scenario 多時可分批核准，未談定者標 `待核准`） |
 
 #### 指令式參數格式範例：

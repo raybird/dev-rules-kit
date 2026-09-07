@@ -21,6 +21,7 @@
 
 ```markdown
 ## 文件清單
+<!-- 下列兩行只在該文件實際建立時保留，建立條件見 docs/AGENTS.md「規模分級」。最終輸出移除本註解。 -->
 - [requirement-analysis.md](./requirement-analysis.md)
 - [technical-analysis.md](./technical-analysis.md)
 - [implementation-plan.md](./implementation-plan.md)

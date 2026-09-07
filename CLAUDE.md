@@ -58,7 +58,7 @@ description: 一句話描述用途
 
 `docs/AGENTS.md` 是給**下游專案的 `docs/` 目錄**用的規範（不是本 repo 自身），定義了：
 
-- `docs/issues/issue-{ID}/` 依規模分級：Small 僅 `README.md`，Medium 加 `implementation-plan.md`，Large 才使用 `README.md`、`requirement-analysis.md`、`technical-analysis.md`、`implementation-plan.md` 四件套
+- `docs/issues/issue-{ID}/` 依規模分級：Small 僅 `README.md`，Medium 加 `implementation-plan.md`，Large 再加 `requirement-analysis.md` 與 `technical-analysis.md`——但這兩份依觸發條件建立，不是 Large 一律產出
 - **Timeline 保留原則**：實作時如發現與舊文件描述不符，**不可直接覆寫**舊內容。應在 README 的 Timeline 加上日期、在原文件用 `> [!NOTE]` 標日期補充、並在各檔末尾的 `## 修訂紀錄 (Changelog)` 補記
 - 日期一律使用**系統當下日期**的 `YYYY-MM-DD`，禁止手寫或統一日期
 

@@ -22,7 +22,7 @@
 
 Medium / Large 另須包含文件清單（連結到實際建立的文件即可）；「快速導覽」與「關鍵差異」只在有新舊行為或流程對照時撰寫（重構、遷移、行為變更類 issue），沒有對照可寫時不硬填這兩節。Small 採輕量級格式，不補入這些非必要章節。
 
-### requirement-analysis.md（Large 適用）
+### requirement-analysis.md（Large，觸發條件成立時）
 
 應包含：
 - 需求描述
@@ -32,7 +32,7 @@ Medium / Large 另須包含文件清單（連結到實際建立的文件即可�
 
 涉及檔案清單只維護在 README 的 `## 涉及檔案`，本檔不另行複寫。
 
-### technical-analysis.md（Large 適用）
+### technical-analysis.md（Large，觸發條件成立時）
 
 閱讀程式碼後撰寫，應包含：
 - 技術可行性分析

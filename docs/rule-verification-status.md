@@ -39,6 +39,7 @@
 | Small 任務清單不預寫迴圈命令 | 僅靜態撰寫 | googleBooking 評估「對本專案是明確減負，方向正確」（該專案無 repo 級測試入口）——屬方向確認，非規則執行 |
 | `review` 的 Small 短版報告 | 僅靜態撰寫 | — |
 | `--check` 驗 `name:` frontmatter | **本地測試驗證** | 以假 skill 確認「缺 name」與「name 與資料夾名不符」都會 FAIL |
+| 移除跨檔複寫（涉及檔案只留 README、風險五欄由 implementation-plan 引用） | **已實跑驗證** | line-oa-plus dev @ `a1480402`（2026-09-07）掃 164 個 issue 目錄：Gherkin 本體零跨檔重複——`issue-0263` 的 Given/When/Then 各 41／36／47 全在 README.md，其餘四檔皆為 0（`issue-0265` 為 24／23／23，同樣全在 README）；其他檔案只引用 Scenario ID（`issue-0263` 的 `SCN-\d+` 出現次數：README 119、implementation-plan-decomposition 76、implementation-plan 39、requirement-analysis 9、technical-analysis 9——密集交叉引用但不是複製）。涉及檔案清單同樣未重複：technical-analysis 與 implementation-plan 提及的程式路徑交集為 0 |
 
 ## v2.7.0 — 三處守門缺口
 
@@ -113,6 +114,15 @@
 |---|---|---|
 | 安裝改由 `scripts/install.sh` 執行，三份 README 保留路徑表格作為真相來源 | **本地測試驗證** | 2026-09-07 以假 `HOME` 實跑 `--with-rules`：五個平台路徑全部命中、Antigravity 取得 11 個工作流程（含平台專屬）、既有規則檔備份成 `.bak-<時間戳>`、目標目錄下不屬於本 kit 的技能未被動到、`skills/README.md` 未被誤當技能複製 |
 | `--check` 驗 `install.sh` 路徑與 README 表格一致 | **本地測試驗證** | 2026-09-07 注入 Antigravity 遷移前的舊路徑確認會 FAIL。**首版曾是 no-op**：以 README 全文做子字串比對時，遷移說明中的「舊版路徑為 `~/.gemini/antigravity/global_workflows/`」會讓錯誤路徑通過，改為只比對表格中該平台那一列後才抓得到 |
+
+## v2.17.0 — Large 分析文件改為觸發條件
+
+| 規則 | 狀態 | 驗證來源 |
+|---|---|---|
+| `requirement-analysis.md` 與 `technical-analysis.md` 依觸發條件建立，Large 必建集合縮為 README ＋ implementation-plan | 來源為實跑 | line-oa-plus dev @ `a1480402`（2026-09-07，164 個 issue）。**保留這兩份的依據**：23 份 requirement-analysis 建立後共 11 次修改，逐次讀 diff 後 9 次是實質內容變更、僅 1 次非實質，其中兩次是文件推翻自己原本的判斷（`issue-0012` `54a7eb4fb` 推翻 staging 認證的原判、追出 Firebase Hosting 在 GET 剝 cookie；`issue-0191` `a6c1d8b0c` 加 WARNING 明寫本文兩點論述都不成立）——原本傾向刪除，這份資料否決了。**改為觸發條件的依據**：宣告 Large 但未建分析文件者 5 個，其中 3 個在文件內說明理由，2 個援引本規範自己的 YAGNI 原則論證不建（`issue-0188`：「補寫三份事前分析文件會違反同一份規範的 YAGNI 原則」；`issue-0167`：「重抄一份只會製造漂移」）——原規則與 YAGNI 互相衝突，實作者選了後者。另 88 份有 `**分級**` 欄位者，宣告與形狀不一致 10 筆且**全部同方向（宣告重、產出輕）**，無一反向。規則本身尚未被套用 |
+| `**分級**` 值取開頭的詞判定 | 來源為實跑 | 同上掃描發現 4 份值帶補充說明或格式殘留（`Large（暫定）`、`Large（28 檔、前後端＋常青文件、跨 5 個以上 service）`、`Medium\` ×2），嚴格比對會讓它們落進形狀回推路徑，等於合規率由 88/164 降為 84/164 |
+| `dev-cycle` 回推得 Medium / Small 時先確認再補寫 | 僅靜態撰寫 | **原假設已被否決**：先前推測「宣告 Large 但形狀較輕」會被回推誤判，實查那 5 個案例**全都有寫檔尾欄位**，`dev-cycle` 讀得到、不走回推，此路徑**目前零受害者**。真正曝險是 76 份無欄位 issue 中形狀為 Small 的 21 份——其真實規模需逐份讀內容判定，非 grep 可得，line-oa-plus 未猜、本列亦不假設 |
+| 新規則對真實案例的判定差異（no-op 檢查） | **本地測試驗證** | 2026-09-07 以 5 個真實 issue 逐一套用新規則：`0167` 兩個觸發條件都明確不成立、判定不建（與實務一致且不再需要援引 YAGNI 對抗規範）；`0274` 因待確認事項影響需求範圍而**觸發成立、判定該建**，與該 issue 選擇的延後相反；`0201` 由嚴格比對讀不到改為判定 Large。三處判定與舊規則不同，非 no-op。**未一併放寬 `implementation-plan.md`**（`execute-task` 讀其實作步驟、`decompose` 以其為輸入，有實際消費者），故 `0188`／`0274`／`0271` 在新規則下仍被判缺件 |
 
 ## 已知的驗證限制
 

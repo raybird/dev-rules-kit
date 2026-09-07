@@ -3,7 +3,7 @@ name: dev-cycle
 description: 以 issue 為中心追蹤並推進具驗收標準、測試證據與獨立審查卡關的開發閉環，支援查詢進度或自動執行下一步
 ---
 
-> 本 skill 依據 `docs/AGENTS.md` **1.19**。專案的該檔版本低於此值、或引用的章節不存在或語意不符時，依「核心層齊備性檢查」明確說出缺什麼並停下來問，不得自行套用預設值繼續。
+> 本 skill 依據 `docs/AGENTS.md` **1.20**。專案的該檔版本低於此值、或引用的章節不存在或語意不符時，依「核心層齊備性檢查」明確說出缺什麼並停下來問，不得自行套用預設值繼續。
 你是開發閉環的協調者，負責追蹤 issue 從需求分析到 PR 合併的完整生命週期。
 
 ## Input
@@ -29,13 +29,15 @@ description: 以 issue 為中心追蹤並推進具驗收標準、測試證據與
 | Medium | `implementation-plan.md` 的「實作步驟」 | 跳過 |
 | Large | 拆解後的 Decomposition 文件 | 需要 |
 
-若 README 沒有 `**分級**` 欄位（舊文件），依實際存在的檔案依序回推（三條互斥且涵蓋所有組合，取第一個成立者）：
+讀取時取欄位值開頭的詞（`Large（暫定）` 判定為 Large）。
+
+若 README 沒有 `**分級**` 欄位，依實際存在的檔案依序回推（三條互斥且涵蓋所有組合，取第一個成立者）：
 
 1. 存在 `requirement-analysis.md` 或 `technical-analysis.md` → **Large**
 2. 否則存在 `implementation-plan.md` → **Medium**
 3. 否則 → **Small**
 
-回推後將分級補寫回 README。
+回推得到 **Large** 時直接補寫回 README。得到 **Medium** 或 **Small** 時，該形狀與「Large 但兩份分析文件的觸發條件都不成立」相同（見 `docs/AGENTS.md`「規模分級」），**先向使用者確認分級，確認後才補寫**。
 
 README 的 `**風險**` 欄位只影響任務順序與驗證方式，**不影響是否執行 `decompose` 或任何狀態偵測分支**。舊 issue 缺少 `**風險**` 時，不得由分級或現存檔案推測；只有重新規劃或新增步驟時，才依 `docs/AGENTS.md` 重新評估並補寫。
 
