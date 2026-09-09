@@ -31,7 +31,8 @@ dev-rules-kit/
 │   ├── execute-task/
 │   ├── git-squash/
 │   ├── new-issue/
-│   └── review/
+│   ├── review/
+│   └── writing-rules/
 └── workflows/           # 工作流程（Windsurf、OpenCode 使用）
     ├── shared/
     ├── antigravity/
@@ -68,7 +69,9 @@ bash scripts/install.sh
 bash scripts/install.sh claude
 ```
 
-腳本只覆蓋本 kit 的技能資料夾，同目錄下你自己的技能不受影響。
+腳本更新本 kit 技能資料夾內的同名檔案，保留其他檔案與個人技能；不會移除上游已刪除的舊檔。舊版安裝器若已產生 `<name>/<name>/SKILL.md`，更新後請檢查並手動移除確認無客製內容的巢狀副本。
+
+核心技能另需專案內的文件規範：於本 kit 根目錄執行 `python3 scripts/init-project.py /path/to/project`。詳見 [專案初始化](../README.md#使用方式)。
 
 驗證：於 AI 對話框輸入 `/`，應出現 `decompose`、`create-commit`、`new-issue`、`dev-cycle` 等指令。
 

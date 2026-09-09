@@ -13,7 +13,10 @@ dev-rules-kit/
 ├── CLAUDE.md              # AI 維護指引
 ├── scripts/               # 自動化工具
 │   ├── sync-skills.py     # 雙子星自動同步腳本（--check 可驗證同步狀態）
-│   └── check-links.py     # Markdown 相對連結檢查
+│   ├── check-links.py     # Markdown 相對連結檢查
+│   ├── install.sh         # 平台安裝與更新
+│   ├── init-project.py    # 下游專案文件初始化
+│   └── test-install.py    # 安裝與初始化回歸測試
 ├── docs/                  # 技術文件與規範說明
 │   ├── AGENTS.md          # 文件資料夾說明（AGENTS）
 │   ├── usage.md           # 使用指南（含開發閉環步驟）
@@ -24,10 +27,10 @@ dev-rules-kit/
 │   ├── AGENTS.zh-TW.md
 │   └── README.md
 ├── workflows/             # 可執行的命令或工作流程（command/workflow）
-│   ├── shared/            # 共通工作流程（含 dev-cycle.md 等 9 個工作流）
+│   ├── shared/            # 共通工作流程（含 dev-cycle.md 等 10 個工作流）
 │   ├── antigravity/       # Antigravity 特定工作流程
 │   └── README.md          # 各平台 workflows 安裝路徑
-└── skills/                # 可重複使用的技能定義（skill，共 9 個技能）
+└── skills/                # 可重複使用的技能定義（skill，共 10 個技能）
     ├── code-simplify/
     ├── create-commit/
     ├── create-pr/
@@ -36,7 +39,8 @@ dev-rules-kit/
     ├── execute-task/
     ├── git-squash/
     ├── new-issue/
-    └── review/
+    ├── review/
+    └── writing-rules/
 ```
 
 ## 用途
@@ -60,7 +64,7 @@ dev-rules-kit/
 
 ## 開發閉環
 
-`workflows/shared/` 與 `skills/` 內的開發工具（包含 9 個雙子星對照技能/工作流）構成了一個開發閉環。其中核心的七個工作流構成日常開發循環：
+`workflows/shared/` 與 `skills/` 內的開發工具（包含 10 個雙子星對照技能/工作流）構成了一個開發閉環。其中核心的七個工作流構成日常開發循環：
 
 ```
 new-issue        ← 分析需求、建立 issue 文件
@@ -139,13 +143,25 @@ PRD 中常見的 `implementation-plan`、`critic`、`architectural-compliance`�
    - 工作流程：[workflows/README.md](./workflows/README.md#安裝方式)
    - 技能：[skills/README.md](./skills/README.md#安裝方式)
 
-3. **（選用）設定外部工具**  
+3. **初始化每個下游專案的文件規範**
+
+   在本 kit 根目錄執行（目標專案目錄須已存在）：
+   ```bash
+   python3 scripts/init-project.py /path/to/project --dry-run
+   python3 scripts/init-project.py /path/to/project
+   python3 scripts/init-project.py /path/to/project --check
+   ```
+   這會部署 `docs/AGENTS.md`、`docs/agents/` 與 `docs/_templates/`。核心技能會讀取這組文件，僅安裝全域 skills 尚不足以啟用開發閉環。相同文件保持原樣；有內容不同的既有文件、符號連結或路徑衝突時，整批停止且不寫入，請依 [客製邊界](./docs/AGENTS.md#客製邊界與同步策略) 人工合併。
+
+   `--check` 比對的是與本 kit 的內容一致性，不是客製後的語意相容性；客製專案仍需人工確認核心層。升級全域技能時，也要檢查各專案文件版本。
+
+4. **（選用）設定外部工具**
    Serena、GitNexus、Superpowers 的各平台設定見 [docs/setup/tools.md](./docs/setup/tools.md)。
 
-4. **了解日常使用方式**  
+5. **了解日常使用方式**
    參考 [docs/usage.md](./docs/usage.md) 查看完整閉環示範與各 skill 快速參考。
 
-5. **自訂與擴充**  
+6. **自訂與擴充**
    根據個人或團隊需求，修改或新增 `skills/` 底下的技能定義，修改後於根目錄執行：
    ```bash
    python3 scripts/sync-skills.py

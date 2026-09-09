@@ -130,7 +130,7 @@ If verification cannot be fully automated, provide explicit manual steps.
 
 ## 7. BDD + TDD Gates and Exemptions
 
-**Define the right behavior with Gherkin, then implement it through red-green-refactor.**
+**Define observable acceptance criteria, then implement them through red-green-refactor.**
 
 ### Size Decides the Form, Risk Decides the Strength
 
@@ -146,11 +146,11 @@ Both forms require explicit user approval before implementation; an agent must n
 ### Work That Changes Observable Behavior
 
 1. If Superpowers is installed, invoke `brainstorming`; otherwise follow the same built-in clarification process below. Ask one question at a time and obtain explicit approval of the behavior.
-2. Write approved acceptance criteria as Gherkin with stable Scenario IDs and `Feature` / `Scenario` / `Given` / `When` / `Then`.
-3. Persist the approval source, the commit carrying the approved content, and a per-Scenario approval date and status. Before implementing, check whether the spec was revised after approval (see "Handling Spec Revisions").
-4. If available, invoke `test-driven-development`. Whether or not it is installed, create the BDD Step Definitions and run the scenario to capture a relevant failure before changing production code. When the project has no BDD runner, use an integration or end-to-end test tagged with the Scenario ID as the outer loop and record the substitute chosen; a missing tool never justifies skipping the outer loop.
+2. Use the size-based form above: Small keeps lightweight acceptance conditions; Medium / Large uses Gherkin with stable Scenario IDs and `Feature` / `Scenario` / `Given` / `When` / `Then`.
+3. Persist the approval source and date. Full Gherkin also records the approval commit and each Scenario's status; Small adds an approval commit only at Medium / High risk. Check spec revisions when an approval commit is required (see "Handling Spec Revisions").
+4. If available, invoke `test-driven-development`. Capture a relevant failure for the approved behavior before changing production code. For Gherkin, use BDD Step Definitions, or an integration / end-to-end test tagged with the Scenario ID when no BDD runner exists. For lightweight conditions, use the corresponding repeatable acceptance test; apply the Small single-loop rule below when both layers coincide. Record any substitute chosen.
 5. Write the smallest unit test for the underlying behavior and run it to capture a relevant failure.
-6. Write the minimum production code needed to pass the unit test and BDD scenario; then refactor while keeping both green.
+6. Write the minimum production code needed to pass the unit test and acceptance test; then refactor while keeping both green.
 7. Preserve command output or equivalent repeatable evidence for each red and green state. A claim such as "tests pass" is not evidence.
 
 Outer-loop red, unit-test red, green after the minimal implementation, and green after refactoring together form the **red-green-refactor evidence**; missing any one segment makes it incomplete. Producing a green that does not stand for correct behavior — deleting, skipping, weakening, commenting out, partially running, or rewriting an existing test; mocking away the behavior under acceptance; hardcoding expected data; asserting nothing — is a **fake green** and never counts as evidence. So is a **tautological** assertion that recomputes the expected value the way the code does (`expect(add(a, b)).toBe(a + b)`, a snapshot derived by hand along the same path): it passes by construction and can never disagree with the code, so it tests nothing. Expected values must come from an independent source of truth — a known-good literal, a worked example, the spec. Ask of every assertion: **could this ever disagree with the code?** If not, it is not a test.

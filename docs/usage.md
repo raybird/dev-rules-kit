@@ -6,6 +6,8 @@
 
 ---
 
+使用核心技能前，於本 kit 根目錄執行 `python3 scripts/init-project.py /path/to/project`，部署專案的 `docs/AGENTS.md`、`docs/agents/` 與 `docs/_templates/`。既有客製文件需人工合併；初始化與更新檢查方式見 [README](../README.md#使用方式)。
+
 ## 完整閉環示範
 
 以「為現有 web app 新增 OAuth 登入功能」（issue-101）為例，完整走過七個步驟。

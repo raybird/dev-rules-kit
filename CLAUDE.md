@@ -4,7 +4,7 @@ This file provides guidance to Claude Code (claude.ai/code) when working with co
 
 ## Repository Nature
 
-本 repo 是 **純 Markdown 範本庫**，不是應用程式：沒有 build / test / lint，也沒有 package manager。所有「驗證」都是人工閱讀 Markdown，或在目標平台（Windsurf / OpenCode / Antigravity / Claude）中試跑 skill / workflow。
+本 repo 以 Markdown 範本為產品，另有 Python 與 Bash 維護腳本，無 package manager。修改後執行 `python3 scripts/sync-skills.py --check`、`python3 scripts/check-links.py`、`bash -n scripts/install.sh` 與 `python3 scripts/test-install.py`；CI 會跑相同檢查。修改流程語意時另依 `docs/workflow-regression.md` 實跑對應案例，靜態檢查通過不代表 agent 流程已驗證。
 
 對使用者而言，這個 repo 的「產品」是 `rules/`、`workflows/`、`skills/` 三個目錄裡的 Markdown 檔，使用者會把它們複製到自己的開發環境設定目錄（見下方平台對應表）。
 

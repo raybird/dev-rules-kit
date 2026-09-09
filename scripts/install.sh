@@ -166,7 +166,8 @@ install_skills() {
   for d in "$REPO_ROOT"/skills/*/; do
     [ -f "$d/SKILL.md" ] || continue
     name="$(basename "$d")"
-    run cp -r "$d" "$target/$name"
+    run mkdir -p "$target/$name"
+    run cp -r "$d." "$target/$name/"
     count=$((count + 1))
   done
   echo "  技能：$count 個技能 -> ${target/#$HOME/\~}/"
@@ -195,3 +196,4 @@ if [ "$WITH_RULES" = 0 ]; then
   echo "未安裝規則檔（rules/）。需要時加上 --with-rules，腳本會先備份既有檔案。"
 fi
 echo "驗證：於 AI 對話框輸入 /，應出現 decompose、create-commit、new-issue、dev-cycle 等指令。"
+echo "專案初始化：執行 python3 scripts/init-project.py /path/to/project，部署核心技能需要的 docs 規範。"
