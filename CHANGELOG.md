@@ -12,7 +12,7 @@
 
 ---
 
-## [Unreleased] - 2026-09-10
+## [2.19.0] - 2026-09-10
 
 ### 修正（`docs/AGENTS.md` 1.21、`dev-cycle` / `create-pr` / `review` — **下游需重新複製規範與這三支 skill**）
 
