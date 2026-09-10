@@ -344,7 +344,15 @@ review 報告必須持久化成可跨 session 讀取、且綁定被審查 HEAD S
 1. 專案使用的 code review 平台（GitHub PR review / comment、GitLab MR discussion、Gitea review 等）。
 2. 平台不可用、無權限或純本機流程時，寫入 `docs/issues/issue-{ID}/review-{HEAD 前 7 碼}.md` 並隨變更提交。
 
-兩者都必須包含 Reviewed HEAD SHA、獨立 reviewer 識別與流程判定。只存在於對話中的報告不構成 artifact。
+兩者都必須包含 Reviewed HEAD SHA、Reviewed patch-id、獨立 reviewer 識別與流程判定。只存在於對話中的報告不構成 artifact。
+
+**patch-id 讓被審查狀態在 SHA 改寫後仍可指認。** `**核准 commit**` 的效期規則（見「規格修訂的查核」）對 artifact 不適用：核准 commit 是合併前的 gate，合併後不再有讀者；review artifact 是留給後人的稽核材料，**它的讀者恰恰在合併後才來查**，此時 HEAD SHA 已因 squash、rebase、amend 或 cherry-pick 失效，只剩「某次審查」而無從得知審的是哪個狀態。
+
+```bash
+git diff {合併目標分支}...{被審查 HEAD} | git patch-id --stable
+```
+
+該值只取決於變更內容：上述四種改寫操作後都不變，變更內容真的被改動時才變。artifact 內文與 Reviewed HEAD SHA 並列記錄——SHA 指認審查當下的提交，patch-id 指認被審查的變更本身。檔名的短 SHA 只用於區分同一 issue 的多次審查，失效不影響可追溯性。
 
 ### Gate 豁免紀錄
 
@@ -530,13 +538,14 @@ docs/
 
 **建立日期**: 2026-04-27  
 **最後更新**: 2026-09-07\
-**文件版本**: 1.21\
+**文件版本**: 1.22\
 **適用範圍**: `docs/` 資料夾所有文件
 
 ## 修訂紀錄 (Changelog)
 
 | 日期 | 版本 | 異動 |
 |------|------|------|
+| 2026-09-10 | 1.22 | review artifact 另記 `Reviewed patch-id`，讓被審查狀態在 SHA 改寫後仍可指認。1.19 的「效期到合併為止」對核准 commit 成立（它是合併前的 gate），套到 artifact 卻不成立——artifact 的讀者在合併後才來稽核，檔名與內文的 SHA 屆時已失效，只剩「某次審查」。下游兩次實例（#289、#283）都是實作者主動發現，沒有任何 gate 攔到 |
 | 2026-09-10 | 1.21 | 核准狀態的判定作用域明訂為核准表：Timeline 與其他敘述區塊出現 `待核准` / `待重新核准` 屬時序記錄，不改變任何判定；單行省略形式沒有狀態欄可讀，保留全檔形式查核並改為要求展開為逐項表格再依表判定。原描述把查核寫成字串殘留掃描，與同一份規範的時序保留原則互斥——如實記載某 Scenario 曾待重新核准，會讓已全數核准的 issue 被判成尚有未核准項，實作者被迫挑選措辭繞開 gate |
 | 2026-09-07 | 1.20 | Large 的 `requirement-analysis.md` 與 `technical-analysis.md` 從「一律建立」改為依觸發條件建立（前者對應需要調查才寫得下來的需求或現況，後者對應實際做過的方案取捨），Large 必建集合縮為 `README.md` 與 `implementation-plan.md`。原規則與同一份規範的 YAGNI 原則互相衝突，下游實作者已在援引後者論證不建；`**分級**` 欄位同時放寬為取開頭的詞判定，並改述為「唯一可靠來源」——分析文件變成選用後，缺欄位時的形狀回推無法區分 Large 與 Medium |
 | 2026-08-23 | 1.19 | 明訂 `**核准 commit**` 的效期到合併為止：合併後該 SHA 是否可達不再影響任何 gate，失效屬已宣告的預期狀態；回填改為選用且搭下次觸及該 issue 目錄的提交，不為此單獨開提交。原規則只提供「回填」一條出路，卻未定義不回填時的終態，實務上每個 Medium / Large 與 Small + Medium / High 的 issue 都會多出一個沒有讀者的提交 |

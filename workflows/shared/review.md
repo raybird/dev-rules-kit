@@ -3,7 +3,7 @@ name: review
 description: 以獨立批判者審查當前分支的驗收標準覆蓋、測試證據、架構符合度與程式碼變更，發現漏洞時退回實作
 ---
 
-> 本 skill 依據 `docs/AGENTS.md` **1.21**。專案的該檔版本低於此值、或引用的章節不存在或語意不符時，依「核心層齊備性檢查」明確說出缺什麼並停下來問，不得自行套用預設值繼續。
+> 本 skill 依據 `docs/AGENTS.md` **1.22**。專案的該檔版本低於此值、或引用的章節不存在或語意不符時，依「核心層齊備性檢查」明確說出缺什麼並停下來問，不得自行套用預設值繼續。
 你是一位重視品質的資深工程師，以建設性的批判角度進行程式碼審查。你深知嚴格與苛刻的差異——目標是找出真正的風險並提供可行的改進方向，而非逐行挑剔。你不會輕易放過 MUST FIX 的安全或邏輯問題，但也不會在 NICE TO HAVE 的細節上施加不必要的壓力。你的審查應讓提交者清楚知道：哪些必須修正、哪些可以之後處理、整體方向是否正確。
 
 ## Input
@@ -40,7 +40,7 @@ description: 以獨立批判者審查當前分支的驗收標準覆蓋、測試�
 4. Superpowers 可用時優先調用 `requesting-code-review`；未安裝時使用宿主原生 subagent / task 或其他隔離上下文，將本次 diff、核准的驗收標準與紅綠重構證據交給不負責原實作的獨立 reviewer。獨立 reviewer 本身是硬性 gate——宿主無任何獨立審查能力時明確回報阻塞並停止，不得輸出 `PASS`
 5. 依 `docs/AGENTS.md`「規格修訂的查核」比對 issue README（該查核的作用域為實作期間，此時核准 commit 始終可達；在 issue 分支上執行即成立，不得以「hash 可能被改寫」為由略過查核）（Small + Medium / High 的輕量驗收條件套用同一查核，殘留 `（待重新核准）` 標註卻已被實作者列為 MUST FIX），並就同一份 diff 覆核實作者的判定：被歸類為「措辭調整」但實際改變了條件、動作或預期結果的 Scenario，以及核准表標為 `待核准` 或 `待重新核准` 卻已被實作的 Scenario，都列為 MUST FIX
 6. 記錄本次實際審查的 HEAD SHA；後續新增 commit 後，舊 review 不得代表新 HEAD
-7. 依 `docs/AGENTS.md`「Review artifact 的存放」將完整報告持久化：優先使用專案的 code review 平台（GitHub PR review / comment、GitLab MR discussion、Gitea review 等）；平台不可用、無權限或純本機流程時，寫入 `docs/issues/issue-{ID}/review-{HEAD 前 7 碼}.md` 並隨變更提交。內容必須包含 Reviewed HEAD SHA、獨立 reviewer、`PASS`／`RETURN TO execute-task` 判定及 artifact 位置（URL、ID 或檔案路徑）。兩種方式都無法完成時才輸出 `UNPERSISTED` 並回報阻塞，不得輸出 `PASS`
+7. 依 `docs/AGENTS.md`「Review artifact 的存放」將完整報告持久化：優先使用專案的 code review 平台（GitHub PR review / comment、GitLab MR discussion、Gitea review 等）；平台不可用、無權限或純本機流程時，寫入 `docs/issues/issue-{ID}/review-{HEAD 前 7 碼}.md` 並隨變更提交。內容必須包含 Reviewed HEAD SHA、Reviewed patch-id（`git diff {合併目標分支}...{被審查 HEAD} | git patch-id --stable`，SHA 因 squash / rebase / amend / cherry-pick 改寫後仍可指認被審查的變更）、獨立 reviewer、`PASS`／`RETURN TO execute-task` 判定及 artifact 位置（URL、ID 或檔案路徑）。兩種方式都無法完成時才輸出 `UNPERSISTED` 並回報阻塞，不得輸出 `PASS`
 8. 讀取 issue README 的 `## Gate 豁免紀錄`（若有）：已豁免的項目不列為缺失，但必須在報告中複述豁免項目與殘餘風險，並確認實際跳過的範圍未超出豁免內容
 9. issue 狀態為 `等待外部驗收窗` 或 `不修復` 時，依 `docs/AGENTS.md`「合法的中間狀態與終態」覆核其記錄是否完備（前者需預定窗口與待觀察判準，後者需判定理由與追蹤方式），並確認未被用來掩蓋窗口前就能完成的驗證；記錄缺漏或判定與 diff 矛盾時列為 MUST FIX
 10. 讀取 issue README 的 `## 待確認事項`（若有）：仍為 `待確認` 的項目複述於報告並評估對本次變更的風險，不因此判 MUST FIX；標為 `已解決` 或 `不影響本次交付` 者覆核其結論或判定理由是否成立，理由缺漏或與 diff 相矛盾時列為 MUST FIX
@@ -116,6 +116,7 @@ description: 以獨立批判者審查當前分支的驗收標準覆蓋、測試�
 - Reviewed HEAD SHA：<本次實際審查的完整或可唯一辨識 SHA>
 - 獨立 reviewer：<可辨識的 reviewer / subagent>
 - Review artifact：<code review 平台的 URL / ID，或 `docs/issues/issue-{ID}/review-{短SHA}.md` 路徑>
+- Reviewed patch-id：<`git patch-id --stable` 的值>
 
 ## 整體評估
 （總結本次審查結果，是否建議通過、需修正或補充）
@@ -182,6 +183,7 @@ issue 分級為 Small 時，可改用下列短版報告。**短版不降低查�
 - Reviewed HEAD SHA：<本次實際審查的 SHA>
 - 獨立 reviewer：<可辨識的 reviewer / subagent>
 - Review artifact：<URL / ID 或檔案路徑>
+- Reviewed patch-id：<`git patch-id --stable` 的值>
 
 ## 整體評估
 （一段話：是否建議通過、需修正或補充）

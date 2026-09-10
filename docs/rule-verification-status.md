@@ -150,6 +150,14 @@
 | 1.12 所防的單行誤用在實務中的出現率 | **下游掃描（非實跑）** | line-oa-plus 於 2026-09-10 掃 164 份 issue：真正採單行省略形式者 7 份，敘述區塊全部乾淨，**逐份讀內容判定的誤用數為 0**——沒有未核准 Scenario 被當成已核准實作。這證明的是**該失效形態在此樣本中未出現**，不是查核有效；對照組因此無真實樣本，WF-06 該組只能人工合成 |
 | 核准表形式判定以表頭為準 | **本地測試驗證** | 2026-09-10 以 line-oa-plus `issue-0242` 為反例修正：該 issue 同時有「全部 Scenario 於…核准」摘要句與 6 列逐項表，舊判準（掃摘要句）會誤判為單行形式，要求它展開一份本來就有的表。改以表頭判定後分類正確。**掃 Scenario ID 前綴的判準已排除**——規範從未定義 ID 格式，`SCN-` 只出現在範本範例列，下游採其他命名時會全數漏掉 |
 
+## v2.20.0 — review artifact 的變更識別（2026-09-10）
+
+| 規則 | 狀態 | 驗證來源 |
+|---|---|---|
+| patch-id 跨 SHA 改寫穩定，可指認被審查的變更 | **本地測試驗證** | 2026-09-10 以拋棄式 repo 實測五種情境：baseline、rebase 到已前進的 base、squash、amend（僅改訊息）、cherry-pick 到新分支，`git diff {base}...HEAD \| git patch-id --stable` 五者同值；再加一次真實內容變更後該值改變。**它有鑑別力而非恆等式**——能區分「只是 SHA 被改寫」與「內容真的變了」，這正是 artifact 需要的性質。tree hash 一併測過並排除：squash 後穩定但 rebase 後改變 |
+| agent 執行 review 時確實記錄 patch-id | 僅靜態撰寫 | 規範與 `review` 已寫入，[WF-07](workflow-regression.md#案例) 已定義未實跑。git 行為已驗證不等於 agent 會照做——本 repo 反覆出現的正是「規則寫得完整但執行不了」 |
+| review artifact 的效期與核准 commit 不同 | **來源為下游實例** | line-oa-plus 回報 #289（2026-09-08，`review-f0c84c7.md` 與 `review-c008abd.md` 兩份檔名 SHA 於 rebase 後不可達）與 #283（核准 commit 失效兩次）。兩例都是**實作者主動發現，沒有任何 gate 攔到**——1.19 把 artifact 與核准 commit 一併宣告為「效期到合併為止」，忽略了 artifact 的讀者在合併後才出現 |
+
 ## 已知的驗證限制
 
 - **樣本數 n=2，且同源**：line-oa-plus 與 googleBooking 同屬一位使用者、跑同一套 kit、工作流程相近。**兩者共有的盲點照不出來**——例如多人並行 review、非中文協作者、非 Firebase 系技術棧的情境，今天完全沒有覆蓋。

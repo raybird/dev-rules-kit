@@ -12,6 +12,14 @@
 
 ---
 
+## [Unreleased] - 2026-09-10
+
+### 新增（`docs/AGENTS.md` 1.22、`review` — **下游需重新複製規範與這支 skill**）
+
+- review artifact 另記 `Reviewed patch-id`（`git diff {合併目標分支}...{被審查 HEAD} | git patch-id --stable`），讓被審查狀態在 SHA 改寫後仍可指認。1.19 的「效期到合併為止」對核准 commit 成立——它是合併前的 gate；套到 artifact 卻不成立——artifact 是留給後人的稽核材料，讀者恰恰在合併後才來查，屆時檔名與內文的 SHA 已失效，只剩「某次審查」。
+- patch-id 已實測：rebase、squash、amend、cherry-pick 四種改寫後同值，內容真的變更時才變。tree hash 一併測過並排除（squash 後穩定但 rebase 後改變）。
+- 新增 WF-07 回歸案例驗證 agent 是否確實記錄，待實跑。
+
 ## [2.19.1] - 2026-09-10
 
 ### 修正（`docs/AGENTS.md` 1.21、`review` — **下游需重新複製規範與這支 skill**）
