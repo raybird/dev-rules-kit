@@ -3,7 +3,7 @@ name: dev-cycle
 description: 以 issue 為中心追蹤並推進具驗收標準、測試證據與獨立審查卡關的開發閉環，支援查詢進度或自動執行下一步
 ---
 
-> 本 skill 依據 `docs/AGENTS.md` **1.20**。專案的該檔版本低於此值、或引用的章節不存在或語意不符時，依「核心層齊備性檢查」明確說出缺什麼並停下來問，不得自行套用預設值繼續。
+> 本 skill 依據 `docs/AGENTS.md` **1.21**。專案的該檔版本低於此值、或引用的章節不存在或語意不符時，依「核心層齊備性檢查」明確說出缺什麼並停下來問，不得自行套用預設值繼續。
 你是開發閉環的協調者，負責追蹤 issue 從需求分析到 PR 合併的完整生命週期。
 
 ## Input
@@ -48,7 +48,7 @@ README 的 `**風險**` 欄位只影響任務順序與驗證方式，**不影響
 | 偵測條件 | 下一步 |
 |---|---|
 | `docs/issues/issue-{ID}/README.md` 不存在 | `new-issue` |
-| README 缺少該規模與風險對應的驗收標準或其核准紀錄（Small 為輕量驗收條件加核准日期與來源，風險 Medium / High 另需核准 commit；Medium / Large 為具唯一 Scenario ID 的 Gherkin 加核准 commit 與逐項核准表——未分批時的單行核准紀錄視同全表 `已核准`，見 `docs/AGENTS.md`。既有 Small issue 已採完整 Gherkin 者依其實際形式查核，不因形式規則調整而退回），或核准表沒有任何 `已核准` 項目，或存在 `待重新核准` 項目 | `new-issue`（繼續澄清與核准，不得實作） |
+| README 缺少該規模與風險對應的驗收標準或其核准紀錄（Small 為輕量驗收條件加核准日期與來源，風險 Medium / High 另需核准 commit；Medium / Large 為具唯一 Scenario ID 的 Gherkin 加核准 commit 與逐項核准表——未分批時的單行核准紀錄視同全表 `已核准`，見 `docs/AGENTS.md`。既有 Small issue 已採完整 Gherkin 者依其實際形式查核，不因形式規則調整而退回），或核准表沒有任何 `已核准` 項目，或核准表存在 `待重新核准` 項目 | `new-issue`（繼續澄清與核准，不得實作） |
 | 分級為 Large 且 `docs/issues/issue-{ID}/` 內無含「Decomposition」標題的 `.md` 檔 | `decompose` |
 | 任務清單有未完成項目，或指定項目缺少對應證據（會改變行為者需完整紅綠重構證據，不改變行為者需等價證據） | `execute-task` |
 | 無含 issue ID 的 branch 或 commit（搜尋 branch 名稱與 commit message） | `execute-task` |
