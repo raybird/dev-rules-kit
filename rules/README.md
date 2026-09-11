@@ -11,7 +11,7 @@
 
 ## 客製邊界
 
-本目錄的規則檔會被複製到各專案的規則設定（`.windsurfrules`、`.cursorrules`、`~/.config/opencode/AGENTS.md` 等）並隨該專案演化，因此**哪些章節預期被改、哪些改了會與 skill 衝突，必須看得出來**：
+本目錄的規則檔會被複製到各專案的規則設定（`.cursorrules`、`~/.config/opencode/AGENTS.md` 等）並隨該專案演化，因此**哪些章節預期被改、哪些改了會與 skill 衝突，必須看得出來**：
 
 - **標為「本節屬專案客製」的章節**（目前為「語言規範」與「Monorepo 規則」）預期每個專案不同，從本 repo 重新複製時保留專案自己的版本。
 - **其餘章節屬核心**：BDD + TDD 卡關與豁免、目標驅動執行與驗證、規模與風險等，與 `skills/` 的 gate 語意一一對應。單邊改寫會讓 agent 同時服從兩套互斥指令，且不會有任何錯誤訊息——需要調整時應連同對應 skill 一起改。
@@ -41,7 +41,6 @@
 | 平台 | 全域規則位置 | 專案層覆寫 |
 |------|-------------|-----------|
 | **Claude Code** | 不自動載入 `AGENTS.md`，需在 `CLAUDE.md` 用 `@AGENTS.md` 匯入（見下方） | 專案根目錄 `AGENTS.md` |
-| **Windsurf** | `~/.codeium/windsurf/memories/global_rules.md` | `.windsurfrules`（疊加而非覆寫） |
 | **Antigravity** | `~/.gemini/config/AGENTS.md`（與 `~/.gemini/GEMINI.md` 疊加載入，見下方） | `.agents/rules/*.md`（官方文件所述，CLI 實測未生效） |
 | **Cursor** | 無檔案系統層級設定，需在 Settings → **Rules** → **User Rules** 貼上內容 | `.cursor/rules/*.mdc`（`.cursorrules` 為舊版單檔格式，仍可用） |
 | **OpenCode** | `~/.config/opencode/AGENTS.md` | 專案根目錄 `AGENTS.md` |
@@ -60,7 +59,7 @@ Claude Code 與 Cursor 不以檔案方式安裝全域規則，腳本會改為印
 
 **Claude Code 的掛載方式**：Claude Code 只讀 `CLAUDE.md`，不會自動載入 `AGENTS.md`。將本檔複製到專案根目錄後，需在 `CLAUDE.md` 開頭加一行獨立的 `@AGENTS.md`（不可包在反引號或程式碼區塊內）。完整步驟與 `/init` 覆寫的注意事項見[根目錄 README](../README.md#下游專案掛載規則claude-code)。
 
-**Antigravity 的規則檔**：全域規則為 `~/.gemini/config/AGENTS.md` 與 `~/.gemini/GEMINI.md`，兩份**同時載入**而非擇一（`agy` 1.1.7 以 marker 實測）。官方文件只記載 `GEMINI.md`，但 `config/` 是 2026-05-20 遷移後的跨產品設定目錄，與 `global_workflows/`、`skills/` 同層，因此建議把本 kit 的規則放 `config/AGENTS.md`、個人規則留在 `GEMINI.md`，兩者互不覆蓋，重新複製規則檔時也不會蓋掉個人設定。
+**Antigravity 的規則檔**：全域規則為 `~/.gemini/config/AGENTS.md` 與 `~/.gemini/GEMINI.md`，兩份**同時載入**而非擇一（`agy` 1.1.7 以 marker 實測）。官方文件只記載 `GEMINI.md`，但 `config/` 是 2026-05-20 遷移後的跨產品設定目錄，與 `skills/` 同層，因此建議把本 kit 的規則放 `config/AGENTS.md`、個人規則留在 `GEMINI.md`，兩者互不覆蓋，重新複製規則檔時也不會蓋掉個人設定。
 
 > **專案層規則實測未生效**：官方文件所述的 `.agents/rules/*.md`（向下相容 `.agent/rules`）以及專案根的 `AGENTS.md` / `GEMINI.md`，在 `agy --print` 非互動模式下皆未被載入，git repo 情境亦同。IDE 端未測——該處另有 Customizations UI 的註冊機制，行為可能不同。需要專案層規則時請先自行驗證。
 

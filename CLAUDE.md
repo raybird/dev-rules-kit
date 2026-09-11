@@ -4,44 +4,23 @@ This file provides guidance to Claude Code (claude.ai/code) when working with co
 
 ## Repository Nature
 
-本 repo 以 Markdown 範本為產品，另有 Python 與 Bash 維護腳本，無 package manager。修改後執行 `python3 scripts/sync-skills.py --check`、`python3 scripts/check-links.py`、`bash -n scripts/install.sh` 與 `python3 scripts/test-install.py`；CI 會跑相同檢查。修改流程語意時另依 `docs/workflow-regression.md` 實跑對應案例，靜態檢查通過不代表 agent 流程已驗證。
+本 repo 以 Markdown 範本為產品，另有 Python 與 Bash 維護腳本，無 package manager。修改後執行 `python3 scripts/check-kit.py`、`python3 scripts/check-links.py`、`bash -n scripts/install.sh` 與 `python3 scripts/test-install.py`；CI 會跑相同檢查。修改流程語意時另依 `docs/workflow-regression.md` 實跑對應案例，靜態檢查通過不代表 agent 流程已驗證。
 
-對使用者而言，這個 repo 的「產品」是 `rules/`、`workflows/`、`skills/` 三個目錄裡的 Markdown 檔，使用者會把它們複製到自己的開發環境設定目錄（見下方平台對應表）。
+對使用者而言，這個 repo 的「產品」是 `rules/`、`skills/` 兩個目錄裡的 Markdown 檔，使用者會把它們複製到自己的開發環境設定目錄（見下方平台對應表）。
 
 ## High-Level Architecture
 
-四個並列目錄，各自獨立，不互相 import：
+三個並列目錄，各自獨立，不互相 import：
 
 | 目錄 | 內容 | 給誰用 |
 |------|------|--------|
-| `rules/` | 靜態行為規則（`AGENTS.md` 中／英版） | 寫進 `.windsurfrules` / `.cursorrules` 等規則檔 |
-| `workflows/shared/` | 跨平台共通 slash command 流程 | Windsurf `.windsurf/workflows/`、OpenCode `commands/`、Antigravity `global_workflows/` |
-| `workflows/<platform>/` | 平台特定 workaround（如 `antigravity/fix-webview-conflict.md`） | 對應平台專屬 |
-| `skills/<name>/SKILL.md` | Claude 用的 skill 定義 | Claude Code skills |
+| `rules/` | 靜態行為規則（`AGENTS.md` 中／英版） | 寫進 `.cursorrules`、`~/.config/opencode/AGENTS.md` 等規則檔 |
+| `skills/<name>/SKILL.md` | skill 定義，也是各平台 slash command 的來源 | 四個平台的 skills 目錄 |
 | `docs/AGENTS.md` + `docs/agents/` | issue 文件結構規範（主檔為入口，`agents/` 三份為 pointer 觸發的參考檔） | 套用此 kit 的下游專案的 `docs/` 目錄 |
-
-### Skill ↔ Workflow 同步機制（最重要的維護規則）
-
-`skills/<name>/SKILL.md` 與 `workflows/shared/<name>.md` 是對應的技能與工作流程。
-
-**請勿手動進行兩邊的檔案複製**。當你修改或新增 `skills/` 底下的技能時，請一律在根目錄執行同步腳本來自動更新工作流程：
-
-```bash
-python3 scripts/sync-skills.py
-```
-
-在 PR 合併前，執行檢查模式驗證所有配對是否同步（會自動掃描全部配對，不需維護名單；CI 也會跑同一支檢查）：
-
-```bash
-python3 scripts/sync-skills.py --check
-```
-
-同步腳本為逐位元組複製，兩邊內容應完全一致。不要手動修改 `workflows/shared/` 端的配對檔案——任何差異都會在下次同步時被覆蓋。
-
 
 ### Frontmatter 格式
 
-`SKILL.md` 與 `workflows/shared/*.md` 都用同一種 YAML frontmatter：
+`SKILL.md` 使用 YAML frontmatter：
 
 ```markdown
 ---
@@ -50,9 +29,9 @@ description: 一句話描述用途
 ---
 ```
 
-`name:` 必填，且必須與 skill 資料夾名（`skills/<name>/`）及 workflow 檔名（`workflows/shared/<name>.md`）完全一致。
+`name:` 必填，且必須與 skill 資料夾名（`skills/<name>/`）完全一致。
 
-**不要省略 `name:`。** Claude Code 會從資料夾名推導名稱，省略也能運作；但 OpenCode 與 Antigravity **要求 frontmatter 具備 `name:`，缺少時整份 skill 會靜默不載入**，既不報錯也不出現在 skill 清單中（2026-08-07 於 OpenCode 1.18.14、Antigravity CLI `agy` 1.1.7 實測確認）。workflow 端加上 `name:` 無副作用——OpenCode 解析 slash command 時先以檔名推導 `name`，再讓 frontmatter 覆寫，兩者同名故結果一致。
+**不要省略 `name:`。** Claude Code 會從資料夾名推導名稱，省略也能運作；但 OpenCode 與 Antigravity **要求 frontmatter 具備 `name:`，缺少時整份 skill 會靜默不載入**，既不報錯也不出現在 skill 清單中（2026-08-07 於 OpenCode 1.18.14、Antigravity CLI `agy` 1.1.7 實測確認）。
 
 ## 文件規範（套用此 kit 的下游專案）
 
@@ -62,7 +41,7 @@ description: 一句話描述用途
 - **Timeline 保留原則**：實作時如發現與舊文件描述不符，**不可直接覆寫**舊內容。應在 README 的 Timeline 加上日期、在原文件用 `> [!NOTE]` 標日期補充、並在各檔末尾的 `## 修訂紀錄 (Changelog)` 補記
 - 日期一律使用**系統當下日期**的 `YYYY-MM-DD`，禁止手寫或統一日期
 
-`new-issue` skill 與 workflow 會直接引用此規範產出文件，修改 `docs/AGENTS.md` 等同於改變這些 skill 的輸出格式。
+`new-issue` skill 會直接引用此規範產出文件，修改 `docs/AGENTS.md` 等同於改變這些 skill 的輸出格式。
 
 ## 撰寫規則時要遵守的核心原則
 
@@ -73,7 +52,7 @@ description: 一句話描述用途
 - **Simplicity first**：能 50 行就不寫 200 行
 - **Token economy**：對小任務不要產出長篇分析
 
-新增規則或 workflow 時，先檢查能否擴充既有檔案；不要為單一場景再開一份近似檔。
+新增規則或 skill 時，先檢查能否擴充既有檔案；不要為單一場景再開一份近似檔。
 
 ## BDD + TDD 與 Superpowers 映射
 
@@ -96,14 +75,12 @@ PRD 或文件若使用 `implementation-plan`、`critic`、`architectural-complia
 ## Conventions
 
 - **語言**：所有 Markdown 內容使用**繁體中文（台灣）**，包含 commit message 與 PR description
-- **雙語規則檔**：修改 `rules/` 時，`AGENTS.md`（英）與 `AGENTS.zh-TW.md`（中）**必須同步修改**，章節結構（`## ` 數量與順序）保持一一對應；`sync-skills.py --check` 會驗證章節數是否一致
+- **雙語規則檔**：修改 `rules/` 時，`AGENTS.md`（英）與 `AGENTS.zh-TW.md`（中）**必須同步修改**，章節結構（`## ` 數量與順序）保持一一對應；`check-kit.py` 會驗證章節數是否一致
 - **Commit 訊息**：Commit 絕對不添加相關 `Co-Authored-By: Claude` 在 message 內
 - **日期**：文件內任何日期都使用系統當下日期，格式 `YYYY-MM-DD`
-- **平台特定流程**：放在 `workflows/<platform>/`，不要混進 `workflows/shared/`
-- **檔名與資料夾**：skill 用 kebab-case；skill 資料夾名、workflow 檔名、frontmatter 中 description 三者語意必須一致
+- **檔名與資料夾**：skill 用 kebab-case；skill 資料夾名與 frontmatter 中 description 兩者語意必須一致
 - **description 撰寫**：`description` 是唯一常駐於 agent context 的內容，也是 agent 判斷「是否載入整份 skill」的依據，應同時寫出**做什麼**與**何時使用／適用範圍**（例如 `decompose` 標明僅適用 Large）
-- **workflows/README.md 清單**：該檔不在同步腳本的複製範圍內，其 Shared Workflows 清單中每條描述必須等於對應 `SKILL.md` `description` 的**第一句**；改動 description 時要一併更新，`sync-skills.py --check` 會驗證
-- **安裝路徑的真相來源**：各平台的實際安裝路徑寫在 `rules/README.md`、`workflows/README.md`、`skills/README.md` 的「安裝方式」章節，外部工具（Serena / GitNexus / Superpowers）寫在 `docs/setup/tools.md`。新增平台或路徑變動時要同步這四處；`README.md` 與 `docs/usage.md` 只放指向它們的連結，不要複製路徑內容。`scripts/install.sh` 的 `targets_for()` 是這些路徑的可執行副本，`sync-skills.py --check` 會驗證它與三份 README 一致——路徑異動時腳本與 README 必須一起改
+- **安裝路徑的真相來源**：各平台的實際安裝路徑寫在 `rules/README.md`、`skills/README.md` 的「安裝方式」章節，外部工具（Serena / GitNexus / Superpowers）寫在 `docs/setup/tools.md`。新增平台或路徑變動時要同步這三處；`README.md` 與 `docs/usage.md` 只放指向它們的連結，不要複製路徑內容。`scripts/install.sh` 的 `targets_for()` 是這些路徑的可執行副本，`check-kit.py` 會驗證它與兩份 README 一致——路徑異動時腳本與 README 必須一起改
 - **改規範前先用 `writing-rules`**：修改 `docs/AGENTS.md`、`docs/agents/`、`CLAUDE.md`、`rules/` 或任何 `SKILL.md` 時，先套用 [`skills/writing-rules`](skills/writing-rules/SKILL.md)——它涵蓋 pointer 措辭、in-file 與 disclosed 的 branching 取捨、正面表述、完成判準的清晰度與強度、leading word 優先於自創詞、no-op 測試。**沒有這道紀律時，增補永遠比刪減安全，文件只會單向變長**：`docs/AGENTS.md` 曾在一天內從 686 行長到 797 行，其中還包含一個名為「精簡」的版本
 - **規則驗證狀態**：[`docs/rule-verification-status.md`](docs/rule-verification-status.md) 記錄每條規則**是否被實際執行過**（已實跑驗證／本地測試驗證／來源為實跑／僅靜態撰寫／曾失效並修正）。新增或修改規則時同步加一列，預設「僅靜態撰寫」；收到下游實跑回饋才升級狀態，且必須寫明可指認的來源（專案、issue 編號、日期、具體結果）。該檔是 kit 自身的維護紀錄，不供下游複製。**未標為已驗證的規則應視為「可能有同類缺陷、尚未被發現」**——2026-08-18 一天內出現三個「規則寫得完整但執行不了」的缺陷，全部是當天新寫的規則
-- **手動維護的使用者文件**：`README.md` 與 `docs/usage.md` **完全不在** `sync-skills.py` 的檢查範圍。修改 `docs/AGENTS.md` 的規則章節（分級、風險、驗收標準形式與強度、核准流程、README 區段）時，必須一併檢查這兩份是否仍在描述舊規則。**`--check` 通過不代表全 repo 一致**——它只驗證 skill/workflow 配對、frontmatter `name:`、skill 的 `docs/AGENTS.md` 版本宣告、`workflows/README.md` 描述、雙語章節數與 `install.sh` 安裝路徑這六件事
+- **手動維護的使用者文件**：`README.md` 與 `docs/usage.md` **完全不在** `check-kit.py` 的檢查範圍。修改 `docs/AGENTS.md` 的規則章節（分級、風險、驗收標準形式與強度、核准流程、README 區段）時，必須一併檢查這兩份是否仍在描述舊規則。**`check-kit.py` 通過不代表全 repo 一致**——它只驗證 frontmatter `name:` 與 `description:`、skill 的 `docs/AGENTS.md` 版本宣告、雙語章節數與 `install.sh` 安裝路徑這四件事

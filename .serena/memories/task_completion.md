@@ -1,10 +1,11 @@
 # Task Completion
 
-- Run the sync check command:
+- Run the checks (CI runs the same):
   ```bash
-  for n in code-simplify create-commit create-pr decompose new-issue review execute-task; do
-    diff -qw "skills/$n/SKILL.md" "workflows/shared/$n.md"
-  done
+  python3 scripts/check-kit.py
+  python3 scripts/check-links.py
+  bash -n scripts/install.sh
+  python3 scripts/test-install.py
   ```
-- Ensure no diff exists for the modified files.
+- Ensure all checks pass.
 - Commit all changes to the git repository.

@@ -16,7 +16,7 @@ class InstallTests(unittest.TestCase):
         self.addCleanup(self.temp.cleanup)
         self.base = Path(self.temp.name)
         self.repo = self.base / 'kit'
-        for name in ('scripts', 'skills', 'workflows', 'rules', 'docs'):
+        for name in ('scripts', 'skills', 'rules', 'docs'):
             shutil.copytree(ROOT / name, self.repo / name)
         # 僅替換平台根路徑變數；保留安裝程式本身的參數解析與複製行為。
         script = self.repo / 'scripts/install.sh'
@@ -35,8 +35,8 @@ class InstallTests(unittest.TestCase):
                                str(self.project), *args], capture_output=True, text=True)
 
     def test_install_and_upgrade_all_platforms(self):
-        platforms = ('claude', 'windsurf', 'antigravity', 'opencode', 'cursor')
-        targets = ('.claude/skills', '.codeium/windsurf/skills', '.gemini/config/skills',
+        platforms = ('claude', 'antigravity', 'opencode', 'cursor')
+        targets = ('.claude/skills', '.gemini/config/skills',
                    '.config/opencode/skills', '.cursor/skills')
         result = self.install(*platforms)
         self.assertEqual(result.returncode, 0, result.stdout + result.stderr)
@@ -56,7 +56,44 @@ class InstallTests(unittest.TestCase):
             self.assertEqual((folder / 'create-commit/SKILL.md').read_text(), '新版測試技能')
             self.assertFalse((folder / 'create-commit/create-commit').exists())
             self.assertEqual((folder / 'personal/SKILL.md').read_text(), 'personal content')
-        self.assertTrue((self.platform_root / '.gemini/config/global_workflows/fix-webview-conflict.md').is_file())
+        self.assertFalse((self.platform_root / '.gemini/config/global_workflows').exists())
+
+    def test_retire_legacy_workflows(self):
+        legacy = {'antigravity': '.gemini/config/global_workflows',
+                  'opencode': '.config/opencode/commands',
+                  'cursor': '.cursor/commands'}
+        for folder in legacy.values():
+            path = self.platform_root / folder
+            path.mkdir(parents=True)
+            (path / 'new-issue.md').write_text('舊版工作流程')
+            (path / 'personal.md').write_text('personal workflow')
+        removed = self.platform_root / legacy['antigravity'] / 'fix-webview-conflict.md'
+        removed.write_text('已移除的工作流程')
+        self.assertEqual(self.install(*legacy, '--dry-run').returncode, 0)
+        self.assertTrue((self.platform_root / legacy['opencode'] / 'new-issue.md').is_file())
+        for _ in range(2):
+            result = self.install(*legacy)
+            self.assertEqual(result.returncode, 0, result.stdout + result.stderr)
+        for folder in legacy.values():
+            path = self.platform_root / folder
+            self.assertFalse((path / 'new-issue.md').exists())
+            backups = list(path.glob('new-issue.md.bak-*'))
+            self.assertEqual(len(backups), 1)
+            self.assertEqual(backups[0].read_text(), '舊版工作流程')
+            self.assertEqual((path / 'personal.md').read_text(), 'personal workflow')
+        self.assertFalse(removed.exists())
+
+    def test_windsurf_not_supported(self):
+        windsurf = self.platform_root / '.codeium/windsurf'
+        (windsurf / 'global_workflows').mkdir(parents=True)
+        (windsurf / 'global_workflows/new-issue.md').write_text('舊版工作流程')
+        (self.platform_root / '.claude').mkdir()
+        self.assertNotEqual(self.install('windsurf').returncode, 0)
+        result = self.install()
+        self.assertEqual(result.returncode, 0, result.stdout + result.stderr)
+        self.assertTrue((self.platform_root / '.claude/skills/new-issue/SKILL.md').is_file())
+        self.assertFalse((windsurf / 'skills').exists())
+        self.assertEqual((windsurf / 'global_workflows/new-issue.md').read_text(), '舊版工作流程')
 
     def test_install_dry_run_and_invalid_platform(self):
         self.assertEqual(self.install('claude', '--dry-run').returncode, 0)

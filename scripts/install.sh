@@ -1,13 +1,13 @@
 #!/usr/bin/env bash
 #
-# dev-rules-kit 安裝腳本：把 rules / workflows / skills 複製到各平台的設定目錄。
+# dev-rules-kit 安裝腳本：把 rules / skills 複製到各平台的設定目錄。
 #
-# 路徑的真相來源是 rules/README.md、workflows/README.md、skills/README.md 的
-# 「安裝方式」章節。修改本檔的 targets_for() 時必須同步那三份 README，
-# scripts/sync-skills.py --check 會驗證兩邊一致。
+# 路徑的真相來源是 rules/README.md、skills/README.md 的
+# 「安裝方式」章節。修改本檔的 targets_for() 時必須同步那兩份 README，
+# scripts/check-kit.py 會驗證兩邊一致。
 #
 # 用法：
-#   bash scripts/install.sh                    # 自動偵測已安裝的平台並安裝 workflows + skills
+#   bash scripts/install.sh                    # 自動偵測已安裝的平台並安裝 skills
 #   bash scripts/install.sh opencode claude    # 只裝指定平台
 #   bash scripts/install.sh --with-rules       # 另外安裝規則檔（會先備份既有檔案）
 #   bash scripts/install.sh --dry-run          # 只列出會做什麼，不實際複製
@@ -17,7 +17,7 @@ set -euo pipefail
 
 REPO_ROOT="$(cd "$(dirname "${BASH_SOURCE[0]}")/.." && pwd)"
 
-ALL_PLATFORMS=(claude windsurf antigravity opencode cursor)
+ALL_PLATFORMS=(claude antigravity opencode cursor)
 
 WITH_RULES=0
 RULES_LANG=zh
@@ -29,22 +29,30 @@ SELECTED=()
 base_dir_for() {
   case "$1" in
     claude)      echo "$HOME/.claude" ;;
-    windsurf)    echo "$HOME/.codeium/windsurf" ;;
     antigravity) echo "$HOME/.gemini/config" ;;
     opencode)    echo "$HOME/.config/opencode" ;;
     cursor)      echo "$HOME/.cursor" ;;
   esac
 }
 
-# 目標路徑：<rules 目標檔>|<workflows 目標目錄>|<skills 目標目錄>
-# "-" 代表該平台不以檔案方式安裝這類內容
+# 目標路徑：<rules 目標檔>|<skills 目標目錄>
+# "-" 代表該平台不以檔案方式安裝規則檔
 targets_for() {
   case "$1" in
-    claude)      echo "-|-|$HOME/.claude/skills" ;;
-    windsurf)    echo "$HOME/.codeium/windsurf/memories/global_rules.md|$HOME/.codeium/windsurf/global_workflows|$HOME/.codeium/windsurf/skills" ;;
-    antigravity) echo "$HOME/.gemini/config/AGENTS.md|$HOME/.gemini/config/global_workflows|$HOME/.gemini/config/skills" ;;
-    opencode)    echo "$HOME/.config/opencode/AGENTS.md|$HOME/.config/opencode/commands|$HOME/.config/opencode/skills" ;;
-    cursor)      echo "-|$HOME/.cursor/commands|$HOME/.cursor/skills" ;;
+    claude)      echo "-|$HOME/.claude/skills" ;;
+    antigravity) echo "$HOME/.gemini/config/AGENTS.md|$HOME/.gemini/config/skills" ;;
+    opencode)    echo "$HOME/.config/opencode/AGENTS.md|$HOME/.config/opencode/skills" ;;
+    cursor)      echo "-|$HOME/.cursor/skills" ;;
+  esac
+}
+
+# 3.0.0 以前安裝 workflows 的目錄，每行一個。OpenCode 的同名 command 會蓋過 skill，
+# 這些目錄中與本 kit 同名的舊檔留著的話，/<name> 會一直執行舊版
+legacy_workflow_dirs_for() {
+  case "$1" in
+    antigravity) printf '%s\n' "$HOME/.gemini/config/global_workflows" "$HOME/.gemini/antigravity/global_workflows" ;;
+    opencode)    printf '%s\n' "$HOME/.config/opencode/commands" "$HOME/.config/opencode/command" ;;
+    cursor)      printf '%s\n' "$HOME/.cursor/commands" ;;
   esac
 }
 
@@ -88,11 +96,10 @@ esac
 
 if [ "$LIST_ONLY" = 1 ]; then
   for p in "${ALL_PLATFORMS[@]}"; do
-    IFS='|' read -r r w s <<< "$(targets_for "$p")"
+    IFS='|' read -r r s <<< "$(targets_for "$p")"
     installed="未安裝"; [ -d "$(base_dir_for "$p")" ] && installed="已安裝"
     echo "$p（$installed）"
     echo "  rules     : ${r/#$HOME/\~}"
-    echo "  workflows : ${w/#$HOME/\~}"
     echo "  skills    : ${s/#$HOME/\~}"
     echo
   done
@@ -134,28 +141,6 @@ install_rules() {
   echo "  規則：${RULES_SRC#$REPO_ROOT/} -> ${target/#$HOME/\~}"
 }
 
-install_workflows() {
-  local platform="$1" target="$2"
-  if [ "$target" = "-" ]; then
-    echo "  工作流程：$platform 不使用 workflows，改用 skills"
-    return
-  fi
-  run mkdir -p "$target"
-  local count=0 f
-  for f in "$REPO_ROOT"/workflows/shared/*.md; do
-    run cp "$f" "$target/"
-    count=$((count + 1))
-  done
-  # Antigravity 另有平台專屬工作流程
-  if [ "$platform" = antigravity ]; then
-    for f in "$REPO_ROOT"/workflows/antigravity/*.md; do
-      run cp "$f" "$target/"
-      count=$((count + 1))
-    done
-  fi
-  echo "  工作流程：$count 個檔案 -> ${target/#$HOME/\~}/"
-}
-
 install_skills() {
   local target="$1"
   if [ "$target" = "-" ]; then
@@ -173,27 +158,43 @@ install_skills() {
   echo "  技能：$count 個技能 -> ${target/#$HOME/\~}/"
 }
 
+# 把舊版以 workflow 形式安裝的同名檔改名備份：現有技能，加上已移除的 fix-webview-conflict。
+# 使用者自己的其他 workflow 不動
+retire_legacy_workflows() {
+  local platform="$1" stamp dir name count=0
+  stamp="$(date +%Y%m%d-%H%M%S)"
+  while IFS= read -r dir; do
+    [ -d "$dir" ] || continue
+    for name in "${KIT_WORKFLOW_NAMES[@]}"; do
+      [ -f "$dir/$name.md" ] || continue
+      run mv "$dir/$name.md" "$dir/$name.md.bak-$stamp"
+      count=$((count + 1))
+    done
+  done < <(legacy_workflow_dirs_for "$platform")
+  if [ "$count" -gt 0 ]; then
+    echo "  舊工作流程：$count 個本 kit 檔案已改名為 .bak-$stamp，不再被載入"
+  fi
+}
+
+KIT_WORKFLOW_NAMES=(fix-webview-conflict)
+for d in "$REPO_ROOT"/skills/*/; do
+  [ -f "$d/SKILL.md" ] || continue
+  KIT_WORKFLOW_NAMES+=("$(basename "$d")")
+done
+
 [ "$DRY_RUN" = 1 ] && echo "（dry-run 模式，不會實際寫入）" && echo
 
 for platform in "${SELECTED[@]}"; do
-  IFS='|' read -r rules_target workflows_target skills_target <<< "$(targets_for "$platform")"
+  IFS='|' read -r rules_target skills_target <<< "$(targets_for "$platform")"
   echo "$platform"
   [ "$WITH_RULES" = 1 ] && install_rules "$platform" "$rules_target"
-  install_workflows "$platform" "$workflows_target"
   install_skills "$skills_target"
+  retire_legacy_workflows "$platform"
   echo
 done
-
-# 遷移前的舊路徑若仍存在，會被當作 fallback 讀到舊版流程
-OLD_ANTIGRAVITY="$HOME/.gemini/antigravity/global_workflows"
-if [ -d "$OLD_ANTIGRAVITY" ]; then
-  echo "提醒：偵測到 Antigravity 遷移前的舊目錄 ~/.gemini/antigravity/global_workflows/，"
-  echo "      其內容可能被當作 fallback 載入。確認新路徑可用後建議清空該目錄。"
-  echo
-fi
 
 if [ "$WITH_RULES" = 0 ]; then
   echo "未安裝規則檔（rules/）。需要時加上 --with-rules，腳本會先備份既有檔案。"
 fi
-echo "驗證：於 AI 對話框輸入 /，應出現 decompose、create-commit、new-issue、dev-cycle 等指令。"
+echo "驗證：於 AI 對話框輸入 /，應出現 decompose、create-commit、new-issue、dev-cycle 等技能。"
 echo "專案初始化：執行 python3 scripts/init-project.py /path/to/project，部署核心技能需要的 docs 規範。"

@@ -1,6 +1,6 @@
 # dev-rules-kit
 
-一套給 AI 開發環境使用的規則、工作流程與技能範本庫，集中整理 `rules`、`workflows`、`skills` 三類 Markdown 資產，方便在 **Windsurf**、**OpenCode**、**Claude Code**、**Antigravity** 等工具中重複使用與維護。
+一套給 AI 開發環境使用的規則與技能範本庫，集中整理 `rules`、`skills` 兩類 Markdown 資產，方便在 **OpenCode**、**Claude Code**、**Antigravity** 等工具中重複使用與維護。
 
 這個 repo 的重點不是執行程式，而是提供可直接複製、調整、同步的開發規範與操作流程，讓個人或團隊能用一致方式管理 AI agent 的行為、工作流程與文件產出。
 
@@ -12,7 +12,7 @@ dev-rules-kit/
 ├── CHANGELOG.md           # 變更紀錄（下游更新參考）
 ├── CLAUDE.md              # AI 維護指引
 ├── scripts/               # 自動化工具
-│   ├── sync-skills.py     # 雙子星自動同步腳本（--check 可驗證同步狀態）
+│   ├── check-kit.py       # kit 一致性檢查（frontmatter、版本宣告、安裝路徑）
 │   ├── check-links.py     # Markdown 相對連結檢查
 │   ├── install.sh         # 平台安裝與更新
 │   ├── init-project.py    # 下游專案文件初始化
@@ -26,10 +26,6 @@ dev-rules-kit/
 │   ├── AGENTS.md          # 安裝路徑見 rules/README.md
 │   ├── AGENTS.zh-TW.md
 │   └── README.md
-├── workflows/             # 可執行的命令或工作流程（command/workflow）
-│   ├── shared/            # 共通工作流程（含 dev-cycle.md 等 10 個工作流）
-│   ├── antigravity/       # Antigravity 特定工作流程
-│   └── README.md          # 各平台 workflows 安裝路徑
 └── skills/                # 可重複使用的技能定義（skill，共 10 個技能）
     ├── code-simplify/
     ├── create-commit/
@@ -52,11 +48,7 @@ dev-rules-kit/
 
 - **`rules/`**  
   存放各種靜態規則，例如 AI agent 的行為規範、程式碼風格約定、專案架構準則等。  
-  適合直接複製到專案的 `.windsurfrules`、`.cursorrules` 或對應的設定檔中。
-
-- **`workflows/`**  
-  定義常用的命令或自動化流程，包含 `shared/`（共通工作流程）與平台特定子目錄。  
-  每個檔案應包含明確的觸發條件與執行步驟，方便在不同編輯器或 CLI 中重現。
+  適合直接複製到專案的 `.cursorrules` 或對應的設定檔中。
 
 - **`skills/`**  
   儲存可被 AI 或工具呼叫的「技能」，以子目錄形式組織，每個子目錄包含 `SKILL.md` 定義。  
@@ -64,7 +56,7 @@ dev-rules-kit/
 
 ## 開發閉環
 
-`workflows/shared/` 與 `skills/` 內的開發工具（包含 10 個雙子星對照技能/工作流）構成了一個開發閉環。其中核心的七個工作流構成日常開發循環：
+`skills/` 內的 10 個技能構成了一個開發閉環，其中核心的七個構成日常開發循環：
 
 ```
 new-issue        ← 分析需求、建立 issue 文件
@@ -88,7 +80,7 @@ review           ← 審查變更，發現問題回頭修正 ───┘
 
 review 發現需要修正時，回到 execute-task 修正後再走一次 commit → PR → review，循環直到通過。
 
-若想以 issue 為中心自動推進整個閉環，可使用 `dev-cycle` 工作流或技能：輸入 issue ID，AI 自動偵測目前所在階段並執行下一步，循環直到 PR merged。也支援查詢模式（如「issue 3396 到哪了」），只回報進度不推進。
+若想以 issue 為中心自動推進整個閉環，可使用 `dev-cycle` 技能：輸入 issue ID，AI 自動偵測目前所在階段並執行下一步，循環直到 PR merged。也支援查詢模式（如「issue 3396 到哪了」），只回報進度不推進。
 
 `git-squash` 是**閉環之外的獨立輔助工具**：需要整理分支 commit（如 merge 前壓縮瑣碎提交）時單獨呼叫，不屬於閉環的固定步驟。
 
@@ -133,14 +125,13 @@ PRD 中常見的 `implementation-plan`、`critic`、`architectural-compliance`�
 2. **把需要的資產複製到你的平台**  
 
    ```bash
-   bash scripts/install.sh            # 自動偵測平台，安裝 workflows 與 skills
+   bash scripts/install.sh            # 自動偵測平台，安裝 skills
    bash scripts/install.sh --dry-run  # 先看會做什麼
-   bash scripts/install.sh --list     # 列出五個平台與對應路徑
+   bash scripts/install.sh --list     # 列出四個平台與對應路徑
    ```
 
-   規則檔預設不安裝（該位置常有本機客製內容），需要時加 `--with-rules`。各平台的實際路徑與手動安裝方式見三個資料夾的 README：
+   規則檔預設不安裝（該位置常有本機客製內容），需要時加 `--with-rules`。各平台的實際路徑與手動安裝方式見兩個資料夾的 README：
    - 規則檔：[rules/README.md](./rules/README.md#安裝方式)
-   - 工作流程：[workflows/README.md](./workflows/README.md#安裝方式)
    - 技能：[skills/README.md](./skills/README.md#安裝方式)
 
 3. **初始化每個下游專案的文件規範**
@@ -164,13 +155,13 @@ PRD 中常見的 `implementation-plan`、`critic`、`architectural-compliance`�
 6. **自訂與擴充**
    根據個人或團隊需求，修改或新增 `skills/` 底下的技能定義，修改後於根目錄執行：
    ```bash
-   python3 scripts/sync-skills.py
+   python3 scripts/check-kit.py   # 檢查 frontmatter 與版本宣告
+   bash scripts/install.sh        # 重新安裝到各平台
    ```
-   即可自動同步並生成 `workflows/shared/` 目錄中對應的工作流程檔案。
 
 ## 下游專案掛載規則（Claude Code）
 
-`rules/AGENTS.md` 是要複製到**下游專案**的可攜行為規則。在 **Windsurf / Cursor** 直接貼進 `.windsurfrules` / `.cursorrules` 即可；但 **Claude Code 只讀 `CLAUDE.md`，不會自動載入 `AGENTS.md`**，且子目錄的記憶體檔僅在存取該目錄時才「按需」載入，因此需要用 `@` 匯入語法手動掛載：
+`rules/AGENTS.md` 是要複製到**下游專案**的可攜行為規則。在 **Cursor** 直接貼進 `.cursorrules` 即可；但 **Claude Code 只讀 `CLAUDE.md`，不會自動載入 `AGENTS.md`**，且子目錄的記憶體檔僅在存取該目錄時才「按需」載入，因此需要用 `@` 匯入語法手動掛載：
 
 1. **複製規則檔到專案**（建議放根目錄，維持檔名 `AGENTS.md`）
    ```
@@ -209,7 +200,7 @@ PRD 中常見的 `implementation-plan`、`critic`、`architectural-compliance`�
 | **[Superpowers](https://github.com/obra/superpowers)** | 選用的 AI 開發流程增強框架 | 提供 brainstorming、TDD、review 與交付驗證等流程型 skills；未安裝時由本 kit 執行內建等價 gate |
 | **[Wave Terminal](https://github.com/wavetermdev/waveterm)** | AI 整合跨平台終端機 | 開源且內建 AI 助手，支援多種模型（OpenAI、Claude、Ollama 等），提供持久 SSH 連線、區塊化工作區與遠端檔案編輯 |
 
-五個平台的完整設定步驟（MCP 設定檔位置、JSON 範例、驗證與移除）：[docs/setup/tools.md](./docs/setup/tools.md)
+四個平台的完整設定步驟（MCP 設定檔位置、JSON 範例、驗證與移除）：[docs/setup/tools.md](./docs/setup/tools.md)
 
 ## 版本與更新
 
@@ -217,7 +208,7 @@ PRD 中常見的 `implementation-plan`、`critic`、`architectural-compliance`�
 
 ## 貢獻
 
-歡迎提出 issue 或 PR 來優化通用的規則、工作流程與技能，讓所有開發者受益。
+歡迎提出 issue 或 PR 來優化通用的規則與技能，讓所有開發者受益。
 
 ## 授權
 

@@ -1,55 +1,34 @@
 # Skills
 
-此目錄包含各種開發技能（skills），用於標準化 AI Agent 的開發輔助功能。
-
-## 整合說明與架構由來
-
-Claude 已將原先 `commands/` 的功能整合為 `skills/` 的一部分。目前 `skills/` 與 `workflows/` 並存，根據不同平台需求選用。
-
-### 為什麼區分 Skills 與 Workflows？
-
-這兩者的並存源於 **CLI AI 助理** 與 **IDE 視覺化助理** 在運作機制上的本質不同：
-
-1. **Skills (適用於 Claude Code 等 CLI 平台)**：
-   Claude Code 本身是一個運行於終端機的自主 Agent，不具備 IDE 視覺化步驟的 UI 介面。它運作時，是透過讀取並內化 `SKILL.md` 中的步驟描述來擴充自身的行為規則，當對話遇到相關情境時，以「技能 (Skill)」的自主方式在對話中執行。因此需要以 `skills/<name>/SKILL.md` 的資料夾結構來存放。
-2. **Workflows (適用於 Windsurf / OpenCode / Antigravity 等 IDE 平台)**：
-   IDE 平台有與編輯器深度整合的 UI 介面。它們需要單一的 `.md` 檔案來解析成輸入框的 Slash Command，並在 IDE UI 畫面上呈現視覺化的互動步驟清單，引導使用者與 AI 協同確認。因此適合存放在 `workflows/` 中。
-
-為了解決這個跨平台重用的格式限制，本專案設計了雙子星對照結構，並提供 `scripts/sync-skills.py` 腳本，讓我們能在一處（`skills/`）開發，並一鍵自動產生/同步至各平台所需的 `workflows/` 格式。
-
+此目錄包含各種開發技能（skills），用於標準化 AI Agent 的開發輔助功能。本 kit 的流程只以 skill 提供，各平台都從這裡安裝。
 
 ## 專案目錄結構
 
 ```
 dev-rules-kit/
-├── skills/              # 技能定義（Claude 主要使用）
-│   ├── code-simplify/
-│   ├── create-commit/
-│   ├── create-pr/
-│   ├── decompose/
-│   ├── dev-cycle/       # 追蹤與推進開發閉環的協調技能
-│   ├── execute-task/
-│   ├── git-squash/
-│   ├── new-issue/
-│   ├── review/
-│   └── writing-rules/
-└── workflows/           # 工作流程（Windsurf、OpenCode 使用）
-    ├── shared/
-    ├── antigravity/
-    └── README.md
+└── skills/              # 技能定義（四個平台共用）
+    ├── code-simplify/
+    ├── create-commit/
+    ├── create-pr/
+    ├── decompose/
+    ├── dev-cycle/       # 追蹤與推進開發閉環的協調技能
+    ├── execute-task/
+    ├── git-squash/
+    ├── new-issue/
+    ├── review/
+    └── writing-rules/
 ```
 
 ## 安裝方式
 
-各平台的全域 skills 目錄如下，複製後每個技能會成為 `<平台 skills 目錄>/<name>/SKILL.md`：
+各平台的全域 skills 目錄如下，複製後每個技能會成為 `<平台 skills 目錄>/<name>/SKILL.md`，四個平台都以 `/<name>` 呼叫：
 
-| 平台 | skills 目錄 | 備註 |
-|------|------------|------|
-| **Claude Code** | `~/.claude/skills/` | 主要使用 skills，不需另外安裝 workflows |
-| **OpenCode** | `~/.config/opencode/skills/` | 另需複製 `workflows/shared/` 到 `commands/` |
-| **Windsurf** | `~/.codeium/windsurf/skills/` | 另需複製 `workflows/shared/` 到 `global_workflows/` |
-| **Antigravity** | `~/.gemini/config/skills/` | 另需複製 `workflows/` 到 `global_workflows/` |
-| **Cursor** | `~/.cursor/skills/` | 另需複製 `workflows/shared/` 到 `commands/` |
+| 平台 | skills 目錄 |
+|------|------------|
+| **Claude Code** | `~/.claude/skills/` |
+| **OpenCode** | `~/.config/opencode/skills/` |
+| **Antigravity** | `~/.gemini/config/skills/` |
+| **Cursor** | `~/.cursor/skills/` |
 
 > **OpenCode 的單複數目錄**：OpenCode（1.18.14 實測）掃描的 glob 是 `{skill,skills}/**/SKILL.md`，單數 `skill/` 與複數 `skills/` 都會載入。兩個目錄同時存在時同名技能會被載入兩次，請擇一使用。
 
@@ -57,7 +36,7 @@ dev-rules-kit/
 
 > **Antigravity 的路徑遷移**：舊版路徑為 `~/.gemini/antigravity/skills/`，現行路徑是 `~/.gemini/config/skills/`（2026-05-20 遷移，三個 Antigravity 產品共用）。裝在舊路徑的技能不保證會被載入。
 
-> **OpenCode 是否需要兩邊都裝**：`skills/` 與 `workflows/shared/` 的內容逐位元組相同，OpenCode 會同時載入兩者，等於同一份內容有 skill 與 slash command 兩個入口，而 skill 的 `description` 常駐 context。若已安裝 `commands/`，一般不需再複製全部技能；例外是 `dev-cycle`，它的價值在自然語言觸發，可單獨安裝。
+> **從 2.x 升級**：3.0.0 起不再提供 workflows。`install.sh` 會把舊版留在 workflow／command 目錄中與本 kit 同名的檔案改名為 `.bak-<時間戳>`，使用者自己的其他檔案不動。手動安裝者請自行移除這些舊檔——OpenCode 的同名 command 優先於 skill，留著的話 `/<name>` 會一直執行舊版且不報錯。Windsurf 已停止支援，`~/.codeium/windsurf/` 內的本 kit 檔案不會再被更新或清理，請自行移除。
 
 於 repo 根目錄執行安裝腳本即可，它會依上表複製到對應目錄：
 
@@ -73,11 +52,11 @@ bash scripts/install.sh claude
 
 核心技能另需專案內的文件規範：於本 kit 根目錄執行 `python3 scripts/init-project.py /path/to/project`。詳見 [專案初始化](../README.md#使用方式)。
 
-驗證：於 AI 對話框輸入 `/`，應出現 `decompose`、`create-commit`、`new-issue`、`dev-cycle` 等指令。
+驗證：在對話框輸入 `/`，應出現 `decompose`、`create-commit`、`new-issue`、`dev-cycle` 等技能。
 
 > **`dev-cycle` 使用方式**：這是一個 orchestration skill，除了 `/dev-cycle` 指令外，也可用自然語言觸發——直接說「issue 3396 到哪了」（查詢模式）或「繼續 3396」（推進模式），AI 會自動偵測 issue 目前所在階段並執行下一步。若未自動載入，可手動告知 AI 參考 `skills/dev-cycle/SKILL.md`。
 
-workflows 的安裝路徑見 [workflows/README.md](../workflows/README.md#安裝方式)；規則檔見 [rules/README.md](../rules/README.md#安裝方式)；外部工具（Serena / GitNexus / Superpowers）見 [docs/setup/tools.md](../docs/setup/tools.md)。
+規則檔的安裝位置見 [rules/README.md](../rules/README.md#安裝方式)；外部工具（Serena / GitNexus / Superpowers）見 [docs/setup/tools.md](../docs/setup/tools.md)。
 
 ## 使用方式
 
@@ -88,19 +67,11 @@ workflows 的安裝路徑見 [workflows/README.md](../workflows/README.md#安裝
 - **執行步驟**：具體的操作指引
 - **輸出**：預期的輸出格式與內容
 
-### 調用方式
-
-根據各 IDE 平台的 slash command 機制：
-
-- **Windsurf**: 使用 `/{workflow-name}` 調用工作流程（如 `/decompose`）
-- **OpenCode**: 使用 `/{workflow-name}` 調用工作流程（如 `/code-simplify`）
-- **Antigravity**: 使用 `/{workflow-name}` 調用工作流程，或使用 skill 調用技能
-- **Claude**: 透過 system prompt 載入 `SKILL.md` 定義的技能行為
-
 ## 維護紀錄
 
 | 日期 | 異動 | 說明 |
 |------|------|------|
+| 2026-09-11 | 移除 workflows 與 Windsurf | 本 kit 只提供 skills，並停止支援 Windsurf；說明舊 workflow 副本的處理 |
 | 2026-08-07 | 修正 Antigravity 路徑 | 改為遷移後的 `~/.gemini/config/skills/`，舊路徑不保證載入 |
 | 2026-08-07 | 補 OpenCode 安裝細節 | 註明 `{skill,skills}` glob 單複數皆生效，以及與 `commands/` 重複安裝的取捨 |
 | 2026-08-04 | 收攏安裝路徑 | 新增「安裝方式」章節，取代原 `docs/setup/<platform>.md` 的「安裝 dev-rules-kit」段落 |
@@ -113,6 +84,6 @@ workflows 的安裝路徑見 [workflows/README.md](../workflows/README.md#安裝
 ---
 
 **建立日期**: 2026-05-08  
-**最後更新**: 2026-08-07  
-**文件版本**: 1.4  
+**最後更新**: 2026-09-11  
+**文件版本**: 2.0  
 **適用範圍**: `skills/` 資料夾所有技能

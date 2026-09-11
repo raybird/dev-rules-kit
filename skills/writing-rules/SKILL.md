@@ -65,7 +65,7 @@ pointer 每回合都在花 token，因此比正文更值得刪：把觸發詞放
 
 - **核心層字串維持原樣**：狀態字串、metadata 欄位名、章節名依 `docs/AGENTS.md`「客製邊界與同步策略」，改名等同拿掉一道 gate 且不會報錯。
 - **雙語同步**：`rules/AGENTS.md` 與 `rules/AGENTS.zh-TW.md` 一起改，`## ` 章節數保持相等。
-- **改完跑同步**：`python3 scripts/sync-skills.py` 後以 `--check` 驗證。
+- **改完跑檢查**：`python3 scripts/check-kit.py`。
 
 ## Completion Gate
 
@@ -74,4 +74,4 @@ pointer 每回合都在花 token，因此比正文更值得刪：把觸發詞放
 - 每個新增步驟都有可檢查的完成判準，其強度與該步驟要逼出的工作量相稱。
 - 新增的自創詞都經過「有沒有既有的詞可用」的檢查，並在首次出現處定義。
 - 逐句通過 no-op 測試；無法判定時記錄下來，由實跑而非辯論解決。
-- 涉及本 kit 檔案時，核心層字串未改名、雙語章節數相等、`--check` 通過。
+- 涉及本 kit 檔案時，核心層字串未改名、雙語章節數相等、`check-kit.py` 通過。

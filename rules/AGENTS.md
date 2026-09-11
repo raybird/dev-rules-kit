@@ -1,6 +1,6 @@
 # AI Development Assistant Core Rules
 
-These rules integrate practical experience and common LLM pitfalls, suitable for Windsurf, OpenCode, Antigravity, and similar development environments.
+These rules integrate practical experience and common LLM pitfalls, suitable for OpenCode, Antigravity, and similar development environments.
 
 **Tradeoff:** These rules prioritize caution and correctness. For extremely trivial tasks (e.g., fixing a single character typo, adjusting one line of logs), use your judgment to relax.
 

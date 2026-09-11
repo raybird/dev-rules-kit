@@ -3,7 +3,7 @@
 本文件說明如何在各平台配置搭配本 kit 使用的三個外部工具：**Serena**、**GitNexus**、**Superpowers**。
 
 > **本 kit 自身的安裝方式不在這裡**，各資料夾的 README 已載明對應平台的複製路徑：
-> [`rules/README.md`](../../rules/README.md#安裝方式) · [`workflows/README.md`](../../workflows/README.md#安裝方式) · [`skills/README.md`](../../skills/README.md#安裝方式)
+> [`rules/README.md`](../../rules/README.md#安裝方式) · [`skills/README.md`](../../skills/README.md#安裝方式)
 
 ## 前置需求
 
@@ -21,11 +21,10 @@ Serena 與 GitNexus 都以 MCP server 形式整合，各平台的設定檔與 JS
 |------|--------|--------|
 | Claude Code | 透過 `claude mcp add` 指令登錄 | — |
 | OpenCode | `~/.config/opencode/config.json` | `mcp` |
-| Windsurf | `~/.codeium/windsurf/mcp_config.json` | `mcpServers` |
 | Antigravity | `~/.gemini/config/mcp_config.json` | `mcpServers` |
 | Cursor | `~/.cursor/mcp.json` | `mcpServers` |
 
-Windsurf / Antigravity / Cursor 三者的 JSON 格式完全相同，可直接互相沿用。
+Antigravity 與 Cursor 的 JSON 格式完全相同，可直接互相沿用。
 
 > **Antigravity 的路徑遷移**：`~/.gemini/antigravity/` 底下的 `mcp_config.json` 與 `skills/` 是 2026-05-20 遷移前的舊路徑，現行設定統一在 `~/.gemini/config/`，由 Antigravity、Antigravity IDE 與 Antigravity CLI（`agy`）共用。從舊版升級時記得比對兩處內容，避免遺漏遷移後才加入的 server。
 
@@ -63,7 +62,7 @@ claude mcp add serena -s user -- \
 }
 ```
 
-**Windsurf / Antigravity / Cursor**（`mcpServers` 區塊）：
+**Antigravity / Cursor**（`mcpServers` 區塊）：
 
 ```json
 {
@@ -121,7 +120,7 @@ OpenCode（`config.json` 的 `mcp` 區塊）：
 }
 ```
 
-Windsurf / Antigravity / Cursor（`mcpServers` 區塊）：
+Antigravity / Cursor（`mcpServers` 區塊）：
 
 ```json
 {
@@ -172,7 +171,7 @@ GitNexus 的 hook 會在 `Grep` / `Glob` / `Bash` 之前自動把對應的圖譜
 }
 ```
 
-> ⚠️ **其他平台無 hook 等價機制**：OpenCode / Windsurf / Antigravity / Cursor 都沒有與 Claude Code `PreToolUse` / `PostToolUse` 對應的 hook 系統，因此「自動補圖譜上下文」僅在 Claude Code 中可用。其他平台需透過 `gitnexus-*` skills 主動呼叫。
+> ⚠️ **其他平台無 hook 等價機制**：OpenCode / Antigravity / Cursor 都沒有與 Claude Code `PreToolUse` / `PostToolUse` 對應的 hook 系統，因此「自動補圖譜上下文」僅在 Claude Code 中可用。其他平台需透過 `gitnexus-*` skills 主動呼叫。
 
 **使用注意事項**：
 
@@ -215,14 +214,13 @@ GitNexus 的 hook 會在 `Grep` / `Glob` / `Bash` 之前自動把對應的圖譜
 
 啟動 OpenCode 後會自動透過 bun / npm 安裝。
 
-**Windsurf / Antigravity / Cursor**（無 plugin marketplace，需手動安裝）：
+**Antigravity / Cursor**（無 plugin marketplace，需手動安裝）：
 
 ```bash
 # 1. 取得 Superpowers 原始碼到任一位置
 git clone https://github.com/obra/superpowers.git ~/Tools/superpowers
 
 # 2. 將 skills 連結（或複製）到平台的 skills 目錄
-ln -s ~/Tools/superpowers/skills/* ~/.codeium/windsurf/skills/     # Windsurf
 ln -s ~/Tools/superpowers/skills/* ~/.gemini/config/skills/        # Antigravity
 ln -s ~/Tools/superpowers/skills/* ~/.cursor/skills/               # Cursor
 ```
@@ -276,7 +274,7 @@ Claude Code 與 OpenCode 走各自的 plugin 機制自動更新，不需要這�
 }
 ```
 
-**Windsurf / Antigravity / Cursor** — `mcp_config.json` 或 `mcp.json`：
+**Antigravity / Cursor** — `mcp_config.json` 或 `mcp.json`：
 
 ```json
 {
@@ -306,14 +304,12 @@ Claude Code 與 OpenCode 走各自的 plugin 機制自動更新，不需要這�
 |------|----------|
 | Claude Code | `claude mcp list`，預期 `serena` 與 `gitnexus` 皆顯示 `✓ Connected`；輸入 `/` 應看到 `superpowers:*` 系列指令 |
 | OpenCode | 輸入 `@` 應列出 MCP 工具；plugin 載入訊息會出現在啟動 log |
-| Windsurf | 於 Cascade 視窗檢查 MCP server 狀態，應顯示 connected |
 | Antigravity | 檢查 chat 面板下方的 MCP server 狀態列 |
 | Cursor | **Settings → MCP** 應看到 `serena` 與 `gitnexus` 顯示為綠燈 |
 
 ## 常見問題
 
-- **設定改了沒生效**：MCP 設定在啟動時載入。Windsurf / Antigravity 需執行 `Developer: Reload Window`；Cursor 可按 `Cmd/Ctrl + Shift + P` → `Cursor: Reload MCP Servers`
-- **WebView 快取衝突（Antigravity 與 Windsurf 並用時）**：兩者底層皆為 VS Code 衍生，共用 Chromium WebView。執行本 kit 的 `/fix-webview-conflict` workflow 即可清除（同樣會清掉 Windsurf 快取）
+- **設定改了沒生效**：MCP 設定在啟動時載入。Antigravity 需執行 `Developer: Reload Window`；Cursor 可按 `Cmd/Ctrl + Shift + P` → `Cursor: Reload MCP Servers`
 - **`~/.cursor/` vs `~/.config/Cursor/`**：前者是 Cursor CLI agent 設定（含 MCP、commands、skills），後者是 VS Code 風格的 IDE 偏好設定（settings.json、keybindings.json）
 
 ## 移除
@@ -335,4 +331,4 @@ rm -rf ~/.claude/hooks/gitnexus/          # 並從 settings.json 移除 hook 區
 - [Serena GitHub](https://github.com/oraios/serena) · [uv 官方文件](https://docs.astral.sh/uv/)
 - [GitNexus GitHub](https://github.com/abhigyanpatwari/GitNexus) · [Claude Code Hooks 文件](https://docs.claude.com/claude-code/hooks)
 - [Superpowers GitHub](https://github.com/obra/superpowers) · [Claude Plugins marketplace](https://github.com/anthropics/claude-plugins-official)
-- 平台官方文件：[Claude Code](https://claude.com/claude-code) · [OpenCode](https://github.com/sst/opencode) · [Windsurf](https://docs.windsurf.com) · [Antigravity](https://antigravity.google) · [Cursor](https://docs.cursor.com)
+- 平台官方文件：[Claude Code](https://claude.com/claude-code) · [OpenCode](https://github.com/sst/opencode) · [Antigravity](https://antigravity.google) · [Cursor](https://docs.cursor.com)

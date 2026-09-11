@@ -5,12 +5,23 @@
 **版本策略**：重要變更時打 git tag，規則如下——
 
 - **Major**：破壞性變更（規則語意反轉、目錄結構調整、skill 改名或移除），下游更新前應檢視自己的客製內容
-- **Minor**：新增 skill / workflow / 規則章節，下游可安全重新複製
+- **Minor**：新增 skill / 規則章節，下游可安全重新複製
 - **Patch**：錯字修正、文字調整、文件補充，不影響行為
 
 每個條目標注影響的目錄，方便下游判斷是否需要重新複製對應檔案。
 
 ---
+
+## [Unreleased] - 2026-09-11
+
+### 破壞性變更（`workflows/`、`scripts/`、`rules/`、`writing-rules`、使用文件與 CI — **下游需重新執行 `bash scripts/install.sh`**）
+
+- **移除 workflow 機制，本 kit 只提供 skills**：刪除 `workflows/`（10 份與 skill 逐位元組相同的共通工作流程、Antigravity 專屬的 `fix-webview-conflict`、安裝說明）以及 skill → workflow 的同步功能。直接原因是 Antigravity 已棄用 workflow、2026-11-01 退役（[官方遷移說明](https://antigravity.google/docs/migration/workflows-to-skills/)）；而且同名時 skill 優先，本 kit 裝進 `global_workflows/` 的副本本來就被蓋過、沒有作用。Claude Code、Cursor、OpenCode、Antigravity 都能以 `/<name>` 直接呼叫 skill，兩份並存只剩維護成本。
+- **停止支援 Windsurf**：`install.sh`、兩份 README 的安裝表與 `docs/setup/tools.md` 都移除 Windsurf，`rules/AGENTS.md` 開頭列舉的適用平台也一併拿掉（僅文字，不影響規則）。沒有 workflow 之後，Windsurf 是唯一需要特例說明的平台：它的 `/` 只列 workflow，skill 要改用 `@` 觸發，而且 Windsurf 本身並未棄用 workflow。為了降低維護負擔，直接停止支援。已裝在 `~/.codeium/windsurf/` 的本 kit 檔案不會再被更新或清理，請自行移除；仍要在 Windsurf 使用者可停留在 2.20.0。
+- **`install.sh` 不再安裝 workflows，改為清理舊副本**：舊版留在 workflow／command 目錄中與本 kit 同名的檔案會改名為 `.bak-<時間戳>`，使用者自己的其他檔案不動。一定要清理，是因為 OpenCode 的同名 command 優先於 skill（1.18.23 程式碼），留著的話 `/<name>` 會一直執行舊版且不報錯。手動安裝者請自行移除這些舊檔。
+- **`scripts/sync-skills.py` 改名為 `scripts/check-kit.py`**：同步功能沒有對象了，剩下 frontmatter、`docs/AGENTS.md` 版本宣告、雙語章節數與安裝路徑四項檢查，直接執行即可，不再需要 `--check`。原本由 `workflows/README.md` 清單檢查順帶涵蓋的「缺 `description:`」併入 frontmatter 檢查，不隨同步功能消失。
+- **`fix-webview-conflict` 直接移除**，不轉成 skill。
+- `writing-rules` 的檢查指令改為 `check-kit.py`——下游需重新複製這支 skill。
 
 ## [2.20.0] - 2026-09-10
 
@@ -339,7 +350,7 @@
 ### 變更（`docs/setup/`、`rules/README.md`、`workflows/README.md`、`skills/README.md`、`README.md`、`docs/usage.md` — 下游不需重新複製）
 
 - **五份平台安裝指南合併為一份工具設定指南**：原 `docs/setup/{claude,opencode,windsurf,antigravity,cursor}.md`（共 755 行）中，真正屬於本 kit 安裝教學的只有「路徑速查」與「安裝 dev-rules-kit」兩節，其餘 100+ 行都是 Serena / GitNexus / Superpowers 的環境設定，且五份之間高度重複（三個 IDE 平台的 MCP JSON 完全相同）。現改為：
-  - 本 kit 的安裝路徑收攏到對應資料夾的 README——[`rules/README.md`](rules/README.md#安裝方式)、[`workflows/README.md`](workflows/README.md#安裝方式)、[`skills/README.md`](skills/README.md#安裝方式)，各自以表格列出五平台路徑與複製指令
+  - 本 kit 的安裝路徑收攏到對應資料夾的 README——[`rules/README.md`](rules/README.md#安裝方式)、`workflows/README.md`（3.0.0 已移除）、[`skills/README.md`](skills/README.md#安裝方式)，各自以表格列出五平台路徑與複製指令
   - 外部工具設定合併為單一 [`docs/setup/tools.md`](docs/setup/tools.md)，以工具為主軸、平台為分支，並新增 MCP 設定檔位置對照表
 - **修正 `dev-cycle` 的過時敘述**：原 `opencode.md` 與 `antigravity.md` 稱 `dev-cycle`「不會出現在 `/` 指令清單（它沒有 workflow 對應檔）」，但 `workflows/shared/dev-cycle.md` 自 2.0 起即存在。合併後統一為「除 `/dev-cycle` 指令外，也可用自然語言觸發」
 - **補上 `rules/` 的安裝說明**：原五份 setup 只有 Windsurf / Antigravity / Cursor 三平台寫了規則檔怎麼套用，`rules/README.md` 本身完全沒提。現補齊五平台對照表（OpenCode 一列為新增內容）

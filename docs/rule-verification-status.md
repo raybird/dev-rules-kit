@@ -158,6 +158,16 @@
 | agent 執行 review 時確實記錄 patch-id | 僅靜態撰寫 | 規範與 `review` 已寫入，[WF-07](workflow-regression.md#案例) 已定義未實跑。git 行為已驗證不等於 agent 會照做——本 repo 反覆出現的正是「規則寫得完整但執行不了」 |
 | review artifact 的效期與核准 commit 不同 | **來源為下游實例** | line-oa-plus 回報 #289（2026-09-08，`review-f0c84c7.md` 與 `review-c008abd.md` 兩份檔名 SHA 於 rebase 後不可達）與 #283（核准 commit 失效兩次）。兩例都是**實作者主動發現，沒有任何 gate 攔到**——1.19 把 artifact 與核准 commit 一併宣告為「效期到合併為止」，忽略了 artifact 的讀者在合併後才出現 |
 
+## v3.0.0 — 移除 workflow 機制（2026-09-11）
+
+| 規則 | 狀態 | 驗證來源 |
+|---|---|---|
+| Claude Code、OpenCode、Antigravity、Cursor 以 `/<name>` 呼叫 skill | 僅靜態撰寫 | 來源：Antigravity [官方遷移說明](https://antigravity.google/docs/migration/workflows-to-skills/)（workflow 2026-11-01 退役、同名時 skill 優先）、Cursor 官方文件（2026-09-11 閱讀）。OpenCode 官方文件寫 skill 只能由 agent 經 `skill` 工具載入，但本機 1.18.23 的程式碼會把 skill 註冊成 command（`source:"skill"`），以程式碼為準。**四個平台都未實際在對話框輸入驗證** |
+| OpenCode 的同名 command 優先於 skill | 僅靜態撰寫 | 同一段程式碼：`if(s[o.name])continue`，skill 只在沒有同名 command 時才加入清單。這是 `install.sh` 必須清理舊副本的理由，但未實跑確認 |
+| `install.sh` 把舊 workflow／command 目錄中與本 kit 同名的檔案改名為 `.bak-<時間戳>` | **本地測試驗證** | 2026-09-11 `test-install.py` 以假 `HOME` 在三個平台的舊目錄預置檔案：本 kit 同名檔（含已移除的 `fix-webview-conflict`）改名備份、使用者自己的檔案未動、`--dry-run` 不改名、重跑不重複備份；安裝後不再建立 `global_workflows/` |
+| `install.sh` 停止支援 Windsurf | **本地測試驗證** | 2026-09-11 `test-install.py`：指定 `windsurf` 時以未知平台失敗；只有 `~/.codeium/windsurf/` 與 `~/.claude/` 存在時，自動偵測只裝 Claude Code，Windsurf 下既不建立 `skills/`，舊的 workflow 也原封不動 |
+| `check-kit.py` 抓得到缺 `description:` 與 `targets_for()` 欄數錯誤 | **本地測試驗證** | 2026-09-11 以暫存副本注入：刪掉 `review` 的 `description:`、在 Cursor 那列多加一欄，兩者皆 FAIL。原本由 `workflows/README.md` 清單檢查順帶涵蓋的缺 `description:` 因此沒有隨同步功能一起消失 |
+
 ## 已知的驗證限制
 
 - **樣本數 n=2，且同源**：line-oa-plus 與 googleBooking 同屬一位使用者、跑同一套 kit、工作流程相近。**兩者共有的盲點照不出來**——例如多人並行 review、非中文協作者、非 Firebase 系技術棧的情境，今天完全沒有覆蓋。
