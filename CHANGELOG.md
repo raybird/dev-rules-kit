@@ -12,7 +12,7 @@
 
 ---
 
-## [Unreleased] - 2026-09-11
+## [3.0.0] - 2026-09-11
 
 ### 破壞性變更（`workflows/`、`scripts/`、`rules/`、`writing-rules`、使用文件與 CI — **下游需重新執行 `bash scripts/install.sh`**）
 
