@@ -54,6 +54,8 @@ class InstallTests(unittest.TestCase):
         for target in targets:
             folder = self.platform_root / target
             self.assertEqual((folder / 'create-commit/SKILL.md').read_text(), '新版測試技能')
+            self.assertEqual((folder / 'review/scripts/verify-artifact.py').read_bytes(),
+                             (self.repo / 'skills/review/scripts/verify-artifact.py').read_bytes())
             self.assertFalse((folder / 'create-commit/create-commit').exists())
             self.assertEqual((folder / 'personal/SKILL.md').read_text(), 'personal content')
         self.assertFalse((self.platform_root / '.gemini/config/global_workflows').exists())
@@ -118,6 +120,8 @@ class InstallTests(unittest.TestCase):
         self.assertEqual(self.init().returncode, 0)
         expected = ['docs/AGENTS.md', 'docs/agents/document-types.md',
                     'docs/agents/readme-templates.md', 'docs/agents/issue-checklist.md',
+                    'docs/agents/acceptance.md', 'docs/agents/verification.md',
+                    'docs/agents/review-evidence.md', 'docs/agents/project.md',
                     'docs/_templates/architecture-template.md',
                     'docs/_templates/domain-template.md', 'docs/_templates/changelog-template.md']
         for rel in expected:
@@ -146,6 +150,58 @@ class InstallTests(unittest.TestCase):
         docs.write_text('existing file')
         self.assertNotEqual(self.init().returncode, 0)
         self.assertEqual(docs.read_text(), 'existing file')
+
+    def test_update_preserves_project_customization(self):
+        self.assertEqual(self.init().returncode, 0)
+        project_rules = self.project / 'docs/agents/project.md'
+        project_rules.write_text('# 本地規範\n測試：make check\n')
+        source = self.repo / 'docs/agents/issue-checklist.md'
+        source.write_text(source.read_text() + '\n新版檢查\n')
+        target = self.project / 'docs/agents/issue-checklist.md'
+        old = target.read_bytes()
+        self.assertEqual(self.init('--update', '--dry-run').returncode, 0)
+        self.assertEqual(target.read_bytes(), old)
+        self.assertEqual(self.init('--update').returncode, 0)
+        self.assertEqual(target.read_bytes(), source.read_bytes())
+        self.assertEqual(project_rules.read_text(), '# 本地規範\n測試：make check\n')
+        self.assertEqual(self.init('--check').returncode, 0)
+
+    def test_update_rejects_edited_core_without_partial_writes(self):
+        self.assertEqual(self.init().returncode, 0)
+        target = self.project / 'docs/AGENTS.md'
+        target.write_text('本地修改過的核心')
+        new = self.repo / 'docs/agents/new-reference.md'
+        new.write_text('新參考資料')
+        self.assertNotEqual(self.init('--update').returncode, 0)
+        self.assertEqual(target.read_text(), '本地修改過的核心')
+        self.assertFalse((self.project / 'docs/agents/new-reference.md').exists())
+
+    def test_update_rejects_manifest_symlink(self):
+        self.assertEqual(self.init().returncode, 0)
+        manifest = self.project / 'docs/.dev-rules-kit.json'
+        manifest.unlink(missing_ok=True)
+        outside = self.base / 'outside-manifest'
+        outside.write_text('{}')
+        manifest.symlink_to(outside)
+        self.assertNotEqual(self.init('--update').returncode, 0)
+        self.assertEqual(outside.read_text(), '{}')
+
+    def test_update_rejects_hardlinks_without_partial_writes(self):
+        for rel in ('docs/AGENTS.md', 'docs/.dev-rules-kit.json'):
+            with self.subTest(path=rel):
+                self.assertEqual(self.init().returncode, 0)
+                target = self.project / rel
+                outside = self.base / 'outside-linked-file'
+                os.link(target, outside)
+                old = outside.read_bytes()
+                source = self.repo / 'docs/agents/issue-checklist.md'
+                source.write_text(source.read_text() + '\n上游更新\n')
+                before = (self.project / 'docs/agents/issue-checklist.md').read_bytes()
+                self.assertNotEqual(self.init('--update').returncode, 0)
+                self.assertEqual(outside.read_bytes(), old)
+                self.assertEqual((self.project / 'docs/agents/issue-checklist.md').read_bytes(), before)
+                outside.unlink()
+                self.assertEqual(self.init('--update').returncode, 0)
 
 
 if __name__ == '__main__':

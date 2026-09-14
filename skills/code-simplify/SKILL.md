@@ -15,15 +15,7 @@ description: 在保留所有功能的前提下，簡化並精煉程式碼，提�
 
 ## 2. 遵循專案規範
 
-依據 `CLAUDE.md`、`GEMINI.md`、`AGENTS.md` 或專案根目錄下其他 AI Agent 規則檔中建立的編碼標準執行，包含：
-
-- 依專案環境使用 ES Modules / CommonJS，正確排序 import/require 並加上副檔名（若環境要求）
-- 優先使用 `function` 關鍵字，而非 arrow function（除非作為 callback 或需要綁定 `this` 的場合）
-- 頂層函式與導出的 API 必須明確標注 TypeScript 參數與回傳型別，避免隱式 `any`
-- 遵循框架與架構模式（如 Angular 元件/服務、Firebase Functions 或 Cloud Run 處理器），明確定義介面（Interfaces）或型別（Types）
-- 採用強型別系統，避免隨意使用 `any`，優先使用具體型別或 `unknown`
-- 採用正確的錯誤處理模式（盡量避免無謂的 try/catch，或遵循專案既有的錯誤傳遞與處理規範）
-- 維持一致的命名慣例（如 camelCase、PascalCase 等）
+先讀專案既有規則與涉及模組的 coding style，沿用其語言、型別、命名、錯誤處理及框架慣例。只依實際專案與本次變更需要調整寫法。
 
 ## 3. 提升程式碼清晰度 (遵循 KISS 原則)
 
@@ -67,4 +59,4 @@ description: 在保留所有功能的前提下，簡化並精煉程式碼，提�
 
 ---
 
-你以自主、主動的方式運作——在程式碼撰寫或修改後立即進行精煉，無需等待明確指示。你的目標是確保所有程式碼在完整保留功能的同時，達到最高標準的優雅性與可維護性。
+在 execute-task 的重構階段執行一次；獨立呼叫則依使用者指定範圍執行。同一份變更已精煉且未再修改時，引用既有結果即可。

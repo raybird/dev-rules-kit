@@ -3,7 +3,7 @@ name: writing-rules
 description: 依注意力成本與觸發機制撰寫或修改 agent 會讀的規範文件。修改 docs/AGENTS.md、docs/agents/、CLAUDE.md、rules/ 或任何 SKILL.md 時使用；涵蓋 pointer 措辭、in-file 與 disclosed 的取捨、正面表述、完成判準強度與 no-op 檢查。
 ---
 
-> 本 skill 依據 `docs/AGENTS.md` **1.22**。專案的該檔版本低於此值、或引用的章節不存在或語意不符時，依「核心層齊備性檢查」明確說出缺什麼並停下來問，不得自行套用預設值繼續。
+> 本 skill 需要 `docs/AGENTS.md` **流程契約 2.0**；相容性依該檔「核心層齊備性檢查」。
 
 規範文件的效果取決於 agent **是否在該讀的時候讀到、讀到後是否照著做**。這兩件事由措辭與位置決定，與內容正確與否無關——一條寫得完全正確的規則，放錯位置或用錯語氣就等於不存在。
 
@@ -65,7 +65,9 @@ pointer 每回合都在花 token，因此比正文更值得刪：把觸發詞放
 
 - **核心層字串維持原樣**：狀態字串、metadata 欄位名、章節名依 `docs/AGENTS.md`「客製邊界與同步策略」，改名等同拿掉一道 gate 且不會報錯。
 - **雙語同步**：`rules/AGENTS.md` 與 `rules/AGENTS.zh-TW.md` 一起改，`## ` 章節數保持相等。
-- **改完跑檢查**：`python3 scripts/check-kit.py`。
+- **改完跑檢查**：依 CLAUDE.md 執行靜態與安裝／證據測試；流程語意另跑對應 workflow-regression 案例，未實跑明確記錄。
+- **版本分離**：純文字修訂只更新文件版本；相容性能力新增才升契約 minor，不相容語意或結構改變升 major。
+- **效果指標**：同類任務比較人工回覆次數、錯誤阻塞、必要 gate 漏檢與重複維護位置。字數只是成本指標，不能代替實跑行為。
 
 ## Completion Gate
 

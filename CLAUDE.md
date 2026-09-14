@@ -1,86 +1,43 @@
 # CLAUDE.md
 
-This file provides guidance to Claude Code (claude.ai/code) when working with code in this repository.
-
 ## Repository Nature
 
-本 repo 以 Markdown 範本為產品，另有 Python 與 Bash 維護腳本，無 package manager。修改後執行 `python3 scripts/check-kit.py`、`python3 scripts/check-links.py`、`bash -n scripts/install.sh` 與 `python3 scripts/test-install.py`；CI 會跑相同檢查。修改流程語意時另依 `docs/workflow-regression.md` 實跑對應案例，靜態檢查通過不代表 agent 流程已驗證。
+本 repo 的產品是 Markdown 規則、技能與下游文件規範，另有 Python／Bash 維護腳本，無 package manager。
 
-對使用者而言，這個 repo 的「產品」是 `rules/`、`skills/` 兩個目錄裡的 Markdown 檔，使用者會把它們複製到自己的開發環境設定目錄（見下方平台對應表）。
+修改後執行：
 
-## High-Level Architecture
-
-三個並列目錄，各自獨立，不互相 import：
-
-| 目錄 | 內容 | 給誰用 |
-|------|------|--------|
-| `rules/` | 靜態行為規則（`AGENTS.md` 中／英版） | 寫進 `.cursorrules`、`~/.config/opencode/AGENTS.md` 等規則檔 |
-| `skills/<name>/SKILL.md` | skill 定義，也是各平台 slash command 的來源 | 四個平台的 skills 目錄 |
-| `docs/AGENTS.md` + `docs/agents/` | issue 文件結構規範（主檔為入口，`agents/` 三份為 pointer 觸發的參考檔） | 套用此 kit 的下游專案的 `docs/` 目錄 |
-
-### Frontmatter 格式
-
-`SKILL.md` 使用 YAML frontmatter：
-
-```markdown
----
-name: 與資料夾名／檔名相同
-description: 一句話描述用途
----
+```bash
+python3 scripts/check-kit.py
+python3 scripts/check-links.py
+bash -n scripts/install.sh
+python3 scripts/test-install.py
+python3 scripts/test-evidence.py
 ```
 
-`name:` 必填，且必須與 skill 資料夾名（`skills/<name>/`）完全一致。
+流程語意另依 [workflow-regression](docs/workflow-regression.md) 在目標宿主的新 session 驗證。靜態檢查或 Git fixture 成功不能宣稱 agent 行為通過；未實跑與環境限制寫入驗證狀態。
 
-**不要省略 `name:`。** Claude Code 會從資料夾名推導名稱，省略也能運作；但 OpenCode 與 Antigravity **要求 frontmatter 具備 `name:`，缺少時整份 skill 會靜默不載入**，既不報錯也不出現在 skill 清單中（2026-08-07 於 OpenCode 1.18.14、Antigravity CLI `agy` 1.1.7 實測確認）。
+## 檔案責任
 
-## 文件規範（套用此 kit 的下游專案）
+| 位置 | 維護責任 |
+|---|---|
+| `rules/` | 通用行為原則、issue 流程觸發入口；本 kit 自身也遵守 |
+| `skills/` | 各階段輸入、操作、完成判準與輸出；各平台直接安裝 |
+| `docs/AGENTS.md` | 下游文件入口、分級與風險、核心欄位、流程契約版本 |
+| `docs/agents/` | 按階段載入的核准、驗證、review 規範及範本 |
+| `docs/agents/project.md` | 下游專案客製；上游更新保留此檔 |
+| `scripts/` | kit 檢查、安裝與回歸工具 |
 
-`docs/AGENTS.md` 是給**下游專案的 `docs/` 目錄**用的規範（不是本 repo 自身），定義了：
+`docs/AGENTS.md` 是下游產品，不要求本 kit 每次維護都建立 issue。完整行為定義放權威參考檔，技能保留可執行步驟與指向該定義的 gate。
 
-- `docs/issues/issue-{ID}/` 依規模分級：Small 僅 `README.md`，Medium 加 `implementation-plan.md`，Large 再加 `requirement-analysis.md` 與 `technical-analysis.md`——但這兩份依觸發條件建立，不是 Large 一律產出
-- **Timeline 保留原則**：實作時如發現與舊文件描述不符，**不可直接覆寫**舊內容。應在 README 的 Timeline 加上日期、在原文件用 `> [!NOTE]` 標日期補充、並在各檔末尾的 `## 修訂紀錄 (Changelog)` 補記
-- 日期一律使用**系統當下日期**的 `YYYY-MM-DD`，禁止手寫或統一日期
+## 維護規範
 
-`new-issue` skill 會直接引用此規範產出文件，修改 `docs/AGENTS.md` 等同於改變這些 skill 的輸出格式。
-
-## 撰寫規則時要遵守的核心原則
-
-`rules/AGENTS.md` 是本 repo 自身也要遵守的：
-
-- **Think before coding**：不確定就問，不要默默選擇
-- **Surgical changes**：只動該動的，不要順手「改善」鄰近內容
-- **Simplicity first**：能 50 行就不寫 200 行
-- **Token economy**：對小任務不要產出長篇分析
-
-新增規則或 skill 時，先檢查能否擴充既有檔案；不要為單一場景再開一份近似檔。
-
-## BDD + TDD 與 Superpowers 映射
-
-核心開發閉環採 BDD 外迴圈與 TDD 內迴圈。Superpowers 是選用增強，不是執行期必要依賴；已安裝時優先調用，未安裝時由本地 skill 執行等價流程。維護相關 skill 時，必須保留下列映射與本地 gate：
-
-| 節點 | 可用時優先調用的 Superpowers skill | 不可跳過的本地證據 |
-|---|---|---|
-| `new-issue` | `brainstorming` | 一次一題的需求澄清、使用者核准、依規模決定形式且依風險決定強度的驗收標準 |
-| `decompose` | `writing-plans` | 每個 Scenario 的 BDD 外迴圈與 TDD 內迴圈映射 |
-| `execute-task` | `test-driven-development` | 外迴圈紅燈、單元測試紅燈、最小實作後全綠、重構後全綠（不改變可觀察行為者改用等價證據；Small 層級重合時依單迴圈合併縮為三段；判準為生產環境觀測者另須通過反向自檢） |
-| `review` | `requesting-code-review` | 獨立 reviewer、架構符合度、至少 3 個破壞性邊界案例與流程判定 |
-| `create-pr` | `verification-before-completion` | 可追溯至驗收標準原文與實際成功命令的 Proof of Test |
-
-PRD 或文件若使用 `implementation-plan`、`critic`、`architectural-compliance`、`pull-request-spec` 等非現有 Superpowers skill 名稱，不得直接寫成不可執行依賴：語意分別映射至上表的 `writing-plans`、`requesting-code-review` 加架構 gate，以及 `create-pr` 內建規格加 `verification-before-completion`。未安裝 Superpowers 時執行各節點已明訂的本地等價流程。
-
-`docs/AGENTS.md` 是驗收標準形式與強度、分批核准、Scenario ID、紅綠燈與等價證據格式、假綠燈與**證據持久力**的分界、**觀測式驗收**與反向自檢、**合法的中間狀態與終態**、review artifact 存放位置、`## 待確認事項`、`## Gate 豁免紀錄`，以及**客製邊界與同步策略**（核心／應客製／可調整三層與核心層齊備性檢查）的單一真相來源。修改任一節點時，同時檢查 `dev-cycle` 是否仍能阻止跨階段繞過；不得只加提示文字而沒有完成 gate。
-
-**gate 的對象是 agent，不是使用者。** 所有 gate 都必須同時滿足兩件事：agent 不得自行降低標準；使用者明確要求豁免時必須照做並留下 `## Gate 豁免紀錄`。新增 gate 時一併確認它有豁免路徑，且豁免後 `dev-cycle` 能據紀錄放行。唯一不可豁免的是誠實回報——不得把未執行的驗證寫成已通過。
-
-## Conventions
-
-- **語言**：所有 Markdown 內容使用**繁體中文（台灣）**，包含 commit message 與 PR description
-- **雙語規則檔**：修改 `rules/` 時，`AGENTS.md`（英）與 `AGENTS.zh-TW.md`（中）**必須同步修改**，章節結構（`## ` 數量與順序）保持一一對應；`check-kit.py` 會驗證章節數是否一致
-- **Commit 訊息**：Commit 絕對不添加相關 `Co-Authored-By: Claude` 在 message 內
-- **日期**：文件內任何日期都使用系統當下日期，格式 `YYYY-MM-DD`
-- **檔名與資料夾**：skill 用 kebab-case；skill 資料夾名與 frontmatter 中 description 兩者語意必須一致
-- **description 撰寫**：`description` 是唯一常駐於 agent context 的內容，也是 agent 判斷「是否載入整份 skill」的依據，應同時寫出**做什麼**與**何時使用／適用範圍**（例如 `decompose` 標明僅適用 Large）
-- **安裝路徑的真相來源**：各平台的實際安裝路徑寫在 `rules/README.md`、`skills/README.md` 的「安裝方式」章節，外部工具（Serena / GitNexus / Superpowers）寫在 `docs/setup/tools.md`。新增平台或路徑變動時要同步這三處；`README.md` 與 `docs/usage.md` 只放指向它們的連結，不要複製路徑內容。`scripts/install.sh` 的 `targets_for()` 是這些路徑的可執行副本，`check-kit.py` 會驗證它與兩份 README 一致——路徑異動時腳本與 README 必須一起改
-- **改規範前先用 `writing-rules`**：修改 `docs/AGENTS.md`、`docs/agents/`、`CLAUDE.md`、`rules/` 或任何 `SKILL.md` 時，先套用 [`skills/writing-rules`](skills/writing-rules/SKILL.md)——它涵蓋 pointer 措辭、in-file 與 disclosed 的 branching 取捨、正面表述、完成判準的清晰度與強度、leading word 優先於自創詞、no-op 測試。**沒有這道紀律時，增補永遠比刪減安全，文件只會單向變長**：`docs/AGENTS.md` 曾在一天內從 686 行長到 797 行，其中還包含一個名為「精簡」的版本
-- **規則驗證狀態**：[`docs/rule-verification-status.md`](docs/rule-verification-status.md) 記錄每條規則**是否被實際執行過**（已實跑驗證／本地測試驗證／來源為實跑／僅靜態撰寫／曾失效並修正）。新增或修改規則時同步加一列，預設「僅靜態撰寫」；收到下游實跑回饋才升級狀態，且必須寫明可指認的來源（專案、issue 編號、日期、具體結果）。該檔是 kit 自身的維護紀錄，不供下游複製。**未標為已驗證的規則應視為「可能有同類缺陷、尚未被發現」**——2026-08-18 一天內出現三個「規則寫得完整但執行不了」的缺陷，全部是當天新寫的規則
-- **手動維護的使用者文件**：`README.md` 與 `docs/usage.md` **完全不在** `check-kit.py` 的檢查範圍。修改 `docs/AGENTS.md` 的規則章節（分級、風險、驗收標準形式與強度、核准流程、README 區段）時，必須一併檢查這兩份是否仍在描述舊規則。**`check-kit.py` 通過不代表全 repo 一致**——它只驗證 frontmatter `name:` 與 `description:`、skill 的 `docs/AGENTS.md` 版本宣告、雙語章節數與 `install.sh` 安裝路徑這四件事
+- 修改規則、技能、CLAUDE.md 或 docs/agents/ 前使用 [writing-rules](skills/writing-rules/SKILL.md)。新增內容先檢查能否擴充既有檔；歷史原因主要放維護紀錄。
+- Markdown、commit 與 PR 使用繁體中文；英版 rules 例外。日期區分本次系統日期、歷史事件與未來窗口，不能全部改為今天。Commit 不加入 `Co-Authored-By: Claude`。
+- `SKILL.md` 必須有 YAML frontmatter 的 `name:` 與 `description:`；name 與目錄同名，description 同時說用途與觸發時機。
+- 引用下游核心規範的技能宣告最低流程契約，不與文件編輯版本同步跳號。相容版本也須檢查引用章節與語意。
+- 雙語 rules 一起改，`##` 章節數與順序對應；check-kit 只查結構，語意同步另覆核。
+- issue 的任務與證據各有唯一來源；狀態與 Git 證據修正時同步檢查 dev-cycle、執行、review 與 PR 分支。使用者可明確豁免流程，但不能豁免誠實回報。
+- Superpowers 是選用引擎：brainstorming 對應需要探索的新需求；writing-plans 對應 decompose；test-driven-development 對應 execute-task；requesting-code-review 對應 review；verification-before-completion 對應 create-pr。已有核准或等價證據不因引擎切換失效；缺少套件時用本地流程。
+- 安裝路徑維護在 rules/README.md、skills/README.md 與 install.sh targets_for()，check-kit 驗證一致性；外部工具設定在 docs/setup/tools.md。README 與 usage 僅引用路徑說明。
+- 改流程時檢查 README.md、docs/usage.md、範本與檢查清單；check-kit 不驗證敘述語意。新增規則在 [rule-verification-status](docs/rule-verification-status.md) 記可指認的驗證來源，未實跑保留「僅靜態撰寫」。
+- 改部署行為時，以暫存專案驗證升級、客製保留、衝突時不部分寫入、dry-run 與 symlink；本機真實平台及下游專案不作測試目標。

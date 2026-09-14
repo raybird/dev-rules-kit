@@ -1,316 +1,88 @@
 # 使用指南
 
-這套 kit 提供一組可跨平台重用的 rules 與 skills，讓 AI agent 在你的開發環境中按照一致的工作流程運作——從需求分析、實作規劃、程式碼撰寫，到 commit、PR、review，形成一個完整的開發閉環。
+一般局部修改可直接描述目標與檢查方式，agent 依通用規則完成。需要跨 session 追蹤 issue、分批規劃與 PR 審查時使用以下閉環。
 
-**前置條件**：請先把需要的資產複製到你的平台——[規則檔](../rules/README.md#安裝方式) · [技能](../skills/README.md#安裝方式)，兩份 README 都載明四個平台的實際路徑。外部工具（Serena / GitNexus / Superpowers）的設定為選用，見 [setup/tools.md](./setup/tools.md)。
+## 初始化與更新
 
----
+先安裝[規則](../rules/README.md#安裝方式)與[技能](../skills/README.md#安裝方式)，再從 kit 根目錄執行：
 
-使用核心技能前，於本 kit 根目錄執行 `python3 scripts/init-project.py /path/to/project`，部署專案的 `docs/AGENTS.md`、`docs/agents/` 與 `docs/_templates/`。既有客製文件需人工合併；初始化與更新檢查方式見 [README](../README.md#使用方式)。
-
-## 完整閉環示範
-
-以「為現有 web app 新增 OAuth 登入功能」（issue-101）為例，完整走過七個步驟。
-
-> 此範例的規模為 **Large**、風險為 **High**。Large 來自跨模組與登入架構整合，因此包含 Step 2 的 `decompose`；High 來自真實 callback 與帳號綁定行為尚未確認，因此首要活動必須取得解除該未知的證據。**Small 與 Medium 的 issue 會跳過 `decompose`**，風險高低不會改變文件數量。詳見 [AGENTS.md 的「文件動態分級規範」](./AGENTS.md#文件動態分級規範-issue-document-tiering)。
-
-### Step 1 — `new-issue`
-
-**觸發**：
-
-```
-/new-issue issue:101 主題:新增 OAuth 登入 內容:使用者目前只能用帳號密碼登入，需要支援 Google OAuth 2.0 登入流程，登入後取得 profile 資訊並建立或綁定本地帳號
+```bash
+python3 scripts/init-project.py /path/to/project
 ```
 
-**AI 產出**：
+專案目錄須已存在。首次部署建立核心規範、範本、`docs/agents/project.md` 與部署基線；把專案驗證命令、邊界與本地 gate 放 project.md。
 
-建立 `docs/issues/issue-101/`。由於此任務涉及 OAuth 與架構整合，規模被評估為 **Large**；真實 callback 與帳號綁定行為尚未確認，風險另評估為 **High**：
-- `README.md`：需求概覽、涉及檔案、timeline
-- `implementation-plan.md`：高階實作方向
-- `requirement-analysis.md`：需求描述、現況分析、問題點總結與目標——本例建立，因為現有登入流程要讀既有程式碼才寫得下來
-- `technical-analysis.md`：OAuth 2.0 flow 分析、相關模組、潛在風險——本例建立，因為 callback 有兩種接法需要取捨
-
-後兩份依 `docs/AGENTS.md`「規模分級」的觸發條件建立，Large 不一律產出。
-
-README 另包含經使用者核准、具 `SCN-001` 等唯一 ID 的 Gherkin 驗收劇本。**Small 的 issue 一律改用輕量驗收條件**（`AC-1` 起，一句話結果加檢查方式），不需 Gherkin 語法與逐項核准表；風險為 Medium / High 時每條另須寫出失敗路徑，形式不會因為風險高就升級成 Gherkin。
-
-Scenario 多時**不必一次核准全部**：尚未談定的標為 `待核准`，已核准的部分即可開始實作，開 PR 前再補齊。等待中的決策會記在 README 的 `## 待確認事項`，不會消失在對話裡。
-
-**關鍵行為**：若已安裝 Superpowers，AI 優先調用 `brainstorming`；否則執行 `new-issue` 的內建等價流程。兩種模式都一次只問一個問題，需求有模糊地帶時不自行填入假設，只有使用者核准驗收標準後才建立完整文件。
-
----
-
-### Step 2 — `decompose`
-
-> 此步驟**僅適用 Large issue**。Small 與 Medium 的實作步驟已經是可執行的任務清單，會直接跳到 Step 3。
-
-**觸發**：
-
-```
-/decompose
+```bash
+python3 scripts/init-project.py /path/to/project --update --dry-run
+python3 scripts/init-project.py /path/to/project --update
+python3 scripts/init-project.py /path/to/project --check
 ```
 
-AI 讀取 `docs/issues/issue-101/implementation-plan.md` 後自動執行。
+更新保留既有 project.md，只更新與上次部署基線一致的核心。核心有本地修改、缺少可信基線或 symlink／hardlink 衝突時，整批停止。`--check` 驗證核心與 kit 一致及客製檔存在，不驗證客製語意。初次從舊版遷移依 [AGENTS.md](AGENTS.md#客製邊界與同步策略) 人工分離客製內容。
 
-**AI 產出**：
+文件版本描述編輯歷程，流程契約描述技能相容性。同 major、專案 minor 不低於技能需求即可；純文字更新不要求所有技能同步跳號。升級前仍查 [CHANGELOG](../CHANGELOG.md)。
 
-建立 `docs/issues/issue-101/implementation-plan-decomposition.md`：
+## 日常推進
 
-- **Phase 1 — 登入最小路徑**（登入按鈕 → Google callback → 取得真實 profile → 建立新帳號 → 登入成功）
-- **Phase 2 — 既有帳號綁定與衝突處理**（Step 1 標為「未知，待確認」的部分）
-- **Phase 3 — 錯誤處理與邊界情境**（授權被拒、email 未驗證、token 過期）
-
-每個 Phase 下細分 2–4 個 Task，每個 Task 預估 1–3 小時。
-
-每個 Task 都標示所覆蓋的 Scenario ID，並明列 BDD 外迴圈（feature、Step Definitions、紅燈命令）與 TDD 內迴圈（單元測試、紅燈命令、最小實作及全綠命令）。
-
-**關鍵行為**：此例的最大未知是 callback 與本地帳號流程能否端到端成立，所以選擇垂直切片。若未知只有 Google API 的欄位或錯誤碼，應先做最小真實請求的契約驗證，不必先串完整登入流程。垂直切片是候選手段，不是風險優先的預設答案。
-
----
-
-### Step 3 — `execute-task`
-
-**觸發**：
-
-```
-/execute-task Phase 1 Task 1.1
-```
-
-**AI 產出**：
-
-若已安裝 Superpowers，AI 優先調用 `test-driven-development`；否則依 `execute-task` 內建流程，依序取得 BDD 紅燈、單元測試紅燈、最少 production code 全綠及重構後全綠。對話輸出：
-- 修改摘要
-- Scenario ID 與 BDD／單元測試紅燈證據
-- 最小實作後與重構後的全綠證據
-- 需要人工處理的事項（如：申請 Google API key）
-
-完成後，AI 視程式碼複雜度決定是否建議 `code-simplify`，並執行 `create-commit` 產生 commit 訊息。
-
-> **子步驟說明**：`code-simplify` 是選用步驟，AI 在判斷變更幅度或複雜度較高時才會提議。`create-commit` 依據 staged 差異產生符合 Conventional Commits 格式的 commit 訊息。
-
----
-
-### Step 4 — `create-pr`
-
-**觸發**：所有 Task 完成並 commit 後：
-
-```
-/create-pr
-```
-
-**AI 產出**：
-
-產生 PR 標題與 body 草稿：
-
-````markdown
-標題：feat(auth): 新增 Google OAuth 2.0 登入支援
-
-## 變更內容
-- 新增 OAuth callback 路由與 token 交換邏輯
-- 新增帳號建立／綁定流程
-- UI 加入 Google 登入按鈕
-
-## 測試通過證明 (Proof of Test)
-
-### SCN-001：全新帳號透過 Google 登入
-```gherkin
-Scenario: 全新帳號完成 Google 登入
-  Given 使用者尚未建立本地帳號
-  When 使用者完成 Google 授權
-  Then 系統建立本地帳號並完成登入
-```
-- BDD 命令：`npm test -- oauth-login.feature`
-- 結果：PASS
-````
-
-**關鍵行為**：PR 內容基於實際 git diff 生成，不會描述未實作的功能；只有可追溯至核准驗收標準原文與實際成功命令的項目才會列入 Proof of Test。issue 有 Gate 豁免紀錄時，PR 會另闢「豁免項目」段落如實揭露，而非把它寫成已通過。
-
----
-
-### Step 5 — `review`
-
-**觸發**：
-
-```
-/review 5
-```
-
-（5 代表本次 PR 包含 5 個 commit）
-
-**AI 產出**：
-
-審查報告分三級：
-
-- **MUST FIX**：OAuth token 未在登出時 revoke，存在 token 洩漏風險
-- **NICE TO HAVE**：callback error message 可以更具體
-- **LGTM**：帳號綁定邏輯、環境變數處理方式正確
-
-報告另由獨立 reviewer 檢查架構分層、BDD / TDD 證據與測試作弊，並列出至少 3 個破壞性邊界案例。存在任何 MUST FIX、Scenario 漏洞或必要邊界未覆蓋時，流程判定為 `RETURN TO execute-task`。
-
-> **循環示範**：review 發現 MUST FIX 問題，開發者回到 `execute-task` 修正 token revoke 邏輯，再執行 `create-commit` 補上 fix commit，重新 `create-pr` 更新 PR 說明，最後再跑一次 `review` 確認問題已解決，第二次 review 通過。
-
----
-
-### Step 6 — `dev-cycle`（以同一情境示範）
-
-**查詢模式**（任何時間點可用）：
-
-```
-issue 101 到哪了
-```
-
-AI 輸出：
-
-> Issue 101：新增 OAuth 登入
-> 目前階段：create-pr
-> 狀態：所有 Task 已完成並 commit，尚未開 PR
-
-**推進模式**：
-
-```
+```text
+/new-issue issue:101 主題:修正空字串驗證 內容:空字串應顯示必填錯誤，有值時維持原行為。
 /dev-cycle 101
 ```
 
-AI 自動偵測狀態，告知「目前在 create-pr 階段，準備執行 create-pr」，呼叫 `create-pr` 後繼續循環。
+已明確提供的結果與範圍可作核准來源；缺少會影響結果的決策才詢問，不固定提出多個方案。Small 以 README 的 AC 與步驟記錄；Medium 增加 implementation-plan；Large 在同一計畫細化 Phase／Task，分析文件依實際調查或取捨需要建立。
 
-**關鍵行為**：`dev-cycle` 從 filesystem、issue 證據、git 狀態與持久化 review artifact 推斷進度，跨 session 重新呼叫也能正確恢復，不依賴對話記憶；缺驗收標準核准、紅綠燈或等價證據、完整 Proof of Test 或目前 HEAD 的持久化 review PASS 時都不會跳到下一階段。已寫入 `## Gate 豁免紀錄` 的項目則依該紀錄放行。
-
-**分級分流**：`dev-cycle` 會先讀 `README.md` 的 `**分級**` 欄位決定路徑——Large 才經過 `decompose`，Small 與 Medium 直接從 `new-issue` 進入 `execute-task`。若是舊 issue 沒有該欄位，會依現存檔案回推分級並補寫回 README。
-
-**風險排序**：README 的 `**風險**` 欄位只影響任務順序與驗證方式，不形成新的 `dev-cycle` 分支。舊 issue 缺少風險時不由分級推測，只有重新規劃或新增步驟時才補評估。
-
-兩軸可以自由組合：
-
-- **Small + High**：單行權限條件修正仍只產出 README，但第一步先建立能重現越權問題的回歸案例。
-- **Large + Low**：規格已凍結的跨模組機械式搬移仍建立完整文件並執行 `decompose`，但可按一般技術相依順序執行。
-
----
-
-## 各 Skill 快速參考
-
-### `new-issue`
-
-| | |
-|---|---|
-| **觸發** | `/new-issue issue:{編號} 主題:{標題} 內容:{描述}` 或直接描述需求 |
-| **產出** | 依任務複雜度評估為 **Small (僅 README)**、**Medium (README + 計畫)** 或 **Large (README + 計畫，兩份分析文件依觸發條件)** 檔案 |
-| **注意** | 可用時優先使用 `brainstorming`，否則執行內建等價流程；兩種模式都須一次一題並取得驗收標準核准（Small 為輕量驗收條件；Scenario 多時可分批核准，未談定者標 `待核准`） |
-
-#### 指令式參數格式範例：
-```
-/new-issue
-issue:123
-主題:怎麼開始與調整網站
-內容:
-我們需要評估目前網站首頁的載入效能，並提出優化方案。
-主要問題包括：
-1. 首頁載入時間超過 5 秒
-2. 多個未壓縮的圖片資源
-3. 沒有使用快取策略
+```text
+new-issue → decompose（Large，在原計畫細化）
+          → execute-task（包含 code-simplify 與驗證）
+          → create-commit → create-pr → review
+                              ↑           │
+                              └──修正後───┘
 ```
 
-*註：在指令式介面中，`issue:`、`主題:` 和 `內容:` 三個欄位都是必填的。其中 `issue:` 的編號應為純數字（例如：123，而非 ISSUE-123）。*
+dev-cycle 自動選下一個已核准、相依滿足的 Task；分批核准或重新核准不阻塞無相依的已核准項目。Large 新核准的 Scenario 會先補拆，再實作。PR 前現存驗收須全部已核准或逐項豁免。
 
+完成任務時，證據保存在原任務或 artifact，對話只回報結果與位置。不同測試層級保留各自紅綠燈；同層重複保障可合併，不受 Small／Medium／Large 限制。純重構比較前後同組測試，文件用適用的靜態或人工驗證。
 
----
+## 查詢與等待
 
-### `decompose`
+```text
+issue 101 到哪了
+繼續處理 issue 101，並回報進度
+```
 
-| | |
+第一句只查詢、不補寫 metadata。第二句是推進，會沿用已有授權；不是看到「進度」就停止執行。
+
+等待外部驗收窗時，先完成當下能做的工作，再記預定窗口與判準，回報後結束本次調用。等待合併同樣回報後結束，不輪詢空轉、不自動合併。重新呼叫時從文件、Git／PR 與持久化證據恢復。
+
+決定不修復時保留該終態、理由、殘餘影響及決策審查／豁免；不會要求做完被放棄的實作，也不會製造 merge 日期。
+
+## PR 與 review
+
+協調者把同一組固定 BASE／HEAD 傳給 PR 與 review，避免 commit 數量推算不同範圍。`/review 5` 仍可審查最近五個 commit，但若未覆蓋完整 PR，只算局部審查。
+
+PR 的 Proof of Test 採逐驗收編號表格，連到固定版本規格與命令／輸出證據。多個條件可共用證據；被測內容、環境與時效一致時沿用，發生相關變動才重跑。未執行項與豁免照實揭露。
+
+獨立 reviewer 按實際風險檢查失敗面，不湊固定案例數。報告保存到平台，或 issue 目錄中的本機 artifact。若本機後續提交只新增本次報告且通過 review 技能內附檢查器，原審查有效；其他變更重新審查。patch-id 只是輔助識別，不能單憑它相等放行新 HEAD。
+
+## 技能快速參考
+
+| 技能 | 使用方式與結果 |
 |---|---|
-| **觸發** | `/decompose` |
-| **產出** | `docs/issues/issue-{ID}/implementation-plan-decomposition.md`，Phase + Task 結構 |
-| **注意** | **僅適用 Large**；可用時優先使用 `writing-plans`，否則由內建規則把每個 Scenario 映射至 BDD / TDD 雙迴圈 |
+| new-issue | 建立／修訂需求與驗收；先使用現有資訊，只問必要缺項 |
+| decompose | 細化 Large 的原計畫；舊 issue 沿用已指定的獨立 Decomposition |
+| execute-task | 指定或依順序選一個可執行 Task，驗證、精煉一次並回寫狀態 |
+| code-simplify | 可單獨精煉指定變更；已由 execute-task 處理者不再重複 |
+| create-commit | 依 staged diff 與專案格式產生訊息；明確要求提交時直接執行 |
+| create-pr | 撰寫 Proof 表；已要求建立／更新 PR 時直接操作平台 |
+| review | 對固定範圍獨立審查並保存 artifact；無能力時如實回報 |
+| dev-cycle | 查詢唯讀；推進自動派送已授權工作，遇等待或阻塞結束本次調用 |
+| git-squash | 使用與 create-commit 相同的專案格式，提供符合專案策略的合併命令 |
+| writing-rules | 修改 agent 規範前使用；檢查觸發、位置、完成判準與實跑效果 |
 
----
+Superpowers 為選用的階段引擎；已有共識不因載入 brainstorming 重問，缺套件時使用本地等價流程。[外部工具設定](setup/tools.md) 不屬必要前置。
 
-### `execute-task`
+## 格式與驗證
 
-| | |
-|---|---|
-| **觸發** | `/execute-task Phase {N} Task {N.M}`（Large）或 `/execute-task 步驟 {N}`（Small / Medium） |
-| **產出** | 實作對應步驟 / Task 的程式碼變更，輸出修改摘要 |
-| **注意** | 可用時優先使用 `test-driven-development`；不論是否安裝，未取得紅燈前都禁止修改 production code（Small 且外／內迴圈層級重合時，可依單迴圈合併取得單一紅燈） |
+issue 格式參考 [README 範本](agents/readme-templates.md) 與 [建檔清單](agents/issue-checklist.md)。使用者可明確要求豁免個別 gate，agent 記錄來源及殘餘風險，其他 gate 繼續適用；誠實回報始終保留。
 
----
-
-### `code-simplify`
-
-| | |
-|---|---|
-| **觸發** | `/code-simplify` 或 AI 主動建議 |
-| **產出** | 精煉近期修改的程式碼，提升可讀性與一致性 |
-| **注意** | 保留所有功能，只改善品質；預設聚焦近期修改 |
-
----
-
-### `create-commit`
-
-| | |
-|---|---|
-| **觸發** | `/create-commit` |
-| **產出** | 依 staged 差異生成 Conventional Commits 格式的 commit 訊息 |
-| **注意** | 執行前需先 `git add` 想提交的檔案 |
-
----
-
-### `create-pr`
-
-| | |
-|---|---|
-| **觸發** | `/create-pr` |
-| **產出** | PR 標題與 body 草稿（變更摘要 + Proof of Test） |
-| **注意** | 可用時優先使用 `verification-before-completion`，否則執行內建證據檢查；只有具實際成功證據的項目才列為通過 |
-
----
-
-### `review`
-
-| | |
-|---|---|
-| **觸發** | `/review {commit 數量}` |
-| **產出** | 獨立審查報告、架構符合度、至少 3 個破壞性邊界案例與流程判定 |
-| **注意** | 可用時優先使用 `requesting-code-review`，否則使用宿主原生獨立 reviewer；無獨立審查能力時不得 PASS |
-
----
-
-### `dev-cycle`
-
-| | |
-|---|---|
-| **查詢** | 「issue {ID} 到哪了」、「{ID} 進度」 |
-| **推進** | `/dev-cycle {ID}`、「繼續 {ID}」 |
-| **注意** | 依分級分流，並檢查驗收標準核准、證據、Proof of Test 與 review gate，禁止跨階段繞過；已記錄的 Gate 豁免依紀錄放行 |
-
----
-
-## 常見問題 (Q&A)
-
-**Q：如果我在執行 new-issue 時忘記提供某個參數會怎樣？**
-A: 系統會透過自然語言對話方式，逐步詢問引導您提供缺失的資訊。
-
-**Q：我可以修改產出的文件嗎？**
-A: 可以，而且非常鼓勵這麼做！`new-issue` 只是提供一個基礎結構與起點，您應該根據專案實際情況，手動或透過其他 skill 來修改與補充文件內容。
-
-**Q：如何確保我的 issue 文件格式正確？**
-A: 請參考 [docs/agents/issue-checklist.md](./agents/issue-checklist.md) 的逐項清單，以及 [docs/agents/document-types.md](./agents/document-types.md)、[docs/agents/readme-templates.md](./agents/readme-templates.md) 的內容規範與格式範本。
-
----
-
-## 維護紀錄
-
-| 日期 | 異動 | 負責人 |
-|------|------|--------|
-| 2026-07-27 | 加入 Gate 豁免機制；驗收標準形式依規模與風險分級，純重構改用等價證據 | - |
-| 2026-07-26 | Superpowers 改為選用增強；未安裝時由本地 skills 執行等價硬性 gate | - |
-| 2026-07-26 | 開發閉環加入 Gherkin BDD、TDD 紅綠燈、獨立審查與 PR Proof of Test 硬性卡關 | - |
-| 2026-07-22 | Issue 評估改為規模與風險雙軸；補上驗證手段選擇及垂直切片適用條件 | - |
-| 2026-07-21 | 補上分級分流說明（僅 Large 經過 decompose）；示範的 decompose 產出改為垂直切片 | - |
-| 2026-06-20 | 整合 USAGE.md 說明內容，修復大小寫檔案衝突 | - |
-| 2026-05-19 | 建立 new-issue 使用說明文件與指南 | - |
-
----
-
-**建立日期**: 2026-05-19  
-**最後更新**: 2026-07-26\
-**文件版本**: 1.3
+本 kit 的自動測試覆蓋安裝、Git 證據及契約檢查。宿主中的技能觸發、詢問與狀態推進另依 [流程回歸](workflow-regression.md) 實跑，不能以 Python 測試成功代替。

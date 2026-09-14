@@ -168,6 +168,24 @@
 | `install.sh` 停止支援 Windsurf | **本地測試驗證** | 2026-09-11 `test-install.py`：指定 `windsurf` 時以未知平台失敗；只有 `~/.codeium/windsurf/` 與 `~/.claude/` 存在時，自動偵測只裝 Claude Code，Windsurf 下既不建立 `skills/`，舊的 workflow 也原封不動 |
 | `check-kit.py` 抓得到缺 `description:` 與 `targets_for()` 欄數錯誤 | **本地測試驗證** | 2026-09-11 以暫存副本注入：刪掉 `review` 的 `description:`、在 Cursor 那列多加一欄，兩者皆 FAIL。原本由 `workflows/README.md` 清單檢查順帶涵蓋的缺 `description:` 因此沒有隨同步功能一起消失 |
 
+## v4.0.0 — 流程契約 2.0（2026-09-14）
+
+歷史列保留當時版本的狀態；本次取代的行為以本節為準。完整結果見 [2026-09-14 回歸紀錄](workflow-results/2026-09-14.md)。
+
+| 規則 | 狀態 | 驗證來源 |
+|---|---|---|
+| 核准比對包含 staged／unstaged 工作區規格 | 本地測試驗證 | test-evidence.py 實際執行 acceptance.md 命令；舊 approval..HEAD 對照漏掉變更 |
+| 本機 artifact 單一報告提交例外 | 本地測試驗證 | test-evidence.py：純報告成功，程式同次變更／報告重寫／symlink 拒絕；獨立 reviewer 另實驗同次提交 |
+| 文件版本與最低流程契約分離 | 本地測試驗證 | 同一測試套件驗證文件 99.0 不影響契約 2.0 相容；高 minor／不同 major／缺宣告失敗 |
+| 更新保留 project.md、核心基線與衝突保護 | 本地測試驗證 | test-install.py 暫存專案；獨立覆核抓出 hardlink 後增加負向測試修正 |
+| 查詢唯讀與外部窗口等待 | 已實跑驗證（本次 Codex 隔離 session） | WF-08／WF-10；工具讀取、Git 狀態與時鐘確認，操作者確認工作樹未變。混合意圖子情境通過，實際派送 Task 仍未實跑 |
+| 不修復與一般結案順序 | 僅靜態撰寫 | 獨立 reviewer 同 session 覆核 fixture 903，未作 WF-11 新 session 實跑 |
+| 新核准在原計畫補拆 | 已實跑驗證（本次 Codex 隔離 session） | WF-12：只新增 Task 2.1，原 Task 1.1 證據保留，未產生另一任務檔 |
+| 待重新核准不阻塞無相依 Task、自動派送 | 已實跑驗證（子情境） | fixture 905 完成 SCN-001 的 TDD，SCN-002 及 parse_age 保留；規格修訂自動標記與排版對照尚未實跑 |
+| Medium 同層合併與精煉 no-op 證據重用 | 已實跑驗證（正向子情境） | fixture 905 單一真紅、全綠後 no-op 沿用證據；Large／跨層／證據失效對照仍未實跑 |
+| 明確原需求沿用核准、多 AC 證據共用與去除固定配額 | 僅靜態撰寫 | WF-01、WF-15 等完整情境仍待實跑，不能由上述子情境泛化 |
+| 分層 pointer、PR Proof 連結、單一任務來源與提交責任 | 僅靜態撰寫 | 文件與技能已同步；跨平台完整閉環仍需實跑 |
+
 ## 已知的驗證限制
 
 - **樣本數 n=2，且同源**：line-oa-plus 與 googleBooking 同屬一位使用者、跑同一套 kit、工作流程相近。**兩者共有的盲點照不出來**——例如多人並行 review、非中文協作者、非 Firebase 系技術棧的情境，今天完全沒有覆蓋。

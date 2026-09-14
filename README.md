@@ -12,13 +12,15 @@ dev-rules-kit/
 ├── CHANGELOG.md           # 變更紀錄（下游更新參考）
 ├── CLAUDE.md              # AI 維護指引
 ├── scripts/               # 自動化工具
-│   ├── check-kit.py       # kit 一致性檢查（frontmatter、版本宣告、安裝路徑）
+│   ├── check-kit.py       # kit 一致性檢查（frontmatter、契約相容性、安裝路徑）
 │   ├── check-links.py     # Markdown 相對連結檢查
 │   ├── install.sh         # 平台安裝與更新
 │   ├── init-project.py    # 下游專案文件初始化
-│   └── test-install.py    # 安裝與初始化回歸測試
+│   ├── test-install.py    # 安裝與初始化回歸測試
+│   └── test-evidence.py   # Git 證據與契約相容性測試
 ├── docs/                  # 技術文件與規範說明
 │   ├── AGENTS.md          # 文件資料夾說明（AGENTS）
+│   ├── agents/           # 按階段載入的規範及 project.md 客製檔
 │   ├── usage.md           # 使用指南（含開發閉環步驟）
 │   ├── setup/tools.md     # 外部工具設定（Serena / GitNexus / Superpowers）
 │   └── _templates/        # 實體文件模板（架構、領域、Changelog）
@@ -56,37 +58,23 @@ dev-rules-kit/
 
 ## 開發閉環
 
-`skills/` 內的 10 個技能構成了一個開發閉環，其中核心的七個構成日常開發循環：
+一般局部修改可直接執行；需要 issue 追蹤時使用 10 個技能中的核心流程：
 
-```
-new-issue        ← 分析需求、建立 issue 文件
-    ↓
-decompose        ← 將 implementation plan 拆解為 Phase / Task（僅 Large）
-    ↓
-execute-task  ←──────────────────────────────┐
-    ↓                                        │
-code-simplify    ← 精煉程式碼，提升可讀性        │
-    ↓                                        │
-create-commit    ← 生成 commit 訊息            │
-    ↓                                        │
-create-pr        ← 生成 PR 說明內容            │
-    ↓                                        │
-review           ← 審查變更，發現問題回頭修正 ───┘
-    ↓
-  通過合併
+```text
+new-issue → decompose（Large，在原計畫細化）
+          → execute-task（內含 code-simplify 與驗證）
+          → create-commit → create-pr → review
+                              ↑           │
+                              └──修正後───┘
 ```
 
-`decompose` 只在 issue 被評估為 **Large** 時執行；Small 與 Medium 的實作步驟本身即為可執行的任務清單，會由 `new-issue` 直接接到 `execute-task`。
+`dev-cycle` 協調已授權的工作，自動選擇相依滿足的 Task；查詢模式只讀不寫。等待合併、外部窗口或必要回答時回報並結束本次調用，之後可再次呼叫恢復。「不修復」保留決策與審查依據，不要求製造實作或 merge。
 
-review 發現需要修正時，回到 execute-task 修正後再走一次 commit → PR → review，循環直到通過。
-
-若想以 issue 為中心自動推進整個閉環，可使用 `dev-cycle` 技能：輸入 issue ID，AI 自動偵測目前所在階段並執行下一步，循環直到 PR merged。也支援查詢模式（如「issue 3396 到哪了」），只回報進度不推進。
-
-`git-squash` 是**閉環之外的獨立輔助工具**：需要整理分支 commit（如 merge 前壓縮瑣碎提交）時單獨呼叫，不屬於閉環的固定步驟。
+`git-squash` 是獨立合併輔助工具，`writing-rules` 用於維護規範。各技能可單獨使用，不需要把所有技能逐一執行。詳細範例見 [使用指南](docs/usage.md)。
 
 ## Superpowers 整合與安裝建議
 
-Superpowers 是本 kit 的**選用流程增強套件，不是必要依賴**。未安裝時，`new-issue`、`decompose`、`execute-task`、`review`、`create-pr` 仍會執行各自內建的等價流程，驗收標準核准、紅綠燈證據、獨立審查與 Proof of Test 等 gate 不會降低。
+Superpowers 是本 kit 的**選用流程增強套件，不是必要依賴**。未安裝時，`new-issue`、`decompose`、`execute-task`、`review`、`create-pr` 仍會執行各自內建的等價流程，驗收標準核准、真實驗證、獨立審查與 Proof of Test 依本地流程契約執行。已有授權與有效證據不因切換引擎重做。
 
 > [!NOTE]
 > 這些 gate 防的是 AI 自行降低標準，不是限制你的決策。驗收標準的形式依規模自動調整（Small 只需輕量驗收條件，風險高時補失敗路徑而不是改寫成 Gherkin），Scenario 多時可以分批核准，純重構與純文件任務改用等價證據；需要更快時，直接說「這次不用寫 Gherkin」或「不用先寫測試」即可豁免，AI 會照做並在 issue README 留下 `## Gate 豁免紀錄`。
@@ -95,11 +83,11 @@ Superpowers 是本 kit 的**選用流程增強套件，不是必要依賴**。�
 
 | Superpowers skill | 對應節點 | 用途 | 未安裝時 |
 |---|---|---|---|
-| `brainstorming` | `new-issue` | 一次一題澄清需求、比較方案並取得驗收標準核准 | 執行 `new-issue` 內建澄清與核准流程 |
+| `brainstorming` | `new-issue` | 需要探索時釐清需求與方案；已有明確核准則沿用 | 依 `agents/acceptance.md` 核對來源並處理必要缺項 |
 | `writing-plans` | `decompose` | 將 Scenario 拆成 BDD 外迴圈與 TDD 內迴圈 | 執行 `decompose` 內建 Phase / Task 與覆蓋規則 |
 | `test-driven-development` | `execute-task` | 強制紅燈、最小實作、綠燈與重構 | 執行 `execute-task` 內建雙迴圈狀態機 |
 | `requesting-code-review` | `review` | 將變更交給獨立 reviewer | 使用宿主原生 subagent / task；沒有獨立 reviewer 能力時仍會阻塞 |
-| `verification-before-completion` | `create-pr` | 在產生 PR 前重新查驗完成證據 | 執行 `create-pr` 內建 Evidence Rules 與 Completion Gate |
+| `verification-before-completion` | `create-pr` | 在產生 PR 前重新查驗完成證據 | 依 `agents/review-evidence.md` 核對範圍與有效證據 |
 
 以下 skills 不屬於閉環的必要映射，但安裝完整套件後建議搭配使用：
 
@@ -142,9 +130,17 @@ PRD 中常見的 `implementation-plan`、`critic`、`architectural-compliance`�
    python3 scripts/init-project.py /path/to/project
    python3 scripts/init-project.py /path/to/project --check
    ```
-   這會部署 `docs/AGENTS.md`、`docs/agents/` 與 `docs/_templates/`。核心技能會讀取這組文件，僅安裝全域 skills 尚不足以啟用開發閉環。相同文件保持原樣；有內容不同的既有文件、符號連結或路徑衝突時，整批停止且不寫入，請依 [客製邊界](./docs/AGENTS.md#客製邊界與同步策略) 人工合併。
+   這會部署 `docs/AGENTS.md`、`docs/agents/`、`docs/_templates/` 與部署基線。專案客製內容寫入 `docs/agents/project.md`，上游更新保留它。
 
-   `--check` 比對的是與本 kit 的內容一致性，不是客製後的語意相容性；客製專案仍需人工確認核心層。升級全域技能時，也要檢查各專案文件版本。
+   更新已初始化的專案：
+   ```bash
+   python3 scripts/init-project.py /path/to/project --update --dry-run
+   python3 scripts/init-project.py /path/to/project --update
+   ```
+
+   更新只覆蓋與上次部署基線一致的核心；本地修改、缺基線的不同檔案、symlink／hardlink 或路徑衝突會整批停止。`--check` 查核心一致性與客製檔存在，客製語意仍需覆核。
+
+   舊版首次升級需依 [客製邊界](docs/AGENTS.md#客製邊界與同步策略) 人工移出客製內容、合併核心，再初始化部署基線。技能改宣告最低「流程契約」版本，文件編輯版本另行記錄；純說明更新不迫使全部技能與專案同步跳號。
 
 4. **（選用）設定外部工具**
    Serena、GitNexus、Superpowers 的各平台設定見 [docs/setup/tools.md](./docs/setup/tools.md)。
@@ -155,7 +151,7 @@ PRD 中常見的 `implementation-plan`、`critic`、`architectural-compliance`�
 6. **自訂與擴充**
    根據個人或團隊需求，修改或新增 `skills/` 底下的技能定義，修改後於根目錄執行：
    ```bash
-   python3 scripts/check-kit.py   # 檢查 frontmatter 與版本宣告
+   python3 scripts/check-kit.py   # 檢查 frontmatter 與契約相容性
    bash scripts/install.sh        # 重新安裝到各平台
    ```
 
@@ -204,7 +200,7 @@ PRD 中常見的 `implementation-plan`、`critic`、`architectural-compliance`�
 
 ## 版本與更新
 
-下游專案更新已複製的檔案前，請先查閱 [CHANGELOG.md](./CHANGELOG.md)：每個條目標注影響的目錄，Major 版本代表破壞性變更（更新前應檢視自己的客製內容），Minor / Patch 可安全重新複製。
+下游專案更新已複製的檔案前，請先查閱 [CHANGELOG.md](./CHANGELOG.md)：每個條目標注影響的目錄，Major 版本代表破壞性變更（更新前應檢視自己的客製內容），相容更新使用 `--update`，客製檔仍保留；既有核心有本地變更則先合併。
 
 ## 貢獻
 

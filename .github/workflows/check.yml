@@ -10,7 +10,7 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
-      - name: 檢查 skill frontmatter、版本宣告、雙語規則章節數與安裝路徑
+      - name: 檢查 skill frontmatter、契約相容性、雙語規則章節數與安裝路徑
         run: python3 scripts/check-kit.py
       - name: 檢查 Markdown 相對連結
         run: python3 scripts/check-links.py
@@ -18,3 +18,5 @@ jobs:
         run: |
           bash -n scripts/install.sh
           python3 scripts/test-install.py
+      - name: 驗證 Git 證據與流程契約相容性
+        run: python3 scripts/test-evidence.py

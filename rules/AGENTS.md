@@ -18,13 +18,7 @@ These rules integrate practical experience and common LLM pitfalls, suitable for
 
 ## 2. Think Before Coding
 
-**Don't assume. Don't hide confusion. Surface tradeoffs.**
-
-Before implementing:
-- State your assumptions explicitly. If uncertain, ask.
-- If multiple interpretations exist, present them – don't pick silently.
-- If a simpler approach exists, say so. Push back when warranted.
-- If something is unclear, stop. Name what's confusing. Ask.
+Read the current state, confirm the goal and minimum scope. State assumptions and tradeoffs that affect the result; first resolve what the code, configuration and existing conversation already answer. Ask only for missing decisions that change behavior, scope, safety or required verification, and continue independent work.
 
 ---
 
@@ -128,67 +122,15 @@ If verification cannot be fully automated, provide explicit manual steps.
 
 ---
 
-## 7. BDD + TDD Gates and Exemptions
+## 7. Issue Workflow and Evidence
 
-**Define observable acceptance criteria, then implement them through red-green-refactor.**
+Use the issue workflow when the user requests issue tracking or invokes an issue skill. Read the project's `docs/AGENTS.md` and its pointers for the relevant phase: acceptance for approval, verification for tests, review-evidence for PR and independent review. Those files own the detailed gates; this global rule does not duplicate them. If the requested workflow lacks its required files, report the concrete setup gap before dependent work.
 
-### Size Decides the Form, Risk Decides the Strength
+For ordinary localized work, use the success criteria and verification in section 6 without creating issue documents. Existing explicit instructions that specify the result and scope authorize that work; clarify only missing decisions that affect behavior, scope, safety, or required verification. Silence does not authorize new behavior.
 
-| Size | Form of acceptance criteria |
-|------|----------------------------|
-| **Small** | Lightweight acceptance condition: one sentence describing the observable outcome plus a repeatable way to check it. Gherkin syntax, Scenario IDs, and the per-Scenario approval table are not required |
-| **Medium / Large** | Full Gherkin with stable Scenario IDs and an approval record |
+Record real evidence. Preserve behavior during refactoring and compare the same tests before and after; use repeatable static or manual checks for documentation. Combine acceptance and unit red lights when they provide the same coverage, regardless of task size, and explain why no distinct layer is lost. Different layers retain their own checks. Reuse evidence only while the tested content, environment and relevant conditions still match.
 
-Risk never changes the form — high risk calls for stronger evidence, not heavier formatting. A Small issue at Medium or High risk keeps the lightweight form but adds three things: an explicit failure path per condition, at least one condition covering the largest stated risk, and an approval commit so spec revisions can be checked.
-
-Both forms require explicit user approval before implementation; an agent must never treat approval as implied. Approval may be granted in batches — unapproved Scenarios stay marked as pending and must not be implemented, and every Scenario must be approved before opening a PR.
-
-### Work That Changes Observable Behavior
-
-1. If Superpowers is installed, invoke `brainstorming`; otherwise follow the same built-in clarification process below. Ask one question at a time and obtain explicit approval of the behavior.
-2. Use the size-based form above: Small keeps lightweight acceptance conditions; Medium / Large uses Gherkin with stable Scenario IDs and `Feature` / `Scenario` / `Given` / `When` / `Then`.
-3. Persist the approval source and date. Full Gherkin also records the approval commit and each Scenario's status; Small adds an approval commit only at Medium / High risk. Check spec revisions when an approval commit is required (see "Handling Spec Revisions").
-4. If available, invoke `test-driven-development`. Capture a relevant failure for the approved behavior before changing production code. For Gherkin, use BDD Step Definitions, or an integration / end-to-end test tagged with the Scenario ID when no BDD runner exists. For lightweight conditions, use the corresponding repeatable acceptance test; apply the Small single-loop rule below when both layers coincide. Record any substitute chosen.
-5. Write the smallest unit test for the underlying behavior and run it to capture a relevant failure.
-6. Write the minimum production code needed to pass the unit test and acceptance test; then refactor while keeping both green.
-7. Preserve command output or equivalent repeatable evidence for each red and green state. A claim such as "tests pass" is not evidence.
-
-Outer-loop red, unit-test red, green after the minimal implementation, and green after refactoring together form the **red-green-refactor evidence**; missing any one segment makes it incomplete. Producing a green that does not stand for correct behavior — deleting, skipping, weakening, commenting out, partially running, or rewriting an existing test; mocking away the behavior under acceptance; hardcoding expected data; asserting nothing — is a **fake green** and never counts as evidence. So is a **tautological** assertion that recomputes the expected value the way the code does (`expect(add(a, b)).toBe(a + b)`, a snapshot derived by hand along the same path): it passes by construction and can never disagree with the code, so it tests nothing. Expected values must come from an independent source of truth — a known-good literal, a worked example, the spec. Ask of every assertion: **could this ever disagree with the code?** If not, it is not a test.
-
-For a **Small** task whose outer and inner loops fall on the same test layer, the two red lights may be merged into one, reducing the evidence to three segments; record why that layer is where the behavior is observable. Keep both loops when the layers genuinely differ.
-
-**Evidence durability is judged separately from fake greens.** The fake-green test is whether *this* green stands for correct behavior — not whether it will still catch a regression later. A probe bound to a volatile detail of the code under test (a specific string, a log message) is fragile, but as long as the red was real and the green was driven by the target behavior, the evidence is valid for this acceptance: report it as a suggestion with a sturdier alternative assertion, and let the acceptance stand. **Disclosing a test's limitations is never a fault** — a rule that makes honesty more dangerous than silence damages the very thing it protects.
-
-### Work That Does Not Change Observable Behavior
-
-Pure refactoring and documentation work are exempt from the red-light requirement — by definition neither should produce a failing test:
-
-- **Pure refactoring** (moving, renaming, extracting, formatting): use "the same existing tests pass both before and after the change" as equivalent evidence, recording both command outputs. If existing tests do not cover the behavior being refactored, add characterization tests and get them green before starting the refactor.
-- **Documentation, formatting, or non-executable work**: substitute a repeatable static check or explicit manual steps, recording why automation does not apply and the actual result.
-
-Claiming that work does not change observable behavior is a commitment that the diff contains no behavioral change; review verifies it on that basis.
-
-### Handling Spec Revisions
-
-**Revising the spec during implementation is the expected outcome of the outer loop, not a violation.** What must hold is not "the text is unchanged" but "it changed, it was seen, and it was agreed". Check with `git diff {approval commit}..HEAD` on the issue document, letting git rather than the agent act as witness; do not use a content hash. This check applies **during implementation**, on the issue branch before merge, where the approval commit is always reachable; any operation that rewrites commit hashes (squash, rebase, amend, cherry-pick) invalidates it afterwards, but the field's validity ends at merge anyway — once merged, whether that SHA is reachable no longer affects any gate, and its invalidation is a declared, expected state. When a project wants a precise post-merge pointer, backfill it alongside the next commit that touches the issue directory rather than opening a commit solely for that, and verify reachability against the **merge target branch**, not the current `HEAD`:
-
-- **The diff does not touch the acceptance criteria**: approval stands; continue.
-- **A condition, action, or expected result changed, or a Scenario was added or removed**: mark only the **affected Scenario** as pending re-approval and re-enter clarification. Scenarios the diff did not touch keep their approval.
-- **Wording, formatting, or indentation only**: no re-approval; record the date and the nature of the revision in the document Timeline.
-
-When revising, do not overwrite earlier statements; preserve the sequence with dated supplementary notes.
-
-### Gate Exemptions
-
-These gates exist to stop an agent from lowering its own standards, not to constrain the user's decisions. When the user explicitly asks to skip a gate ("no Gherkin this time", "just change it, skip the test first"), comply, and record the date, the exempted gate, the user's own words, and the residual risk under `## Gate 豁免紀錄` in the issue `README.md`.
-
-Never assume an exemption: user silence, time pressure, and a task that looks small are not exemptions.
-
-**The only thing that can never be exempted is honest reporting.** An exemption skips a process; it never permits recording an unrun verification as passed, an unreviewed change as reviewed, or a fake green as a passing test. When the user asks to modify or remove a test, comply — but record the true reason (behavior changed / test was incorrect / user-granted exemption).
-
-### Superpowers
-
-Superpowers is an optional process accelerator, not a prerequisite. Its absence never weakens these gates; missing approval, required evidence, independent review, or verification still blocks completion or must follow the exemption process above.
+User-requested gate exemptions apply only to the stated scope and must be recorded when operating an issue workflow. Honest reporting always applies: skipped tests and self-review cannot be represented as passed verification or independent review. Optional Superpowers skills help with the current phase; existing approval and equivalent verification remain valid when changing tools.
 
 ---
 
@@ -215,8 +157,7 @@ Superpowers is an optional process accelerator, not a prerequisite. Its absence 
 
 ## 10. Conflict Resolution
 
-- If the user's request contradicts these rules, **follow these rules** unless the user explicitly overrides with a phrase like *"ignore rules"* or *"do it anyway"*.
-- If the user asks to refactor unrelated code or add unnecessary features, politely decline and suggest a separate task or a focused follow-up.
+Explicit user instructions and existing authorization take precedence over this kit's defaults, subject to higher-priority host constraints. Follow an explicitly expanded scope without requiring a special override phrase. Explain real conflicts, complete independent authorized work, and ask only for the decision that remains necessary.
 
 ---
 

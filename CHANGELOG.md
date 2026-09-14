@@ -12,6 +12,24 @@
 
 ---
 
+## [4.0.0] - 2026-09-14
+
+### 破壞性變更（流程契約 2.0；`rules/`、`skills/`、`docs/`）
+
+- 分離通用規則、文件入口、核准／驗證／review 參考檔與專案客製 `docs/agents/project.md`。技能宣告最低流程契約，文件編輯版本獨立；舊版 1.22 規範需遷移，不默認相容。
+- dev-cycle 查詢唯讀，推進按相依自動選 Task；等待窗口／合併時結束本次調用，不修復保留終態與決策審查。新增／修訂 Scenario 依實際 Task 覆蓋補拆，其他無相依的已核准 Task 可繼續。
+- Large 的 decompose 改在原 implementation-plan 細化，舊 issue 仍沿用明確指向的唯一任務來源；取消固定 Phase 數、工時、方案數及 review 邊界案例數。
+- 既有明確結果與範圍可作核准來源，必要決策才詢問；同層驗證合併不限規模，精煉 no-op 與相同版本／環境的有效證據可重用。code-simplify 移除技術棧偏好並整合於 execute-task。
+- 核准 diff 改比對實際工作區；合併前 rebase 等基線失效需恢復可驗證的核准來源。PR 與 review 共用固定 BASE／HEAD，Proof 表引用固定版本規格與持久化證據。
+- 本機 review 的直接後繼提交若只新增該報告，可用技能內附 verify-artifact.py 核對後沿用；改程式、改舊報告、symlink 或其他提交都需重審。patch-id 不作為新 HEAD 自動通過依據。
+- create-commit 與 git-squash 共用專案提交規範；預設 `type(scope): 中文摘要` 加 `Refs: #ID` footer。獨立技能是否操作平台／提交依使用者既有授權，不重問。
+
+### 更新與驗證（`scripts/`、CI）
+
+- init-project.py 新增 `--update` 與部署基線，更新未客製核心、保留 project.md；衝突、symlink／hardlink 先整批拒絕。舊專案需人工把客製內容分離並合併核心，再初始化基線；不自動覆寫無來源的不同檔案。
+- check-kit.py 驗證最低流程契約相容性。新增 Git 證據與版本負向測試，擴充更新測試並納入 CI。
+- 實跑範圍與未驗證限制見 [回歸紀錄](docs/workflow-results/2026-09-14.md)。本次測試未更新真實平台與下游專案。
+
 ## [3.0.0] - 2026-09-11
 
 ### 破壞性變更（`workflows/`、`scripts/`、`rules/`、`writing-rules`、使用文件與 CI — **下游需重新執行 `bash scripts/install.sh`**）

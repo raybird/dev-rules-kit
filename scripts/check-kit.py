@@ -1,5 +1,5 @@
 #!/usr/bin/env python3
-"""檢查 kit 自身的一致性：skill frontmatter、docs/AGENTS.md 版本宣告、雙語規則章節數、install.sh 安裝路徑"""
+"""檢查 kit 自身的一致性：skill frontmatter、流程契約相容性、雙語規則章節數、install.sh 安裝路徑"""
 import os
 import re
 import sys
@@ -49,42 +49,34 @@ def check_skill_names(project_root):
 
 
 def read_agents_md_version(project_root):
-    """取出 docs/AGENTS.md 檔尾的 `**文件版本**: X.Y`，找不到回傳 None"""
+    """讀取流程契約；文件編輯版本不參與技能相容性。"""
     path = os.path.join(project_root, 'docs', 'AGENTS.md')
     if not os.path.isfile(path):
         return None
     with open(path, encoding='utf-8') as f:
-        content = f.read()
-    m = re.findall(r'\*\*文件版本\*\*:\s*([0-9]+\.[0-9]+)', content)
-    return m[0] if m else None
+        match = re.search(r'^\*\*流程契約\*\*:\s*([0-9]+\.[0-9]+)\s*$', f.read(), re.M)
+    return match.group(1) if match else None
 
 
 def check_agents_md_declarations(project_root):
-    """檢查引用 docs/AGENTS.md 的 skill 都宣告了依據版本，且與該檔當前版本一致
-
-    「核心層齊備性檢查」需要兩端的版本才能比對：docs/AGENTS.md 檔尾一端，
-    skill 的宣告一端。缺 skill 那端時該檢查無法執行（1.13 的缺口）。
-    """
-    errors = []
+    """檢查最低契約需求：同 major，專案 minor 不低於 skill。"""
     current = read_agents_md_version(project_root)
     if current is None:
-        return ['無法從 docs/AGENTS.md 讀出 `**文件版本**`，skill 版本宣告無從比對']
-
+        return ['docs/AGENTS.md 缺少有效的流程契約版本']
+    available = tuple(map(int, current.split('.')))
+    errors = []
     for name, skill_file in find_skills(project_root):
         with open(skill_file, encoding='utf-8') as f:
             body = f.read()
         if 'docs/AGENTS.md' not in body:
-            continue  # 未引用規範的 skill 不需宣告
-        m = re.search(r'本 skill 依據 `docs/AGENTS\.md` \*\*([0-9]+\.[0-9]+)\*\*', body)
-        if not m:
-            errors.append(
-                f"skills/{name}/SKILL.md 引用了 docs/AGENTS.md 但未宣告依據版本"
-                f"（需於 frontmatter 後加「本 skill 依據 `docs/AGENTS.md` **{current}**」，"
-                f"否則核心層齊備性檢查無法比對兩端）")
-        elif m.group(1) != current:
-            errors.append(
-                f"skills/{name}/SKILL.md 宣告依據 docs/AGENTS.md {m.group(1)}，"
-                f"但該檔目前為 {current}（改動規範後需同步更新各 skill 的宣告）")
+            continue
+        match = re.search(r'本 skill 需要 `docs/AGENTS\.md` \*\*流程契約 ([0-9]+\.[0-9]+)\*\*', body)
+        if not match:
+            errors.append(f'skills/{name}/SKILL.md 缺少最低流程契約宣告')
+            continue
+        required = tuple(map(int, match.group(1).split('.')))
+        if available[0] != required[0] or available[1] < required[1]:
+            errors.append(f'skills/{name}/SKILL.md 需要流程契約 {match.group(1)}，專案為 {current}')
     return errors
 
 
@@ -176,4 +168,4 @@ if __name__ == '__main__':
         for e in errors:
             print(f"FAIL: {e}")
         sys.exit(1)
-    print("OK: skill frontmatter 完整且 name 一致，skill 的 docs/AGENTS.md 版本宣告一致，雙語規則章節數一致，install.sh 安裝路徑與 README 一致。")
+    print("OK: skill frontmatter 完整且 name 一致，skill 的最低流程契約相容，雙語規則章節數一致，install.sh 安裝路徑與 README 一致。")
