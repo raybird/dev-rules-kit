@@ -12,6 +12,12 @@
 
 ---
 
+## [Unreleased]
+
+### 新增（`scripts/`、安裝說明）
+
+- 安裝器新增 Codex 平台：支援自動偵測與 `bash scripts/install.sh codex`，將 skills 安裝到 `~/.codex/skills/`；明確使用 `--with-rules` 時將規則安裝到 `~/.codex/AGENTS.md`。
+
 ## [4.0.0] - 2026-09-14
 
 ### 破壞性變更（流程契約 2.0；`rules/`、`skills/`、`docs/`）

@@ -1,6 +1,6 @@
 # dev-rules-kit
 
-一套給 AI 開發環境使用的規則與技能範本庫，集中整理 `rules`、`skills` 兩類 Markdown 資產，方便在 **OpenCode**、**Claude Code**、**Antigravity** 等工具中重複使用與維護。
+一套給 AI 開發環境使用的規則與技能範本庫，集中整理 `rules`、`skills` 兩類 Markdown 資產，方便在 **Codex**、**OpenCode**、**Claude Code**、**Antigravity** 等工具中重複使用與維護。
 
 這個 repo 的重點不是執行程式，而是提供可直接複製、調整、同步的開發規範與操作流程，讓個人或團隊能用一致方式管理 AI agent 的行為、工作流程與文件產出。
 
@@ -115,7 +115,7 @@ PRD 中常見的 `implementation-plan`、`critic`、`architectural-compliance`�
    ```bash
    bash scripts/install.sh            # 自動偵測平台，安裝 skills
    bash scripts/install.sh --dry-run  # 先看會做什麼
-   bash scripts/install.sh --list     # 列出四個平台與對應路徑
+   bash scripts/install.sh --list     # 列出五個平台與對應路徑
    ```
 
    規則檔預設不安裝（該位置常有本機客製內容），需要時加 `--with-rules`。各平台的實際路徑與手動安裝方式見兩個資料夾的 README：

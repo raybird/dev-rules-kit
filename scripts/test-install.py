@@ -35,8 +35,8 @@ class InstallTests(unittest.TestCase):
                                str(self.project), *args], capture_output=True, text=True)
 
     def test_install_and_upgrade_all_platforms(self):
-        platforms = ('claude', 'antigravity', 'opencode', 'cursor')
-        targets = ('.claude/skills', '.gemini/config/skills',
+        platforms = ('codex', 'claude', 'antigravity', 'opencode', 'cursor')
+        targets = ('.codex/skills', '.claude/skills', '.gemini/config/skills',
                    '.config/opencode/skills', '.cursor/skills')
         result = self.install(*platforms)
         self.assertEqual(result.returncode, 0, result.stdout + result.stderr)
@@ -112,6 +112,16 @@ class InstallTests(unittest.TestCase):
         self.assertEqual(len(backups), 1)
         self.assertEqual(backups[0].read_text(), 'custom rules')
         self.assertEqual(target.read_bytes(), (self.repo / 'rules/AGENTS.zh-TW.md').read_bytes())
+
+    def test_codex_auto_detect_and_rules(self):
+        codex = self.platform_root / '.codex'
+        codex.mkdir(parents=True)
+        result = self.install('--with-rules')
+        self.assertEqual(result.returncode, 0, result.stdout + result.stderr)
+        self.assertEqual((codex / 'skills/new-issue/SKILL.md').read_bytes(),
+                         (self.repo / 'skills/new-issue/SKILL.md').read_bytes())
+        self.assertEqual((codex / 'AGENTS.md').read_bytes(),
+                         (self.repo / 'rules/AGENTS.zh-TW.md').read_bytes())
 
     def test_init_check_dry_run_and_repeat(self):
         self.assertNotEqual(self.init('--check').returncode, 0)

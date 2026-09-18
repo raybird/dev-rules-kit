@@ -40,6 +40,7 @@ issue 流程的核心與專案客製檔已分離；`docs/agents/project.md` 保�
 
 | 平台 | 全域規則位置 | 專案層覆寫 |
 |------|-------------|-----------|
+| **Codex** | `~/.codex/AGENTS.md`（[OpenAI Docs](https://developers.openai.com/docs/agent-configuration/agents-md)） | 專案根目錄 `AGENTS.md` |
 | **Claude Code** | 不自動載入 `AGENTS.md`，需在 `CLAUDE.md` 用 `@AGENTS.md` 匯入（見下方） | 專案根目錄 `AGENTS.md` |
 | **Antigravity** | `~/.gemini/config/AGENTS.md`（與 `~/.gemini/GEMINI.md` 疊加載入，見下方） | `.agents/rules/*.md`（官方文件所述，CLI 實測未生效） |
 | **Cursor** | 無檔案系統層級設定，需在 Settings → **Rules** → **User Rules** 貼上內容 | `.cursor/rules/*.mdc`（`.cursorrules` 為舊版單檔格式，仍可用） |
@@ -72,6 +73,5 @@ Claude Code 與 Cursor 不以檔案方式安裝全域規則，腳本會改為印
 ---
 
 **建立日期**: 2026-05-08  
-**最後更新**: 2026-09-14\
-**文件版本**: 2.0
-
+**最後更新**: 2026-09-18\
+**文件版本**: 2.1

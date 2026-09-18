@@ -102,6 +102,7 @@ def check_install_paths(project_root):
     這類遷移說明矇混過去。本檢查為單向：README 有而腳本沒有的平台不會被抓出來。
     """
     display_names = {
+        'codex': 'Codex',
         'claude': 'Claude Code',
         'antigravity': 'Antigravity',
         'opencode': 'OpenCode',

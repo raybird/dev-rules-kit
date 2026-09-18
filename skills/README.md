@@ -6,7 +6,7 @@
 
 ```
 dev-rules-kit/
-└── skills/              # 技能定義（四個平台共用）
+└── skills/              # 技能定義（五個平台共用）
     ├── code-simplify/
     ├── create-commit/
     ├── create-pr/
@@ -21,10 +21,11 @@ dev-rules-kit/
 
 ## 安裝方式
 
-各平台的全域 skills 目錄如下，複製後每個技能會成為 `<平台 skills 目錄>/<name>/SKILL.md`，四個平台都以 `/<name>` 呼叫：
+各平台的全域 skills 目錄如下，複製後每個技能會成為 `<平台 skills 目錄>/<name>/SKILL.md`：
 
 | 平台 | skills 目錄 |
 |------|------------|
+| **Codex** | `~/.codex/skills/`（[OpenAI Docs](https://developers.openai.com/use-cases/reusable-codex-skills)） |
 | **Claude Code** | `~/.claude/skills/` |
 | **OpenCode** | `~/.config/opencode/skills/` |
 | **Antigravity** | `~/.gemini/config/skills/` |
@@ -44,6 +45,9 @@ dev-rules-kit/
 # 自動偵測已安裝的平台
 bash scripts/install.sh
 
+# 只裝 Codex
+bash scripts/install.sh codex
+
 # 只裝 Claude Code
 bash scripts/install.sh claude
 ```
@@ -54,7 +58,7 @@ bash scripts/install.sh claude
 
 核心技能另需專案內的文件規範：於本 kit 根目錄執行 `python3 scripts/init-project.py /path/to/project`。更新使用 `--update`，既有 `docs/agents/project.md` 保留。技能宣告最低流程契約，與文件編輯版本分離。詳見 [專案初始化](../README.md#使用方式)。
 
-驗證：在對話框輸入 `/`，應出現 `decompose`、`create-commit`、`new-issue`、`dev-cycle` 等技能。
+驗證：Codex 在對話框輸入 `/skills` 或以 `$` 提及技能；其他平台輸入 `/`。應可找到 `decompose`、`create-commit`、`new-issue`、`dev-cycle` 等技能。
 
 > **`dev-cycle` 使用方式**：這是一個 orchestration skill，除了 `/dev-cycle` 指令外，也可用自然語言觸發——直接說「issue 3396 到哪了」（查詢模式）或「繼續 3396」（推進模式），AI 會自動偵測 issue 目前所在階段並執行下一步。若未自動載入，可手動告知 AI 參考 `skills/dev-cycle/SKILL.md`。
 
@@ -73,6 +77,7 @@ bash scripts/install.sh claude
 
 | 日期 | 異動 | 說明 |
 |------|------|------|
+| 2026-09-18 | 新增 Codex | 安裝器支援自動偵測 Codex，並安裝到 `~/.codex/skills/` |
 | 2026-09-11 | 移除 workflows 與 Windsurf | 本 kit 只提供 skills，並停止支援 Windsurf；說明舊 workflow 副本的處理 |
 | 2026-08-07 | 修正 Antigravity 路徑 | 改為遷移後的 `~/.gemini/config/skills/`，舊路徑不保證載入 |
 | 2026-08-07 | 補 OpenCode 安裝細節 | 註明 `{skill,skills}` glob 單複數皆生效，以及與 `commands/` 重複安裝的取捨 |
@@ -86,6 +91,6 @@ bash scripts/install.sh claude
 ---
 
 **建立日期**: 2026-05-08  
-**最後更新**: 2026-09-11  
-**文件版本**: 2.0  
+**最後更新**: 2026-09-18
+**文件版本**: 2.1
 **適用範圍**: `skills/` 資料夾所有技能

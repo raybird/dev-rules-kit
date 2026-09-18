@@ -17,7 +17,7 @@ set -euo pipefail
 
 REPO_ROOT="$(cd "$(dirname "${BASH_SOURCE[0]}")/.." && pwd)"
 
-ALL_PLATFORMS=(claude antigravity opencode cursor)
+ALL_PLATFORMS=(codex claude antigravity opencode cursor)
 
 WITH_RULES=0
 RULES_LANG=zh
@@ -28,6 +28,7 @@ SELECTED=()
 # 各平台的偵測目錄：存在才視為已安裝該平台
 base_dir_for() {
   case "$1" in
+    codex)       echo "$HOME/.codex" ;;
     claude)      echo "$HOME/.claude" ;;
     antigravity) echo "$HOME/.gemini/config" ;;
     opencode)    echo "$HOME/.config/opencode" ;;
@@ -39,6 +40,7 @@ base_dir_for() {
 # "-" 代表該平台不以檔案方式安裝規則檔
 targets_for() {
   case "$1" in
+    codex)       echo "$HOME/.codex/AGENTS.md|$HOME/.codex/skills" ;;
     claude)      echo "-|$HOME/.claude/skills" ;;
     antigravity) echo "$HOME/.gemini/config/AGENTS.md|$HOME/.gemini/config/skills" ;;
     opencode)    echo "$HOME/.config/opencode/AGENTS.md|$HOME/.config/opencode/skills" ;;
@@ -196,5 +198,5 @@ done
 if [ "$WITH_RULES" = 0 ]; then
   echo "未安裝規則檔（rules/）。需要時加上 --with-rules，腳本會先備份既有檔案。"
 fi
-echo "驗證：於 AI 對話框輸入 /，應出現 decompose、create-commit、new-issue、dev-cycle 等技能。"
+echo "驗證：Codex 輸入 /skills 或以 \$ 提及技能；其他平台輸入 /，應出現 decompose、create-commit、new-issue、dev-cycle 等技能。"
 echo "專案初始化：執行 python3 scripts/init-project.py /path/to/project，部署核心技能需要的 docs 規範。"
