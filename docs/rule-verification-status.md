@@ -186,6 +186,15 @@
 | 明確原需求沿用核准、多 AC 證據共用與去除固定配額 | 僅靜態撰寫 | WF-01、WF-15 等完整情境仍待實跑，不能由上述子情境泛化 |
 | 分層 pointer、PR Proof 連結、單一任務來源與提交責任 | 僅靜態撰寫 | 文件與技能已同步；跨平台完整閉環仍需實跑 |
 
+## 未發布 — project-worktrees（2026-09-24）
+
+| 規則 | 狀態 | 驗證來源 |
+|---|---|---|
+| 開發分支以 `--no-track` 建立、移除前依 upstream 查未推送 | 本地測試驗證 | 2026-09-24 暫存 Git fixture：未加 `--no-track` 時 upstream 被設為 `origin/dev`，未推送檢查比錯對象；加上後無 upstream |
+| 審查用 detached 檢出、BASE 取 merge-base／`<sha>^` | 本地測試驗證 | 同一 fixture：detached 移除後無殘留分支；`--grep='#34([^0-9]|$)'` 未誤中 `#342` |
+| credential helper 由環境變數提供 token | 本地測試驗證 | 同一 fixture 以 `git credential fill` 確認輸出帳密；未對真實 HTTPS 遠端實跑 |
+| 慣例來源順序、衝突與未推送時詢問 | 僅靜態撰寫 | 未在宿主新 session 觸發技能實跑 |
+
 ## 已知的驗證限制
 
 - **樣本數 n=2，且同源**：line-oa-plus 與 googleBooking 同屬一位使用者、跑同一套 kit、工作流程相近。**兩者共有的盲點照不出來**——例如多人並行 review、非中文協作者、非 Firebase 系技術棧的情境，今天完全沒有覆蓋。

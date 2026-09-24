@@ -8,7 +8,7 @@
 
 ## 提交與交付
 
-優先採專案提交規範；未定義時使用 `type(scope): 中文摘要`，issue 編號放 footer `Refs: #ID`。PR base 由現有 PR 或專案設定取得；無法確定才詢問。分支以 issue-ID 加描述為預設，可依既有慣例調整。
+優先採專案提交規範；未定義時使用 `type(scope): 中文摘要`，issue 編號放 footer `Refs: #ID`。PR base 由現有 PR 或專案設定取得；無法確定才詢問。分支以 issue-ID 加描述為預設，可依既有慣例調整。使用 worktree 時記錄其位置格式，以及遠端需要 token 時的取得方式與使用者名（只寫取得方式，不寫 token 本身）。
 
 ## 常青文件更新責任
 

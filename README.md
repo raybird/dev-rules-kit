@@ -28,7 +28,7 @@ dev-rules-kit/
 │   ├── AGENTS.md          # 安裝路徑見 rules/README.md
 │   ├── AGENTS.zh-TW.md
 │   └── README.md
-└── skills/                # 可重複使用的技能定義（skill，共 10 個技能）
+└── skills/                # 可重複使用的技能定義（skill，共 11 個技能）
     ├── code-simplify/
     ├── create-commit/
     ├── create-pr/
@@ -37,6 +37,7 @@ dev-rules-kit/
     ├── execute-task/
     ├── git-squash/
     ├── new-issue/
+    ├── project-worktrees/
     ├── review/
     └── writing-rules/
 ```
@@ -58,7 +59,7 @@ dev-rules-kit/
 
 ## 開發閉環
 
-一般局部修改可直接執行；需要 issue 追蹤時使用 10 個技能中的核心流程：
+一般局部修改可直接執行；需要 issue 追蹤時使用 11 個技能中的核心流程：
 
 ```text
 new-issue → decompose（Large，在原計畫細化）
@@ -70,7 +71,7 @@ new-issue → decompose（Large，在原計畫細化）
 
 `dev-cycle` 協調已授權的工作，自動選擇相依滿足的 Task；查詢模式只讀不寫。等待合併、外部窗口或必要回答時回報並結束本次調用，之後可再次呼叫恢復。「不修復」保留決策與審查依據，不要求製造實作或 merge。
 
-`git-squash` 是獨立合併輔助工具，`writing-rules` 用於維護規範。各技能可單獨使用，不需要把所有技能逐一執行。詳細範例見 [使用指南](docs/usage.md)。
+`git-squash` 是獨立合併輔助工具，`project-worktrees` 管理開發與審查用 worktree，`writing-rules` 用於維護規範。各技能可單獨使用，不需要把所有技能逐一執行。詳細範例見 [使用指南](docs/usage.md)。
 
 ## Superpowers 整合與安裝建議
 

@@ -15,6 +15,7 @@ dev-rules-kit/
     ├── execute-task/
     ├── git-squash/
     ├── new-issue/
+    ├── project-worktrees/
     ├── review/
     └── writing-rules/
 ```
@@ -77,6 +78,7 @@ bash scripts/install.sh claude
 
 | 日期 | 異動 | 說明 |
 |------|------|------|
+| 2026-09-24 | 新增 project-worktrees | 建立與移除開發、審查用 git worktree；專案位置與認證方式由 `docs/agents/project.md` 提供 |
 | 2026-09-18 | 新增 Codex | 安裝器支援自動偵測 Codex，並安裝到 `~/.codex/skills/` |
 | 2026-09-11 | 移除 workflows 與 Windsurf | 本 kit 只提供 skills，並停止支援 Windsurf；說明舊 workflow 副本的處理 |
 | 2026-08-07 | 修正 Antigravity 路徑 | 改為遷移後的 `~/.gemini/config/skills/`，舊路徑不保證載入 |
@@ -91,6 +93,6 @@ bash scripts/install.sh claude
 ---
 
 **建立日期**: 2026-05-08  
-**最後更新**: 2026-09-18
-**文件版本**: 2.1
+**最後更新**: 2026-09-24
+**文件版本**: 2.2
 **適用範圍**: `skills/` 資料夾所有技能

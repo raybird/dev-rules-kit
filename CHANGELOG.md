@@ -12,6 +12,13 @@
 
 ---
 
+## [Unreleased]
+
+### 新增（`skills/`、`docs/agents/project.md`）
+
+- 新增 `project-worktrees` 技能：建立開發用 worktree（`--no-track`，避免 upstream 指向基準分支）、以 detached 檢出建立審查用 worktree 並回報 BASE／HEAD、移除前檢查未提交與未推送內容。fetch 一律 `GIT_TERMINAL_PROMPT=0`，token 經 credential helper 由環境變數提供。
+- `project.md` 範本的「提交與交付」補充 worktree 位置與遠端認證方式的記錄位置；既有專案的 project.md 不受更新影響，需要時自行補上。
+
 ## [4.1.0] - 2026-09-18
 
 ### 新增（`scripts/`、安裝說明）

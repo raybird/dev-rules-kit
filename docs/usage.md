@@ -77,6 +77,7 @@ PR 的 Proof of Test 採逐驗收編號表格，連到固定版本規格與命�
 | review | 對固定範圍獨立審查並保存 artifact；無能力時如實回報 |
 | dev-cycle | 查詢唯讀；推進自動派送已授權工作，遇等待或阻塞結束本次調用 |
 | git-squash | 使用與 create-commit 相同的專案格式，提供符合專案策略的合併命令 |
+| project-worktrees | 依專案慣例建立或移除 worktree；審查用以 detached 檢出並回報 BASE／HEAD |
 | writing-rules | 修改 agent 規範前使用；檢查觸發、位置、完成判準與實跑效果 |
 
 Superpowers 為選用的階段引擎；已有共識不因載入 brainstorming 重問，缺套件時使用本地等價流程。[外部工具設定](setup/tools.md) 不屬必要前置。
