@@ -12,7 +12,7 @@
 
 ---
 
-## [Unreleased]
+## [4.2.0] - 2026-09-29
 
 ### 新增（`skills/`、`docs/agents/project.md`）
 
