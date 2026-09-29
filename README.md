@@ -1,6 +1,6 @@
 # dev-rules-kit
 
-一套給 AI 開發環境使用的規則與技能範本庫，集中整理 `rules`、`skills` 兩類 Markdown 資產，方便在 **Codex**、**OpenCode**、**Claude Code**、**Antigravity** 等工具中重複使用與維護。
+一套給 AI 開發環境使用的規則與技能範本庫，集中整理 `rules`、`skills` 兩類 Markdown 資產，方便在 **Codex**、**Claude Code**、**OpenCode**、**Antigravity**、**Cursor** 等工具中重複使用與維護。
 
 這個 repo 的重點不是執行程式，而是提供可直接複製、調整、同步的開發規範與操作流程，讓個人或團隊能用一致方式管理 AI agent 的行為、工作流程與文件產出。
 
@@ -19,12 +19,12 @@ dev-rules-kit/
 │   ├── test-install.py    # 安裝與初始化回歸測試
 │   └── test-evidence.py   # Git 證據與契約相容性測試
 ├── docs/                  # 技術文件與規範說明
-│   ├── AGENTS.md          # 文件資料夾說明（AGENTS）
+│   ├── AGENTS.md          # 下游文件規範入口
 │   ├── agents/           # 按階段載入的規範及 project.md 客製檔
 │   ├── usage.md           # 使用指南（含開發閉環步驟）
 │   ├── setup/tools.md     # 外部工具設定（Serena / GitNexus / Superpowers）
 │   └── _templates/        # 實體文件模板（架構、領域、Changelog）
-├── rules/                 # 靜態規則檔（agents、coding style、linting 等）
+├── rules/                 # 可攜行為規則（中英雙語）
 │   ├── AGENTS.md          # 安裝路徑見 rules/README.md
 │   ├── AGENTS.zh-TW.md
 │   └── README.md
@@ -55,7 +55,7 @@ dev-rules-kit/
 
 - **`skills/`**  
   儲存可被 AI 或工具呼叫的「技能」，以子目錄形式組織，每個子目錄包含 `SKILL.md` 定義。  
-  重量級 skill（如 `review`、`decompose`）包含完整的輸入、輸出規範與使用範例；輕量 skill（如 `create-commit`）僅列執行步驟，維持簡潔。
+  重量級 skill（如 `review`、`decompose`）包含完整的輸入、輸出規範與完成判準；輕量 skill（如 `create-commit`）僅列執行步驟，維持簡潔。
 
 ## 開發閉環
 
@@ -65,8 +65,7 @@ dev-rules-kit/
 new-issue → decompose（Large，在原計畫細化）
           → execute-task（內含 code-simplify 與驗證）
           → create-commit → create-pr → review
-                              ↑           │
-                              └──修正後───┘
+                                          └─ RETURN → 回到 execute-task 修正，再提交、更新 PR 並重新 review
 ```
 
 `dev-cycle` 協調已授權的工作，自動選擇相依滿足的 Task；查詢模式只讀不寫。等待合併、外部窗口或必要回答時回報並結束本次調用，之後可再次呼叫恢復。「不修復」保留決策與審查依據，不要求製造實作或 merge。
@@ -195,7 +194,6 @@ PRD 中常見的 `implementation-plan`、`critic`、`architectural-compliance`�
 | **[Serena](https://github.com/oraios/serena)** | 程式碼分析與符號查詢 MCP 伺服器 | 支援 LSP 層級的符號搜尋、重構、診斷等功能，可深度理解程式碼結構 |
 | **[GitNexus](https://github.com/abhigyanpatwari/GitNexus)** | 程式碼知識圖譜分析工具 | 建立程式碼知識圖譜，支援影響分析、路由對應、API 形狀檢查等進階查詢 |
 | **[Superpowers](https://github.com/obra/superpowers)** | 選用的 AI 開發流程增強框架 | 提供 brainstorming、TDD、review 與交付驗證等流程型 skills；未安裝時由本 kit 執行內建等價 gate |
-| **[Wave Terminal](https://github.com/wavetermdev/waveterm)** | AI 整合跨平台終端機 | 開源且內建 AI 助手，支援多種模型（OpenAI、Claude、Ollama 等），提供持久 SSH 連線、區塊化工作區與遠端檔案編輯 |
 
 四個平台的完整設定步驟（MCP 設定檔位置、JSON 範例、驗證與移除）：[docs/setup/tools.md](./docs/setup/tools.md)
 
