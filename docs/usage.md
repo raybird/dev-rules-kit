@@ -4,7 +4,7 @@
 
 ## 初始化與更新
 
-先安裝[規則](../rules/README.md#安裝方式)與[技能](../skills/README.md#安裝方式)，再從 kit 根目錄執行：
+先安裝[技能](../skills/README.md#安裝方式)，需要時再裝[規則](../rules/README.md#安裝方式)，然後從 kit 根目錄執行（也可以請 agent 照 [INSTALL.md](../INSTALL.md) 代勞）：
 
 ```bash
 python3 scripts/init-project.py /path/to/project
@@ -35,8 +35,7 @@ python3 scripts/init-project.py /path/to/project --check
 new-issue → decompose（Large，在原計畫細化）
           → execute-task（包含 code-simplify 與驗證）
           → create-commit → create-pr → review
-                              ↑           │
-                              └──修正後───┘
+                                          └─ RETURN → 回到 execute-task 修正，再提交、更新 PR 並重新 review
 ```
 
 dev-cycle 自動選下一個已核准、相依滿足的 Task；分批核准或重新核准不阻塞無相依的已核准項目。Large 新核准的 Scenario 會先補拆，再實作。PR 前現存驗收須全部已核准或逐項豁免。

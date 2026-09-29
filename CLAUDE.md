@@ -26,6 +26,7 @@ python3 scripts/test-evidence.py
 | `docs/agents/` | 按階段載入的核准、驗證、review 規範及範本 |
 | `docs/agents/project.md` | 下游專案客製；上游更新保留此檔 |
 | `scripts/` | kit 檢查、安裝與回歸工具 |
+| `INSTALL.md` | 給 AI agent 執行的安裝、初始化與更新步驟 |
 
 `docs/AGENTS.md` 是下游產品，不要求本 kit 每次維護都建立 issue。完整行為定義放權威參考檔，技能保留可執行步驟與指向該定義的 gate。
 
@@ -40,4 +41,4 @@ python3 scripts/test-evidence.py
 - 各階段預設走本地流程；Superpowers 只在使用者明確要求時使用，產物位置與 gate 仍依本 kit。對應關係：brainstorming 對應需要探索的新需求；writing-plans 對應 decompose；test-driven-development 對應 execute-task；requesting-code-review 對應 review；verification-before-completion 對應 create-pr。已有核准或等價證據不因引擎切換失效。
 - 安裝路徑維護在 rules/README.md、skills/README.md 與 install.sh targets_for()，check-kit 驗證一致性；外部工具設定在 docs/setup/tools.md。README 與 usage 僅引用路徑說明。
 - 改流程時檢查 README.md、docs/usage.md、範本與檢查清單；check-kit 不驗證敘述語意。新增規則在 [rule-verification-status](docs/rule-verification-status.md) 記可指認的驗證來源，未實跑保留「僅靜態撰寫」。
-- 改部署行為時，以暫存專案驗證升級、客製保留、衝突時不部分寫入、dry-run 與 symlink；本機真實平台及下游專案不作測試目標。
+- 改部署行為時，以暫存專案驗證升級、客製保留、衝突時不部分寫入、dry-run 與 symlink；本機真實平台及下游專案不作測試目標。安裝、初始化或更新的指令與行為變動時，同步 INSTALL.md。

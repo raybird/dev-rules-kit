@@ -12,6 +12,21 @@
 
 ---
 
+## [Unreleased]
+
+### 新增（根目錄）
+
+- 新增 `INSTALL.md`：給 AI agent 照步驟執行的安裝、初始化與更新指引。使用者只要對 agent 說「請依照 INSTALL.md 安裝 dev-rules-kit」，agent 就會取得 kit、先 dry-run 再安裝技能、初始化或更新專案文件，並處理選用的規則檔。內含首次安裝時辨識並備份使用者自己的同名技能，以及更新時列出專案或全域規則副本與 kit 的差異（`init-project.py` 不處理這些副本）。
+
+### 變更（README、`rules/README.md`、`docs/`）
+
+- README 重寫為「能帶來什麼、怎麼裝、日常怎麼用、怎麼更新」：目錄結構、Claude Code 掛載步驟與 Superpowers 對應表移出；前者由 CLAUDE.md 的檔案責任表涵蓋，掛載步驟移到 `rules/README.md`，Superpowers 對應表移到 `docs/setup/tools.md`。
+- `docs/usage.md` 的閉環圖改為 review 退回 execute-task，與 dev-cycle 一致。
+
+### 修正（`scripts/`）
+
+- `init-project.py` 首次建立 `docs/agents/project.md` 時，成功訊息改為「已建立 project.md 範本」；原本不論是否新建都顯示「既有 project.md 保持原樣」。
+
 ## [4.3.0] - 2026-09-29
 
 ### 變更（`rules/`、`skills/`、`docs/agents/acceptance.md`、README）

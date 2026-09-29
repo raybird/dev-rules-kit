@@ -199,7 +199,17 @@ GitNexus 的 hook 會在 `Grep` / `Glob` / `Bash` 之前自動把對應的圖譜
 
 ## 設定 Superpowers
 
-[Superpowers](https://github.com/obra/superpowers) 是強化 AI 開發流程的能力包，提供 brainstorming、TDD、debugging、subagent-driven development、verification 等流程型 skills。本 kit **預設不使用**，各節點走內建流程；已安裝時，只有使用者明確指定才會改用對應 skill，詳見 [README 的 Superpowers 章節](../../README.md#與-superpowers-並用選用)。以下安裝步驟供已決定使用的人參考。
+[Superpowers](https://github.com/obra/superpowers) 是強化 AI 開發流程的能力包，提供 brainstorming、TDD、debugging、subagent-driven development、verification 等流程型 skills。本 kit **預設不使用**，各節點走內建流程；已安裝時，只有使用者在對話中明確指定（例如「用 brainstorming 釐清」）才會改用對應 skill，核准、產物位置與完成 gate 仍依本 kit：
+
+| Superpowers skill | 對應節點 | 預設的內建流程 |
+|---|---|---|
+| `brainstorming` | `new-issue` | 依 `agents/acceptance.md` 核對來源並處理必要缺項 |
+| `writing-plans` | `decompose` | 內建 Phase / Task 與覆蓋規則；指定 writing-plans 時，產物仍寫入 issue 的唯一任務來源 |
+| `test-driven-development` | `execute-task` | 內建雙迴圈狀態機 |
+| `requesting-code-review` | `review` | 宿主原生 subagent / task；沒有獨立 reviewer 能力時阻塞 |
+| `verification-before-completion` | `create-pr` | 依 `agents/review-evidence.md` 核對範圍與有效證據 |
+
+改為預設不使用的依據與驗證狀態見 [規則驗證狀態](../rule-verification-status.md)。以下安裝步驟供已決定使用的人參考。
 
 **Claude Code**（官方 plugin marketplace）：
 

@@ -58,7 +58,21 @@ bash scripts/install.sh opencode --with-rules --rules-lang en
 
 Claude Code 與 Cursor 不以檔案方式安裝全域規則，腳本會改為印出該平台的手動步驟（見下方說明）。
 
-**Claude Code 的掛載方式**：Claude Code 只讀 `CLAUDE.md`，不會自動載入 `AGENTS.md`。將本檔複製到專案根目錄後，需在 `CLAUDE.md` 開頭加一行獨立的 `@AGENTS.md`（不可包在反引號或程式碼區塊內）。完整步驟與 `/init` 覆寫的注意事項見[根目錄 README](../README.md#下游專案掛載規則claude-code)。
+**Claude Code 的掛載方式**：Claude Code 只讀 `CLAUDE.md`，不會自動載入 `AGENTS.md`，因此要用 `@` 匯入語法手動掛載：
+
+1. 把規則檔複製到專案根目錄，檔名維持 `AGENTS.md`。
+2. 執行 `/init` 生成專案特定的 `CLAUDE.md`（build／test／架構說明），或自行維護。
+3. 在 `CLAUDE.md` 開頭加一行獨立的 `@AGENTS.md`，通用規則當基底、專案內容接在後面：
+
+   ```markdown
+   # CLAUDE.md
+
+   @AGENTS.md
+
+   ## （以下為專案特定內容）
+   ```
+
+`@` 的路徑相對於 `CLAUDE.md`：放子目錄時寫 `@docs/rules/AGENTS.md`。`@` 必須獨立成一行，不能包在反引號或程式碼區塊裡。重跑 `/init` 可能覆蓋 `CLAUDE.md` 並洗掉匯入行，重跑後記得補回。這種分離法讓 kit 更新規則時只需重新複製 `AGENTS.md`；把規則直接內嵌在 `CLAUDE.md` 的專案，更新時要手動比對段落。
 
 **Antigravity 的規則檔**：全域規則為 `~/.gemini/config/AGENTS.md` 與 `~/.gemini/GEMINI.md`，兩份**同時載入**而非擇一（`agy` 1.1.7 以 marker 實測）。官方文件只記載 `GEMINI.md`，但 `config/` 是 2026-05-20 遷移後的跨產品設定目錄，與 `skills/` 同層，因此建議把本 kit 的規則放 `config/AGENTS.md`、個人規則留在 `GEMINI.md`，兩者互不覆蓋，重新複製規則檔時也不會蓋掉個人設定。
 
@@ -73,5 +87,5 @@ Claude Code 與 Cursor 不以檔案方式安裝全域規則，腳本會改為印
 ---
 
 **建立日期**: 2026-05-08  
-**最後更新**: 2026-09-18\
-**文件版本**: 2.1
+**最後更新**: 2026-09-29\
+**文件版本**: 2.2

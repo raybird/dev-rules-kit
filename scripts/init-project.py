@@ -93,7 +93,8 @@ def main():
     serialized = json.dumps(data, ensure_ascii=False, indent=2, sort_keys=True) + '\n'
     if not manifest.exists() or manifest.read_text() != serialized:
         manifest.write_text(serialized)
-    print(f'OK：部署／更新 {len(pending)} 份文件，既有 project.md 保持原樣。')
+    custom = '已建立 project.md 範本' if CUSTOM in pending else '既有 project.md 保持原樣'
+    print(f'OK：部署／更新 {len(pending)} 份文件，{custom}。')
     return 0
 
 
