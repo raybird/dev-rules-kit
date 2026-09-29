@@ -15,10 +15,11 @@
 
 ## MCP 設定檔位置
 
-Serena 與 GitNexus 都以 MCP server 形式整合，各平台的設定檔與 JSON 結構如下：
+Serena 與 GitNexus 都以 MCP server 形式整合，各平台的設定檔與結構如下：
 
 | 平台 | 設定檔 | 頂層鍵 |
 |------|--------|--------|
+| Codex | 透過 `codex mcp add` 指令登錄，寫入 `~/.codex/config.toml`（TOML） | `mcp_servers` |
 | Claude Code | 透過 `claude mcp add` 指令登錄 | — |
 | OpenCode | `~/.config/opencode/config.json` | `mcp` |
 | Antigravity | `~/.gemini/config/mcp_config.json` | `mcpServers` |
@@ -41,6 +42,16 @@ claude mcp add serena -s user -- \
   uvx -p 3.13 --from git+https://github.com/oraios/serena \
   serena start-mcp-server --context ide --project-from-cwd
 ```
+
+**Codex**（使用 Serena 專為 Codex 準備的 `codex` context，排除與 Codex 內建檔案／shell 工具重複的工具）：
+
+```bash
+codex mcp add serena -- \
+  uvx -p 3.13 --from git+https://github.com/oraios/serena \
+  serena start-mcp-server --context codex --project-from-cwd
+```
+
+首次啟動因 `uvx` 下載而超過 Codex 的 MCP 啟動逾時時，在 `~/.codex/config.toml` 的 `[mcp_servers.serena]` 加上 `startup_timeout_sec = 120`。
 
 **OpenCode**（`config.json` 的 `mcp` 區塊）：
 
@@ -100,6 +111,12 @@ gitnexus analyze .        # 於專案根目錄執行，產生 .gitnexus/（建�
 ```
 
 **2. 登錄 MCP server**
+
+Codex：
+
+```bash
+codex mcp add gitnexus -- gitnexus mcp
+```
 
 Claude Code：
 
@@ -172,6 +189,8 @@ GitNexus 的 hook 會在 `Grep` / `Glob` / `Bash` 之前自動把對應的圖譜
 ```
 
 > ⚠️ **其他平台無 hook 等價機制**：OpenCode / Antigravity / Cursor 都沒有與 Claude Code `PreToolUse` / `PostToolUse` 對應的 hook 系統，因此「自動補圖譜上下文」僅在 Claude Code 中可用。其他平台需透過 `gitnexus-*` skills 主動呼叫。
+>
+> Codex 有同名事件的 hook（`~/.codex/hooks.json`），但上述腳本以 Claude Code 的 `Grep` / `Glob` / `Bash` 工具為對象，尚未驗證能在 Codex 運作；在驗證前同樣改用 skills 主動呼叫。
 
 **使用注意事項**：
 
@@ -249,6 +268,19 @@ Claude Code 與 OpenCode 走各自的 plugin 機制自動更新，不需要這�
 
 把 Serena 與 GitNexus 一起放進去的最小可運作設定。
 
+**Codex** — `~/.codex/config.toml`：
+
+```toml
+[mcp_servers.serena]
+command = "uvx"
+args = ["-p", "3.13", "--from", "git+https://github.com/oraios/serena", "serena", "start-mcp-server", "--context", "codex", "--project-from-cwd"]
+startup_timeout_sec = 120
+
+[mcp_servers.gitnexus]
+command = "gitnexus"
+args = ["mcp"]
+```
+
 **OpenCode** — `~/.config/opencode/config.json`：
 
 ```json
@@ -302,6 +334,7 @@ Claude Code 與 OpenCode 走各自的 plugin 機制自動更新，不需要這�
 
 | 平台 | 驗證方式 |
 |------|----------|
+| Codex | `codex mcp list`，預期 `serena` 與 `gitnexus` 皆為 `enabled`；session 內輸入 `/mcp` 查看已連線的工具 |
 | Claude Code | `claude mcp list`，預期 `serena` 與 `gitnexus` 皆顯示 `✓ Connected`；輸入 `/` 應看到 `superpowers:*` 系列指令 |
 | OpenCode | 輸入 `@` 應列出 MCP 工具；plugin 載入訊息會出現在啟動 log |
 | Antigravity | 檢查 chat 面板下方的 MCP server 狀態列 |
@@ -309,7 +342,7 @@ Claude Code 與 OpenCode 走各自的 plugin 機制自動更新，不需要這�
 
 ## 常見問題
 
-- **設定改了沒生效**：MCP 設定在啟動時載入。Antigravity 需執行 `Developer: Reload Window`；Cursor 可按 `Cmd/Ctrl + Shift + P` → `Cursor: Reload MCP Servers`
+- **設定改了沒生效**：MCP 設定在啟動時載入。Codex 需開新 session；Antigravity 需執行 `Developer: Reload Window`；Cursor 可按 `Cmd/Ctrl + Shift + P` → `Cursor: Reload MCP Servers`
 - **`~/.cursor/` vs `~/.config/Cursor/`**：前者是 Cursor CLI agent 設定（含 MCP、commands、skills），後者是 VS Code 風格的 IDE 偏好設定（settings.json、keybindings.json）
 
 ## 移除
@@ -324,6 +357,13 @@ rm -rf ~/.claude/hooks/gitnexus/          # 並從 settings.json 移除 hook 區
 /plugin uninstall superpowers@claude-plugins-official
 ```
 
+Codex：
+
+```bash
+codex mcp remove serena
+codex mcp remove gitnexus
+```
+
 其他平台：從對應的 MCP 設定檔移除 `serena` / `gitnexus` 區塊，並刪除 Superpowers 的 symlink 與 clone 目錄。
 
 ## 參考連結
@@ -331,4 +371,4 @@ rm -rf ~/.claude/hooks/gitnexus/          # 並從 settings.json 移除 hook 區
 - [Serena GitHub](https://github.com/oraios/serena) · [uv 官方文件](https://docs.astral.sh/uv/)
 - [GitNexus GitHub](https://github.com/abhigyanpatwari/GitNexus) · [Claude Code Hooks 文件](https://docs.claude.com/claude-code/hooks)
 - [Superpowers GitHub](https://github.com/obra/superpowers) · [Claude Plugins marketplace](https://github.com/anthropics/claude-plugins-official)
-- 平台官方文件：[Claude Code](https://claude.com/claude-code) · [OpenCode](https://github.com/sst/opencode) · [Antigravity](https://antigravity.google) · [Cursor](https://docs.cursor.com)
+- 平台官方文件：[Codex](https://github.com/openai/codex) · [Claude Code](https://claude.com/claude-code) · [OpenCode](https://github.com/sst/opencode) · [Antigravity](https://antigravity.google) · [Cursor](https://docs.cursor.com)

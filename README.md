@@ -195,7 +195,7 @@ PRD 中常見的 `implementation-plan`、`critic`、`architectural-compliance`�
 | **[GitNexus](https://github.com/abhigyanpatwari/GitNexus)** | 程式碼知識圖譜分析工具 | 建立程式碼知識圖譜，支援影響分析、路由對應、API 形狀檢查等進階查詢 |
 | **[Superpowers](https://github.com/obra/superpowers)** | 選用的 AI 開發流程增強框架 | 提供 brainstorming、TDD、review 與交付驗證等流程型 skills；未安裝時由本 kit 執行內建等價 gate |
 
-四個平台的完整設定步驟（MCP 設定檔位置、JSON 範例、驗證與移除）：[docs/setup/tools.md](./docs/setup/tools.md)
+五個平台的 MCP 設定步驟（設定檔位置、設定範例、驗證與移除）：[docs/setup/tools.md](./docs/setup/tools.md)
 
 ## 版本與更新
 
