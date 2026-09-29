@@ -79,7 +79,7 @@ python3 ~/Tools/dev-rules-kit/scripts/init-project.py /path/to/project --update
 | 技能清單與各平台安裝路徑 | [skills/README.md](skills/README.md) |
 | 搭配工具：推薦 Serena、GitNexus；Superpowers 選用（預設不使用） | [docs/setup/tools.md](docs/setup/tools.md) |
 | 下游文件規範（分級、核准、驗證、審查） | [docs/AGENTS.md](docs/AGENTS.md) |
-| 維護本 kit | [CLAUDE.md](CLAUDE.md) |
+| 維護本 kit | [AGENTS.md](AGENTS.md) |
 
 ## 授權
 

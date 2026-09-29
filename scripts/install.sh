@@ -61,7 +61,7 @@ legacy_workflow_dirs_for() {
 # 不以檔案方式安裝規則檔的平台，各自的替代做法
 rules_note_for() {
   case "$1" in
-    claude) echo "Claude Code 不自動載入 AGENTS.md：請把 rules/AGENTS.zh-TW.md 複製到專案根目錄，並在 CLAUDE.md 開頭加一行 @AGENTS.md" ;;
+    claude) echo "Claude Code 無全域規則檔：請把 rules/AGENTS.zh-TW.md 複製為專案根目錄的 AGENTS.md；專案已有 CLAUDE.md 時，在開頭加一行 @AGENTS.md，否則 AGENTS.md 不會被讀取" ;;
     cursor) echo "Cursor 無檔案系統層級的全域規則：請在 Settings → Rules → User Rules 貼上 rules/AGENTS.zh-TW.md 的內容" ;;
   esac
 }

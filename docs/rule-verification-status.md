@@ -214,6 +214,13 @@
 |---|---|---|
 | agent 依 INSTALL.md 完成技能安裝、同名技能備份、專案初始化與規則副本比對 | 已實跑驗證（子情境） | 2026-09-29 以全新 subagent 在沙盒（假 HOME 含 `.claude`、`.codex`，預置使用者自寫的同名 `review` 技能；測試專案 `CLAUDE.md` 內嵌 v4.2.0 規則句）照 INSTALL.md 執行：正確判定並備份非 kit 版 `review` 到技能目錄外、兩平台 11 個技能 `diff -rq` 一致、`init-project --check` OK、列出內嵌規則與 v4.3.0 的差異且未擅改 `CLAUDE.md`。試跑回報的 7 項落差已修正（首次安裝也比對規則副本、部分完成的回報、`--dirty`、殘留舊檔、手動複製前列檔、`init-project.py` 成功訊息）；修正後未重跑。未實跑：`git clone`／`git pull`（沙盒無網路）、更新路徑、全域 `--with-rules`、Claude Code 以外的宿主 |
 
+## 未發布 — Claude Code 與 AGENTS.md（2026-09-29）
+
+| 規則 | 狀態 | 驗證來源 |
+|---|---|---|
+| Claude Code 在無 `CLAUDE.md` 時讀 `AGENTS.md`，有 `CLAUDE.md` 時需 `@AGENTS.md` 匯入 | 已實跑驗證 | 2026-09-29 Claude Code 2.1.284，`claude -p --model haiku` 於三個暫存 git 目錄詢問已載入的標記字：只有 `AGENTS.md` → 讀到；兩檔並存 → 只讀到 `CLAUDE.md`（兩次結果相同）；`CLAUDE.md` 含 `@AGENTS.md` → 兩份都讀到。其他版本與互動模式未測 |
+| 本 kit 維護指引改放根目錄 `AGENTS.md`，`CLAUDE.md` 以 `@AGENTS.md` 匯入 | 已實跑驗證 | 2026-09-29 在本 repo 以 `claude -p --model haiku`（不使用工具）逐字引用出 `AGENTS.md` 開頭說明句與「檔案責任」表的 INSTALL.md 列；Codex、OpenCode 讀取根目錄 `AGENTS.md` 未實測 |
+
 ## 已知的驗證限制
 
 - **樣本數 n=2，且同源**：line-oa-plus 與 googleBooking 同屬一位使用者、跑同一套 kit、工作流程相近。**兩者共有的盲點照不出來**——例如多人並行 review、非中文協作者、非 Firebase 系技術棧的情境，今天完全沒有覆蓋。

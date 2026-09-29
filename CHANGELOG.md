@@ -12,6 +12,13 @@
 
 ---
 
+## [Unreleased]
+
+### 變更（根目錄、`rules/README.md`、`INSTALL.md`、`scripts/install.sh`）
+
+- 本 kit 的維護指引從 `CLAUDE.md` 移到根目錄 `AGENTS.md`，讓 Codex、OpenCode 等讀 `AGENTS.md` 的工具也能載入；`CLAUDE.md` 只保留一行 `@AGENTS.md`。不做兩份相同內容，避免漂移。
+- 更正 Claude Code 與 `AGENTS.md` 的關係：2.1.284 實測，專案沒有 `CLAUDE.md` 時會讀 `AGENTS.md`；有 `CLAUDE.md` 時只讀 `CLAUDE.md`，`AGENTS.md` 需用 `@AGENTS.md` 匯入才會載入。原本寫的「不會自動載入 `AGENTS.md`」已過時。`rules/README.md`、`INSTALL.md` 與 `install.sh` 的提示同步更新。
+
 ## [4.4.0] - 2026-09-29
 
 ### 新增（根目錄）

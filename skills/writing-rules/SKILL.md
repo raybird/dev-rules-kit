@@ -1,6 +1,6 @@
 ---
 name: writing-rules
-description: 依注意力成本與觸發機制撰寫或修改 agent 會讀的規範文件。修改 docs/AGENTS.md、docs/agents/、CLAUDE.md、rules/ 或任何 SKILL.md 時使用；涵蓋 pointer 措辭、in-file 與 disclosed 的取捨、正面表述、完成判準強度與 no-op 檢查。
+description: 依注意力成本與觸發機制撰寫或修改 agent 會讀的規範文件。修改 docs/AGENTS.md、docs/agents/、CLAUDE.md／AGENTS.md、rules/ 或任何 SKILL.md 時使用；涵蓋 pointer 措辭、in-file 與 disclosed 的取捨、正面表述、完成判準強度與 no-op 檢查。
 ---
 
 > 本 skill 需要 `docs/AGENTS.md` **流程契約 2.0**；相容性依該檔「核心層齊備性檢查」。
@@ -65,7 +65,7 @@ pointer 每回合都在花 token，因此比正文更值得刪：把觸發詞放
 
 - **核心層字串維持原樣**：狀態字串、metadata 欄位名、章節名依 `docs/AGENTS.md`「客製邊界與同步策略」，改名等同拿掉一道 gate 且不會報錯。
 - **雙語同步**：`rules/AGENTS.md` 與 `rules/AGENTS.zh-TW.md` 一起改，`## ` 章節數保持相等。
-- **改完跑檢查**：依 CLAUDE.md 執行靜態與安裝／證據測試；流程語意另跑對應 workflow-regression 案例，未實跑明確記錄。
+- **改完跑檢查**：依根目錄 AGENTS.md 執行靜態與安裝／證據測試；流程語意另跑對應 workflow-regression 案例，未實跑明確記錄。
 - **版本分離**：純文字修訂只更新文件版本；相容性能力新增才升契約 minor，不相容語意或結構改變升 major。
 - **效果指標**：同類任務比較人工回覆次數、錯誤阻塞、必要 gate 漏檢與重複維護位置。字數只是成本指標，不能代替實跑行為。
 

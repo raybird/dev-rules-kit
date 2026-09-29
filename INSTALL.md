@@ -50,7 +50,7 @@
 規則檔是 agent 的通用行為原則（`<kit>/rules/AGENTS.zh-TW.md`，英文版為 `AGENTS.md`）。先問使用者要不要裝、裝全域還是專案層；各平台位置見 `<kit>/rules/README.md` 的「安裝方式」。
 
 - **全域（Codex、OpenCode、Antigravity）**：`bash <kit>/scripts/install.sh --with-rules --dry-run`。目標檔已存在且內容不同時，腳本會備份後覆蓋；檔案裡有使用者自己加的章節時先告知，由使用者選擇整份覆蓋或只合併變動的段落。
-- **Claude Code**：把規則檔複製為 `<project>/AGENTS.md`，並在 `<project>/CLAUDE.md` 開頭加一行獨立的 `@AGENTS.md`（不包在反引號或程式碼區塊內）。
+- **Claude Code**：把規則檔複製為 `<project>/AGENTS.md`。專案已有 `CLAUDE.md` 時，在它開頭加一行獨立的 `@AGENTS.md`（不包在反引號或程式碼區塊內），否則 Claude Code 不會讀 `AGENTS.md`；沒有 `CLAUDE.md` 時不必新建。
 - **Cursor**：沒有檔案層級的全域規則，請使用者在 Settings → Rules → User Rules 貼上內容。
 - **已有規則副本時（首次安裝與更新都要檢查）**：找出專案或全域已有的規則副本，包括專案根的 `AGENTS.md`、`CLAUDE.md` 用 `@` 引用的檔案，以及直接內嵌在 `CLAUDE.md` 的規則段落。把與 kit 目前版本不同的段落列給使用者，由使用者決定是否同步；新舊兩份同時載入會互相矛盾時特別指出。`init-project.py` 不處理這些副本。
 
