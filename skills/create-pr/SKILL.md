@@ -11,7 +11,7 @@ description: 依固定交付範圍與有效測試證據撰寫或更新 PR 說明
 
 1. 取得淨 diff、commit、核准規格與原任務證據，確認工作區沒有漏提交的交付內容。Why 來自需求或可辨認的提交意圖，How 與變更來自淨 diff；無來源的理由省略或標明缺少背景。
 2. 依 acceptance.md 核對每項現存驗收已核准或有明列豁免；未核准的新行為先回規劃。
-3. 依 review-evidence.md 逐驗收編號建立 Proof 表，引用固定版本規格與持久化測試證據。共享測試只保存一份；證據與交付內容、環境或時效不符才重跑。Superpowers verification-before-completion 可用時協助核對相同 gate。
+3. 依 review-evidence.md 逐驗收編號建立 Proof 表，引用固定版本規格與持久化測試證據。共享測試只保存一份；證據與交付內容、環境或時效不符才重跑。使用者明確要求時可改用 Superpowers verification-before-completion 核對相同 gate。
 4. 揭露 README 的豁免、待確認事項及交付影響；確認 project.md 觸發的常青文件已更新。
 
 ## 輸出格式

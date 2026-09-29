@@ -9,7 +9,7 @@ description: 將 Large issue 的 implementation plan 細化為可執行 Phase／
 
 讀 README、implementation-plan.md、project.md、acceptance.md 與 verification.md。取得已核准的驗收條件、風險策略與相依；只拆可實作的已核准部分。Small／Medium 已有可執行步驟時直接沿用，明確要求進一步細化時在原檔完成。
 
-在 implementation-plan.md 原地細化，保留高階決策、穩定 Task ID 與已完成證據。舊 issue 已由 README 指向獨立 Decomposition 時，沿用該檔作唯一任務來源；不複製第二份狀態。Superpowers writing-plans 可用時用於拆解，產物位置仍依本節。
+在 implementation-plan.md 原地細化，保留高階決策、穩定 Task ID 與已完成證據。舊 issue 已由 README 指向獨立 Decomposition 時，沿用該檔作唯一任務來源；不複製第二份狀態。使用者明確要求時才改用 Superpowers writing-plans 拆解，產物仍寫入本節的唯一任務來源。
 
 ## 拆解
 

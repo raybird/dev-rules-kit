@@ -80,7 +80,7 @@ PR 的 Proof of Test 採逐驗收編號表格，連到固定版本規格與命�
 | project-worktrees | 依專案慣例建立或移除 worktree；審查用以 detached 檢出並回報 BASE／HEAD |
 | writing-rules | 修改 agent 規範前使用；檢查觸發、位置、完成判準與實跑效果 |
 
-Superpowers 為選用的階段引擎；已有共識不因載入 brainstorming 重問，缺套件時使用本地等價流程。[外部工具設定](setup/tools.md) 不屬必要前置。
+各階段預設使用本地流程；使用者明確要求時才改用 Superpowers 對應 skill，已有共識與證據沿用。[外部工具設定](setup/tools.md) 不屬必要前置。
 
 ## 格式與驗證
 

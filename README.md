@@ -72,36 +72,24 @@ new-issue → decompose（Large，在原計畫細化）
 
 `git-squash` 是獨立合併輔助工具，`project-worktrees` 管理開發與審查用 worktree，`writing-rules` 用於維護規範。各技能可單獨使用，不需要把所有技能逐一執行。詳細範例見 [使用指南](docs/usage.md)。
 
-## Superpowers 整合與安裝建議
-
-Superpowers 是本 kit 的**選用流程增強套件，不是必要依賴**。未安裝時，`new-issue`、`decompose`、`execute-task`、`review`、`create-pr` 仍會執行各自內建的等價流程，驗收標準核准、真實驗證、獨立審查與 Proof of Test 依本地流程契約執行。已有授權與有效證據不因切換引擎重做。
-
 > [!NOTE]
-> 這些 gate 防的是 AI 自行降低標準，不是限制你的決策。驗收標準的形式依規模自動調整（Small 只需輕量驗收條件，風險高時補失敗路徑而不是改寫成 Gherkin），Scenario 多時可以分批核准，純重構與純文件任務改用等價證據；需要更快時，直接說「這次不用寫 Gherkin」或「不用先寫測試」即可豁免，AI 會照做並在 issue README 留下 `## Gate 豁免紀錄`。
+> 本 kit 的 gate 防的是 AI 自行降低標準，不是限制你的決策。驗收標準的形式依規模自動調整（Small 只需輕量驗收條件，風險高時補失敗路徑而不是改寫成 Gherkin），Scenario 多時可以分批核准，純重構與純文件任務改用等價證據；需要更快時，直接說「這次不用寫 Gherkin」或「不用先寫測試」即可豁免，AI 會照做並在 issue README 留下 `## Gate 豁免紀錄`。
 
-若要使用 Superpowers，建議安裝[完整套件](https://github.com/obra/superpowers)，不要只複製單一 skill。核心流程會在下列 skills 可用時優先調用：
+## 與 Superpowers 並用（選用）
 
-| Superpowers skill | 對應節點 | 用途 | 未安裝時 |
-|---|---|---|---|
-| `brainstorming` | `new-issue` | 需要探索時釐清需求與方案；已有明確核准則沿用 | 依 `agents/acceptance.md` 核對來源並處理必要缺項 |
-| `writing-plans` | `decompose` | 將 Scenario 拆成 BDD 外迴圈與 TDD 內迴圈 | 執行 `decompose` 內建 Phase / Task 與覆蓋規則 |
-| `test-driven-development` | `execute-task` | 強制紅燈、最小實作、綠燈與重構 | 執行 `execute-task` 內建雙迴圈狀態機 |
-| `requesting-code-review` | `review` | 將變更交給獨立 reviewer | 使用宿主原生 subagent / task；沒有獨立 reviewer 能力時仍會阻塞 |
-| `verification-before-completion` | `create-pr` | 在產生 PR 前重新查驗完成證據 | 依 `agents/review-evidence.md` 核對範圍與有效證據 |
+各階段預設使用本 kit 的內建流程，不需要安裝 [Superpowers](https://github.com/obra/superpowers)，本 kit 的技能也不會自動調用它。下游專案自 2026-08 中起的多數 issue 以內建流程完成需求澄清、拆解與獨立審查，實跑紀錄見 [規則驗證狀態](docs/rule-verification-status.md)。
 
-以下 skills 不屬於閉環的必要映射，但安裝完整套件後建議搭配使用：
+已經在用 Superpowers 的人，可以在對話中明確指定（例如「用 brainstorming 釐清」），對應節點就改用該 skill；核准、產物位置與完成 gate 仍依本 kit：
 
-| Superpowers skill | 建議使用時機 |
-|---|---|
-| `using-superpowers` | 在任務開始時判斷應優先載入哪個流程型 skill |
-| `systematic-debugging` | 測試失敗、錯誤來源不明或修正前需要先定位根因 |
-| `receiving-code-review` | 收到 review 意見後先驗證合理性，再進入修正流程 |
-| `subagent-driven-development` | 宿主支援 subagent，且要依計畫逐 Task 隔離執行與審查 |
-| `executing-plans` | 無 subagent 或需要在同一 session 依既有計畫批次執行 |
+| Superpowers skill | 對應節點 | 預設的內建流程 |
+|---|---|---|
+| `brainstorming` | `new-issue` | 依 `agents/acceptance.md` 核對來源並處理必要缺項 |
+| `writing-plans` | `decompose` | 內建 Phase / Task 與覆蓋規則；指定 writing-plans 時，產物仍寫入 issue 的唯一任務來源 |
+| `test-driven-development` | `execute-task` | 內建雙迴圈狀態機 |
+| `requesting-code-review` | `review` | 宿主原生 subagent / task；沒有獨立 reviewer 能力時阻塞 |
+| `verification-before-completion` | `create-pr` | 依 `agents/review-evidence.md` 核對範圍與有效證據 |
 
-PRD 中常見的 `implementation-plan`、`critic`、`architectural-compliance`、`pull-request-spec` 不是本整合要求安裝的實際 skill 名稱；其能力已分別映射到 `writing-plans`、`requesting-code-review` 加架構 gate，以及 `create-pr` 的內建規格。
-
-各平台安裝完整套件的方式不同（Claude Code 用 plugin marketplace、OpenCode 用 git URL、其餘平台需手動 clone 加 symlink），請參考 [docs/setup/tools.md 的 Superpowers 章節](./docs/setup/tools.md#設定-superpowers)。
+安裝方式見 [docs/setup/tools.md 的 Superpowers 章節](./docs/setup/tools.md#設定-superpowers)。
 
 ## 使用方式
 
@@ -193,7 +181,6 @@ PRD 中常見的 `implementation-plan`、`critic`、`architectural-compliance`�
 |------|------|----------|
 | **[Serena](https://github.com/oraios/serena)** | 程式碼分析與符號查詢 MCP 伺服器 | 支援 LSP 層級的符號搜尋、重構、診斷等功能，可深度理解程式碼結構 |
 | **[GitNexus](https://github.com/abhigyanpatwari/GitNexus)** | 程式碼知識圖譜分析工具 | 建立程式碼知識圖譜，支援影響分析、路由對應、API 形狀檢查等進階查詢 |
-| **[Superpowers](https://github.com/obra/superpowers)** | 選用的 AI 開發流程增強框架 | 提供 brainstorming、TDD、review 與交付驗證等流程型 skills；未安裝時由本 kit 執行內建等價 gate |
 
 五個平台的 MCP 設定步驟（設定檔位置、設定範例、驗證與移除）：[docs/setup/tools.md](./docs/setup/tools.md)
 

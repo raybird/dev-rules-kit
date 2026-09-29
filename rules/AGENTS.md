@@ -130,7 +130,7 @@ For ordinary localized work, use the success criteria and verification in sectio
 
 Record real evidence. Preserve behavior during refactoring and compare the same tests before and after; use repeatable static or manual checks for documentation. Combine acceptance and unit red lights when they provide the same coverage, regardless of task size, and explain why no distinct layer is lost. Different layers retain their own checks. Reuse evidence only while the tested content, environment and relevant conditions still match.
 
-User-requested gate exemptions apply only to the stated scope and must be recorded when operating an issue workflow. Honest reporting always applies: skipped tests and self-review cannot be represented as passed verification or independent review. Optional Superpowers skills help with the current phase; existing approval and equivalent verification remain valid when changing tools.
+User-requested gate exemptions apply only to the stated scope and must be recorded when operating an issue workflow. Honest reporting always applies: skipped tests and self-review cannot be represented as passed verification or independent review. Each phase uses this kit's built-in flow by default; switch to the matching Superpowers skill only when the user explicitly asks, keeping this kit's artifact locations and gates. Existing approval and equivalent verification remain valid when changing tools.
 
 ---
 

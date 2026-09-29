@@ -201,6 +201,13 @@
 |---|---|---|
 | review 檢查跨 Task 重複與過度設計，已分歧且有正確性風險時列 MUST FIX | 僅靜態撰寫 | 動機是 execute-task 逐 Task 精煉看不到跨 Task 重複，尚未在下游找到實例；未在宿主新 session 實跑 review |
 
+## 未發布 — Superpowers 改為明確要求才使用（2026-09-29）
+
+| 規則 | 狀態 | 驗證來源 |
+|---|---|---|
+| 各階段預設走內建流程，已安裝 Superpowers 也不自動調用 | 來源為實跑 | 動機：line-oa-plus `origin/dev` 自 2026-08 中起 issue-0183、0218、0241、0245、0263、0296 等至少 14 份文件記錄以內建流程完成澄清、拆解與審查；規則本身尚未在「已啟用 Superpowers」的宿主實跑（WF-18 未執行）。`using-superpowers` 的 1% 規則可能繞過本規則，未驗證 |
+| 使用者指定 writing-plans 時產物仍寫入唯一任務來源 | 來源為實跑 | 動機：`docs/plans/2026-09-14-gpt-live-1-canary.md` 以 writing-plans 產出、位於 issue 目錄外；規則本身未實跑 |
+
 ## 已知的驗證限制
 
 - **樣本數 n=2，且同源**：line-oa-plus 與 googleBooking 同屬一位使用者、跑同一套 kit、工作流程相近。**兩者共有的盲點照不出來**——例如多人並行 review、非中文協作者、非 Firebase 系技術棧的情境，今天完全沒有覆蓋。

@@ -29,6 +29,7 @@
 | WF-15 | 多個 AC 共用同一有效測試，精煉為 no-op | 每項有映射，重用同一證據，不為每個 AC 重跑或複製 Gherkin；相關內容變更的對照組重驗 |
 | WF-16 | Medium／Large 同一可觀察層級；另有跨層整合行為對照組 | 同層可合併紅燈並說明；跨層保留獨立保障，不因規模固定雙迴圈或強行合併 |
 | WF-17 | 明確指定局部 review N，範圍小於完整 PR | 明列局部審查，不拿 PASS 放行整個 PR；完整範圍三項識別與 diff 相同 |
+| WF-18 | 宿主已安裝並啟用 Superpowers，Large 需求需要探索與拆解；對照組使用者明說「用 brainstorming 釐清、用 writing-plans 拆解」 | 未要求時 new-issue／decompose 走內建流程，不調用 Superpowers；對照組改用指定 skill，Gherkin 與 Task 仍寫入 issue 的唯一任務來源，不另建計畫檔 |
 
 ## 結果紀錄
 

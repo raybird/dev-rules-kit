@@ -12,6 +12,15 @@
 
 ---
 
+## [Unreleased]
+
+### 變更（`rules/`、`skills/`、`docs/agents/acceptance.md`、README）
+
+- **Superpowers 改為使用者明確要求時才使用**：各階段預設走本 kit 內建流程；過去「已安裝就優先調用」改為只在使用者指定時改用對應 skill，產物位置與 gate 仍依本 kit。`new-issue`、`decompose`、`review`、`create-pr`、雙語 rules、`acceptance.md` 與 CLAUDE.md 同步調整。**已安裝 Superpowers 的使用者行為會改變**：要沿用它，需在對話中明確指定，例如「用 brainstorming 釐清」。
+- 依據：line-oa-plus 自 2026-08 中起至少 14 份 issue 記錄以內建流程完成澄清、拆解與審查，已驗證的是內建路徑；另一方面 `writing-plans` 的產物放在 issue 目錄外的 `docs/plans/`，與「任務只有唯一來源」衝突。`decompose` 因此明定指定 writing-plans 時產物仍寫入唯一任務來源。
+- README 將 Superpowers 移出推薦工具，章節改為「與 Superpowers 並用（選用）」，刪除推廣性的搭配清單；`docs/setup/tools.md` 補充 `using-superpowers` 的「1% 規則」會在未被要求時自行接手流程，只想指定時使用可平常停用。
+- `docs/AGENTS.md` 文件版本 2.0 → 2.1，流程契約維持 2.0。
+
 ## [4.2.0] - 2026-09-29
 
 ### 新增（`skills/`、`docs/agents/project.md`）

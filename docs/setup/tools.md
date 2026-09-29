@@ -1,6 +1,6 @@
 # 外部工具設定指南
 
-本文件說明如何在各平台配置搭配本 kit 使用的三個外部工具：**Serena**、**GitNexus**、**Superpowers**。
+本文件說明如何在各平台配置搭配本 kit 使用的外部工具：推薦的 **Serena**、**GitNexus**，以及選用的 **Superpowers**。
 
 > **本 kit 自身的安裝方式不在這裡**，各資料夾的 README 已載明對應平台的複製路徑：
 > [`rules/README.md`](../../rules/README.md#安裝方式) · [`skills/README.md`](../../skills/README.md#安裝方式)
@@ -199,7 +199,7 @@ GitNexus 的 hook 會在 `Grep` / `Glob` / `Bash` 之前自動把對應的圖譜
 
 ## 設定 Superpowers
 
-[Superpowers](https://github.com/obra/superpowers) 是強化 AI 開發流程的能力包，提供 brainstorming、TDD、debugging、subagent-driven development、verification 等流程型 skills。對本 kit 而言是**選用增強，不是必要依賴**——未安裝時各節點會執行內建的等價流程，詳見 [README 的 Superpowers 整合章節](../../README.md#superpowers-整合與安裝建議)。
+[Superpowers](https://github.com/obra/superpowers) 是強化 AI 開發流程的能力包，提供 brainstorming、TDD、debugging、subagent-driven development、verification 等流程型 skills。本 kit **預設不使用**，各節點走內建流程；已安裝時，只有使用者明確指定才會改用對應 skill，詳見 [README 的 Superpowers 章節](../../README.md#與-superpowers-並用選用)。以下安裝步驟供已決定使用的人參考。
 
 **Claude Code**（官方 plugin marketplace）：
 
@@ -260,7 +260,7 @@ Claude Code 與 OpenCode 走各自的 plugin 機制自動更新，不需要這�
 
 **使用注意事項**：
 
-- 核心原則：「若有 1% 機率某個 skill 適用，就必須先呼叫它」— 詳見 `using-superpowers`
+- 核心原則：「若有 1% 機率某個 skill 適用，就必須先呼叫它」— 詳見 `using-superpowers`。這會讓 Superpowers 在沒被要求時也自行接手流程，與本 kit「明確要求才使用」的預設衝突；只想在指定時使用的話，平常保持停用（例如 Claude Code 的 `enabledPlugins` 設為 `false`），需要時再啟用
 - 多數 skills 為流程型（rigid），會強制依步驟執行，例如 TDD 必定先寫測試
 - Skill 優先順序：先用 process skill（brainstorming、debugging），再用 implementation skill
 
