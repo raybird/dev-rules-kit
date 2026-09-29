@@ -19,6 +19,10 @@
 - 新增 `project-worktrees` 技能：建立開發用 worktree（`--no-track`，避免 upstream 指向基準分支）、以 detached 檢出建立審查用 worktree 並回報 BASE／HEAD、移除前檢查未提交與未推送內容。fetch 一律 `GIT_TERMINAL_PROMPT=0`，token 經 credential helper 由環境變數提供。
 - `project.md` 範本的「提交與交付」補充 worktree 位置與遠端認證方式的記錄位置；既有專案的 project.md 不受更新影響，需要時自行補上。
 
+### 變更（`skills/`）
+
+- `review` 以 code-simplify 的標準檢查整份 diff 中跨 Task 的重複邏輯與過度設計，補上 execute-task 逐 Task 精煉看不到的範圍。重複邏輯已分歧而造成行為不一致或正確性風險時列 MUST FIX 並退回 execute-task，其餘列改善建議；報告的「品質」維度須寫出此項結論。
+
 ## [4.1.0] - 2026-09-18
 
 ### 新增（`scripts/`、安裝說明）

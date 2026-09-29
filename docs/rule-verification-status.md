@@ -195,6 +195,12 @@
 | credential helper 由環境變數提供 token | 本地測試驗證 | 同一 fixture 以 `git credential fill` 確認輸出帳密；未對真實 HTTPS 遠端實跑 |
 | 慣例來源順序、衝突與未推送時詢問 | 僅靜態撰寫 | 未在宿主新 session 觸發技能實跑 |
 
+## 未發布 — review 跨 Task 重複檢查（2026-09-29）
+
+| 規則 | 狀態 | 驗證來源 |
+|---|---|---|
+| review 檢查跨 Task 重複與過度設計，已分歧且有正確性風險時列 MUST FIX | 僅靜態撰寫 | 動機是 execute-task 逐 Task 精煉看不到跨 Task 重複，尚未在下游找到實例；未在宿主新 session 實跑 review |
+
 ## 已知的驗證限制
 
 - **樣本數 n=2，且同源**：line-oa-plus 與 googleBooking 同屬一位使用者、跑同一套 kit、工作流程相近。**兩者共有的盲點照不出來**——例如多人並行 review、非中文協作者、非 Firebase 系技術棧的情境，今天完全沒有覆蓋。
