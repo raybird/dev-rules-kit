@@ -214,7 +214,7 @@
 |---|---|---|
 | agent 依 INSTALL.md 完成技能安裝、同名技能備份、專案初始化與規則副本比對 | 已實跑驗證（子情境） | 2026-09-29 以全新 subagent 在沙盒（假 HOME 含 `.claude`、`.codex`，預置使用者自寫的同名 `review` 技能；測試專案 `CLAUDE.md` 內嵌 v4.2.0 規則句）照 INSTALL.md 執行：正確判定並備份非 kit 版 `review` 到技能目錄外、兩平台 11 個技能 `diff -rq` 一致、`init-project --check` OK、列出內嵌規則與 v4.3.0 的差異且未擅改 `CLAUDE.md`。試跑回報的 7 項落差已修正（首次安裝也比對規則副本、部分完成的回報、`--dirty`、殘留舊檔、手動複製前列檔、`init-project.py` 成功訊息）；修正後未重跑。未實跑：`git clone`／`git pull`（沙盒無網路）、更新路徑、全域 `--with-rules`、Claude Code 以外的宿主 |
 
-## 未發布 — Claude Code 與 AGENTS.md（2026-09-29）
+## v4.4.1 — Claude Code 與 AGENTS.md（2026-09-29）
 
 | 規則 | 狀態 | 驗證來源 |
 |---|---|---|

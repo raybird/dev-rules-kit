@@ -12,7 +12,7 @@
 
 ---
 
-## [Unreleased]
+## [4.4.1] - 2026-09-29
 
 ### 變更（根目錄、`rules/README.md`、`INSTALL.md`、`scripts/install.sh`）
 
