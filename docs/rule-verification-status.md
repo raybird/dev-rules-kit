@@ -208,7 +208,7 @@
 | 各階段預設走內建流程，已安裝 Superpowers 也不自動調用 | 來源為實跑 | 動機：line-oa-plus `origin/dev` 自 2026-08 中起 issue-0183、0218、0241、0245、0263、0296 等至少 14 份文件記錄以內建流程完成澄清、拆解與審查；規則本身尚未在「已啟用 Superpowers」的宿主實跑（WF-18 未執行）。`using-superpowers` 的 1% 規則可能繞過本規則，未驗證 |
 | 使用者指定 writing-plans 時產物仍寫入唯一任務來源 | 來源為實跑 | 動機：`docs/plans/2026-09-14-gpt-live-1-canary.md` 以 writing-plans 產出、位於 issue 目錄外；規則本身未實跑 |
 
-## 未發布 — INSTALL.md（2026-09-29）
+## v4.4.0 — INSTALL.md（2026-09-29）
 
 | 規則 | 狀態 | 驗證來源 |
 |---|---|---|
