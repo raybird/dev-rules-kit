@@ -12,7 +12,7 @@
 
 ---
 
-## [Unreleased]
+## [4.3.0] - 2026-09-29
 
 ### 變更（`rules/`、`skills/`、`docs/agents/acceptance.md`、README）
 
