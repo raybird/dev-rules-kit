@@ -29,12 +29,13 @@ python3 scripts/init-project.py /path/to/project --check
 /dev-cycle 101
 ```
 
-已明確提供的結果與範圍可作核准來源；缺少會影響結果的決策才詢問，不固定提出多個方案。Small 以 README 的 AC 與步驟記錄；Medium 增加 implementation-plan；Large 在同一計畫細化 Phase／Task，分析文件依實際調查或取捨需要建立。
+已明確提供的結果與範圍可作核准來源；缺少會影響結果的決策才詢問：一次問一題並附建議答案，回「照建議」即採用；想一次看完彼此獨立的題目時明說「一起問」。Small 以 README 的 AC 與步驟記錄；Medium 增加 implementation-plan；Large 在同一計畫細化 Phase／Task，分析文件依實際調查或取捨需要建立。
 
 ```text
 new-issue → decompose（Large，在原計畫細化）
           → execute-task（包含 code-simplify 與驗證）
           → create-commit → create-pr → review
+                                          ├─ 需決策 → 協調者逐題確認，再依決策修正或記錄
                                           └─ RETURN → 回到 execute-task 修正，再提交、更新 PR 並重新 review
 ```
 
@@ -73,7 +74,7 @@ PR 的 Proof of Test 採逐驗收編號表格，連到固定版本規格與命�
 | code-simplify | 可單獨精煉指定變更；已由 execute-task 處理者不再重複 |
 | create-commit | 依 staged diff 與專案格式產生訊息；明確要求提交時直接執行 |
 | create-pr | 撰寫 Proof 表；已要求建立／更新 PR 時直接操作平台 |
-| review | 對固定範圍獨立審查並保存 artifact；無能力時如實回報 |
+| review | 對固定範圍獨立審查並保存 artifact；需使用者決策的發現標 `需決策`；無能力時如實回報 |
 | dev-cycle | 查詢唯讀；推進自動派送已授權工作，遇等待或阻塞結束本次調用 |
 | git-squash | 使用與 create-commit 相同的專案格式，提供符合專案策略的合併命令 |
 | project-worktrees | 依專案慣例建立或移除 worktree；審查用以 detached 檢出並回報 BASE／HEAD |

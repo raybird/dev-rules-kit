@@ -3,7 +3,7 @@ name: new-issue
 description: 將新需求轉成可核准的驗收條件與 issue 文件；需要建立或修訂 issue 範圍、驗收規格與初始計畫時使用。
 ---
 
-> 本 skill 需要 `docs/AGENTS.md` **流程契約 2.0**；相容性依該檔「核心層齊備性檢查」。
+> 本 skill 需要 `docs/AGENTS.md` **流程契約 2.1**；相容性依該檔「核心層齊備性檢查」。
 
 ## 輸入
 
@@ -13,7 +13,7 @@ description: 將新需求轉成可核准的驗收條件與 issue 文件；需要
 
 1. 讀 AGENTS.md 分級與風險規範、agents/project.md，以及 agents/acceptance.md。建立文件時讀 document-types.md 與 readme-templates.md。
 2. 探索現況與最小修改邊界，指出最大風險，判定規模與驗證順序；避免用方案假設填補未調查的現況。
-3. 對照需求與既有核准來源，依 acceptance.md 只澄清影響結果的缺項。有實質取捨才比較方案，已有共識則沿用；使用者明確要求時才改用 Superpowers brainstorming 探索。
+3. 對照需求與既有核准來源，只澄清影響結果的缺項，依 acceptance.md「逐題確認」一次問一題並附建議答案。已有共識則沿用；使用者明確要求時才改用 Superpowers brainstorming 探索。
 4. 寫下可觀察驗收條件與核准來源。使用者的明確要求已涵蓋結果與範圍時，引用原話即可；新增或實質變更的行為取得核准後才列為可實作。分批核准的前置門檻與狀態依 acceptance.md。
 5. 依規模建立初始文件：Small 在 README 寫步驟；Medium / Large 在 implementation-plan.md 寫計畫。Large 的分析文件依觸發條件建立，Phase / Task 後續由 decompose 在同一計畫細化。風險與涉及檔案清單僅在 README 維護。
 6. 每項步驟標注驗收編號、產出、相依與可檢查的完成判準。測試策略依 verification.md；具體路徑與命令可由 execute-task 根據既有驗證入口選擇，不把等價命令選擇當新需求。

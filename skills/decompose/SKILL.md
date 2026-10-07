@@ -3,7 +3,7 @@ name: decompose
 description: 將 Large issue 的 implementation plan 細化為可執行 Phase／Task，或在新增核准與規格修訂後補齊映射；Small／Medium 使用原步驟即可。
 ---
 
-> 本 skill 需要 `docs/AGENTS.md` **流程契約 2.0**；相容性依該檔「核心層齊備性檢查」。
+> 本 skill 需要 `docs/AGENTS.md` **流程契約 2.1**；相容性依該檔「核心層齊備性檢查」。
 
 ## 輸入與位置
 
@@ -13,7 +13,7 @@ description: 將 Large issue 的 implementation plan 細化為可執行 Phase／
 
 ## 拆解
 
-1. 確認 README 風險策略仍成立，引用其判定與首要驗證；需要改變策略時先處理必要決策。
+1. 確認 README 風險策略仍成立，引用其判定與首要驗證。策略需要改變，或拆解發現需求邊界、驗收結果有缺口時，依 acceptance.md「逐題確認」取得決策並依規格修訂處理後再拆；Phase 劃分、Task 粒度與順序自行決定。
 2. 依可驗證里程碑劃 Phase，再依可獨立驗證的輸出劃 Task；數量與耗時不設配額。相依可以指向其他 Task，執行前必須滿足。
 3. 每個 Task 記：ID／目標、預期產出、最小範圍、相依、驗收編號、完成判準、驗證策略。只有多人／多 Task 共同支援時才另寫責任與整合邊界。
 4. 每個已核准 Scenario、交付成果與風險證據指定一個責任 Task；其他 Task 可支援但不重複責任。各任務依 verification.md 定義測試層級或等價證據；同層不增加重複紅燈。

@@ -221,6 +221,15 @@
 | Claude Code 在無 `CLAUDE.md` 時讀 `AGENTS.md`，有 `CLAUDE.md` 時需 `@AGENTS.md` 匯入 | 已實跑驗證 | 2026-09-29 Claude Code 2.1.284，`claude -p --model haiku` 於三個暫存 git 目錄詢問已載入的標記字：只有 `AGENTS.md` → 讀到；兩檔並存 → 只讀到 `CLAUDE.md`（兩次結果相同）；`CLAUDE.md` 含 `@AGENTS.md` → 兩份都讀到。其他版本與互動模式未測 |
 | 本 kit 維護指引改放根目錄 `AGENTS.md`，`CLAUDE.md` 以 `@AGENTS.md` 匯入 | 已實跑驗證 | 2026-09-29 在本 repo 以 `claude -p --model haiku`（不使用工具）逐字引用出 `AGENTS.md` 開頭說明句與「檔案責任」表的 INSTALL.md 列；Codex、OpenCode 讀取根目錄 `AGENTS.md` 未實測 |
 
+## 未發布 — 逐題確認與 review 需決策（2026-10-07）
+
+| 規則 | 狀態 | 驗證來源 |
+|---|---|---|
+| 需要使用者決策時逐題確認：依相依排序、每則一題附建議答案、回答後重排、清單清空才完成 | 僅靜態撰寫 | 精神參考 mattpocock/skills `grilling`，但改為一次一題；2026-10-07 在本 repo 設計本規則時以此方式提問四題（Q1–Q4），屬示範，非下游 issue 實跑；WF-19 未執行 |
+| 「照建議」即接受該題建議答案，記原話、題號、建議內容與驗收編號 | 僅靜態撰寫 | — |
+| 使用者明說「一起問」才合併彼此獨立的題目 | 僅靜態撰寫 | — |
+| review 發現加註 `需決策`，由 dev-cycle 協調者逐題確認並記入待確認事項 | 僅靜態撰寫 | WF-20 未執行 |
+
 ## 已知的驗證限制
 
 - **樣本數 n=2，且同源**：line-oa-plus 與 googleBooking 同屬一位使用者、跑同一套 kit、工作流程相近。**兩者共有的盲點照不出來**——例如多人並行 review、非中文協作者、非 Firebase 系技術棧的情境，今天完全沒有覆蓋。

@@ -3,7 +3,7 @@ name: dev-cycle
 description: 查詢 issue 進度或依既有授權自動推進需求、實作、PR 與獨立審查；使用「繼續 issue」或 /dev-cycle 時使用。
 ---
 
-> 本 skill 需要 `docs/AGENTS.md` **流程契約 2.0**；相容性依該檔「核心層齊備性檢查」。
+> 本 skill 需要 `docs/AGENTS.md` **流程契約 2.1**；相容性依該檔「核心層齊備性檢查」。
 
 ## 輸入與模式
 
@@ -36,6 +36,7 @@ description: 查詢 issue 進度或依既有授權自動推進需求、實作、
 | 任務全部完成但交付變更尚未提交 | 依 create-commit 準備並提交已授權的交付內容 |
 | 無 open PR，或 PR 範圍／Proof of Test 與交付版本不一致 | create-pr，建立或更新 |
 | 沒有符合 review-evidence.md 有效性規則的持久化報告 | review |
+| 有效 review 有 `需決策` 發現，README 待確認事項尚無對應結論 | 依 acceptance.md「逐題確認」取得決策並記入待確認事項；規格變更依規格修訂處理，需修正者回 execute-task，接受未修的 MUST FIX 記入 Gate 豁免紀錄 |
 | 有效 review 為 RETURN TO execute-task | 修正問題、更新證據與提交，再審查新範圍 |
 | 有效 review 為 PASS | 等待合併，回報後結束本次調用 |
 
@@ -47,7 +48,7 @@ description: 查詢 issue 進度或依既有授權自動推進需求、實作、
 
 1. 回報目前階段與下一步；已授權的計畫由協調者自動選 Task 並傳入完整輸入。
 2. execute-task 在內部完成 code-simplify 與驗證，協調者再依 create-commit 規範提交。交付範圍依 review-evidence.md 固定 BASE／HEAD，再傳給 create-pr 與 review；新提交後重新取得範圍。
-3. 依既有授權建立／更新 PR，獨立審查後保存 artifact。遇到新需求決策、權限限制或真實阻塞才停止；不重問已回答的 Task 選擇與核准。
+3. 依既有授權建立／更新 PR，獨立審查後保存 artifact。遇到新需求決策時依 acceptance.md「逐題確認」提問並等待回答，權限限制或真實阻塞時停止；不重問已回答的 Task 選擇與核准。
 4. 有實質狀態變化才重新偵測。等待窗口、等待合併、等待必要回答或同一阻塞未變時回報並結束，不忙迴圈、不自行合併 PR。
 5. 真實 merge 後標記已完成並記實際 merge 日期；不修復保留原狀態與決策日期；其他核准結案記實際依據。文件收尾不得被描述成程式測試或 merge。
 

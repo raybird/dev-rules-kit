@@ -12,6 +12,18 @@
 
 ---
 
+## [Unreleased]
+
+### 新增（`docs/agents/acceptance.md`、`docs/agents/review-evidence.md`、`skills/`）
+
+- **逐題確認**：`acceptance.md` 新增「逐題確認」一節，參考 mattpocock/skills 的 grilling 技能。需要使用者決策時，依相依排序後每則訊息只問一題，附可選做法、建議答案與理由及影響的驗收編號；事實由 agent 自行查證；每次回答後重排清單；清單清空才算完成，非阻塞未知記入待確認事項。回答「照建議」即接受該題建議答案，核准來源記原話、題號、建議內容與驗收編號。使用者明說「一起問」時才合併彼此獨立的題目。取代原本「相互獨立的短問題可一起問」。
+- **review 的 `需決策` 標記**：發現需要使用者決定需求邊界、接受風險或不修復時，reviewer 加註 `需決策` 與待決問題；判定（PASS／RETURN TO execute-task／UNPERSISTED）不變。`dev-cycle` 新增分流：協調者逐題確認，結論記入 README 待確認事項，規格變更依規格修訂處理，接受未修的 MUST FIX 記入 Gate 豁免紀錄。
+- `new-issue`、`decompose`、`review`、`dev-cycle` 改為指向逐題確認；`decompose` 明定 Phase 劃分、Task 粒度與順序由 agent 自行決定。
+
+### 變更（`docs/AGENTS.md`）
+
+- 文件版本 2.1 → 2.2，**流程契約 2.0 → 2.1**：`需決策` 列入核心介面。上述四支技能宣告最低流程契約 2.1，下游需更新 `docs/` 後才相容。
+
 ## [4.4.1] - 2026-09-29
 
 ### 變更（根目錄、`rules/README.md`、`INSTALL.md`、`scripts/install.sh`）
