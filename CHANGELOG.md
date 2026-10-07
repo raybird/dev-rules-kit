@@ -12,7 +12,7 @@
 
 ---
 
-## [Unreleased]
+## [4.5.1] - 2026-10-07
 
 ### 變更（`docs/agents/review-evidence.md`、`skills/dev-cycle/`）
 
