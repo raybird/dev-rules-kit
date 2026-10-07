@@ -12,6 +12,13 @@
 
 ---
 
+## [Unreleased]
+
+### 變更（`docs/agents/review-evidence.md`、`skills/dev-cycle/`）
+
+- 補上 v4.5.0 的流程缺口：`需決策` 的 MUST FIX 經使用者決定接受不修並記入 Gate 豁免紀錄後，原本沒說如何推進，報告判定仍為 RETURN 時可能又被送回 execute-task。現在 `review-evidence.md` 的 PASS 條件註明，Gate 豁免紀錄明列接受不修的 MUST FIX 不阻擋 PASS，報告照列並註明依據的豁免；`dev-cycle` 註明記錄提交後依新範圍重新 review。沿用既有的 artifact 有效性規則，沒有新增免重審的例外。`docs/AGENTS.md` 文件版本 2.2 → 2.3，流程契約維持 2.1。
+- 新增 WF-19、WF-20 的實跑紀錄 `docs/workflow-results/2026-10-07.md`（Claude Code 無頭模式，四組皆 PASS），規則驗證狀態同步更新。
+
 ## [4.5.0] - 2026-10-07
 
 ### 新增（`docs/agents/acceptance.md`、`docs/agents/review-evidence.md`、`skills/`）

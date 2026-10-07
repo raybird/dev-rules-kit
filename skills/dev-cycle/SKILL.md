@@ -36,7 +36,7 @@ description: 查詢 issue 進度或依既有授權自動推進需求、實作、
 | 任務全部完成但交付變更尚未提交 | 依 create-commit 準備並提交已授權的交付內容 |
 | 無 open PR，或 PR 範圍／Proof of Test 與交付版本不一致 | create-pr，建立或更新 |
 | 沒有符合 review-evidence.md 有效性規則的持久化報告 | review |
-| 有效 review 有 `需決策` 發現，README 待確認事項尚無對應結論 | 依 acceptance.md「逐題確認」取得決策並記入待確認事項；規格變更依規格修訂處理，需修正者回 execute-task，接受未修的 MUST FIX 記入 Gate 豁免紀錄 |
+| 有效 review 有 `需決策` 發現，README 待確認事項尚無對應結論 | 依 acceptance.md「逐題確認」取得決策並記入待確認事項；規格變更依規格修訂處理，需修正者回 execute-task，接受未修的 MUST FIX 記入 Gate 豁免紀錄；記錄提交後依新範圍重新 review |
 | 有效 review 為 RETURN TO execute-task | 修正問題、更新證據與提交，再審查新範圍 |
 | 有效 review 為 PASS | 等待合併，回報後結束本次調用 |
 
