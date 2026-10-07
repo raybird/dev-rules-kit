@@ -12,7 +12,7 @@
 
 ---
 
-## [Unreleased]
+## [4.5.0] - 2026-10-07
 
 ### 新增（`docs/agents/acceptance.md`、`docs/agents/review-evidence.md`、`skills/`）
 

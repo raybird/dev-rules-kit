@@ -221,7 +221,7 @@
 | Claude Code 在無 `CLAUDE.md` 時讀 `AGENTS.md`，有 `CLAUDE.md` 時需 `@AGENTS.md` 匯入 | 已實跑驗證 | 2026-09-29 Claude Code 2.1.284，`claude -p --model haiku` 於三個暫存 git 目錄詢問已載入的標記字：只有 `AGENTS.md` → 讀到；兩檔並存 → 只讀到 `CLAUDE.md`（兩次結果相同）；`CLAUDE.md` 含 `@AGENTS.md` → 兩份都讀到。其他版本與互動模式未測 |
 | 本 kit 維護指引改放根目錄 `AGENTS.md`，`CLAUDE.md` 以 `@AGENTS.md` 匯入 | 已實跑驗證 | 2026-09-29 在本 repo 以 `claude -p --model haiku`（不使用工具）逐字引用出 `AGENTS.md` 開頭說明句與「檔案責任」表的 INSTALL.md 列；Codex、OpenCode 讀取根目錄 `AGENTS.md` 未實測 |
 
-## 未發布 — 逐題確認與 review 需決策（2026-10-07）
+## v4.5.0 — 逐題確認與 review 需決策（2026-10-07）
 
 | 規則 | 狀態 | 驗證來源 |
 |---|---|---|
