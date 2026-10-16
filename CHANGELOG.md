@@ -12,6 +12,14 @@
 
 ---
 
+## [4.7.1] - 2026-10-16
+
+### 修正（`skills/dev-cycle/references/pending-scan.md`）
+
+- 掃描起點前的 issue 依平台狀態處理：`closed` 只計數、`open` 照常判定、`unknown` 只計數但摘要另列筆數並說明登記平台查詢後才能區分。原本「起點前且平台不是 open 只計數」沒有定義 `unknown`，只登記起點、未登記平台查詢的專案會把起點前仍 open 的 issue 一併藏住。由下游回報。
+- 明定沒有命中任何類型的 issue（包括正常進行中的 issue）不列出。
+- 只改技能參考檔，流程契約與 `docs/` 不變，下游不需重跑 `--update`。WF-24 新增對照二並實跑。
+
 ## [4.7.0] - 2026-10-16
 
 ### 新增（`skills/dev-cycle/`、`docs/agents/project.md`）
