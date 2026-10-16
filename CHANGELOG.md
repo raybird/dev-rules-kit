@@ -12,6 +12,21 @@
 
 ---
 
+## [4.7.0] - 2026-10-16
+
+### 新增（`skills/dev-cycle/`、`docs/agents/project.md`）
+
+- **懸置掃描格式化**：偵測規則、專案掃描命令的 JSON 輸出格式與回報版面定義在 `skills/dev-cycle/references/pending-scan.md`。project.md 可登記唯讀掃描命令（由專案提供）、含已關閉 issue 的平台查詢、掃描起點與合併判定方式；未登記時 agent 依同一規則掃描並註明。
+- **平台狀態為一級欄位**：結果依平台 open／closed 分段，新增「平台已關閉、README 未結案」「README 終態、平台仍 open」兩類雙向不一致。
+- **降低大專案雜訊**：「非核心狀態」單獨一類，起點前與平台已關閉者摺疊為計數；「未執行」只看 AC／SCN 驗證列；已完成仍有 📝／⏳ 步驟列為結案後仍有待觀察；每項標「使用者決定」或「可補紀錄」。合併判定未登記時平台 PR／MR 優先，Git 推測要標明，只含文件提交的分支不算交付。
+
+### 變更（`docs/AGENTS.md`、`docs/agents/document-types.md`、`docs/usage.md`、`scripts/init-project.py`）
+
+- 待確認事項 `不影響本次交付` 的結論以「追蹤：」寫明後續位置（issue、連結或 project.md 的 gate／地雷編號），不需後續寫「追蹤：無」並附理由；舊項目不需回頭修改。
+- 地雷紀錄：證據連結寫入前打開確認。
+- `init-project.py` 加入 v4.6 project.md 範本的雜湊，仍能提醒未客製的範本。
+- `docs/AGENTS.md` 文件版本 2.4 → 2.5，**流程契約 2.2 → 2.3**（向後相容）。`dev-cycle` 最低流程契約維持 2.2：下游未更新 `docs/` 也能使用，只是缺「追蹤：」規則時掃描會多列項目。新增回歸案例 WF-24，兩組實跑 PASS。
+
 ## [4.6.1] - 2026-10-16
 
 ### 修正（`scripts/init-project.py`、`INSTALL.md`、`docs/usage.md`）

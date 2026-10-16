@@ -8,7 +8,7 @@
 
 ## 提交與交付
 
-優先採專案提交規範；未定義時使用 `type(scope): 中文摘要`，issue 編號放 footer `Refs: #ID`。PR base 由現有 PR 或專案設定取得；無法確定才詢問。分支以 issue-ID 加描述為預設，可依既有慣例調整。使用 worktree 時記錄其位置格式，以及遠端需要 token 時的取得方式與使用者名（只寫取得方式，不寫 token 本身）。要讓 dev-cycle 的懸置掃描列出平台上尚未建立 issue 文件的 issue 時，記錄唯讀查詢命令。
+優先採專案提交規範；未定義時使用 `type(scope): 中文摘要`，issue 編號放 footer `Refs: #ID`。PR base 由現有 PR 或專案設定取得；無法確定才詢問。分支以 issue-ID 加描述為預設，可依既有慣例調整。使用 worktree 時記錄其位置格式，以及遠端需要 token 時的取得方式與使用者名（只寫取得方式，不寫 token 本身）。記錄合併判定方式（例如平台 MR merged 狀態，或 rebase 併入時以 commit subject 的 issue 編號為準）。dev-cycle 懸置掃描可另登記：唯讀掃描命令（輸出格式見 dev-cycle 技能的 `references/pending-scan.md`）、含已關閉 issue 的平台查詢命令、掃描起點（issue 編號或日期）。
 
 ## 常青文件更新責任
 

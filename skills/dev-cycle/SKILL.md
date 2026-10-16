@@ -13,15 +13,7 @@ description: 查詢 issue 進度或依既有授權自動推進需求、實作、
 
 ## 懸置掃描
 
-查狀態而未指定 issue 時，唯讀掃描 project.md 指定的 issue 目錄（未指定時為 `docs/issues/`）下每個 issue 的 README 與 Git／PR 狀態，列出沒收尾的項目：
-
-- 狀態不是 `已完成`／`不修復`，但對應分支或 PR 已合併。
-- `等待外部驗收窗` 的日期已過或事件已發生；無法判斷事件是否發生時照列並註明。
-- `已完成`，但驗證或 Proof 仍有未豁免的 `未執行` 項目。
-- 待確認事項為 `待確認`，或 `不影響本次交付` 但仍需後續處理而沒寫追蹤位置。
-- project.md 登記了平台 issue 查詢命令時，加列尚無 issue 文件的 open issue。
-
-每項列 issue、類型、依據位置與建議下一步，依到期先後排序。全部 issue 都檢查過才算完成。沒有項目時，整則回覆只有一行：已檢查的 issue 數與「沒有懸置項目」。
+查狀態而未指定 issue 時，依 [references/pending-scan.md](references/pending-scan.md) 唯讀掃描：project.md 登記了掃描命令就執行它，否則依該檔規則逐一讀 issue README；平台狀態與合併判定依 project.md 登記的方式取得。依該檔版面回報，範圍內全部 issue 都判定過才算完成。
 
 ## 任務來源
 
