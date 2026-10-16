@@ -118,7 +118,7 @@ If verification cannot be fully automated, provide explicit manual steps.
 
 **When the criterion is a production observation rather than a test**, ask the reverse question for every criterion: **"If this had failed, would this criterion still be green?"** If the answer is not a clear "no", the criterion is unusable — change it or add one. Observational evidence has no red baseline: a test fails at least once to prove it can detect the problem, an observation never does, so a criterion that has stopped reflecting reality looks exactly like correct behavior. Validate the criterion itself first against a control set with a known result, then record the query, the range, and the actual values.
 
-**Not every task ends in a merge, and "no new commits" does not mean stuck.** Waiting on an external verification window (a weekly batch night, a month-end close, a reconciliation date) and a deliberate decision not to fix are both legitimate states: record the expected window and what will be observed, or the rationale and how it will be tracked. Neither may be used to hide verification that could already have been done.
+**Not every task ends in a merge, and "no new commits" does not mean stuck.** Waiting on an external verification window (a weekly batch night, a month-end close, a reconciliation date, the next release) and a deliberate decision not to fix are both legitimate states: record the expected window and what will be observed, or the rationale and how it will be tracked. Neither may be used to hide verification that could already have been done.
 
 ---
 

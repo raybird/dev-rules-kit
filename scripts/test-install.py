@@ -139,7 +139,9 @@ class InstallTests(unittest.TestCase):
         stamp = (self.project / 'docs/AGENTS.md').stat().st_mtime_ns
         self.assertEqual(self.init().returncode, 0)
         self.assertEqual((self.project / 'docs/AGENTS.md').stat().st_mtime_ns, stamp)
-        self.assertEqual(self.init('--check').returncode, 0)
+        result = self.init('--check')
+        self.assertEqual(result.returncode, 0)
+        self.assertIn('project.md 仍是初始化範本原文', result.stdout)
 
     def test_init_conflict_has_no_partial_writes(self):
         target = self.project / 'docs/agents/issue-checklist.md'
@@ -174,7 +176,9 @@ class InstallTests(unittest.TestCase):
         self.assertEqual(self.init('--update').returncode, 0)
         self.assertEqual(target.read_bytes(), source.read_bytes())
         self.assertEqual(project_rules.read_text(), '# 本地規範\n測試：make check\n')
-        self.assertEqual(self.init('--check').returncode, 0)
+        result = self.init('--check')
+        self.assertEqual(result.returncode, 0)
+        self.assertNotIn('project.md 仍是初始化範本原文', result.stdout)
 
     def test_update_rejects_edited_core_without_partial_writes(self):
         self.assertEqual(self.init().returncode, 0)

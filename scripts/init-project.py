@@ -9,10 +9,22 @@ import sys
 
 MANIFEST = Path('docs/.dev-rules-kit.json')
 CUSTOM = Path('docs/agents/project.md')
+# 歷代上游 project.md 範本的雜湊；下游檔案仍等於其中之一即代表尚未客製。
+# 修改範本時，把修改前的雜湊加入此集合；目前版本執行時從 kit 讀取。
+PAST_TEMPLATES = {
+    'e373a07844d1a52aba12e9e6c005cfcc5bb7f1f18f37220978efa653d3f9883e',
+    '9f00730b9f1144586459d623e6f5b1606a7af599a3af401fc2bc120c3654b37d',
+}
 
 
 def digest(path):
     return hashlib.sha256(path.read_bytes()).hexdigest()
+
+
+def template_notice(project, root):
+    target = project / CUSTOM
+    if target.is_file() and digest(target) in PAST_TEMPLATES | {digest(root / CUSTOM)}:
+        print('提醒：project.md 仍是初始化範本原文，常青文件觸發、驗證命令與地雷登記尚無專案內容。')
 
 
 def safe_path(project, rel):
@@ -79,6 +91,7 @@ def main():
         if pending:
             return 1
         print('OK：核心與本 kit 一致，project.md 已存在；客製語意另行覆核。')
+        template_notice(project, root)
         return 0
     if args.dry_run:
         print('dry-run：未寫入任何文件。')
@@ -95,6 +108,7 @@ def main():
         manifest.write_text(serialized)
     custom = '已建立 project.md 範本' if CUSTOM in pending else '既有 project.md 保持原樣'
     print(f'OK：部署／更新 {len(pending)} 份文件，{custom}。')
+    template_notice(project, root)
     return 0
 
 

@@ -12,6 +12,29 @@
 
 ---
 
+## [4.6.0] - 2026-10-16
+
+### 新增（`docs/agents/document-types.md`、`docs/AGENTS.md`、`docs/agents/project.md`）
+
+- **地雷紀錄**：`document-types.md` 新增「地雷紀錄」，定義地雷（實際出事、可能被其他 issue 重踩的坑）與 gate（每個 issue 都要遵守的規則）的分界、收錄門檻（要有可連結的事故或證據）、每條內容（穩定編號、症狀、觸發情境、怎麼查、證據連結）、失效時保留編號、位置由 project.md 登記，以及個人記憶裡的地雷何時寫入版控。`docs/AGENTS.md`「常青文件更新責任」加上指向。
+- **project.md 範本**：「本地 gate 與案例」區分 gate 與地雷；「常青文件更新責任」提醒交接或上手文件也要登記觸發條件。既有下游的 project.md 不會被更新覆蓋，需要時自行參照新範本。
+
+### 變更（`docs/AGENTS.md`、`scripts/init-project.py`、`INSTALL.md`、`docs/usage.md`）
+
+- 待確認事項：`不影響本次交付` 但仍需後續處理的項目，結論寫明追蹤位置並由該 issue 回連；issue 目錄外的分析、事故或交接文件留下的待決事項，記入相關 issue 或開新 issue。
+- 日期規範：常青文件的最後驗證日期只保留最近一次的日期與範圍，段落驗證時間不同時在段落層級記錄，避免標頭串接膨脹。
+- 核心層齊備性檢查：project.md 仍是初始化範本原文時回報為待處理事項，流程照常推進。`init-project.py` 在 `--check` 與部署後偵測歷代範本原文並印出提醒，不影響結束碼。
+- **等待窗口可為事件**：`等待外部驗收窗` 的預定窗口可寫日期，或可觀察的觸發事件及判斷它已發生的方式（例如下一次發版）。雙語 rules、`verification.md`、`docs/usage.md` 同步。
+- **合併不等於結案**：PR 已合併、仍有未豁免的未執行驗證時，狀態記 `等待外部驗收窗` 而非 `已完成`；觀察完成或豁免後才結案。`dev-cycle` 狀態偵測新增對應列。
+
+### 新增（`skills/dev-cycle/`、`docs/agents/project.md`）
+
+- **懸置掃描**：查狀態而未指定 issue 時，`dev-cycle` 唯讀掃描所有 issue README 與 Git／PR 狀態，列出狀態未隨合併更新、到期的等待窗口、合併後仍有未執行驗證、未追蹤的待確認事項；project.md 登記平台 issue 查詢命令時，加列尚無 issue 文件的 open issue。沒有項目時只回一行。
+
+### 相容性
+
+- `docs/AGENTS.md` 文件版本 2.3 → 2.4，**流程契約 2.1 → 2.2**。`dev-cycle` 宣告最低流程契約 2.2，下游需更新 `docs/` 後才相容；其他技能維持 2.1。新增回歸案例 WF-21～WF-23，Claude Code 無頭模式實跑六組皆 PASS（`docs/workflow-results/2026-10-16.md`）。
+
 ## [4.5.1] - 2026-10-07
 
 ### 變更（`docs/agents/review-evidence.md`、`skills/dev-cycle/`）

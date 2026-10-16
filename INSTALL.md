@@ -43,7 +43,7 @@
 
 完成判準：`python3 <kit>/scripts/init-project.py <project> --check` 輸出 `OK`。專案是 Git repo 時，告訴使用者異動的檔案；要提交到哪個分支由使用者決定。
 
-`docs/agents/project.md` 是專案自己的客製檔，初始化只在不存在時建立、更新時保留；提醒使用者可在其中記錄測試命令與專案邊界，agent 不需要為填表猜測內容。
+`docs/agents/project.md` 是專案自己的客製檔，初始化只在不存在時建立、更新時保留；提醒使用者可在其中記錄測試命令、專案邊界與已知地雷，agent 不需要為填表猜測內容。`--check` 印出「project.md 仍是初始化範本原文」時照實轉告，不算失敗。
 
 ## 4. 通用規則（選用，先問使用者）
 
