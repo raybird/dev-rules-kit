@@ -12,6 +12,14 @@
 
 ---
 
+## [4.7.2] - 2026-10-16
+
+### 變更（`skills/dev-cycle/references/pending-scan.md`、`docs/agents/project.md`、`scripts/init-project.py`）
+
+- 懸置掃描的輸入新增「專案判定規則」（選用）：project.md 補充的判定、排除或收尾認定規則優先於 kit 的偵測規則，依此改判的項目在摘要註明筆數與依據。哪些情況算已收尾、哪些是文件債，由各專案依自己的習慣決定，kit 不另加判斷規則。
+- project.md 範本提示可登記上述判定規則；`init-project.py` 加入 v4.7 範本雜湊。
+- 流程契約與已部署的核心 `docs/` 不變，下游不需重跑 `--update`。WF-24 新增對照三並實跑。
+
 ## [4.7.1] - 2026-10-16
 
 ### 修正（`skills/dev-cycle/references/pending-scan.md`）
