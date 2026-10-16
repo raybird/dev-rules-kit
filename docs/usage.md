@@ -18,7 +18,7 @@ python3 scripts/init-project.py /path/to/project --update
 python3 scripts/init-project.py /path/to/project --check
 ```
 
-更新保留既有 project.md，只更新與上次部署基線一致的核心。核心有本地修改、缺少可信基線或 symlink／hardlink 衝突時，整批停止。`--check` 驗證核心與 kit 一致及客製檔存在，不驗證客製語意；project.md 仍是範本原文時另印提醒，不影響結果。初次從舊版遷移依 [AGENTS.md](AGENTS.md#客製邊界與同步策略) 人工分離客製內容。
+更新保留既有 project.md，只更新與上次部署基線一致的核心。核心有本地修改、缺少可信基線或 symlink／hardlink 衝突時，整批停止。`--check` 驗證核心與 kit 一致及客製檔存在，不驗證客製語意；核心只是落後本 kit、本地沒改過時列為「落後本 kit」，執行 `--update` 即可，真的有本地修改才列為「衝突」；project.md 仍是範本原文時另印提醒，不影響結果。初次從舊版遷移依 [AGENTS.md](AGENTS.md#客製邊界與同步策略) 人工分離客製內容。
 
 文件版本描述編輯歷程，流程契約描述技能相容性。同 major、專案 minor 不低於技能需求即可；純文字更新不要求所有技能同步跳號。升級前仍查 [CHANGELOG](../CHANGELOG.md)。
 

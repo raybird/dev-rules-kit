@@ -12,6 +12,12 @@
 
 ---
 
+## [4.6.1] - 2026-10-16
+
+### 修正（`scripts/init-project.py`、`INSTALL.md`、`docs/usage.md`）
+
+- `--check`、`--dry-run` 與不帶 `--update` 的初始化，原本把「核心落後本 kit、但與部署基線相同（本地沒改過）」也報成「衝突：核心有本地變更或無部署基線，請先人工合併」，誤導使用者去人工合併。現在這種情況列為「落後本 kit：…（未被本地修改，可用 --update 更新）」，仍不寫入、結束碼仍為 1；真的有本地修改或沒有基線才列為衝突。v4.6.0 升級時由下游回報。
+
 ## [4.6.0] - 2026-10-16
 
 ### 新增（`docs/agents/document-types.md`、`docs/AGENTS.md`、`docs/agents/project.md`）

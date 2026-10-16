@@ -180,6 +180,21 @@ class InstallTests(unittest.TestCase):
         self.assertEqual(result.returncode, 0)
         self.assertNotIn('project.md 仍是初始化範本原文', result.stdout)
 
+    def test_check_reports_outdated_core_separately(self):
+        self.assertEqual(self.init().returncode, 0)
+        source = self.repo / 'docs/agents/issue-checklist.md'
+        source.write_text(source.read_text() + '\n新版檢查\n')
+        for args in (('--check',), ('--dry-run',), ()):
+            result = self.init(*args)
+            self.assertNotEqual(result.returncode, 0)
+            self.assertIn('落後本 kit：docs/agents/issue-checklist.md', result.stdout)
+            self.assertNotIn('衝突', result.stdout)
+        target = self.project / 'docs/agents/issue-checklist.md'
+        target.write_text(target.read_text() + '\n本地修改\n')
+        result = self.init('--check')
+        self.assertNotEqual(result.returncode, 0)
+        self.assertIn('衝突：docs/agents/issue-checklist.md', result.stdout)
+
     def test_update_rejects_edited_core_without_partial_writes(self):
         self.assertEqual(self.init().returncode, 0)
         target = self.project / 'docs/AGENTS.md'

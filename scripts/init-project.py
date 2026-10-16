@@ -66,7 +66,7 @@ def main():
         except (ValueError, AttributeError, OSError) as error:
             print(f'衝突：無法讀取部署基線：{error}；未寫入任何文件。')
             return 1
-    pending, conflicts = [], []
+    pending, outdated, conflicts = [], [], []
     for rel in files:
         target = project / rel
         if not safe_path(project, rel):
@@ -76,16 +76,22 @@ def main():
         elif rel == CUSTOM:
             continue
         elif digest(target) != digest(root / rel):
-            if args.update and previous.get(str(rel)) == digest(target):
-                pending.append(rel)
+            # 與部署基線相同代表本地沒改過，只是落後本 kit。
+            if previous.get(str(rel)) == digest(target):
+                (pending if args.update else outdated).append(rel)
             else:
                 conflicts.append(rel)
     for rel in conflicts:
         print(f'衝突：{rel}（核心有本地變更或無部署基線，請先人工合併）')
+    for rel in outdated:
+        print(f'落後本 kit：{rel}（未被本地修改，可用 --update 更新）')
     for rel in pending:
         print(f'待部署／更新：{rel}')
     if conflicts:
         print('未寫入任何文件；保留客製內容，解決衝突後重新執行。')
+        return 1
+    if outdated:
+        print('未寫入任何文件；執行 --update 更新落後的核心。')
         return 1
     if args.check:
         if pending:
