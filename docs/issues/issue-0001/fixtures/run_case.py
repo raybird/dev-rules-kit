@@ -40,7 +40,8 @@ def mask(text, fixture):
                     (os.environ.get("EVIDENCE_MASK_ROOT", ""), "<scratchpad>"), (str(Path.home()), "~")]
     for old, new in replacements:
         if old:
-            text = text.replace(old, new)
+            # Claude Code 的 projects 目錄以「/」換成「-」的路徑命名，一併遮蔽
+            text = text.replace(old, new).replace(old.replace("/", "-"), new)
     return text
 
 
@@ -96,8 +97,9 @@ def main():
     if after[1]:
         lines += ["", "### 回合後 git status", "", "```text", after[1].rstrip(), "```"]
     lines += ["", "### 最終輸出", "", "````markdown", result.rstrip(), "````", ""]
+    separator = "\n" if turn > 1 else ""
     with evidence.open("a") as handle:
-        handle.write(mask("\n".join(lines).rstrip() + "\n\n", fixture))
+        handle.write(separator + mask("\n".join(lines).rstrip() + "\n", fixture))
     print(json.dumps({"session": session, "turn": turn, "changed": before != after, "exit": proc.returncode}))
     print(result)
 
