@@ -173,6 +173,7 @@ Feature: 減少形式限制並維持必要流程保障
 | 2026-10-18 | 依 TBD-7 與審查 SHOULD FIX 修正並重跑（s9～s10），等待重新審查 | Claude Code |
 | 2026-10-18 | 審查 `443ba7c` 判定 PASS，含需決策的 SHOULD FIX；使用者選「允許，補齊措辭」「這輪一併修正」（TBD-8） | 使用者／Claude Code |
 | 2026-10-18 | 依 TBD-8 修正並重跑（s11），等待重新審查 | Claude Code |
+| 2026-10-18 | 審查 `2ca9654` 判定 PASS，含 4 項 SHOULD FIX；使用者選擇修正後送第五輪審查，通過後本機以 `--no-ff` 合併到 main、不 push | 使用者／Claude Code |
 
 ---
 
