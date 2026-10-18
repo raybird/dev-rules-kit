@@ -220,6 +220,7 @@ print(json.dumps({
         {"id": "2216", "state": "open"},
         {"id": "2217", "state": "open"},
         {"id": "2218", "state": "open"},
+        {"id": "2219", "state": "open"},
         {"id": "2299", "title": "匯入時忽略空白標題", "state": "open"},
     ]
 }, ensure_ascii=False, indent=2))
@@ -499,19 +500,33 @@ def build_scan(kit, out):
     simple_feature(p, "2217", "sort-done", "done_last", 'True', [1, 2], "2026-10-10", small(
         "2217", "已完成項目排在最後", "等待外部驗收窗",
         acs=ac1 + [("AC-2", "使用者以實際清單操作兩週後確認排序符合習慣 — 檢查方式：使用者回報")],
-        steps=done_steps + [("⏳", "**AC-2** — 窗口：2026-11-15 起由使用者回報兩週使用結果；判準：使用者確認排序符合習慣")],
-        proof=pass_proof + [("AC-2", "未執行", "等待 2026-11-15 的窗口")], created="2026-10-09",
-        timeline=[("2026-10-09", "建立"), ("2026-10-10", "合併進 main；AC-2 待 2026-11-15 的窗口，轉入等待外部驗收窗")]))
+        steps=done_steps + [("⏳", "**AC-2** — 窗口：2027-06-30 起由使用者回報兩週使用結果；判準：使用者確認排序符合習慣")],
+        proof=pass_proof + [("AC-2", "未執行", "等待 2027-06-30 的窗口")], created="2026-10-09",
+        timeline=[("2026-10-09", "建立"), ("2026-10-10", "合併進 main；AC-2 待 2027-06-30 的窗口，轉入等待外部驗收窗")]))
     simple_feature(p, "2218", "archive", "archived", 'True', [1, 2], "2026-10-11", small(
         "2218", "封存已完成項目", "等待外部驗收窗",
         acs=ac1 + [("AC-2", "合作團隊完成內部導入後確認封存結果可讀 — 檢查方式：合作團隊回報")],
         steps=done_steps + [("⏳", "**AC-2** — 窗口：合作團隊完成內部導入（以對方通知為準）；判準：對方確認封存結果可讀")],
         proof=pass_proof + [("AC-2", "未執行", "等待合作團隊導入")], created="2026-10-10",
         timeline=[("2026-10-10", "建立"), ("2026-10-11", "合併進 main；AC-2 待合作團隊導入，轉入等待外部驗收窗")]))
+    # 2219 等待外部驗收窗、窗口已到，AC-2 於打 tag 後執行通過、只是狀態未更新（審查 443ba7c 後新增）
+    def readme_2219(done):
+        step = ("✅", "**AC-2** — 窗口：下一次正式發版（main 上出現新的 `v*` tag）；完成證據：2026-10-12 使用者以 v1.1.0 回報總數正確") if done \
+            else ("⏳", "**AC-2** — 窗口：下一次正式發版（main 上出現新的 `v*` tag）；判準：使用者以發版產物確認總數")
+        row = ("AC-2", "PASS", "2026-10-12 使用者以 v1.1.0 回報總數正確") if done else ("AC-2", "未執行", "等待發版")
+        timeline = [("2026-10-03", "建立"), ("2026-10-04", "合併進 main；AC-2 待發版，轉入等待外部驗收窗")]
+        if done:
+            timeline.append(("2026-10-12", "使用者以 v1.1.0 回報 AC-2 通過"))
+        return small("2219", "列表顯示總數", "等待外部驗收窗",
+                     acs=ac1 + [("AC-2", "發版後使用者以發版產物確認總數正確 — 檢查方式：使用者回報")],
+                     steps=done_steps + [step], proof=pass_proof + [row], created="2026-10-03", timeline=timeline)
+    simple_feature(p, "2219", "count", "counted", 'True', [1, 2], "2026-10-04", readme_2219(False))
     # 尚未合併的 issue
     pending("2212", small("2212", "雲端同步", "審查中", acs=ac1, steps=todo_step, created="2026-10-02",
                           timeline=[("2026-10-02", "建立")]), "2026-10-02")
     run(p, "git", "tag", "-a", "v1.1.0", "-m", "v1.1.0", date="2026-10-10")
+    write(p / "docs/issues/issue-2219/README.md", readme_2219(True))
+    commit(p, "docs: 記錄 issue-2219 AC-2 通過\n\nRefs: #2219", "2026-10-12")
     pending("2205", small("2205", "支援刪除項目", "待實作", acs=ac1, steps=todo_step, created="2026-10-10",
                           timeline=[("2026-10-10", "建立")]), "2026-10-10")
     pending("2214", small("2214", "顏色輸出", None, acs=ac1, steps=todo_step, created="2026-10-11",

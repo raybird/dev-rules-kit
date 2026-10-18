@@ -85,7 +85,15 @@ def main():
     after = snapshot(fixture)
     lines = []
     if turn == 1:
+        skills = Path(os.environ.get("CLAUDE_CONFIG_DIR", "")) / "skills"
+        digest = hashlib.sha256()
+        for path in sorted(p for p in skills.rglob("*") if p.is_file()):
+            digest.update(str(path.relative_to(skills)).encode())
+            digest.update(path.read_bytes())
+        kit = subprocess.run(["git", "rev-parse", "HEAD"], cwd=Path(__file__).resolve().parent,
+                             capture_output=True, text=True).stdout.strip()
         lines += [f"# {evidence.stem}", "", f"- fixture：`{fixture.name}`", f"- 指定模型：`{MODEL}`",
+                  f"- kit HEAD：`{kit[:7]}`；隔離設定技能摘要：`{digest.hexdigest()[:16]}`",
                   f"- 允許工具：{', '.join(ALLOWED)}", ""]
     lines += [f"## 回合 {turn}", "", f"- session：`{session}`；實際模型：{', '.join(models) or '未知'}；"
               f"exit {proc.returncode}；耗時 {elapsed:.0f}s", f"- 前：HEAD `{before[0][:7]}`、工作樹雜湊 `{before[2]}`",
