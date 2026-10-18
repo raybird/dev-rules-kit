@@ -2,12 +2,14 @@
 """以 claude -p 在 fixture 執行一輪，並把輸入、工具動作、輸出與前後狀態寫入證據檔。
 
 用法：
-  CLAUDE_CONFIG_DIR=<隔離設定> python3 run_case.py <fixture 目錄> <證據 .md> <raw 目錄> "<使用者訊息>" [--resume <session_id>]
+  CLAUDE_CONFIG_DIR=<隔離設定> [EVIDENCE_MASK_ROOT=<暫存根目錄>] python3 run_case.py <fixture 目錄> <證據 .md> <raw 目錄> "<使用者訊息>" [--resume <session_id>]
 
-同一證據檔重複呼叫時以「回合」附加。需要前後狀態一致的查詢案例，比對工作樹雜湊與 HEAD。
+同一證據檔重複呼叫時以「回合」附加。需要前後狀態一致的查詢案例，比對 HEAD 與工作樹、refs、git config 合併的雜湊。
+證據寫入前遮蔽 fixture 目錄、隔離設定與家目錄的絕對路徑；agent 輸出原文的行尾空白保留。
 """
 import hashlib
 import json
+import os
 import subprocess
 import sys
 import time
@@ -20,17 +22,30 @@ MODEL = "claude-opus-5-5"
 
 def snapshot(cwd):
     head = subprocess.run(["git", "rev-parse", "HEAD"], cwd=cwd, capture_output=True, text=True).stdout.strip()
+    refs = subprocess.run(["git", "for-each-ref", "--format=%(refname) %(objectname)"], cwd=cwd,
+                          capture_output=True, text=True).stdout
+    config = (Path(cwd) / ".git" / "config").read_bytes()
     status = subprocess.run(["git", "status", "--porcelain", "--untracked-files=all"], cwd=cwd,
                             capture_output=True, text=True).stdout
-    digest = hashlib.sha256()
+    digest = hashlib.sha256(refs.encode() + config)
     for path in sorted(p for p in Path(cwd).rglob("*") if p.is_file() and ".git" not in p.parts):
         digest.update(str(path.relative_to(cwd)).encode())
         digest.update(path.read_bytes())
     return head, status, digest.hexdigest()[:16]
 
 
-def brief(tool_input):
-    text = json.dumps(tool_input, ensure_ascii=False)
+def mask(text, fixture):
+    """遮蔽本機路徑：fixture 所在目錄、隔離設定、EVIDENCE_MASK_ROOT 與家目錄。"""
+    replacements = [(str(fixture.resolve().parent), "<fixtures>"), (os.environ.get("CLAUDE_CONFIG_DIR", ""), "<隔離設定>"),
+                    (os.environ.get("EVIDENCE_MASK_ROOT", ""), "<scratchpad>"), (str(Path.home()), "~")]
+    for old, new in replacements:
+        if old:
+            text = text.replace(old, new)
+    return text
+
+
+def brief(tool_input, fixture):
+    text = mask(json.dumps(tool_input, ensure_ascii=False), fixture)
     return text if len(text) <= 160 else text[:157] + "..."
 
 
@@ -60,7 +75,7 @@ def main():
         if event.get("type") == "assistant":
             for block in event["message"].get("content", []):
                 if block.get("type") == "tool_use":
-                    tools.append(f"{block['name']} {brief(block.get('input', {}))}")
+                    tools.append(f"{block['name']} {brief(block.get('input', {}), fixture)}")
         if event.get("type") == "result":
             result = event.get("result", "")
             session = event.get("session_id")
@@ -77,12 +92,12 @@ def main():
               "", "### 使用者輸入", "", "```text", message, "```", "", "### 工具動作", ""]
     lines += [f"{n}. `{t}`" for n, t in enumerate(tools, 1)] or ["（無）"]
     if denials:
-        lines += ["", "權限拒絕：" + "; ".join(brief(d) for d in denials)]
+        lines += ["", "權限拒絕：" + "; ".join(brief(d, fixture) for d in denials)]
     if after[1]:
         lines += ["", "### 回合後 git status", "", "```text", after[1].rstrip(), "```"]
     lines += ["", "### 最終輸出", "", "````markdown", result.rstrip(), "````", ""]
     with evidence.open("a") as handle:
-        handle.write("\n".join(lines) + "\n")
+        handle.write(mask("\n".join(lines).rstrip() + "\n\n", fixture))
     print(json.dumps({"session": session, "turn": turn, "changed": before != after, "exit": proc.returncode}))
     print(result)
 

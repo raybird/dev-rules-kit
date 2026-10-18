@@ -217,6 +217,7 @@ print(json.dumps({
         {"id": "2213", "state": "closed"},
         {"id": "2214", "state": "open"},
         {"id": "2215", "state": "open"},
+        {"id": "2216", "state": "open"},
         {"id": "2299", "title": "匯入時忽略空白標題", "state": "open"},
     ]
 }, ensure_ascii=False, indent=2))
@@ -485,6 +486,13 @@ def build_scan(kit, out):
         steps=done_steps + [("⏳", "**AC-2** — 窗口：下一次正式發版（main 上出現新的 `v*` tag）；判準：使用者以該版確認排序")],
         proof=pass_proof + [("AC-2", "未執行", "等待發版")], created="2026-10-03",
         timeline=[("2026-10-03", "建立"), ("2026-10-05", "合併進 main；AC-2 待發版，轉入等待外部驗收窗")]))
+    # 2216 已合併、狀態仍審查中，AC-2 未執行無豁免（審查 ca51b4b 後新增）
+    simple_feature(p, "2216", "title-trim", "trimmed", 'i["title"] == i["title"].strip()', [1, 2], "2026-10-09", small(
+        "2216", "標題去除前後空白", "審查中",
+        acs=ac1 + [("AC-2", "以使用者的實際清單確認去除空白後沒有標題被誤改 — 檢查方式：使用者回報")],
+        steps=done_steps + [("⏳", "**AC-2** — 待使用者回報")],
+        proof=pass_proof + [("AC-2", "未執行", "尚未取得使用者回報")], created="2026-10-08",
+        timeline=[("2026-10-08", "建立")]))
     # 尚未合併的 issue
     pending("2212", small("2212", "雲端同步", "審查中", acs=ac1, steps=todo_step, created="2026-10-02",
                           timeline=[("2026-10-02", "建立")]), "2026-10-02")
