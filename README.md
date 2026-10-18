@@ -45,7 +45,7 @@ python3 ~/Tools/dev-rules-kit/scripts/init-project.py /path/to/project  # 初始
 | 讓它自動往下做 | `/dev-cycle 101` 或「繼續處理 issue 101」 |
 | 只查進度（不會動任何檔案） | 「issue 101 到哪了」 |
 | 審查目前的變更 | `/review` |
-| 回答 agent 的提問 | 「照建議」，或「一起問」一次看完所有獨立的題目 |
+| 回答 agent 的提問 | 「照建議」；想一題一題回答時直接說 |
 | 這次想快一點 | 「這次不用寫 Gherkin」「不用先寫測試」 |
 
 `dev-cycle` 會串起完整流程，遇到需要你決定的事、等待合併或外部驗收時停下回報：
