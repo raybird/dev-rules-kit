@@ -29,7 +29,7 @@ python3 scripts/init-project.py /path/to/project --check
 /dev-cycle 101
 ```
 
-已明確提供的結果與範圍可作核准來源；缺少會影響結果的決策才詢問：一次問一題並附建議答案，回「照建議」即採用；想一次看完彼此獨立的題目時明說「一起問」。Small 以 README 的 AC 與步驟記錄；Medium 增加 implementation-plan；Large 在同一計畫細化 Phase／Task，分析文件依實際調查或取捨需要建立。
+已明確提供的結果與範圍可作核准來源；缺少會影響結果的決策才詢問：彼此獨立的短題合併詢問，需要取捨或有相依的題目單獨問，各題附建議答案，回「照建議」即採用；想一題一題回答時直接說。Small 以 README 的 AC 與步驟記錄；Medium 增加 implementation-plan；Large 在同一計畫細化 Phase／Task，分析文件依實際調查或取捨需要建立。
 
 ```text
 new-issue → decompose（Large，在原計畫細化）
@@ -51,7 +51,7 @@ issue 101 到哪了
 有哪些 issue 還沒收尾
 ```
 
-第一句只查詢、不補寫 metadata。第二句是推進，會沿用已有授權；不是看到「進度」就停止執行。第三句沒指定 issue，dev-cycle 唯讀掃描所有 issue，列出已合併但狀態未更新、到期的等待窗口、結案後仍有待觀察、未追蹤的待確認事項，以及平台與文件狀態不一致；結果依平台 open／closed 分段。大專案可在 project.md 登記掃描命令、含已關閉 issue 的平台查詢與掃描起點，見 dev-cycle 技能的 `references/pending-scan.md`。
+第一句只查詢、不補寫 metadata。第二句是推進，會沿用已有授權；不是看到「進度」就停止執行。第三句沒指定 issue，dev-cycle 唯讀掃描所有 issue，列出已合併但狀態未更新、到期的等待窗口、結案後仍有待觀察、未追蹤的待確認事項，以及平台與文件狀態不一致；結果依「必須處理／建議整理／無法判定」分組，專案排除規則不會藏住未豁免的必要驗收。大專案可在 project.md 登記掃描命令、含已關閉 issue 的平台查詢與掃描起點，見 dev-cycle 技能的 `references/pending-scan.md`。
 
 等待外部驗收窗時，先完成當下能做的工作，再記預定窗口（日期或觸發事件）與判準，回報後結束本次調用。等待合併同樣回報後結束，不輪詢空轉、不自動合併。重新呼叫時從文件、Git／PR 與持久化證據恢復。
 

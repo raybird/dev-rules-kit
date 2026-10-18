@@ -12,6 +12,25 @@
 
 ---
 
+## [4.8.0] - 2026-10-18
+
+減少不必要的問答與格式誤報，保留授權邊界與必要驗收（[issue #1](https://github.com/raybird/dev-rules-kit/issues/1)；前後對照見 `docs/workflow-results/2026-10-18.md`）。
+
+### 變更（`docs/agents/acceptance.md`、`skills/new-issue/SKILL.md`）
+
+- 澄清提問：彼此獨立、可簡短回答且答案不影響其他題的題目預設合併在一則；需要取捨或會改變後續題目的題目單獨問；使用者指定問法時依其偏好。不再需要說「一起問」。
+- 核准範圍只含使用者原話與其接受的答案；規劃時推導出的可觀察行為併入提問或標 `待核准`，只在回覆中揭露為假設不等於已接受。基準中 4 例有 3 例把推導行為直接寫成已核准。
+
+### 變更（`docs/AGENTS.md`、`skills/dev-cycle/references/pending-scan.md`）
+
+- 待確認事項 `不影響本次交付` 的追蹤依內容判定：可確認存在的去向，或具體、與範圍相關的不追蹤理由；「追蹤：」改為建議寫法。懸置掃描依結構化欄位 → 原文明確引用 → 不追蹤理由的優先序判定，來源矛盾或無法確認時標「資訊不足」。不追蹤理由不取代 gate 豁免。
+- 懸置掃描回報改依「必須處理／建議整理／無法判定」分組並保留偵測類型，不再要求依平台 open／closed 分段、狀態原文字數與排序。
+- 專案判定規則仍優先，但已確認且未豁免的必要驗收缺漏（結案後仍有待觀察、窗口到期）照常列出並註明衝突。基準中 `legacy` 排除規則會把這類缺漏藏住。
+
+### 下游更新
+
+- 流程契約不變（2.3）；`docs/AGENTS.md` 文件版本 2.6。核心 `docs/` 有變動，下游以 `init-project.py --update` 更新；既有「追蹤：」寫法與 project.md 不需修改。
+
 ## [4.7.2] - 2026-10-16
 
 ### 變更（`skills/dev-cycle/references/pending-scan.md`、`docs/agents/project.md`、`scripts/init-project.py`）
