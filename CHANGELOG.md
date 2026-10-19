@@ -12,6 +12,16 @@
 
 ---
 
+## [4.8.1] - 2026-10-19
+
+### 變更（`docs/agents/review-evidence.md`、`docs/AGENTS.md`）
+
+- 「本機 artifact 提交後的有效性」補上使用者決定不重新審查時的去處：未經審查的提交記入 Gate 豁免紀錄，報告的 PASS 仍只標在被審查 SHA，PR 證據照列 `verify-artifact.py` 的結果並引用該豁免。`verify-artifact.py` 不放寬。由下游回報：審查後的勘誤提交改到驗收條件與核准來源，使用者決定沿用 PASS，agent 把沿用寫在報告附註，沒有記入豁免紀錄。
+
+### 下游更新
+
+- 流程契約不變（2.3）；`docs/AGENTS.md` 文件版本 2.7。核心 `docs/` 有變動，下游以 `init-project.py --update` 更新。
+
 ## [4.8.0] - 2026-10-18
 
 減少不必要的問答與格式誤報，保留授權邊界與必要驗收（[issue #1](https://github.com/raybird/dev-rules-kit/issues/1)；前後對照見 `docs/workflow-results/2026-10-18.md`）。
