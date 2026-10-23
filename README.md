@@ -1,5 +1,7 @@
 # dev-rules-kit
 
+繁體中文 | [English](README.en.md)
+
 讓 AI coding agent 照一套可驗證的流程做事：先把需求講清楚、用真實測試證明完成、交給獨立 reviewer 審查，每一步都留下證據。支援 **Codex**、**Claude Code**、**OpenCode**、**Antigravity**、**Cursor**。
 
 ## 它能幫你做什麼
