@@ -30,10 +30,10 @@ git log -1 --format=%H -G '\*\*核准來源\*\*' "${reviewed_sha}" -- "docs/issu
 | 編號 | 工作與產出 | 相依／啟用條件 | 驗收編號 | 完成判準 | 狀態／證據 |
 |---|---|---|---|---|---|
 | S1 | 依上方判定修改 `verify-artifact.py`，在 `test-evidence.py` 補正負向案例 | SCN-001～003 已核准 | SCN-001～003 | 下方「腳本案例」全部通過，既有 6 個測試不變仍通過；每個負向案例的訊息指出違規位置 | ✅ 2026-11-03；見「S1 證據」 |
-| S2 | 建立 WF-28 fixture，以 v4.8.1 規則在隔離設定實跑基準 | SCN-006 已核准；與 S1 無相依 | SCN-006 | 記錄只為回填或記帳的提交數、因記帳觸發的重審次數、環境與完整輸出；fixture 與固定回答先提交再實跑 | 📝 待實作 |
+| S2 | 建立 WF-28 fixture，以 v4.8.1 規則在隔離設定實跑基準 | SCN-006 已核准；與 S1 無相依 | SCN-006 | 記錄只為回填或記帳的提交數、因記帳觸發的重審次數、環境與完整輸出；fixture 與固定回答先提交再實跑 | ✅ 2026-11-03；見「S2、S4 證據」 |
 | S3 | 修改 review-evidence.md、acceptance.md、readme-templates.md、review SKILL.md 與 docs/AGENTS.md 版本；檢查 execute-task、create-pr、dev-cycle、README、usage 的引用（依 writing-rules） | S1；SCN-001、004、005 已核准 | SCN-001、004、005 | 規則文字與腳本判定一致，沒有自相矛盾的舊句；文件版本 2.8、流程契約 2.4；有語意落差的引用已同步 | ✅ 2026-11-03；見「S3 證據」 |
-| S4 | 以本次規則對同一 fixture 實跑候選組與對照組，重跑 WF-14 | S2、S3 | SCN-004～006，覆核 SCN-001～003 | 依下方「行為案例」逐項判定；任一語意變更沿用 PASS 即判回歸失敗並回到原因修正 | 📝 待實作 |
-| S5 | 更新 CHANGELOG（v4.9.0）、workflow-regression、rule-verification-status 與回歸紀錄；跑根目錄五項檢查；送獨立審查 | S4 | SCN-001～006 | 五項檢查通過；未實跑分支登記為僅靜態撰寫；獨立審查 PASS 或已依使用者決定處理 | 📝 待實作 |
+| S4 | 以本次規則對同一 fixture 實跑候選組與對照組，重跑 WF-14 | S2、S3 | SCN-004～006，覆核 SCN-001～003 | 依下方「行為案例」逐項判定；任一語意變更沿用 PASS 即判回歸失敗並回到原因修正 | ✅ 2026-11-03；見「S2、S4 證據」，WF-14 未另外實跑 |
+| S5 | 更新 CHANGELOG（v4.9.0）、workflow-regression、rule-verification-status 與回歸紀錄；跑根目錄五項檢查；送獨立審查 | S4 | SCN-001～006 | 五項檢查通過；未實跑分支登記為僅靜態撰寫；獨立審查 PASS 或已依使用者決定處理 | 🔄 文件與五項檢查完成，待獨立審查 |
 
 ### S1 證據
 
@@ -68,6 +68,18 @@ git log -1 --format=%H -G '\*\*核准來源\*\*' "${reviewed_sha}" -- "docs/issu
 |---|---|---|
 | 推導命令紅燈 | 以 HEAD 的 acceptance.md（沒有推導命令）跑新增的兩個推導測試：2 個失敗，原因是缺少該命令，exit 1 | [s3-baseline-red.txt](evidence/s3-baseline-red.txt) |
 | 綠燈 | 推導測試執行文件中的字面命令：核准後的記帳提交不改變基線、重新核准移到新提交、以被審查提交為 ref 時不受之後的提交影響、沒有核准來源行時無輸出；刪除該行的提交也會被找到，因此規則另要求 ref 上仍有該行。根目錄五項檢查 exit 0，`test-evidence.py` 75 個測試通過 | [s3-green.txt](evidence/s3-green.txt) |
+
+### S2、S4 證據
+
+2026-11-03，對應 SCN-006，覆核 SCN-001、004、005。案例與判定在實跑前寫定於 [expected.md](fixtures/expected.md)（`8eec4de`；28d 於看過 28a、28c 結果後追加，`6874d9a`），結果與環境見 [2026-11-03 回歸紀錄](../../workflow-results/2026-11-03.md)，每輪完整輸出見 [evidence/s2-baseline/](evidence/s2-baseline/) 與 [evidence/s4-candidate/](evidence/s4-candidate/)。
+
+| 指標 | 基準組（v4.8.1） | 候選組（2.4） |
+|---|---|---|
+| 單獨回填提交（28a＋28c＋28d） | 1（28d） | 0 |
+| 記帳觸發的重審（28b） | 1 | 0 |
+| 語意變更沿用 PASS（28b2） | — | 0（檢查器 INVALID 後重審） |
+
+候選組五個案例都符合判定，SCN-006 通過。與上方「行為案例」表的差異：28a 改為規格尚未提交；28c 改為實作前推導基線，reviewer 端的推導只在 28b2 觀察到；28c 刪除核准來源行的對照組與 WF-14 沒有 agent 實跑，只有腳本測試；每案例每組一輪。觀察到的偏差（28b2 沒有隨報告提交回填、fixture 的 PASS 報告本身有誤）記在回歸紀錄「觀察」。
 
 ## 使用方式對照
 
@@ -113,7 +125,7 @@ python3 scripts/test-evidence.py
 ## 檢查清單
 
 - [x] SCN-001～006 已核准，TBD-3 已解決
-- [ ] S1 腳本案例全部通過後才改規則文字
-- [ ] 規則文字、範本與 review 技能對同一判定沒有兩種說法
-- [ ] 基準與候選實跑紀錄齊全，未實跑分支登記為僅靜態撰寫
-- [ ] CHANGELOG 與 docs/AGENTS.md 版本一致，下游更新方式寫明
+- [x] S1 腳本案例全部通過後才改規則文字
+- [x] 規則文字、範本與 review 技能對同一判定沒有兩種說法
+- [x] 基準與候選實跑紀錄齊全，未實跑分支登記為僅靜態撰寫
+- [x] CHANGELOG 與 docs/AGENTS.md 版本一致，下游更新方式寫明

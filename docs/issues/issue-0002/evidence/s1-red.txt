@@ -4,9 +4,9 @@ FFFFFF.FFFFFFF.FFFFFFF.FFF...........F.......F.FF.........F.......F.FF....
 FAIL: test_approval_backfill_must_be_ancestor (__main__.BookkeepingTests.test_approval_backfill_must_be_ancestor) (value='8f858ad37ac444a5a83f5b192ec1322116aeb52b')
 ----------------------------------------------------------------------
 Traceback (most recent call last):
-  File "/home/kevin/Documents/RCodes/dev-rules-kit/scripts/test-evidence.py", line 372, in test_approval_backfill_must_be_ancestor
+  File "<kit>/scripts/test-evidence.py", line 372, in test_approval_backfill_must_be_ancestor
     self.assertInvalid(self.verify(), '核准 commit')
-  File "/home/kevin/Documents/RCodes/dev-rules-kit/scripts/test-evidence.py", line 223, in assertInvalid
+  File "<kit>/scripts/test-evidence.py", line 223, in assertInvalid
     self.assertIn(mention, result.stderr)
 AssertionError: '核准 commit' not found in 'INVALID：後續差異不只新增該報告；需重新審查\n'
 
@@ -14,9 +14,9 @@ AssertionError: '核准 commit' not found in 'INVALID：後續差異不只新增
 FAIL: test_approval_backfill_must_be_ancestor (__main__.BookkeepingTests.test_approval_backfill_must_be_ancestor) (value='deadbeef')
 ----------------------------------------------------------------------
 Traceback (most recent call last):
-  File "/home/kevin/Documents/RCodes/dev-rules-kit/scripts/test-evidence.py", line 372, in test_approval_backfill_must_be_ancestor
+  File "<kit>/scripts/test-evidence.py", line 372, in test_approval_backfill_must_be_ancestor
     self.assertInvalid(self.verify(), '核准 commit')
-  File "/home/kevin/Documents/RCodes/dev-rules-kit/scripts/test-evidence.py", line 223, in assertInvalid
+  File "<kit>/scripts/test-evidence.py", line 223, in assertInvalid
     self.assertIn(mention, result.stderr)
 AssertionError: '核准 commit' not found in 'INVALID：後續差異不只新增該報告；需重新審查\n'
 
@@ -24,9 +24,9 @@ AssertionError: '核准 commit' not found in 'INVALID：後續差異不只新增
 FAIL: test_approval_backfill_must_be_ancestor (__main__.BookkeepingTests.test_approval_backfill_must_be_ancestor) (value='尚未決定')
 ----------------------------------------------------------------------
 Traceback (most recent call last):
-  File "/home/kevin/Documents/RCodes/dev-rules-kit/scripts/test-evidence.py", line 372, in test_approval_backfill_must_be_ancestor
+  File "<kit>/scripts/test-evidence.py", line 372, in test_approval_backfill_must_be_ancestor
     self.assertInvalid(self.verify(), '核准 commit')
-  File "/home/kevin/Documents/RCodes/dev-rules-kit/scripts/test-evidence.py", line 223, in assertInvalid
+  File "<kit>/scripts/test-evidence.py", line 223, in assertInvalid
     self.assertIn(mention, result.stderr)
 AssertionError: '核准 commit' not found in 'INVALID：後續差異不只新增該報告；需重新審查\n'
 
@@ -34,9 +34,9 @@ AssertionError: '核准 commit' not found in 'INVALID：後續差異不只新增
 FAIL: test_approval_record_change_invalid (__main__.BookkeepingTests.test_approval_record_change_invalid)
 ----------------------------------------------------------------------
 Traceback (most recent call last):
-  File "/home/kevin/Documents/RCodes/dev-rules-kit/scripts/test-evidence.py", line 284, in test_approval_record_change_invalid
+  File "<kit>/scripts/test-evidence.py", line 284, in test_approval_record_change_invalid
     self.assertInvalid(self.verify(), 'Gherkin 核准紀錄')
-  File "/home/kevin/Documents/RCodes/dev-rules-kit/scripts/test-evidence.py", line 223, in assertInvalid
+  File "<kit>/scripts/test-evidence.py", line 223, in assertInvalid
     self.assertIn(mention, result.stderr)
 AssertionError: 'Gherkin 核准紀錄' not found in 'INVALID：後續差異不只新增該報告；需重新審查\n'
 
@@ -44,9 +44,9 @@ AssertionError: 'Gherkin 核准紀錄' not found in 'INVALID：後續差異不�
 FAIL: test_approval_sha_replaced_invalid (__main__.BookkeepingTests.test_approval_sha_replaced_invalid)
 ----------------------------------------------------------------------
 Traceback (most recent call last):
-  File "/home/kevin/Documents/RCodes/dev-rules-kit/scripts/test-evidence.py", line 361, in test_approval_sha_replaced_invalid
+  File "<kit>/scripts/test-evidence.py", line 361, in test_approval_sha_replaced_invalid
     self.assertInvalid(self.verify(), '核准 commit')
-  File "/home/kevin/Documents/RCodes/dev-rules-kit/scripts/test-evidence.py", line 223, in assertInvalid
+  File "<kit>/scripts/test-evidence.py", line 223, in assertInvalid
     self.assertIn(mention, result.stderr)
 AssertionError: '核准 commit' not found in 'INVALID：後續差異不只新增該報告；需重新審查\n'
 
@@ -54,9 +54,9 @@ AssertionError: '核准 commit' not found in 'INVALID：後續差異不只新增
 FAIL: test_approval_source_change_invalid (__main__.BookkeepingTests.test_approval_source_change_invalid)
 ----------------------------------------------------------------------
 Traceback (most recent call last):
-  File "/home/kevin/Documents/RCodes/dev-rules-kit/scripts/test-evidence.py", line 290, in test_approval_source_change_invalid
+  File "<kit>/scripts/test-evidence.py", line 290, in test_approval_source_change_invalid
     self.assertInvalid(self.verify(), '核准來源')
-  File "/home/kevin/Documents/RCodes/dev-rules-kit/scripts/test-evidence.py", line 223, in assertInvalid
+  File "<kit>/scripts/test-evidence.py", line 223, in assertInvalid
     self.assertIn(mention, result.stderr)
 AssertionError: '核准來源' not found in 'INVALID：後續差異不只新增該報告；需重新審查\n'
 
@@ -64,9 +64,9 @@ AssertionError: '核准來源' not found in 'INVALID：後續差異不只新增�
 FAIL: test_bookkeeping_across_several_commits (__main__.BookkeepingTests.test_bookkeeping_across_several_commits)
 ----------------------------------------------------------------------
 Traceback (most recent call last):
-  File "/home/kevin/Documents/RCodes/dev-rules-kit/scripts/test-evidence.py", line 243, in test_bookkeeping_across_several_commits
+  File "<kit>/scripts/test-evidence.py", line 243, in test_bookkeeping_across_several_commits
     self.assertValid(self.verify(), '核准 commit')
-  File "/home/kevin/Documents/RCodes/dev-rules-kit/scripts/test-evidence.py", line 216, in assertValid
+  File "<kit>/scripts/test-evidence.py", line 216, in assertValid
     self.assertEqual(result.returncode, 0, result.stdout + result.stderr)
 AssertionError: 1 != 0 : INVALID：只接受被審查提交之後的一個非 merge 報告提交
 
@@ -75,9 +75,9 @@ AssertionError: 1 != 0 : INVALID：只接受被審查提交之後的一個非 me
 FAIL: test_code_fence_in_timeline_invalid (__main__.BookkeepingTests.test_code_fence_in_timeline_invalid)
 ----------------------------------------------------------------------
 Traceback (most recent call last):
-  File "/home/kevin/Documents/RCodes/dev-rules-kit/scripts/test-evidence.py", line 318, in test_code_fence_in_timeline_invalid
+  File "<kit>/scripts/test-evidence.py", line 318, in test_code_fence_in_timeline_invalid
     self.assertInvalid(self.verify(), 'code fence')
-  File "/home/kevin/Documents/RCodes/dev-rules-kit/scripts/test-evidence.py", line 223, in assertInvalid
+  File "<kit>/scripts/test-evidence.py", line 223, in assertInvalid
     self.assertIn(mention, result.stderr)
 AssertionError: 'code fence' not found in 'INVALID：後續差異不只新增該報告；需重新審查\n'
 
@@ -85,9 +85,9 @@ AssertionError: 'code fence' not found in 'INVALID：後續差異不只新增該
 FAIL: test_existing_report_modified_invalid (__main__.BookkeepingTests.test_existing_report_modified_invalid)
 ----------------------------------------------------------------------
 Traceback (most recent call last):
-  File "/home/kevin/Documents/RCodes/dev-rules-kit/scripts/test-evidence.py", line 349, in test_existing_report_modified_invalid
+  File "<kit>/scripts/test-evidence.py", line 349, in test_existing_report_modified_invalid
     self.assertInvalid(self.verify(), old)
-  File "/home/kevin/Documents/RCodes/dev-rules-kit/scripts/test-evidence.py", line 223, in assertInvalid
+  File "<kit>/scripts/test-evidence.py", line 223, in assertInvalid
     self.assertIn(mention, result.stderr)
 AssertionError: 'docs/issues/issue-1/review-0000000.md' not found in 'INVALID：後續差異不只新增該報告；需重新審查\n'
 
@@ -95,9 +95,9 @@ AssertionError: 'docs/issues/issue-1/review-0000000.md' not found in 'INVALID：
 FAIL: test_frozen_field_inside_timeline_invalid (__main__.BookkeepingTests.test_frozen_field_inside_timeline_invalid)
 ----------------------------------------------------------------------
 Traceback (most recent call last):
-  File "/home/kevin/Documents/RCodes/dev-rules-kit/scripts/test-evidence.py", line 296, in test_frozen_field_inside_timeline_invalid
+  File "<kit>/scripts/test-evidence.py", line 296, in test_frozen_field_inside_timeline_invalid
     self.assertInvalid(self.verify(), '風險')
-  File "/home/kevin/Documents/RCodes/dev-rules-kit/scripts/test-evidence.py", line 223, in assertInvalid
+  File "<kit>/scripts/test-evidence.py", line 223, in assertInvalid
     self.assertIn(mention, result.stderr)
 AssertionError: '風險' not found in 'INVALID：後續差異不只新增該報告；需重新審查\n'
 
@@ -105,9 +105,9 @@ AssertionError: '風險' not found in 'INVALID：後續差異不只新增該報�
 FAIL: test_gherkin_change_invalid (__main__.BookkeepingTests.test_gherkin_change_invalid)
 ----------------------------------------------------------------------
 Traceback (most recent call last):
-  File "/home/kevin/Documents/RCodes/dev-rules-kit/scripts/test-evidence.py", line 268, in test_gherkin_change_invalid
+  File "<kit>/scripts/test-evidence.py", line 268, in test_gherkin_change_invalid
     self.assertInvalid(self.verify(), 'Gherkin 驗收劇本')
-  File "/home/kevin/Documents/RCodes/dev-rules-kit/scripts/test-evidence.py", line 223, in assertInvalid
+  File "<kit>/scripts/test-evidence.py", line 223, in assertInvalid
     self.assertIn(mention, result.stderr)
 AssertionError: 'Gherkin 驗收劇本' not found in 'INVALID：後續差異不只新增該報告；需重新審查\n'
 
@@ -115,9 +115,9 @@ AssertionError: 'Gherkin 驗收劇本' not found in 'INVALID：後續差異不�
 FAIL: test_gherkin_moved_under_timeline_invalid (__main__.BookkeepingTests.test_gherkin_moved_under_timeline_invalid)
 ----------------------------------------------------------------------
 Traceback (most recent call last):
-  File "/home/kevin/Documents/RCodes/dev-rules-kit/scripts/test-evidence.py", line 311, in test_gherkin_moved_under_timeline_invalid
+  File "<kit>/scripts/test-evidence.py", line 311, in test_gherkin_moved_under_timeline_invalid
     self.assertInvalid(self.verify(), 'Gherkin 驗收劇本')
-  File "/home/kevin/Documents/RCodes/dev-rules-kit/scripts/test-evidence.py", line 223, in assertInvalid
+  File "<kit>/scripts/test-evidence.py", line 223, in assertInvalid
     self.assertIn(mention, result.stderr)
 AssertionError: 'Gherkin 驗收劇本' not found in 'INVALID：後續差異不只新增該報告；需重新審查\n'
 
@@ -125,9 +125,9 @@ AssertionError: 'Gherkin 驗收劇本' not found in 'INVALID：後續差異不�
 FAIL: test_inserted_heading_cannot_swallow_frozen_text (__main__.BookkeepingTests.test_inserted_heading_cannot_swallow_frozen_text)
 ----------------------------------------------------------------------
 Traceback (most recent call last):
-  File "/home/kevin/Documents/RCodes/dev-rules-kit/scripts/test-evidence.py", line 302, in test_inserted_heading_cannot_swallow_frozen_text
+  File "<kit>/scripts/test-evidence.py", line 302, in test_inserted_heading_cannot_swallow_frozen_text
     self.assertInvalid(self.verify(), '概述')
-  File "/home/kevin/Documents/RCodes/dev-rules-kit/scripts/test-evidence.py", line 223, in assertInvalid
+  File "<kit>/scripts/test-evidence.py", line 223, in assertInvalid
     self.assertIn(mention, result.stderr)
 AssertionError: '概述' not found in 'INVALID：後續差異不只新增該報告；需重新審查\n'
 
@@ -135,9 +135,9 @@ AssertionError: '概述' not found in 'INVALID：後續差異不只新增該報�
 FAIL: test_new_gate_waiver_section_allowed (__main__.BookkeepingTests.test_new_gate_waiver_section_allowed)
 ----------------------------------------------------------------------
 Traceback (most recent call last):
-  File "/home/kevin/Documents/RCodes/dev-rules-kit/scripts/test-evidence.py", line 249, in test_new_gate_waiver_section_allowed
+  File "<kit>/scripts/test-evidence.py", line 249, in test_new_gate_waiver_section_allowed
     self.assertValid(self.verify(), 'Gate 豁免紀錄')
-  File "/home/kevin/Documents/RCodes/dev-rules-kit/scripts/test-evidence.py", line 216, in assertValid
+  File "<kit>/scripts/test-evidence.py", line 216, in assertValid
     self.assertEqual(result.returncode, 0, result.stdout + result.stderr)
 AssertionError: 1 != 0 : INVALID：後續差異不只新增該報告；需重新審查
 
@@ -146,9 +146,9 @@ AssertionError: 1 != 0 : INVALID：後續差異不只新增該報告；需重新
 FAIL: test_other_paths_invalid (__main__.BookkeepingTests.test_other_paths_invalid) (rel='docs/issues/issue-1/implementation-plan.md')
 ----------------------------------------------------------------------
 Traceback (most recent call last):
-  File "/home/kevin/Documents/RCodes/dev-rules-kit/scripts/test-evidence.py", line 329, in test_other_paths_invalid
+  File "<kit>/scripts/test-evidence.py", line 329, in test_other_paths_invalid
     self.assertInvalid(self.verify(), rel)
-  File "/home/kevin/Documents/RCodes/dev-rules-kit/scripts/test-evidence.py", line 223, in assertInvalid
+  File "<kit>/scripts/test-evidence.py", line 223, in assertInvalid
     self.assertIn(mention, result.stderr)
 AssertionError: 'docs/issues/issue-1/implementation-plan.md' not found in 'INVALID：後續差異不只新增該報告；需重新審查\n'
 
@@ -156,9 +156,9 @@ AssertionError: 'docs/issues/issue-1/implementation-plan.md' not found in 'INVAL
 FAIL: test_other_paths_invalid (__main__.BookkeepingTests.test_other_paths_invalid) (rel='docs/issues/issue-1/evidence/s1.txt')
 ----------------------------------------------------------------------
 Traceback (most recent call last):
-  File "/home/kevin/Documents/RCodes/dev-rules-kit/scripts/test-evidence.py", line 329, in test_other_paths_invalid
+  File "<kit>/scripts/test-evidence.py", line 329, in test_other_paths_invalid
     self.assertInvalid(self.verify(), rel)
-  File "/home/kevin/Documents/RCodes/dev-rules-kit/scripts/test-evidence.py", line 223, in assertInvalid
+  File "<kit>/scripts/test-evidence.py", line 223, in assertInvalid
     self.assertIn(mention, result.stderr)
 AssertionError: 'docs/issues/issue-1/evidence/s1.txt' not found in 'INVALID：後續差異不只新增該報告；需重新審查\n'
 
@@ -166,9 +166,9 @@ AssertionError: 'docs/issues/issue-1/evidence/s1.txt' not found in 'INVALID：�
 FAIL: test_other_paths_invalid (__main__.BookkeepingTests.test_other_paths_invalid) (rel='docs/issues/issue-2/README.md')
 ----------------------------------------------------------------------
 Traceback (most recent call last):
-  File "/home/kevin/Documents/RCodes/dev-rules-kit/scripts/test-evidence.py", line 329, in test_other_paths_invalid
+  File "<kit>/scripts/test-evidence.py", line 329, in test_other_paths_invalid
     self.assertInvalid(self.verify(), rel)
-  File "/home/kevin/Documents/RCodes/dev-rules-kit/scripts/test-evidence.py", line 223, in assertInvalid
+  File "<kit>/scripts/test-evidence.py", line 223, in assertInvalid
     self.assertIn(mention, result.stderr)
 AssertionError: 'docs/issues/issue-2/README.md' not found in 'INVALID：後續差異不只新增該報告；需重新審查\n'
 
@@ -176,9 +176,9 @@ AssertionError: 'docs/issues/issue-2/README.md' not found in 'INVALID：後續�
 FAIL: test_other_paths_invalid (__main__.BookkeepingTests.test_other_paths_invalid) (rel='app.txt')
 ----------------------------------------------------------------------
 Traceback (most recent call last):
-  File "/home/kevin/Documents/RCodes/dev-rules-kit/scripts/test-evidence.py", line 329, in test_other_paths_invalid
+  File "<kit>/scripts/test-evidence.py", line 329, in test_other_paths_invalid
     self.assertInvalid(self.verify(), rel)
-  File "/home/kevin/Documents/RCodes/dev-rules-kit/scripts/test-evidence.py", line 223, in assertInvalid
+  File "<kit>/scripts/test-evidence.py", line 223, in assertInvalid
     self.assertIn(mention, result.stderr)
 AssertionError: 'app.txt' not found in 'INVALID：後續差異不只新增該報告；需重新審查\n'
 
@@ -186,9 +186,9 @@ AssertionError: 'app.txt' not found in 'INVALID：後續差異不只新增該報
 FAIL: test_platform_report_mode (__main__.BookkeepingTests.test_platform_report_mode)
 ----------------------------------------------------------------------
 Traceback (most recent call last):
-  File "/home/kevin/Documents/RCodes/dev-rules-kit/scripts/test-evidence.py", line 254, in test_platform_report_mode
+  File "<kit>/scripts/test-evidence.py", line 254, in test_platform_report_mode
     self.assertValid(self.verify(artifact=False, issue=self.ISSUE), 'Timeline')
-  File "/home/kevin/Documents/RCodes/dev-rules-kit/scripts/test-evidence.py", line 216, in assertValid
+  File "<kit>/scripts/test-evidence.py", line 216, in assertValid
     self.assertEqual(result.returncode, 0, result.stdout + result.stderr)
 AssertionError: 2 != 0 : usage: verify-artifact.py [-h] [--repo REPO] --reviewed REVIEWED --head HEAD
                           --artifact ARTIFACT
@@ -199,9 +199,9 @@ verify-artifact.py: error: the following arguments are required: --artifact
 FAIL: test_report_and_bookkeeping_in_one_commit (__main__.BookkeepingTests.test_report_and_bookkeeping_in_one_commit)
 ----------------------------------------------------------------------
 Traceback (most recent call last):
-  File "/home/kevin/Documents/RCodes/dev-rules-kit/scripts/test-evidence.py", line 233, in test_report_and_bookkeeping_in_one_commit
+  File "<kit>/scripts/test-evidence.py", line 233, in test_report_and_bookkeeping_in_one_commit
     self.assertValid(self.verify(), 'Timeline', '待確認事項', '狀態', '核准 commit',
-  File "/home/kevin/Documents/RCodes/dev-rules-kit/scripts/test-evidence.py", line 216, in assertValid
+  File "<kit>/scripts/test-evidence.py", line 216, in assertValid
     self.assertEqual(result.returncode, 0, result.stdout + result.stderr)
 AssertionError: 1 != 0 : INVALID：後續差異不只新增該報告；需重新審查
 
@@ -210,9 +210,9 @@ AssertionError: 1 != 0 : INVALID：後續差異不只新增該報告；需重新
 FAIL: test_report_rewritten_after_added_invalid (__main__.BookkeepingTests.test_report_rewritten_after_added_invalid)
 ----------------------------------------------------------------------
 Traceback (most recent call last):
-  File "/home/kevin/Documents/RCodes/dev-rules-kit/scripts/test-evidence.py", line 336, in test_report_rewritten_after_added_invalid
+  File "<kit>/scripts/test-evidence.py", line 336, in test_report_rewritten_after_added_invalid
     self.assertInvalid(self.verify(), self.report)
-  File "/home/kevin/Documents/RCodes/dev-rules-kit/scripts/test-evidence.py", line 223, in assertInvalid
+  File "<kit>/scripts/test-evidence.py", line 223, in assertInvalid
     self.assertIn(mention, result.stderr)
 AssertionError: 'docs/issues/issue-1/review-e1c77d4.md' not found in 'INVALID：只接受被審查提交之後的一個非 merge 報告提交\n'
 
@@ -220,9 +220,9 @@ AssertionError: 'docs/issues/issue-1/review-e1c77d4.md' not found in 'INVALID：
 FAIL: test_reviewed_not_ancestor_invalid (__main__.BookkeepingTests.test_reviewed_not_ancestor_invalid)
 ----------------------------------------------------------------------
 Traceback (most recent call last):
-  File "/home/kevin/Documents/RCodes/dev-rules-kit/scripts/test-evidence.py", line 390, in test_reviewed_not_ancestor_invalid
+  File "<kit>/scripts/test-evidence.py", line 390, in test_reviewed_not_ancestor_invalid
     self.assertInvalid(self.verify(), '祖先')
-  File "/home/kevin/Documents/RCodes/dev-rules-kit/scripts/test-evidence.py", line 223, in assertInvalid
+  File "<kit>/scripts/test-evidence.py", line 223, in assertInvalid
     self.assertIn(mention, result.stderr)
 AssertionError: '祖先' not found in 'INVALID：只接受被審查提交之後的一個非 merge 報告提交\n'
 
@@ -230,9 +230,9 @@ AssertionError: '祖先' not found in 'INVALID：只接受被審查提交之後�
 FAIL: test_small_ac_change_invalid (__main__.BookkeepingTests.test_small_ac_change_invalid)
 ----------------------------------------------------------------------
 Traceback (most recent call last):
-  File "/home/kevin/Documents/RCodes/dev-rules-kit/scripts/test-evidence.py", line 278, in test_small_ac_change_invalid
+  File "<kit>/scripts/test-evidence.py", line 278, in test_small_ac_change_invalid
     self.assertInvalid(self.verify(), '驗收條件')
-  File "/home/kevin/Documents/RCodes/dev-rules-kit/scripts/test-evidence.py", line 223, in assertInvalid
+  File "<kit>/scripts/test-evidence.py", line 223, in assertInvalid
     self.assertIn(mention, result.stderr)
 AssertionError: '驗收條件' not found in 'INVALID：後續差異不只新增該報告；需重新審查\n'
 
@@ -240,9 +240,9 @@ AssertionError: '驗收條件' not found in 'INVALID：後續差異不只新增�
 FAIL: test_bookkeeping_across_several_commits (__main__.LegacyBookkeepingTests.test_bookkeeping_across_several_commits)
 ----------------------------------------------------------------------
 Traceback (most recent call last):
-  File "/home/kevin/Documents/RCodes/dev-rules-kit/scripts/test-evidence.py", line 424, in test_bookkeeping_across_several_commits
+  File "<kit>/scripts/test-evidence.py", line 424, in test_bookkeeping_across_several_commits
     self.assertNeeds24(self.verify())
-  File "/home/kevin/Documents/RCodes/dev-rules-kit/scripts/test-evidence.py", line 411, in assertNeeds24
+  File "<kit>/scripts/test-evidence.py", line 411, in assertNeeds24
     self.assertIn('2.4', result.stderr)
 AssertionError: '2.4' not found in 'INVALID：只接受被審查提交之後的一個非 merge 報告提交\n'
 
@@ -250,9 +250,9 @@ AssertionError: '2.4' not found in 'INVALID：只接受被審查提交之後的�
 FAIL: test_new_gate_waiver_section_allowed (__main__.LegacyBookkeepingTests.test_new_gate_waiver_section_allowed)
 ----------------------------------------------------------------------
 Traceback (most recent call last):
-  File "/home/kevin/Documents/RCodes/dev-rules-kit/scripts/test-evidence.py", line 430, in test_new_gate_waiver_section_allowed
+  File "<kit>/scripts/test-evidence.py", line 430, in test_new_gate_waiver_section_allowed
     self.assertNeeds24(self.verify())
-  File "/home/kevin/Documents/RCodes/dev-rules-kit/scripts/test-evidence.py", line 411, in assertNeeds24
+  File "<kit>/scripts/test-evidence.py", line 411, in assertNeeds24
     self.assertIn('2.4', result.stderr)
 AssertionError: '2.4' not found in 'INVALID：後續差異不只新增該報告；需重新審查\n'
 
@@ -260,9 +260,9 @@ AssertionError: '2.4' not found in 'INVALID：後續差異不只新增該報告�
 FAIL: test_platform_report_mode (__main__.LegacyBookkeepingTests.test_platform_report_mode)
 ----------------------------------------------------------------------
 Traceback (most recent call last):
-  File "/home/kevin/Documents/RCodes/dev-rules-kit/scripts/test-evidence.py", line 435, in test_platform_report_mode
+  File "<kit>/scripts/test-evidence.py", line 435, in test_platform_report_mode
     self.assertNeeds24(self.verify(artifact=False, issue=self.ISSUE))
-  File "/home/kevin/Documents/RCodes/dev-rules-kit/scripts/test-evidence.py", line 411, in assertNeeds24
+  File "<kit>/scripts/test-evidence.py", line 411, in assertNeeds24
     self.assertIn('2.4', result.stderr)
 AssertionError: '2.4' not found in 'usage: verify-artifact.py [-h] [--repo REPO] --reviewed REVIEWED --head HEAD\n                          --artifact ARTIFACT\nverify-artifact.py: error: the following arguments are required: --artifact\n'
 
@@ -270,9 +270,9 @@ AssertionError: '2.4' not found in 'usage: verify-artifact.py [-h] [--repo REPO]
 FAIL: test_report_and_bookkeeping_in_one_commit (__main__.LegacyBookkeepingTests.test_report_and_bookkeeping_in_one_commit)
 ----------------------------------------------------------------------
 Traceback (most recent call last):
-  File "/home/kevin/Documents/RCodes/dev-rules-kit/scripts/test-evidence.py", line 417, in test_report_and_bookkeeping_in_one_commit
+  File "<kit>/scripts/test-evidence.py", line 417, in test_report_and_bookkeeping_in_one_commit
     self.assertNeeds24(self.verify())
-  File "/home/kevin/Documents/RCodes/dev-rules-kit/scripts/test-evidence.py", line 411, in assertNeeds24
+  File "<kit>/scripts/test-evidence.py", line 411, in assertNeeds24
     self.assertIn('2.4', result.stderr)
 AssertionError: '2.4' not found in 'INVALID：後續差異不只新增該報告；需重新審查\n'
 
@@ -280,9 +280,9 @@ AssertionError: '2.4' not found in 'INVALID：後續差異不只新增該報告�
 FAIL: test_bookkeeping_across_several_commits (__main__.NoContractBookkeepingTests.test_bookkeeping_across_several_commits)
 ----------------------------------------------------------------------
 Traceback (most recent call last):
-  File "/home/kevin/Documents/RCodes/dev-rules-kit/scripts/test-evidence.py", line 424, in test_bookkeeping_across_several_commits
+  File "<kit>/scripts/test-evidence.py", line 424, in test_bookkeeping_across_several_commits
     self.assertNeeds24(self.verify())
-  File "/home/kevin/Documents/RCodes/dev-rules-kit/scripts/test-evidence.py", line 411, in assertNeeds24
+  File "<kit>/scripts/test-evidence.py", line 411, in assertNeeds24
     self.assertIn('2.4', result.stderr)
 AssertionError: '2.4' not found in 'INVALID：只接受被審查提交之後的一個非 merge 報告提交\n'
 
@@ -290,9 +290,9 @@ AssertionError: '2.4' not found in 'INVALID：只接受被審查提交之後的�
 FAIL: test_new_gate_waiver_section_allowed (__main__.NoContractBookkeepingTests.test_new_gate_waiver_section_allowed)
 ----------------------------------------------------------------------
 Traceback (most recent call last):
-  File "/home/kevin/Documents/RCodes/dev-rules-kit/scripts/test-evidence.py", line 430, in test_new_gate_waiver_section_allowed
+  File "<kit>/scripts/test-evidence.py", line 430, in test_new_gate_waiver_section_allowed
     self.assertNeeds24(self.verify())
-  File "/home/kevin/Documents/RCodes/dev-rules-kit/scripts/test-evidence.py", line 411, in assertNeeds24
+  File "<kit>/scripts/test-evidence.py", line 411, in assertNeeds24
     self.assertIn('2.4', result.stderr)
 AssertionError: '2.4' not found in 'INVALID：後續差異不只新增該報告；需重新審查\n'
 
@@ -300,9 +300,9 @@ AssertionError: '2.4' not found in 'INVALID：後續差異不只新增該報告�
 FAIL: test_platform_report_mode (__main__.NoContractBookkeepingTests.test_platform_report_mode)
 ----------------------------------------------------------------------
 Traceback (most recent call last):
-  File "/home/kevin/Documents/RCodes/dev-rules-kit/scripts/test-evidence.py", line 435, in test_platform_report_mode
+  File "<kit>/scripts/test-evidence.py", line 435, in test_platform_report_mode
     self.assertNeeds24(self.verify(artifact=False, issue=self.ISSUE))
-  File "/home/kevin/Documents/RCodes/dev-rules-kit/scripts/test-evidence.py", line 411, in assertNeeds24
+  File "<kit>/scripts/test-evidence.py", line 411, in assertNeeds24
     self.assertIn('2.4', result.stderr)
 AssertionError: '2.4' not found in 'usage: verify-artifact.py [-h] [--repo REPO] --reviewed REVIEWED --head HEAD\n                          --artifact ARTIFACT\nverify-artifact.py: error: the following arguments are required: --artifact\n'
 
@@ -310,9 +310,9 @@ AssertionError: '2.4' not found in 'usage: verify-artifact.py [-h] [--repo REPO]
 FAIL: test_report_and_bookkeeping_in_one_commit (__main__.NoContractBookkeepingTests.test_report_and_bookkeeping_in_one_commit)
 ----------------------------------------------------------------------
 Traceback (most recent call last):
-  File "/home/kevin/Documents/RCodes/dev-rules-kit/scripts/test-evidence.py", line 417, in test_report_and_bookkeeping_in_one_commit
+  File "<kit>/scripts/test-evidence.py", line 417, in test_report_and_bookkeeping_in_one_commit
     self.assertNeeds24(self.verify())
-  File "/home/kevin/Documents/RCodes/dev-rules-kit/scripts/test-evidence.py", line 411, in assertNeeds24
+  File "<kit>/scripts/test-evidence.py", line 411, in assertNeeds24
     self.assertIn('2.4', result.stderr)
 AssertionError: '2.4' not found in 'INVALID：後續差異不只新增該報告；需重新審查\n'
 
