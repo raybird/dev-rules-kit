@@ -29,11 +29,24 @@ git log -1 --format=%H -G '\*\*核准來源\*\*' "${reviewed_sha}" -- "docs/issu
 
 | 編號 | 工作與產出 | 相依／啟用條件 | 驗收編號 | 完成判準 | 狀態／證據 |
 |---|---|---|---|---|---|
-| S1 | 依上方判定修改 `verify-artifact.py`，在 `test-evidence.py` 補正負向案例 | SCN-001～003 已核准 | SCN-001～003 | 下方「腳本案例」全部通過，既有 6 個測試不變仍通過；每個負向案例的訊息指出違規位置 | 📝 待實作 |
+| S1 | 依上方判定修改 `verify-artifact.py`，在 `test-evidence.py` 補正負向案例 | SCN-001～003 已核准 | SCN-001～003 | 下方「腳本案例」全部通過，既有 6 個測試不變仍通過；每個負向案例的訊息指出違規位置 | ✅ 2026-11-03；見「S1 證據」 |
 | S2 | 建立 WF-28 fixture，以 v4.8.1 規則在隔離設定實跑基準 | SCN-006 已核准；與 S1 無相依 | SCN-006 | 記錄只為回填或記帳的提交數、因記帳觸發的重審次數、環境與完整輸出；fixture 與固定回答先提交再實跑 | 📝 待實作 |
 | S3 | 修改 review-evidence.md、acceptance.md、readme-templates.md、review SKILL.md 與 docs/AGENTS.md 版本；檢查 execute-task、create-pr、dev-cycle、README、usage 的引用（依 writing-rules） | S1；SCN-001、004、005 已核准 | SCN-001、004、005 | 規則文字與腳本判定一致，沒有自相矛盾的舊句；文件版本 2.8、流程契約 2.4；有語意落差的引用已同步 | 📝 待實作 |
 | S4 | 以本次規則對同一 fixture 實跑候選組與對照組，重跑 WF-14 | S2、S3 | SCN-004～006，覆核 SCN-001～003 | 依下方「行為案例」逐項判定；任一語意變更沿用 PASS 即判回歸失敗並回到原因修正 | 📝 待實作 |
 | S5 | 更新 CHANGELOG（v4.9.0）、workflow-regression、rule-verification-status 與回歸紀錄；跑根目錄五項檢查；送獨立審查 | S4 | SCN-001～006 | 五項檢查通過；未實跑分支登記為僅靜態撰寫；獨立審查 PASS 或已依使用者決定處理 | 📝 待實作 |
+
+### S1 證據
+
+2026-11-03，對應 SCN-001～003。腳本是 production code，測試以 `test-evidence.py` 在拋棄式 Git repo 跑真實命令；腳本判定沒有另一層外部行為，外迴圈與單元紅燈合併為同一組（agent 行為另由 S4 實跑）。
+
+| 段落 | 命令與結果 | 紀錄 |
+|---|---|---|
+| 紅燈 | 舊版 `verify-artifact.py` 跑 `python3 scripts/test-evidence.py`：69 個測試 31 個失敗、0 個錯誤，exit 1。失敗原因是現行判定拒絕記帳提交、無效訊息沒指出違規位置、不支援 `--issue`、2.3 專案沒有提示需要 2.4；原本 6 個測試仍通過 | [s1-red.txt](evidence/s1-red.txt) |
+| 綠燈 | 新版跑同一組：69 個全過；根目錄五項檢查與 `py_compile` 全部 exit 0 | [s1-green.txt](evidence/s1-green.txt) |
+| 判定訊息 | 每個案例的實際訊息：2.4 的 27 次判定、2.3 的 28 次判定，負向案例都指出違規的路徑、章節或欄位 | [s1-messages.txt](evidence/s1-messages.txt) |
+| 精煉 | no-op：腳本結構與上方六個判定步驟一一對應，沒有分歧的重複邏輯；綠燈即最終狀態 | — |
+
+已知限制：README 標題名稱與範本不同的下游，該節一律視為凍結（只會更嚴）；記帳章節內的縮排程式碼區塊不視為 code fence，內容可自由修改，讀者只從驗收章節的 fence 取得 Gherkin。
 
 ## 使用方式對照
 
