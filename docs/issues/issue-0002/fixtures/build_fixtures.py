@@ -1,5 +1,5 @@
 #!/usr/bin/env python3
-"""建立 issue-0002 的 WF-28 fixture：28a 回填、28b 審查後記帳（含對照 28b2）、28c 待提交時的基線。
+"""建立 issue-0002 的 WF-28 fixture：28a／28d 回填、28b 審查後記帳（含對照 28b2）、28c 待提交時的基線。
 
 用法：python3 build_fixtures.py <kit 根目錄> <輸出目錄>
 輸出目錄必須不存在。沿用 issue-0001 的待辦 CLI 與 base()；docs/ 由該 kit 的 init-project.py 部署，
@@ -274,7 +274,8 @@ def main():
     build_28b(kit, out / 'wf28b')
     build_28b(kit, out / 'wf28b2')
     build_28c(kit, out / 'wf28c')
-    for name in ('wf28a', 'wf28b', 'wf28b2', 'wf28c'):
+    build_28a(kit, out / 'wf28d')  # 與 28a 相同，只差使用者輸入
+    for name in ('wf28a', 'wf28b', 'wf28b2', 'wf28c', 'wf28d'):
         print(name, git(out / name, 'rev-parse', '--short', 'HEAD'), git(out / name, 'status', '--porcelain'))
 
 
