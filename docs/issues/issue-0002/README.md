@@ -133,9 +133,10 @@ Feature: 審查通過後的記帳不觸發重審，核准不單獨製造提交
 | 2026-11-03 | 覆審 review-93674b1 PASS（無 MUST FIX、SHOULD FIX，NICE TO HAVE 4 項待使用者決定）；報告與本列以記帳提交保存 | Claude Code |
 | 2026-11-03 | 使用者決定「修正後覆審，最後一輪」：處理 review-93674b1 的 NICE TO HAVE 1～4；覆審沒有 MUST FIX、SHOULD FIX 即停止 | 使用者／Claude Code |
 | 2026-11-03 | 最終覆審 review-37f0d45 PASS（無 MUST FIX、SHOULD FIX；NICE TO HAVE 4 項依使用者指示留在報告不處理）；報告與本列以記帳提交保存 | Claude Code |
+| 2026-11-03 | 依使用者「推送發布版本」以 `--no-ff` 合併到 main（`bb24a79`，保留分支歷史；原約定 squash，因文件引用約 120 處分支 SHA，使用者改選保留歷史）；發布 v4.9.0；標記已完成 | 使用者／Claude Code |
 
 ---
 **建立日期**: 2026-11-03
 **分級**: Medium — 規則、腳本與測試多檔修改，邏輯直接，不需 Phase／Task 拆解
 **風險**: High
-**狀態**: 審查通過，待合併
+**狀態**: 已完成

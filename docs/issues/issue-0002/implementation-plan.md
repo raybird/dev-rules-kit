@@ -98,6 +98,14 @@ git log -1 --format=%H -G '\*\*核准來源\*\*' "${reviewed_sha}" -- "docs/issu
 
 2026-11-03，對應 SCN-004～006。判定與新增案例在實跑前寫定（`aa6e624`），結果、SCN-006 綜合對照與未覆蓋項見 [2026-11-03 回歸紀錄](../../workflow-results/2026-11-03.md)「審查後修正與重跑」，每輪輸出與檢查器實際輸出見 [evidence/s7-rerun/](evidence/s7-rerun/)。候選組所有案例符合判定，28b3 依判準為無法區分（協調者同時改了計畫檔）；28e 證實 reviewer 端推導基線與隨報告回填。
 
+## 結案（2026-11-03）
+
+最終覆審 [review-37f0d45](review-37f0d45.md) 判定 PASS，報告提交 `4818de8` 經 `verify-artifact.py` 確認只動記帳區段（新增報告、狀態、Timeline）；review-9ee4139、review-93674b1 的 PASS 也以同樣的記帳提交保存，是本 kit 第一次照新規則運作。依使用者 2026-11-03「推送發布版本」，在本機以 `--no-ff` 合併到 main（merge commit `bb24a79`，main 先 fast-forward 到遠端的 `2da0a88`），推送並發布 v4.9.0。
+
+合併方式原約定 squash，以去除 `9148ef9`、`6feffbf` 證據檔歷史中的本機絕對路徑；因文件引用約 120 處分支 SHA（核准 commit、四份報告的被審查版本、實跑前寫定判定的提交），squash 後無法公開查證，使用者改選保留歷史。目前各檔內容皆已遮蔽，歷史中保留 66 行含本機路徑的測試 traceback，不含憑證。
+
+未處理的 NICE TO HAVE：review-37f0d45 的 4 項（範本 Gate 註解未註明最終輸出移除、已知限制的列舉斷句、驗證狀態的來源欄、範本指標改動未記入版本紀錄）依使用者指示留在報告；review-c77928c NICE 5 維持。
+
 ## 使用方式對照
 
 | 情境 | 變更前 | 變更後 |
