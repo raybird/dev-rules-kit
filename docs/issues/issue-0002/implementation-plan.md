@@ -33,7 +33,7 @@ git log -1 --format=%H -G '\*\*核准來源\*\*' "${reviewed_sha}" -- "docs/issu
 | S2 | 建立 WF-28 fixture，以 v4.8.1 規則在隔離設定實跑基準 | SCN-006 已核准；與 S1 無相依 | SCN-006 | 記錄只為回填或記帳的提交數、因記帳觸發的重審次數、環境與完整輸出；fixture 與固定回答先提交再實跑 | ✅ 2026-11-03；見「S2、S4 證據」 |
 | S3 | 修改 review-evidence.md、acceptance.md、readme-templates.md、review SKILL.md 與 docs/AGENTS.md 版本；檢查 execute-task、create-pr、dev-cycle、README、usage 的引用（依 writing-rules） | S1；SCN-001、004、005 已核准 | SCN-001、004、005 | 規則文字與腳本判定一致，沒有自相矛盾的舊句；文件版本 2.8、流程契約 2.4；有語意落差的引用已同步 | ✅ 2026-11-03；見「S3 證據」 |
 | S4 | 以本次規則對同一 fixture 實跑候選組與對照組，重跑 WF-14 | S2、S3 | SCN-004～006，覆核 SCN-001～003 | 依下方「行為案例」逐項判定；任一語意變更沿用 PASS 即判回歸失敗並回到原因修正 | ⚠️ 部分完成 2026-11-03；見「S2、S4 證據」。沒有語意變更沿用 PASS；完成判準中 WF-14 重跑、28c 的 reviewer 端與刪除核准來源行的對照組未達成，reviewer 端改由 S7 的 28e 補上 |
-| S5 | 更新 CHANGELOG（v4.9.0）、workflow-regression、rule-verification-status 與回歸紀錄；跑根目錄五項檢查；送獨立審查 | S4 | SCN-001～006 | 五項檢查通過；未實跑分支登記為僅靜態撰寫；獨立審查 PASS 或已依使用者決定處理 | 🔄 第一次審查 [review-c77928c](review-c77928c.md) RETURN，經 S6、S7 處理後送覆審 |
+| S5 | 更新 CHANGELOG（v4.9.0）、workflow-regression、rule-verification-status 與回歸紀錄；跑根目錄五項檢查；送獨立審查 | S4 | SCN-001～006 | 五項檢查通過；未實跑分支登記為僅靜態撰寫；獨立審查 PASS 或已依使用者決定處理 | ✅ 2026-11-03；第一次審查 [review-c77928c](review-c77928c.md) RETURN，經 S6、S7 處理後 [review-9ee4139](review-9ee4139.md) PASS；其 NICE TO HAVE 1～4 依使用者 2026-11-03「修正後再覆審一次」處理後再送覆審，NICE 5 維持 |
 | S6 | 依 review-c77928c 修正：review 技能步驟 5 隨報告回填、推導 pattern 錨定、`verify-artifact.py` 收緊非範本寫法與其他放行路徑、技能附 2.3 以下的章節名稱、回歸紀錄與驗證狀態更正 | S5 審查 | SCN-001～005 | 審查列出的 MUST FIX、SHOULD FIX 都有修正與證據；新增測試先紅後綠；reviewer 的對抗腳本改判無效 | ✅ 2026-11-03；見「S6 證據」 |
 | S7 | 以最終規則重跑候選 28a、28b、28c、28d，新增 28b3、28e；基準組跑 28d 第二輪與 28e | S6；判定先提交（`aa6e624`） | SCN-004～006 | 依 expected.md「審查後重跑」逐項判定 | ✅ 2026-11-03；見「S7 證據」，28b3 依判準為無法區分 |
 
@@ -48,7 +48,7 @@ git log -1 --format=%H -G '\*\*核准來源\*\*' "${reviewed_sha}" -- "docs/issu
 | 判定訊息 | 每個案例的實際訊息：2.4 的 27 次判定、2.3 的 28 次判定，負向案例都指出違規的路徑、章節或欄位 | [s1-messages.txt](evidence/s1-messages.txt) |
 | 精煉 | no-op：腳本結構與上方六個判定步驟一一對應，沒有分歧的重複邏輯；綠燈即最終狀態 | — |
 
-已知限制：README 標題名稱與範本不同的下游，該節一律視為凍結（只會更嚴）；記帳章節內的縮排程式碼區塊不視為 code fence，內容可自由修改，讀者只從驗收章節的 fence 取得 Gherkin。
+已知限制：README 標題名稱與範本不同的下游，該節一律視為凍結（只會更嚴）；記帳章節內的縮排程式碼區塊不視為 code fence，內容可自由修改，讀者只從驗收章節的 fence 取得 Gherkin。S6 收緊後仍放行的寫法（2026-11-03 由 review-c77928c、review-9ee4139 的對抗腳本確認，本機 126 份下游 README 都沒有）：記帳章節內不帶粗體的純文字欄位（例如 `風險：Low`）、HTML 形式的標題或粗體（`<div><h2>`、`<strong>`、`<b>`）、以 `|` 開頭的段落後接 `---`（排除它是為了不把 Timeline 表格末列接 footer 誤判成 setext），以及只改檔案模式。反方向的 fail-closed：待確認事項或 Gate 豁免紀錄的節內有標題或粗體開頭的行時，整節新增或刪除判定無效；新增或刪除的章節使 footer 欄位換到另一節時也判定無效，照範本把這兩節放在 Timeline 之前不會碰到。
 
 ### S3 證據
 
@@ -81,7 +81,7 @@ git log -1 --format=%H -G '\*\*核准來源\*\*' "${reviewed_sha}" -- "docs/issu
 | 記帳觸發的重審（28b） | 1 | 0 |
 | 語意變更沿用 PASS（28b2） | — | 0（檢查器 INVALID 後重審） |
 
-候選組五個案例都符合判定，SCN-006 通過。與上方「行為案例」表的差異：28a 改為規格尚未提交；28c 改為實作前推導基線，reviewer 端的推導只在 28b2 觀察到；28c 刪除核准來源行的對照組與 WF-14 沒有 agent 實跑，只有腳本測試；每案例每組一輪。觀察到的偏差（28b2 沒有隨報告提交回填、fixture 的 PASS 報告本身有誤）記在回歸紀錄「觀察」。
+候選組五個案例都符合判定，SCN-006 依第一輪判準通過；實跑前寫定的 28a＋28c 兩組都是 0，回填的減少來自追加的 28d（S7 的 28e 另外補上 reviewer 端），分列對照見「S7 證據」與回歸紀錄「SCN-006 綜合對照」。與上方「行為案例」表的差異：28a 改為規格尚未提交；28c 改為實作前推導基線，reviewer 端的推導只在 28b2 觀察到；28c 刪除核准來源行的對照組與 WF-14 沒有 agent 實跑，只有腳本測試；每案例每組一輪。觀察到的偏差（28b2 沒有隨報告提交回填、fixture 的 PASS 報告本身有誤）記在回歸紀錄「觀察」。
 
 ### S6 證據
 
@@ -91,7 +91,7 @@ git log -1 --format=%H -G '\*\*核准來源\*\*' "${reviewed_sha}" -- "docs/issu
 |---|---|---|
 | 紅燈 | 修正前的 `verify-artifact.py` 與 acceptance.md（`de2e1f9`）跑新增測試：96 個測試 20 個失敗，exit 1。失敗原因是非範本寫法的欄位、標題與 fence 被放行，記帳章節可重排或重複，核准 commit 接受 SHA 加尾隨文字，`diff.relative` 加子目錄 `--repo` 時 `--issue` 回報「無變更」，3.0 走新判定，推導命令選中提到欄位名的 Timeline 提交 | [s6-red.txt](evidence/s6-red.txt) |
 | 綠燈 | 修正後 99 個測試全過，exit 0；另加的「整節刪除待確認事項」正向測試守住 review-evidence.md 的既有規則（修正前本來就通過，非紅燈測試） | [s6-green.txt](evidence/s6-green.txt) |
-| 對抗腳本 | reviewer 留在 scratchpad 的對抗腳本以新版重跑：列為放行的寫法都改判無效；仍放行的只有已揭露的縮排程式碼區塊、非粗體純文字行與只改檔案模式；2.3 與無契約下新舊腳本 10 種情境結果相同 | 回歸紀錄「審查後修正與重跑」 |
+| 對抗腳本 | reviewer 留在 scratchpad 的對抗腳本以新版重跑：列為放行的寫法都改判無效；仍放行的寫法列入上方 S1 證據的已知限制；2.3 與無契約下新舊腳本 10 種情境結果相同 | 協調者重跑後由 [review-9ee4139](review-9ee4139.md) 獨立重跑確認 |
 | 精煉 | no-op：新增判定集中在 `analyse()` 與標題順序檢查，沒有分歧的重複邏輯 | — |
 
 ### S7 證據

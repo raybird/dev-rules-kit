@@ -20,6 +20,7 @@
 
 - 「本機 artifact 提交後的有效性」改名「審查之後的提交」。流程契約 2.4 起，被審查提交之後只新增該報告、只改該 issue README 的記帳區段（`## Timeline`、`## 待確認事項`、`## Gate 豁免紀錄` 與 `**狀態**`、`**核准 commit**` 的值）時原 PASS 沿用；`**核准 commit**` 只能由 `待提交` 改成被審查提交或其祖先。其他章節與標題、code fence、其他粗體欄位、計畫、evidence、既有報告與 issue 目錄外的檔案仍要重審。
 - `verify-artifact.py` 依被審查提交上的流程契約判定：2.4 以上的 2.x 逐區段比對並列出變更區段，無效時指出違規的路徑、章節或欄位；記帳區段內看起來像標題、code fence 或粗體欄位的非範本寫法、章節標題的順序與重複一律凍結；核准 commit 的新值只接受單一 SHA；新增 `--issue` 供報告保存在平台時使用。2.3 以下、讀不到契約或其他 major 維持只接受一個只新增該報告的提交。
+- 待確認事項、Gate 豁免紀錄可整節新增或刪除，但節內有標題或粗體開頭的行時判定無效；`docs/AGENTS.md` 改為建議 Gate 豁免紀錄以表格或一般清單書寫。
 - review 技能步驟 5 改用新判定；報告新增欄位「核准基線」（核准 commit 為 `待提交` 時必填），保存報告的同一個提交依它回填核准 commit。技能引用的章節名稱與推導命令附上流程契約 2.3 以下的對應寫法。
 
 ### 變更（`docs/agents/acceptance.md`、`docs/agents/readme-templates.md`、`skills/dev-cycle/SKILL.md`）
