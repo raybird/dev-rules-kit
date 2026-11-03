@@ -1,5 +1,5 @@
 #!/usr/bin/env python3
-"""建立 issue-0002 的 WF-28 fixture：28a／28d 回填、28b 審查後記帳（含對照 28b2）、28c 待提交時的基線。
+"""建立 issue-0002 的 WF-28 fixture：28a／28d 回填、28b 審查後記帳（含對照 28b2、28b3）、28c／28e 待提交時的基線。
 
 用法：python3 build_fixtures.py <kit 根目錄> <輸出目錄>
 輸出目錄必須不存在。沿用 issue-0001 的待辦 CLI 與 base()；docs/ 由該 kit 的 init-project.py 部署，
@@ -184,8 +184,11 @@ def build_28a(kit, path):
                                                   'SCN-001、SCN-002', '📝 待實作'))
 
 
-def build_28b(kit, path):
-    """已實作並提交，獨立審查 PASS 的報告尚未提交，報告有一項標需決策的 SHOULD FIX。"""
+def build_28b(kit, path, tests=4):
+    """已實作並提交，獨立審查 PASS 的報告尚未提交，報告有一項標需決策的 SHOULD FIX。
+
+    tests 是計畫與報告宣稱的測試數：28b／28b2 沿用實跑時的 4（實際 3 個，fixture 撰寫錯誤），28b3 改為正確的 3。
+    """
     issue1.base(kit, path)
     run(path, 'git', 'checkout', '-q', '-b', 'issue-2802-clear-done')
     folder = path / 'docs/issues/issue-2802'
@@ -211,7 +214,7 @@ def build_28b(kit, path):
         APPROVED_TABLE, timeline + '\n| 2026-11-03 | S1 完成，送獨立審查 | agent |', '審查中'))
     write(folder / 'implementation-plan.md', plan(
         2802, '新增 `clear-done` 指令與測試，更新使用說明', 'SCN-001、SCN-002',
-        '✅ 2026-11-03；`python3 -m unittest -v` 4 個測試通過（紅燈：新增測試在實作前因缺少 `clear_done` 失敗）'))
+        f'✅ 2026-11-03；`python3 -m unittest -v` {tests} 個測試通過（紅燈：新增測試在實作前因缺少 `clear_done` 失敗）'))
     commit(path, 'feat(todo): 新增 clear-done 指令刪除已完成項目\n\nRefs: #2802', '2026-11-03')
     reviewed = git(path, 'rev-parse', 'HEAD')
     base = git(path, 'merge-base', 'main', reviewed)
@@ -232,7 +235,7 @@ def build_28b(kit, path):
 - NICE TO HAVE：無
 
 ## 已查核維度
-- 驗收與證據：SCN-001、SCN-002 各有單元測試，實作前紅燈、實作後綠燈；`python3 -m unittest -v` 4 個測試通過
+- 驗收與證據：SCN-001、SCN-002 各有單元測試，實作前紅燈、實作後綠燈；`python3 -m unittest -v` {tests} 個測試通過
 - 相關失敗面：空檔案（todo.json 不存在）時 `load()` 回傳空清單，`clear-done` 寫出空清單，結果正確
 - 需求、架構、安全、品質：範圍只在 `todo.py`、`test_todo.py` 與使用說明；無跨 Task 重複
 - 豁免、待確認與限制：無
@@ -267,6 +270,62 @@ def build_28c(kit, path):
     commit(path, 'docs(issue-2803): Timeline 補記負責人\n\nRefs: #2803', '2026-11-03')
 
 
+UNDO_TEST = '''
+
+class UndoTest(unittest.TestCase):
+    def setUp(self):
+        import tempfile
+        from pathlib import Path
+        self.tmp = tempfile.TemporaryDirectory()
+        self.addCleanup(self.tmp.cleanup)
+        self.original = todo.DATA
+        todo.DATA = Path(self.tmp.name) / "todo.json"
+        self.addCleanup(setattr, todo, "DATA", self.original)
+
+    def test_undo_marks_item_not_done(self):  # SCN-001
+        todo.save([{"id": 1, "title": "a", "done": True}])
+        todo.main(["undo", "1"])
+        self.assertEqual(todo.load(), [{"id": 1, "title": "a", "done": False}])
+
+    def test_unknown_id_keeps_items(self):  # SCN-002
+        todo.save([{"id": 1, "title": "a", "done": True}])
+        todo.main(["undo", "9"])
+        self.assertEqual(todo.load(), [{"id": 1, "title": "a", "done": True}])
+'''
+
+UNDO_EVIDENCE = ('✅ 2026-11-03。紅燈：實作前執行 `python3 -m unittest -v`，3 個測試 1 個失敗（SCN-001：未知指令只列出清單，第 1 筆仍為已完成），exit 1；'
+                 'SCN-002 在實作前就成立（未知指令不寫檔），另以把 `undo` 改成不比對 id 的錯誤版本確認該測試會失敗（exit 1）後還原。'
+                 '綠燈：同一命令 3 個測試通過，exit 0。精煉：no-op，沿用 `done` 的迴圈。根目錄 README 使用說明已更新。')
+
+
+def build_28e(kit, path):
+    """28c 之後已實作並提交、送審前沒有回填；實作提交的 Timeline 列提到核准來源欄位名。"""
+    build_28c(kit, path)
+    folder = path / 'docs/issues/issue-2803'
+    todo = (path / 'todo.py').read_text()
+    todo = todo.replace('def done(item_id):\n    items = load()\n    for item in items:\n        if item["id"] == item_id:\n            item["done"] = True',
+                        'def done(item_id, value=True):\n    items = load()\n    for item in items:\n        if item["id"] == item_id:\n            item["done"] = value')
+    todo = todo.replace('    else:\n        print(render(load()))',
+                        '    elif argv[:1] == ["undo"]:\n        done(int(argv[1]), False)\n    else:\n        print(render(load()))')
+    write(path / 'todo.py', todo)
+    write(path / 'test_todo.py', (path / 'test_todo.py').read_text().replace(
+        '\n\nif __name__ == "__main__":', UNDO_TEST + '\n\nif __name__ == "__main__":'))
+    write(path / 'README.md', (path / 'README.md').read_text().replace(
+        '- `python3 todo.py`：列出', '- `python3 todo.py undo <id>`：取消完成\n- `python3 todo.py`：列出'))
+    overview = '新增 `undo <id>` 指令，把已完成的項目改回未完成。'
+    source = '2026-11-03 使用者在對話中回覆「核准」，適用 SCN-001、SCN-002'
+    timeline = ('| 2026-11-02 | 建立規格草案，SCN-001、SCN-002 待核准 | Claude Code |\n'
+                '| 2026-11-03 | 使用者核准 SCN-001、SCN-002 | 使用者／agent |\n'
+                '| 2026-11-03 | S1 完成，送獨立審查；`**核准來源**` 未變動 | agent |')
+    write(folder / 'README.md', readme(2803, '取消完成', overview, UNDO_GHERKIN, '待提交', source,
+                                       APPROVED_TABLE, timeline, '審查中'))
+    write(folder / 'implementation-plan.md', plan(2803, '新增 `undo` 指令與測試，更新使用說明',
+                                                  'SCN-001、SCN-002', UNDO_EVIDENCE))
+    commit(path, 'feat(todo): 新增 undo 指令取消完成\n\nRefs: #2803', '2026-11-03')
+    result = subprocess.run(['python3', '-m', 'unittest', '-q'], cwd=path, capture_output=True, text=True)
+    assert result.returncode == 0 and 'Ran 3 tests' in result.stderr, result.stderr
+
+
 def main():
     kit, out = Path(sys.argv[1]).resolve(), Path(sys.argv[2]).resolve()
     out.mkdir(parents=True)
@@ -275,7 +334,9 @@ def main():
     build_28b(kit, out / 'wf28b2')
     build_28c(kit, out / 'wf28c')
     build_28a(kit, out / 'wf28d')  # 與 28a 相同，只差使用者輸入
-    for name in ('wf28a', 'wf28b', 'wf28b2', 'wf28c', 'wf28d'):
+    build_28b(kit, out / 'wf28b3', tests=3)
+    build_28e(kit, out / 'wf28e')
+    for name in ('wf28a', 'wf28b', 'wf28b2', 'wf28c', 'wf28d', 'wf28b3', 'wf28e'):
         print(name, git(out / name, 'rev-parse', '--short', 'HEAD'), git(out / name, 'status', '--porcelain'))
 
 
