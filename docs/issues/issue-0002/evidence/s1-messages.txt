@@ -1,0 +1,57 @@
+# S1 每個案例的判定訊息（2026-11-03，e383a69 工作區）
+  [2.4] test_approval_backfill_must_be_ancestor INVALID→ INVALID：核准 commit「bfc6933e08c44fd371fa746a139769276718e4bb」不是被審查提交或其祖先；需重新審查
+  [2.4] test_approval_backfill_must_be_ancestor INVALID→ INVALID：核准 commit「deadbeef」不是被審查提交或其祖先；需重新審查
+  [2.4] test_approval_backfill_must_be_ancestor INVALID→ INVALID：核准 commit 只能由「待提交」改成被審查提交或其祖先，目前為「待提交」→「尚未決定」；需重新審查
+  [2.4] test_approval_record_change_invalid INVALID→ INVALID：README.md 的凍結內容與被審查版本不同：被審查版本為章節「Gherkin 核准紀錄」的「全部 Scenario 於 2026-11-03 核准。」，目前為章節「Gherkin 核准紀錄」的「全部 Scenario 於 2026-11-04 核准。」；需重新審查
+  [2.4] test_approval_sha_replaced_invalid INVALID→ INVALID：核准 commit 只能由「待提交」改成被審查提交或其祖先，目前為「fbfb6bd」→「a98c219」；需重新審查
+  [2.4] test_approval_source_change_invalid INVALID→ INVALID：README.md 的凍結內容與被審查版本不同：被審查版本為章節「Gherkin 核准紀錄」的「- **核准來源**: 2026-11-03 使用者回覆「核准」」，目前為章節「Gherkin 核准紀錄」的「- **核准來源**: 2026-11-03 使用者回覆「照做」」；需重新審查
+  [2.4] test_bad_report_invalid INVALID→ INVALID：報告缺少相符的 Reviewed HEAD SHA
+  [2.4] test_bad_report_invalid INVALID→ INVALID：報告必須為一般非執行檔案，不能是 symlink
+  [2.4] test_bookkeeping_across_several_commits VALID→ OK：被審查提交之後只有記帳變更，原 review 可依其真實判定沿用。變更：新增報告 review-66d07d5.md、核准 commit（待提交 → `66d07d5c4f06ba052fd6f00ae130a2fd3deaa859`）、Timeline、待確認事項
+  [2.4] test_code_fence_in_timeline_invalid INVALID→ INVALID：README.md 的凍結內容與被審查版本不同：被審查版本為章節「Timeline」的「**建立日期**: 2026-11-03」，目前為章節「Timeline」的「```gherkin」（code fence 內容一律凍結）；需重新審查
+  [2.4] test_existing_report_modified_invalid INVALID→ INVALID：被審查提交之後變更了 review-0000000.md（M），不屬於記帳區段；需重新審查
+  [2.4] test_frozen_field_inside_timeline_invalid INVALID→ INVALID：README.md 的凍結內容與被審查版本不同：被審查版本為章節「Timeline」的「**風險**: High」，目前為章節「Timeline」的「**風險**: Low」；需重新審查
+  [2.4] test_gherkin_change_invalid INVALID→ INVALID：README.md 的凍結內容與被審查版本不同：被審查版本為章節「Gherkin 驗收劇本」的「    Then 看到結果」（code fence 內容一律凍結），目前為章節「Gherkin 驗收劇本」的「    Then 看到另一個結果」（code fence 內容一律凍結）；需重新審查
+  [2.4] test_gherkin_moved_under_timeline_invalid INVALID→ INVALID：README.md 的凍結內容與被審查版本不同：被審查版本為章節「Gherkin 驗收劇本」的「```gherkin」（code fence 內容一律凍結），目前為章節「Gherkin 核准紀錄」的「## Gherkin 核准紀錄」；需重新審查
+  [2.4] test_inserted_heading_cannot_swallow_frozen_text INVALID→ INVALID：README.md 的凍結內容與被審查版本不同：被審查版本為章節「概述」的「固定的範例需求。」，目前為章節「Gherkin 驗收劇本」的「## Gherkin 驗收劇本」；需重新審查
+  [2.4] test_merge_in_range_invalid INVALID→ INVALID：被審查提交之後含 merge 提交；需重新審查
+  [2.4] test_new_gate_waiver_section_allowed VALID→ OK：被審查提交之後只有記帳變更，原 review 可依其真實判定沿用。變更：新增報告 review-6c20b07.md、Gate 豁免紀錄
+  [2.4] test_other_paths_invalid INVALID→ INVALID：被審查提交之後變更了 implementation-plan.md（M），不屬於記帳區段；需重新審查
+  [2.4] test_other_paths_invalid INVALID→ INVALID：被審查提交之後變更了 evidence/s1.txt（A），不屬於記帳區段；需重新審查
+  [2.4] test_other_paths_invalid INVALID→ INVALID：被審查提交之後變更了 docs/issues/issue-2/README.md（A），不屬於記帳區段；需重新審查
+  [2.4] test_other_paths_invalid INVALID→ INVALID：被審查提交之後變更了 app.txt（M），不屬於記帳區段；需重新審查
+  [2.4] test_platform_report_mode VALID→ OK：被審查提交之後只有記帳變更，原 review 可依其真實判定沿用。變更：Timeline、待確認事項
+  [2.4] test_report_and_bookkeeping_in_one_commit VALID→ OK：被審查提交之後只有記帳變更，原 review 可依其真實判定沿用。變更：新增報告 review-b5e2dcd.md、核准 commit（待提交 → dae2534）、狀態（實作中 → 待合併）、Timeline、待確認事項
+  [2.4] test_report_only_still_valid VALID→ OK：被審查提交之後只有記帳變更，原 review 可依其真實判定沿用。變更：新增報告 review-b5e2dcd.md
+  [2.4] test_report_rewritten_after_added_invalid INVALID→ INVALID：報告 review-b5e2dcd.md 新增後又被修改；需重新審查
+  [2.4] test_reviewed_not_ancestor_invalid INVALID→ INVALID：被審查提交不是目前 HEAD 的祖先（歷史已改寫或分支不同）；需重新審查
+  [2.4] test_small_ac_change_invalid INVALID→ INVALID：README.md 的凍結內容與被審查版本不同：被審查版本為章節「驗收條件」的「- AC-1: 原本的結果」，目前為章節「驗收條件」的「- AC-1: 改過的結果」；需重新審查
+  [2.3] test_approval_backfill_must_be_ancestor INVALID→ INVALID：後續差異不只新增該報告；需重新審查（流程契約 2.3；只動記帳區段的放行需要流程契約 2.4）
+  [2.3] test_approval_backfill_must_be_ancestor INVALID→ INVALID：後續差異不只新增該報告；需重新審查（流程契約 2.3；只動記帳區段的放行需要流程契約 2.4）
+  [2.3] test_approval_backfill_must_be_ancestor INVALID→ INVALID：後續差異不只新增該報告；需重新審查（流程契約 2.3；只動記帳區段的放行需要流程契約 2.4）
+  [2.3] test_approval_record_change_invalid INVALID→ INVALID：後續差異不只新增該報告；需重新審查（流程契約 2.3；只動記帳區段的放行需要流程契約 2.4）
+  [2.3] test_approval_sha_replaced_invalid INVALID→ INVALID：後續差異不只新增該報告；需重新審查（流程契約 2.3；只動記帳區段的放行需要流程契約 2.4）
+  [2.3] test_approval_source_change_invalid INVALID→ INVALID：後續差異不只新增該報告；需重新審查（流程契約 2.3；只動記帳區段的放行需要流程契約 2.4）
+  [2.3] test_bad_report_invalid INVALID→ INVALID：報告缺少相符的 Reviewed HEAD SHA
+  [2.3] test_bad_report_invalid INVALID→ INVALID：報告必須為一般非執行檔案，不能是 symlink
+  [2.3] test_bookkeeping_across_several_commits NEEDS24→ INVALID：只接受被審查提交之後的一個非 merge 報告提交（流程契約 2.3；只動記帳區段的放行需要流程契約 2.4）
+  [2.3] test_code_fence_in_timeline_invalid INVALID→ INVALID：後續差異不只新增該報告；需重新審查（流程契約 2.3；只動記帳區段的放行需要流程契約 2.4）
+  [2.3] test_existing_report_modified_invalid INVALID→ INVALID：後續差異不只新增該報告；需重新審查（流程契約 2.3；只動記帳區段的放行需要流程契約 2.4）
+  [2.3] test_frozen_field_inside_timeline_invalid INVALID→ INVALID：後續差異不只新增該報告；需重新審查（流程契約 2.3；只動記帳區段的放行需要流程契約 2.4）
+  [2.3] test_gherkin_change_invalid INVALID→ INVALID：後續差異不只新增該報告；需重新審查（流程契約 2.3；只動記帳區段的放行需要流程契約 2.4）
+  [2.3] test_gherkin_moved_under_timeline_invalid INVALID→ INVALID：後續差異不只新增該報告；需重新審查（流程契約 2.3；只動記帳區段的放行需要流程契約 2.4）
+  [2.3] test_inserted_heading_cannot_swallow_frozen_text INVALID→ INVALID：後續差異不只新增該報告；需重新審查（流程契約 2.3；只動記帳區段的放行需要流程契約 2.4）
+  [2.3] test_merge_in_range_invalid INVALID→ INVALID：只接受被審查提交之後的一個非 merge 報告提交（流程契約 2.3；只動記帳區段的放行需要流程契約 2.4）
+  [2.3] test_new_gate_waiver_section_allowed NEEDS24→ INVALID：後續差異不只新增該報告；需重新審查（流程契約 2.3；只動記帳區段的放行需要流程契約 2.4）
+  [2.3] test_other_paths_invalid INVALID→ INVALID：後續差異不只新增該報告；需重新審查（流程契約 2.3；只動記帳區段的放行需要流程契約 2.4）
+  [2.3] test_other_paths_invalid INVALID→ INVALID：後續差異不只新增該報告；需重新審查（流程契約 2.3；只動記帳區段的放行需要流程契約 2.4）
+  [2.3] test_other_paths_invalid INVALID→ INVALID：後續差異不只新增該報告；需重新審查（流程契約 2.3；只動記帳區段的放行需要流程契約 2.4）
+  [2.3] test_other_paths_invalid INVALID→ INVALID：後續差異不只新增該報告；需重新審查（流程契約 2.3；只動記帳區段的放行需要流程契約 2.4）
+  [2.3] test_platform_report_mode NEEDS24→ INVALID：被審查提交之後有新提交；需重新審查（流程契約 2.3；只動記帳區段的放行需要流程契約 2.4）
+  [2.3] test_report_and_bookkeeping_in_one_commit NEEDS24→ INVALID：後續差異不只新增該報告；需重新審查（流程契約 2.3；只動記帳區段的放行需要流程契約 2.4）
+  [2.3] test_report_only_still_valid VALID→ OK：只有新增本次報告；原 review 可依其真實判定沿用。
+  [2.3] test_report_only_still_valid VALID→ OK：只有新增本次報告；原 review 可依其真實判定沿用。
+  [2.3] test_report_rewritten_after_added_invalid INVALID→ INVALID：只接受被審查提交之後的一個非 merge 報告提交（流程契約 2.3；只動記帳區段的放行需要流程契約 2.4）
+  [2.3] test_reviewed_not_ancestor_invalid INVALID→ INVALID：只接受被審查提交之後的一個非 merge 報告提交（流程契約 2.3；只動記帳區段的放行需要流程契約 2.4）
+  [2.3] test_small_ac_change_invalid INVALID→ INVALID：後續差異不只新增該報告；需重新審查（流程契約 2.3；只動記帳區段的放行需要流程契約 2.4）
+failures 0 errors 0

@@ -12,6 +12,26 @@
 
 ---
 
+## [4.9.0] - 2026-11-03
+
+審查通過後的記帳不再觸發重審，核准 commit 不再單獨製造回填提交（[issue #2](https://github.com/raybird/dev-rules-kit/issues/2)；前後對照見 `docs/workflow-results/2026-11-03.md`）。由下游使用調查回報：審查後只為保存報告、記錄使用者決策或回填核准 commit 的提交讓 PASS 失效，而回填本身又是一個提交。
+
+### 變更（`docs/agents/review-evidence.md`、`docs/AGENTS.md`、`skills/review/`）
+
+- 「本機 artifact 提交後的有效性」改名「審查之後的提交」。流程契約 2.4 起，被審查提交之後只新增該報告、只改該 issue README 的記帳區段（`## Timeline`、`## 待確認事項`、`## Gate 豁免紀錄` 與 `**狀態**`、`**核准 commit**` 的值）時原 PASS 沿用；`**核准 commit**` 只能由 `待提交` 改成被審查提交或其祖先。其他章節與標題、code fence、其他粗體欄位、計畫、evidence、既有報告與 issue 目錄外的檔案仍要重審。
+- `verify-artifact.py` 依被審查提交上的流程契約判定：2.4 以上的 2.x 逐區段比對並列出變更區段，無效時指出違規的路徑、章節或欄位；記帳區段內看起來像標題、code fence 或粗體欄位的非範本寫法、章節標題的順序與重複一律凍結；核准 commit 的新值只接受單一 SHA；新增 `--issue` 供報告保存在平台時使用。2.3 以下、讀不到契約或其他 major 維持只接受一個只新增該報告的提交。
+- 待確認事項、Gate 豁免紀錄可整節新增或刪除，但節內有標題、code fence 或粗體開頭的行時判定無效；`docs/AGENTS.md` 改為建議 Gate 豁免紀錄以表格或一般清單書寫。
+- review 技能步驟 5 改用新判定；報告新增欄位「核准基線」（核准 commit 為 `待提交` 時必填），保存報告的同一個提交依它回填核准 commit。技能引用的章節名稱與推導命令附上流程契約 2.3 以下的對應寫法。
+
+### 變更（`docs/agents/acceptance.md`、`docs/agents/readme-templates.md`、`skills/dev-cycle/SKILL.md`）
+
+- 核准 commit 在下一個本來就要做的提交順手回填，不單獨開提交。仍是 `待提交` 時，以最後一個修改 `**核准來源**` 欄位行的提交為比對基線（附命令，pattern 錨定在行首欄位，說明文字提到欄位名不算）；沒有輸出或該行已不存在時判定缺少核准基線。
+- dev-cycle 記錄 `需決策` 的答案後，原判定為 PASS 且「審查之後的提交」判定有效時沿用 PASS，不再一律重新審查。
+
+### 下游更新
+
+- 流程契約 2.3 → 2.4；`docs/AGENTS.md` 文件版本 2.8。下游以 `init-project.py --update` 更新核心 `docs/` 後才採用新判定；未更新的專案由 `verify-artifact.py` 維持現行判定，技能宣告的最低契約不變，不會因此暫停。
+
 ## [4.8.1] - 2026-10-19
 
 ### 變更（`docs/agents/review-evidence.md`、`docs/AGENTS.md`）
