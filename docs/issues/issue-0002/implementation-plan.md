@@ -31,7 +31,7 @@ git log -1 --format=%H -G '\*\*核准來源\*\*' "${reviewed_sha}" -- "docs/issu
 |---|---|---|---|---|---|
 | S1 | 依上方判定修改 `verify-artifact.py`，在 `test-evidence.py` 補正負向案例 | SCN-001～003 已核准 | SCN-001～003 | 下方「腳本案例」全部通過，既有 6 個測試不變仍通過；每個負向案例的訊息指出違規位置 | ✅ 2026-11-03；見「S1 證據」 |
 | S2 | 建立 WF-28 fixture，以 v4.8.1 規則在隔離設定實跑基準 | SCN-006 已核准；與 S1 無相依 | SCN-006 | 記錄只為回填或記帳的提交數、因記帳觸發的重審次數、環境與完整輸出；fixture 與固定回答先提交再實跑 | 📝 待實作 |
-| S3 | 修改 review-evidence.md、acceptance.md、readme-templates.md、review SKILL.md 與 docs/AGENTS.md 版本；檢查 execute-task、create-pr、dev-cycle、README、usage 的引用（依 writing-rules） | S1；SCN-001、004、005 已核准 | SCN-001、004、005 | 規則文字與腳本判定一致，沒有自相矛盾的舊句；文件版本 2.8、流程契約 2.4；有語意落差的引用已同步 | 📝 待實作 |
+| S3 | 修改 review-evidence.md、acceptance.md、readme-templates.md、review SKILL.md 與 docs/AGENTS.md 版本；檢查 execute-task、create-pr、dev-cycle、README、usage 的引用（依 writing-rules） | S1；SCN-001、004、005 已核准 | SCN-001、004、005 | 規則文字與腳本判定一致，沒有自相矛盾的舊句；文件版本 2.8、流程契約 2.4；有語意落差的引用已同步 | ✅ 2026-11-03；見「S3 證據」 |
 | S4 | 以本次規則對同一 fixture 實跑候選組與對照組，重跑 WF-14 | S2、S3 | SCN-004～006，覆核 SCN-001～003 | 依下方「行為案例」逐項判定；任一語意變更沿用 PASS 即判回歸失敗並回到原因修正 | 📝 待實作 |
 | S5 | 更新 CHANGELOG（v4.9.0）、workflow-regression、rule-verification-status 與回歸紀錄；跑根目錄五項檢查；送獨立審查 | S4 | SCN-001～006 | 五項檢查通過；未實跑分支登記為僅靜態撰寫；獨立審查 PASS 或已依使用者決定處理 | 📝 待實作 |
 
@@ -47,6 +47,27 @@ git log -1 --format=%H -G '\*\*核准來源\*\*' "${reviewed_sha}" -- "docs/issu
 | 精煉 | no-op：腳本結構與上方六個判定步驟一一對應，沒有分歧的重複邏輯；綠燈即最終狀態 | — |
 
 已知限制：README 標題名稱與範本不同的下游，該節一律視為凍結（只會更嚴）；記帳章節內的縮排程式碼區塊不視為 code fence，內容可自由修改，讀者只從驗收章節的 fence 取得 Gherkin。
+
+### S3 證據
+
+2026-11-03，對應 SCN-001、004、005。規則文字依 writing-rules 修改；agent 是否照做由 S4 實跑，本步只取得靜態與命令證據。
+
+| 檔案 | 變更 |
+|---|---|
+| `docs/agents/review-evidence.md` | 「本機 artifact 提交後的有效性」改名「審查之後的提交」：2.4 起三項條件與凍結內容，2.3 以下維持單一報告提交；報告欄位新增核准基線 |
+| `docs/agents/acceptance.md` | 核准 commit 在下一個本來就要做的提交回填；`待提交` 時的推導命令（放在原比對命令之後，`test-evidence.py` 依序取用兩段命令）；刪除核准來源行也算缺少基線 |
+| `docs/agents/readme-templates.md` | 兩處核准 commit 說明補上回填時機 |
+| `skills/review/SKILL.md` | 步驟 3 推導基線、步驟 5 改用新判定與 `--issue`、報告範本加核准基線 |
+| `skills/dev-cycle/SKILL.md` | 第 44 行原本要求記錄 `需決策` 後一律重新 review，正是本 issue 的連鎖來源；改為原判定 PASS 且判定有效時沿用，RETURN 仍重審 |
+| `docs/usage.md` | 審查有效性的說明改為 2.4／2.3 兩種判定 |
+| `docs/AGENTS.md` | 文件版本 2.8、流程契約 2.4、修訂紀錄 |
+
+`create-pr`、`execute-task`、根目錄 README、INSTALL.md 沒有描述這兩條規則的句子，不需修改。
+
+| 證據 | 結果 | 紀錄 |
+|---|---|---|
+| 推導命令紅燈 | 以 HEAD 的 acceptance.md（沒有推導命令）跑新增的兩個推導測試：2 個失敗，原因是缺少該命令，exit 1 | [s3-baseline-red.txt](evidence/s3-baseline-red.txt) |
+| 綠燈 | 推導測試執行文件中的字面命令：核准後的記帳提交不改變基線、重新核准移到新提交、以被審查提交為 ref 時不受之後的提交影響、沒有核准來源行時無輸出；刪除該行的提交也會被找到，因此規則另要求 ref 上仍有該行。根目錄五項檢查 exit 0，`test-evidence.py` 75 個測試通過 | [s3-green.txt](evidence/s3-green.txt) |
 
 ## 使用方式對照
 

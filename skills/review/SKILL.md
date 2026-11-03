@@ -13,9 +13,9 @@ description: 由獨立 reviewer 審查變更或不修復決策，核對驗收、
 
 1. 取得固定範圍的完整 diff、異動清單、核准規格與測試證據。產生檔可簡述來源；lockfile 涉依賴或供應鏈變更時仍查核，不能一律排除。
 2. 派給宿主獨立 subagent／task，傳入同一組範圍、規格與證據；使用者明確要求時改用 Superpowers requesting-code-review。原實作者不兼任獨立 reviewer；能力缺漏或豁免依 review-evidence.md 回報。
-3. 核對規格修訂與核准來源、完整驗收覆蓋、正確性、相關安全／權限／依賴失敗面、架構邊界與測試真偽。以 code-simplify 的標準檢查整份 diff 中跨 Task 的重複邏輯與過度設計。依風險提出具體邊界案例，各重要失敗面都有覆蓋結論，無固定數量。
+3. 核對規格修訂與核准來源（核准 commit 為 `待提交` 時依 acceptance.md 推導核准基線）、完整驗收覆蓋、正確性、相關安全／權限／依賴失敗面、架構邊界與測試真偽。以 code-simplify 的標準檢查整份 diff 中跨 Task 的重複邏輯與過度設計。依風險提出具體邊界案例，各重要失敗面都有覆蓋結論，無固定數量。
 4. 區分 MUST FIX 與改善建議，需要使用者決策才能處理的發現依 review-evidence.md 加註 `需決策`，交由協調者確認；重複邏輯已分歧而造成行為不一致或正確性風險時列 MUST FIX，其餘重複與過度設計列改善建議。依 verification.md 將證據持久力、限制揭露與假綠燈分開判定。待確認事項維持原狀態，覆核其交付影響；豁免只適用紀錄明列項目。
-5. 依 review-evidence.md 保存完整報告，並檢查被審查版本與 artifact 有效性。本機報告可由協調者新增只含該報告的提交，通過「本機 artifact 提交後的有效性」全部檢查才沿用原 PASS。執行本 skill 目錄下的 `scripts/verify-artifact.py --repo <專案> --reviewed <SHA> --head <SHA> --artifact <repo-relative 路徑>` 驗證提交例外；指令為唯讀，成功只代表版本有效，審查結論仍須讀報告。
+5. 依 review-evidence.md 保存完整報告，並檢查被審查版本與 artifact 有效性。被審查提交之後的提交（保存報告、記錄使用者決策、回填核准 commit）依「審查之後的提交」判定：執行本 skill 目錄下的 `scripts/verify-artifact.py --repo <專案> --reviewed <SHA> --head <SHA> --artifact <repo-relative 報告路徑>`，報告保存在平台時以 `--issue docs/issues/issue-<ID>` 取代 `--artifact`。結果有效才沿用原 PASS，並把它回報的變更區段寫進 PR 證據；指令為唯讀，成功只代表版本有效，審查結論仍須讀報告。
 
 不修復／等待窗口時改審查其決策與當下可完成工作，不要求尚未到期的外部結果，也不輸出程式驗收 PASS。
 
@@ -29,6 +29,7 @@ description: 由獨立 reviewer 審查變更或不修復決策，核對驗收、
 - Reviewed patch-id：...（無程式 diff 的決策審查可記不適用與理由）
 - 獨立 reviewer：...
 - Review artifact：...
+- 核准基線：...（核准 commit 為 `待提交` 時記推導出的 SHA；其他情況省略）
 
 ## 問題與風險
 - MUST FIX／SHOULD FIX／NICE TO HAVE：具體位置、影響與建議；需決策者加註 `需決策` 與待決問題；無則寫無

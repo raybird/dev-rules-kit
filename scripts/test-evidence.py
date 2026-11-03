@@ -222,6 +222,39 @@ class BookkeepingTests(unittest.TestCase):
         for mention in mentions:
             self.assertIn(mention, result.stderr)
 
+    def derive_baseline(self, ref):
+        # Run the literal second command shipped in acceptance.md.
+        blocks = (ROOT / 'docs/agents/acceptance.md').read_text().split('```bash\n')
+        self.assertGreaterEqual(len(blocks), 3, 'acceptance.md 缺少核准基線推導命令')
+        command = blocks[2].split('```', 1)[0]
+        result = subprocess.run(['bash', '-c', command], cwd=self.repo,
+                                env=dict(os.environ, ref=ref, issue_id='1'),
+                                capture_output=True, text=True)
+        self.assertEqual(result.returncode, 0, result.stderr)
+        return result.stdout.strip()
+
+    def test_baseline_derived_from_approval_source(self):
+        self.record_decision()
+        self.commit('later bookkeeping without touching approval source')
+        self.assertEqual(self.derive_baseline('HEAD'), self.approval)
+        self.assertEqual(self.derive_baseline(self.reviewed), self.approval)
+        self.edit('使用者回覆「核准」', '使用者回覆「核准」；2026-11-04 重新核准')
+        self.commit('re-approval')
+        self.assertEqual(self.derive_baseline('HEAD'), self.git('rev-parse', 'HEAD'))
+        self.assertEqual(self.derive_baseline(self.reviewed), self.approval)
+
+    def test_baseline_missing_without_approval_source(self):
+        self.edit('- **核准來源**: 2026-11-03 使用者回覆「核准」\n', '')
+        self.commit('drop approval source')
+        # The deleting commit is found too; acceptance.md therefore also requires the line at ref.
+        self.assertEqual(self.derive_baseline('HEAD'), self.git('rev-parse', 'HEAD'))
+        self.assertNotIn('**核准來源**', self.git('show', 'HEAD:docs/issues/issue-1/README.md'))
+        self.write('docs/issues/issue-1/README.md', FIXTURE_README.replace(
+            '- **核准來源**: 2026-11-03 使用者回覆「核准」\n', ''))
+        self.git('checkout', '-q', '--orphan', 'fresh')
+        self.commit('spec without approval source')
+        self.assertEqual(self.derive_baseline('HEAD'), '')
+
     # --- 有效：只動記帳區段 ---
 
     def test_report_and_bookkeeping_in_one_commit(self):

@@ -1,0 +1,24 @@
+# S3 綠燈（2026-11-03，基於 9148ef9 的工作區；exit 為命令本身的結束碼）
+$ python3 scripts/check-kit.py
+OK: skill frontmatter 完整且 name 一致，skill 的最低流程契約相容，雙語規則章節數一致，install.sh 安裝路徑與 README 一致。
+exit=0
+$ python3 scripts/check-links.py
+OK: 所有 Markdown 相對連結皆有效。
+exit=0
+$ bash -n scripts/install.sh
+exit=0
+$ python3 scripts/test-install.py
+Ran 14 tests in 2.543s
+
+OK
+exit=0
+$ python3 scripts/test-evidence.py -v
+test_baseline_derived_from_approval_source (__main__.BookkeepingTests.test_baseline_derived_from_approval_source) ... ok
+test_baseline_missing_without_approval_source (__main__.BookkeepingTests.test_baseline_missing_without_approval_source) ... ok
+test_baseline_derived_from_approval_source (__main__.LegacyBookkeepingTests.test_baseline_derived_from_approval_source) ... ok
+test_baseline_missing_without_approval_source (__main__.LegacyBookkeepingTests.test_baseline_missing_without_approval_source) ... ok
+test_baseline_derived_from_approval_source (__main__.NoContractBookkeepingTests.test_baseline_derived_from_approval_source) ... ok
+test_baseline_missing_without_approval_source (__main__.NoContractBookkeepingTests.test_baseline_missing_without_approval_source) ... ok
+Ran 75 tests in 4.869s
+OK
+exit=0

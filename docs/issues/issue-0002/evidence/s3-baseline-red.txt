@@ -1,0 +1,29 @@
+# S3 紅燈（2026-11-03）：HEAD 9148ef9 的 acceptance.md（沒有推導命令）跑新增的推導測試
+FF
+======================================================================
+FAIL: test_baseline_derived_from_approval_source (__main__.BookkeepingTests.test_baseline_derived_from_approval_source)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/home/kevin/Documents/RCodes/dev-rules-kit/scripts/test-evidence.py", line 239, in test_baseline_derived_from_approval_source
+    self.assertEqual(self.derive_baseline('HEAD'), self.approval)
+                     ^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/kevin/Documents/RCodes/dev-rules-kit/scripts/test-evidence.py", line 228, in derive_baseline
+    self.assertGreaterEqual(len(blocks), 3, 'acceptance.md 缺少核准基線推導命令')
+AssertionError: 2 not greater than or equal to 3 : acceptance.md 缺少核准基線推導命令
+
+======================================================================
+FAIL: test_baseline_missing_without_approval_source (__main__.BookkeepingTests.test_baseline_missing_without_approval_source)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/home/kevin/Documents/RCodes/dev-rules-kit/scripts/test-evidence.py", line 253, in test_baseline_missing_without_approval_source
+    self.assertEqual(self.derive_baseline('HEAD'), '')
+                     ^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/kevin/Documents/RCodes/dev-rules-kit/scripts/test-evidence.py", line 228, in derive_baseline
+    self.assertGreaterEqual(len(blocks), 3, 'acceptance.md 缺少核准基線推導命令')
+AssertionError: 2 not greater than or equal to 3 : acceptance.md 缺少核准基線推導命令
+
+----------------------------------------------------------------------
+Ran 2 tests in 0.047s
+
+FAILED (failures=2)
+exit=1
