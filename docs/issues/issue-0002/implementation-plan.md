@@ -32,8 +32,10 @@ git log -1 --format=%H -G '\*\*核准來源\*\*' "${reviewed_sha}" -- "docs/issu
 | S1 | 依上方判定修改 `verify-artifact.py`，在 `test-evidence.py` 補正負向案例 | SCN-001～003 已核准 | SCN-001～003 | 下方「腳本案例」全部通過，既有 6 個測試不變仍通過；每個負向案例的訊息指出違規位置 | ✅ 2026-11-03；見「S1 證據」 |
 | S2 | 建立 WF-28 fixture，以 v4.8.1 規則在隔離設定實跑基準 | SCN-006 已核准；與 S1 無相依 | SCN-006 | 記錄只為回填或記帳的提交數、因記帳觸發的重審次數、環境與完整輸出；fixture 與固定回答先提交再實跑 | ✅ 2026-11-03；見「S2、S4 證據」 |
 | S3 | 修改 review-evidence.md、acceptance.md、readme-templates.md、review SKILL.md 與 docs/AGENTS.md 版本；檢查 execute-task、create-pr、dev-cycle、README、usage 的引用（依 writing-rules） | S1；SCN-001、004、005 已核准 | SCN-001、004、005 | 規則文字與腳本判定一致，沒有自相矛盾的舊句；文件版本 2.8、流程契約 2.4；有語意落差的引用已同步 | ✅ 2026-11-03；見「S3 證據」 |
-| S4 | 以本次規則對同一 fixture 實跑候選組與對照組，重跑 WF-14 | S2、S3 | SCN-004～006，覆核 SCN-001～003 | 依下方「行為案例」逐項判定；任一語意變更沿用 PASS 即判回歸失敗並回到原因修正 | ✅ 2026-11-03；見「S2、S4 證據」，WF-14 未另外實跑 |
-| S5 | 更新 CHANGELOG（v4.9.0）、workflow-regression、rule-verification-status 與回歸紀錄；跑根目錄五項檢查；送獨立審查 | S4 | SCN-001～006 | 五項檢查通過；未實跑分支登記為僅靜態撰寫；獨立審查 PASS 或已依使用者決定處理 | 🔄 文件與五項檢查完成，待獨立審查 |
+| S4 | 以本次規則對同一 fixture 實跑候選組與對照組，重跑 WF-14 | S2、S3 | SCN-004～006，覆核 SCN-001～003 | 依下方「行為案例」逐項判定；任一語意變更沿用 PASS 即判回歸失敗並回到原因修正 | ⚠️ 部分完成 2026-11-03；見「S2、S4 證據」。沒有語意變更沿用 PASS；完成判準中 WF-14 重跑、28c 的 reviewer 端與刪除核准來源行的對照組未達成，reviewer 端改由 S7 的 28e 補上 |
+| S5 | 更新 CHANGELOG（v4.9.0）、workflow-regression、rule-verification-status 與回歸紀錄；跑根目錄五項檢查；送獨立審查 | S4 | SCN-001～006 | 五項檢查通過；未實跑分支登記為僅靜態撰寫；獨立審查 PASS 或已依使用者決定處理 | 🔄 第一次審查 [review-c77928c](review-c77928c.md) RETURN，經 S6、S7 處理後送覆審 |
+| S6 | 依 review-c77928c 修正：review 技能步驟 5 隨報告回填、推導 pattern 錨定、`verify-artifact.py` 收緊非範本寫法與其他放行路徑、技能附 2.3 以下的章節名稱、回歸紀錄與驗證狀態更正 | S5 審查 | SCN-001～005 | 審查列出的 MUST FIX、SHOULD FIX 都有修正與證據；新增測試先紅後綠；reviewer 的對抗腳本改判無效 | ✅ 2026-11-03；見「S6 證據」 |
+| S7 | 以最終規則重跑候選 28a、28b、28c、28d，新增 28b3、28e；基準組跑 28d 第二輪與 28e | S6；判定先提交（`aa6e624`） | SCN-004～006 | 依 expected.md「審查後重跑」逐項判定 | ✅ 2026-11-03；見「S7 證據」，28b3 依判準為無法區分 |
 
 ### S1 證據
 
@@ -80,6 +82,21 @@ git log -1 --format=%H -G '\*\*核准來源\*\*' "${reviewed_sha}" -- "docs/issu
 | 語意變更沿用 PASS（28b2） | — | 0（檢查器 INVALID 後重審） |
 
 候選組五個案例都符合判定，SCN-006 通過。與上方「行為案例」表的差異：28a 改為規格尚未提交；28c 改為實作前推導基線，reviewer 端的推導只在 28b2 觀察到；28c 刪除核准來源行的對照組與 WF-14 沒有 agent 實跑，只有腳本測試；每案例每組一輪。觀察到的偏差（28b2 沒有隨報告提交回填、fixture 的 PASS 報告本身有誤）記在回歸紀錄「觀察」。
+
+### S6 證據
+
+2026-11-03，對應 [review-c77928c](review-c77928c.md) 的 MUST FIX 1、SHOULD FIX 3～5 與 NICE TO HAVE 7～13；MUST FIX 2、SHOULD FIX 6 屬紀錄更正，見回歸紀錄與驗證狀態。
+
+| 段落 | 命令與結果 | 紀錄 |
+|---|---|---|
+| 紅燈 | 修正前的 `verify-artifact.py` 與 acceptance.md（`de2e1f9`）跑新增測試：96 個測試 20 個失敗，exit 1。失敗原因是非範本寫法的欄位、標題與 fence 被放行，記帳章節可重排或重複，核准 commit 接受 SHA 加尾隨文字，`diff.relative` 加子目錄 `--repo` 時 `--issue` 回報「無變更」，3.0 走新判定，推導命令選中提到欄位名的 Timeline 提交 | [s6-red.txt](evidence/s6-red.txt) |
+| 綠燈 | 修正後 99 個測試全過，exit 0；另加的「整節刪除待確認事項」正向測試守住 review-evidence.md 的既有規則（修正前本來就通過，非紅燈測試） | [s6-green.txt](evidence/s6-green.txt) |
+| 對抗腳本 | reviewer 留在 scratchpad 的對抗腳本以新版重跑：列為放行的寫法都改判無效；仍放行的只有已揭露的縮排程式碼區塊、非粗體純文字行與只改檔案模式；2.3 與無契約下新舊腳本 10 種情境結果相同 | 回歸紀錄「審查後修正與重跑」 |
+| 精煉 | no-op：新增判定集中在 `analyse()` 與標題順序檢查，沒有分歧的重複邏輯 | — |
+
+### S7 證據
+
+2026-11-03，對應 SCN-004～006。判定與新增案例在實跑前寫定（`aa6e624`），結果、SCN-006 綜合對照與未覆蓋項見 [2026-11-03 回歸紀錄](../../workflow-results/2026-11-03.md)「審查後修正與重跑」，每輪輸出與檢查器實際輸出見 [evidence/s7-rerun/](evidence/s7-rerun/)。候選組所有案例符合判定，28b3 依判準為無法區分（協調者同時改了計畫檔）；28e 證實 reviewer 端推導基線與隨報告回填。
 
 ## 使用方式對照
 

@@ -75,3 +75,9 @@
 
 **下一步**：建 PR，再做獨立審查。你說要開始時我再接著做。
 ````
+
+## 檢查器實際輸出
+
+自原始 stream-json 摘錄 agent 執行 `verify-artifact.py --reviewed …` 的結果（依執行順序）：
+
+- agent 沒有執行 `verify-artifact.py`

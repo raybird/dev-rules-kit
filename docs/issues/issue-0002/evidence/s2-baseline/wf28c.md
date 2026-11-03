@@ -73,3 +73,9 @@ S1 已實作並提交為 `b635ac7`。依你的指示停在這裡，沒有建 PR�
 
 下一步需要你說繼續，我才會建 PR 並進行獨立審查。
 ````
+
+## 檢查器實際輸出
+
+自原始 stream-json 摘錄 agent 執行 `verify-artifact.py --reviewed …` 的結果（依執行順序）：
+
+- agent 沒有執行 `verify-artifact.py`

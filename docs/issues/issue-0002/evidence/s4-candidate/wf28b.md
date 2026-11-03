@@ -63,3 +63,9 @@ README 的 `**狀態**` 還是「審查中」，這次沒有改。
 **下一步**
 這個專案沒有遠端，依 `project.md`，把 `issue-2802-clear-done` 用 `--no-ff` 合併進 `main`，就算是 PR merged。merge commit 的標題要含 `issue-2802`。合併由您決定，我不會自己合併。合併後再執行 `/dev-cycle issue 2802`，會依實際 merge 日期把 issue 標為已完成。
 ````
+
+## 檢查器實際輸出
+
+自原始 stream-json 摘錄 agent 執行 `verify-artifact.py --reviewed …` 的結果（依執行順序）：
+
+- `OK：被審查提交之後只有記帳變更，原 review 可依其真實判定沿用。變更：新增報告 docs/issues/issue-2802/review-4dbe143.md、Timeline、待確認事項`

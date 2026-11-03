@@ -116,3 +116,9 @@
 
 **下一步**：由你把 `issue-2802-clear-done` 用 `--no-ff` 合併進 `main`，merge commit 標題要含 `issue-2802`。我不會自己合併；合併後再執行 `/dev-cycle issue 2802` 就能結案。
 ````
+
+## 檢查器實際輸出
+
+自原始 stream-json 摘錄 agent 執行 `verify-artifact.py --reviewed …` 的結果（依執行順序）：
+
+- agent 沒有執行 `verify-artifact.py`

@@ -52,3 +52,9 @@
 
   開始前會先比對 README 和 `2884f36`，確認規格之後沒被改過。
 ````
+
+## 檢查器實際輸出
+
+自原始 stream-json 摘錄 agent 執行 `verify-artifact.py --reviewed …` 的結果（依執行順序）：
+
+- agent 沒有執行 `verify-artifact.py`

@@ -52,3 +52,9 @@ Issue 2801 的規格已提交（2026-11-03），實作照你說的留到明天�
 
 **明天的下一步**：從 `issue-2801-count` 分支執行 `/dev-cycle issue 2801`。它會做 implementation-plan 的 S1：新增 `count` 指令，每個 Scenario 寫一個單元測試，先確認測試失敗、再讓它通過，並更新根目錄 README 的使用說明。
 ````
+
+## 檢查器實際輸出
+
+自原始 stream-json 摘錄 agent 執行 `verify-artifact.py --reviewed …` 的結果（依執行順序）：
+
+- agent 沒有執行 `verify-artifact.py`

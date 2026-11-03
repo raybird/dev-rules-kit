@@ -60,3 +60,9 @@ Issue 2801 的 S1 已實作並提交，照你的要求停在這裡，還沒建 P
 
 **下一步**：之後要繼續時，再跑一次 `/dev-cycle issue 2801`，就會建 PR 並做獨立審查。目前沒有阻塞。
 ````
+
+## 檢查器實際輸出
+
+自原始 stream-json 摘錄 agent 執行 `verify-artifact.py --reviewed …` 的結果（依執行順序）：
+
+- agent 沒有執行 `verify-artifact.py`

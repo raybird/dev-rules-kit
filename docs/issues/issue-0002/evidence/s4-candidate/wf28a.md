@@ -63,3 +63,9 @@ Issue 2801 的 S1 已實作並提交，照你說的停在這裡，還沒送審�
 
 **下一步**：建立 PR，也就是本機用 `--no-ff` merge 進 `main` 前的交付說明，然後做獨立審查。要繼續時跟我說就好。
 ````
+
+## 檢查器實際輸出
+
+自原始 stream-json 摘錄 agent 執行 `verify-artifact.py --reviewed …` 的結果（依執行順序）：
+
+- agent 沒有執行 `verify-artifact.py`
