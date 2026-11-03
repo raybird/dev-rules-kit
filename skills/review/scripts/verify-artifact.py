@@ -143,7 +143,7 @@ def describe(entry):
     if entry is None:
         return '（無）'
     section, kind, text = entry
-    return f'章節「{section}」的「{text}」' + ('（code fence 內容一律凍結）' if kind == 'fence' else '')
+    return f'章節「{section}」的' + (f'「{text}」' if text.strip() else '空行') + ('（code fence 內容一律凍結）' if kind == 'fence' else '')
 
 
 def check_readme(git, reviewed, head, readme):
