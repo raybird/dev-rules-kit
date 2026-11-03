@@ -1,0 +1,228 @@
+# S6 紅燈：審查 review-c77928c 後新增的測試，以修正前的 verify-artifact.py（de2e1f9）與 acceptance.md 執行
+$ python3 scripts/test-evidence.py
+F.....F..F...F...FFFFFFFFFFF...F..................F......F......................F......F................
+======================================================================
+FAIL: test_approval_backfill_must_be_ancestor (__main__.BookkeepingTests.test_approval_backfill_must_be_ancestor) (value='cecd92c 另外把 SCN-001 改為不需測試')
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "<kit>/scripts/test-evidence.py", line 471, in test_approval_backfill_must_be_ancestor
+    self.assertInvalid(self.verify(), '核准 commit')
+  File "<kit>/scripts/test-evidence.py", line 221, in assertInvalid
+    self.assertNotEqual(result.returncode, 0, result.stdout + result.stderr)
+AssertionError: 0 == 0 : OK：被審查提交之後只有記帳變更，原 review 可依其真實判定沿用。變更：新增報告 docs/issues/issue-1/review-daadedb.md、核准 commit（待提交 → cecd92c 另外把 SCN-001 改為不需測試）
+
+
+======================================================================
+FAIL: test_baseline_ignores_text_mentioning_approval_source (__main__.BookkeepingTests.test_baseline_ignores_text_mentioning_approval_source)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "<kit>/scripts/test-evidence.py", line 252, in test_baseline_ignores_text_mentioning_approval_source
+    self.assertEqual(self.derive_baseline('HEAD'), self.approval)
+AssertionError: 'b7b0197a20424557aa1dd380441021c09cd72141' != '2aa9bc427bfb2c145d19b02fb147797863b0e226'
+- b7b0197a20424557aa1dd380441021c09cd72141
++ 2aa9bc427bfb2c145d19b02fb147797863b0e226
+
+
+======================================================================
+FAIL: test_bookkeeping_headings_keep_order (__main__.BookkeepingTests.test_bookkeeping_headings_keep_order)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "<kit>/scripts/test-evidence.py", line 390, in test_bookkeeping_headings_keep_order
+    self.assertInvalid(self.verify(), '標題')
+  File "<kit>/scripts/test-evidence.py", line 221, in assertInvalid
+    self.assertNotEqual(result.returncode, 0, result.stdout + result.stderr)
+AssertionError: 0 == 0 : OK：被審查提交之後只有記帳變更，原 review 可依其真實判定沿用。變更：新增報告 docs/issues/issue-1/review-e764db2.md
+
+
+======================================================================
+FAIL: test_future_major_contract_uses_legacy_rule (__main__.BookkeepingTests.test_future_major_contract_uses_legacy_rule)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "<kit>/scripts/test-evidence.py", line 494, in test_future_major_contract_uses_legacy_rule
+    self.assertInvalid(self.verify(), '2.4')
+  File "<kit>/scripts/test-evidence.py", line 221, in assertInvalid
+    self.assertNotEqual(result.returncode, 0, result.stdout + result.stderr)
+AssertionError: 0 == 0 : OK：被審查提交之後只有記帳變更，原 review 可依其真實判定沿用。變更：新增報告 docs/issues/issue-1/review-fabf5c1.md、Timeline、待確認事項
+
+
+======================================================================
+FAIL: test_loose_fence_in_bookkeeping_invalid (__main__.BookkeepingTests.test_loose_fence_in_bookkeeping_invalid) (fence='> ```gherkin\n> Scenario: 新增\n> ```')
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "<kit>/scripts/test-evidence.py", line 380, in test_loose_fence_in_bookkeeping_invalid
+    self.assertInvalid(self.verify(), 'code fence')
+  File "<kit>/scripts/test-evidence.py", line 221, in assertInvalid
+    self.assertNotEqual(result.returncode, 0, result.stdout + result.stderr)
+AssertionError: 0 == 0 : OK：被審查提交之後只有記帳變更，原 review 可依其真實判定沿用。變更：新增報告 docs/issues/issue-1/review-0932035.md、Timeline
+
+
+======================================================================
+FAIL: test_loose_fence_in_bookkeeping_invalid (__main__.BookkeepingTests.test_loose_fence_in_bookkeeping_invalid) (fence='- 補充\n\n    ```gherkin\n    Scenario: 新增\n    ```')
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "<kit>/scripts/test-evidence.py", line 380, in test_loose_fence_in_bookkeeping_invalid
+    self.assertInvalid(self.verify(), 'code fence')
+  File "<kit>/scripts/test-evidence.py", line 221, in assertInvalid
+    self.assertNotEqual(result.returncode, 0, result.stdout + result.stderr)
+AssertionError: 0 == 0 : OK：被審查提交之後只有記帳變更，原 review 可依其真實判定沿用。變更：新增報告 docs/issues/issue-1/review-0932035.md、Timeline
+
+
+======================================================================
+FAIL: test_loose_field_forms_frozen (__main__.BookkeepingTests.test_loose_field_forms_frozen) (after='**風險:** Low')
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "<kit>/scripts/test-evidence.py", line 358, in test_loose_field_forms_frozen
+    self.assertInvalid(self.verify(), before.strip('-* _:：'))
+  File "<kit>/scripts/test-evidence.py", line 221, in assertInvalid
+    self.assertNotEqual(result.returncode, 0, result.stdout + result.stderr)
+AssertionError: 0 == 0 : OK：被審查提交之後只有記帳變更，原 review 可依其真實判定沿用。變更：新增報告 docs/issues/issue-1/review-61d7206.md、Timeline
+
+
+======================================================================
+FAIL: test_loose_field_forms_frozen (__main__.BookkeepingTests.test_loose_field_forms_frozen) (after='- **分級：** Small')
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "<kit>/scripts/test-evidence.py", line 358, in test_loose_field_forms_frozen
+    self.assertInvalid(self.verify(), before.strip('-* _:：'))
+  File "<kit>/scripts/test-evidence.py", line 221, in assertInvalid
+    self.assertNotEqual(result.returncode, 0, result.stdout + result.stderr)
+AssertionError: 0 == 0 : OK：被審查提交之後只有記帳變更，原 review 可依其真實判定沿用。變更：新增報告 docs/issues/issue-1/review-3a92f64.md、Timeline
+
+
+======================================================================
+FAIL: test_loose_field_forms_frozen (__main__.BookkeepingTests.test_loose_field_forms_frozen) (after='__風險__: Low')
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "<kit>/scripts/test-evidence.py", line 358, in test_loose_field_forms_frozen
+    self.assertInvalid(self.verify(), before.strip('-* _:：'))
+  File "<kit>/scripts/test-evidence.py", line 221, in assertInvalid
+    self.assertNotEqual(result.returncode, 0, result.stdout + result.stderr)
+AssertionError: 0 == 0 : OK：被審查提交之後只有記帳變更，原 review 可依其真實判定沿用。變更：新增報告 docs/issues/issue-1/review-34e6223.md、Timeline
+
+
+======================================================================
+FAIL: test_loose_heading_in_bookkeeping_invalid (__main__.BookkeepingTests.test_loose_heading_in_bookkeeping_invalid) (heading=' ## 驗收條件')
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "<kit>/scripts/test-evidence.py", line 369, in test_loose_heading_in_bookkeeping_invalid
+    self.assertInvalid(self.verify(), '驗收條件')
+  File "<kit>/scripts/test-evidence.py", line 221, in assertInvalid
+    self.assertNotEqual(result.returncode, 0, result.stdout + result.stderr)
+AssertionError: 0 == 0 : OK：被審查提交之後只有記帳變更，原 review 可依其真實判定沿用。變更：新增報告 docs/issues/issue-1/review-0932035.md、Timeline
+
+
+======================================================================
+FAIL: test_loose_heading_in_bookkeeping_invalid (__main__.BookkeepingTests.test_loose_heading_in_bookkeeping_invalid) (heading='##\t驗收條件')
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "<kit>/scripts/test-evidence.py", line 369, in test_loose_heading_in_bookkeeping_invalid
+    self.assertInvalid(self.verify(), '驗收條件')
+  File "<kit>/scripts/test-evidence.py", line 221, in assertInvalid
+    self.assertNotEqual(result.returncode, 0, result.stdout + result.stderr)
+AssertionError: 0 == 0 : OK：被審查提交之後只有記帳變更，原 review 可依其真實判定沿用。變更：新增報告 docs/issues/issue-1/review-0932035.md、Timeline
+
+
+======================================================================
+FAIL: test_loose_heading_in_bookkeeping_invalid (__main__.BookkeepingTests.test_loose_heading_in_bookkeeping_invalid) (heading='# 驗收條件')
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "<kit>/scripts/test-evidence.py", line 369, in test_loose_heading_in_bookkeeping_invalid
+    self.assertInvalid(self.verify(), '驗收條件')
+  File "<kit>/scripts/test-evidence.py", line 221, in assertInvalid
+    self.assertNotEqual(result.returncode, 0, result.stdout + result.stderr)
+AssertionError: 0 == 0 : OK：被審查提交之後只有記帳變更，原 review 可依其真實判定沿用。變更：新增報告 docs/issues/issue-1/review-0932035.md、Timeline
+
+
+======================================================================
+FAIL: test_loose_heading_in_bookkeeping_invalid (__main__.BookkeepingTests.test_loose_heading_in_bookkeeping_invalid) (heading='<h2>驗收條件</h2>')
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "<kit>/scripts/test-evidence.py", line 369, in test_loose_heading_in_bookkeeping_invalid
+    self.assertInvalid(self.verify(), '驗收條件')
+  File "<kit>/scripts/test-evidence.py", line 221, in assertInvalid
+    self.assertNotEqual(result.returncode, 0, result.stdout + result.stderr)
+AssertionError: 0 == 0 : OK：被審查提交之後只有記帳變更，原 review 可依其真實判定沿用。變更：新增報告 docs/issues/issue-1/review-0932035.md、Timeline
+
+
+======================================================================
+FAIL: test_loose_heading_in_bookkeeping_invalid (__main__.BookkeepingTests.test_loose_heading_in_bookkeeping_invalid) (heading='說明\n驗收條件\n===')
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "<kit>/scripts/test-evidence.py", line 369, in test_loose_heading_in_bookkeeping_invalid
+    self.assertInvalid(self.verify(), '驗收條件')
+  File "<kit>/scripts/test-evidence.py", line 221, in assertInvalid
+    self.assertNotEqual(result.returncode, 0, result.stdout + result.stderr)
+AssertionError: 0 == 0 : OK：被審查提交之後只有記帳變更，原 review 可依其真實判定沿用。變更：新增報告 docs/issues/issue-1/review-0932035.md、Timeline
+
+
+======================================================================
+FAIL: test_loose_heading_in_bookkeeping_invalid (__main__.BookkeepingTests.test_loose_heading_in_bookkeeping_invalid) (heading='說明\n驗收條件\n----------')
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "<kit>/scripts/test-evidence.py", line 369, in test_loose_heading_in_bookkeeping_invalid
+    self.assertInvalid(self.verify(), '驗收條件')
+  File "<kit>/scripts/test-evidence.py", line 221, in assertInvalid
+    self.assertNotEqual(result.returncode, 0, result.stdout + result.stderr)
+AssertionError: 0 == 0 : OK：被審查提交之後只有記帳變更，原 review 可依其真實判定沿用。變更：新增報告 docs/issues/issue-1/review-0932035.md、Timeline
+
+
+======================================================================
+FAIL: test_platform_mode_rejects_semantic_change (__main__.BookkeepingTests.test_platform_mode_rejects_semantic_change)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "<kit>/scripts/test-evidence.py", line 484, in test_platform_mode_rejects_semantic_change
+    self.assertInvalid(self.verify(artifact=False, issue=self.ISSUE, repo=self.repo / 'lib'), 'app.txt')
+  File "<kit>/scripts/test-evidence.py", line 221, in assertInvalid
+    self.assertNotEqual(result.returncode, 0, result.stdout + result.stderr)
+AssertionError: 0 == 0 : OK：被審查提交之後只有記帳變更，原 review 可依其真實判定沿用。變更：無變更
+
+
+======================================================================
+FAIL: test_baseline_ignores_text_mentioning_approval_source (__main__.LegacyBookkeepingTests.test_baseline_ignores_text_mentioning_approval_source)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "<kit>/scripts/test-evidence.py", line 252, in test_baseline_ignores_text_mentioning_approval_source
+    self.assertEqual(self.derive_baseline('HEAD'), self.approval)
+AssertionError: '206ebef356ca450ff01df9aeb4a06d9d4de50dc0' != '45bd12ad9de5ebd7c5d6f85a60074c6e2074425f'
+- 206ebef356ca450ff01df9aeb4a06d9d4de50dc0
++ 45bd12ad9de5ebd7c5d6f85a60074c6e2074425f
+
+
+======================================================================
+FAIL: test_future_major_contract_uses_legacy_rule (__main__.LegacyBookkeepingTests.test_future_major_contract_uses_legacy_rule)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "<kit>/scripts/test-evidence.py", line 494, in test_future_major_contract_uses_legacy_rule
+    self.assertInvalid(self.verify(), '2.4')
+  File "<kit>/scripts/test-evidence.py", line 529, in assertInvalid
+    self.assertNotEqual(result.returncode, 0, result.stdout + result.stderr)
+AssertionError: 0 == 0 : OK：被審查提交之後只有記帳變更，原 review 可依其真實判定沿用。變更：新增報告 docs/issues/issue-1/review-bcd63d7.md、Timeline、待確認事項
+
+
+======================================================================
+FAIL: test_baseline_ignores_text_mentioning_approval_source (__main__.NoContractBookkeepingTests.test_baseline_ignores_text_mentioning_approval_source)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "<kit>/scripts/test-evidence.py", line 252, in test_baseline_ignores_text_mentioning_approval_source
+    self.assertEqual(self.derive_baseline('HEAD'), self.approval)
+AssertionError: '302d9dd50c1386b0896927701799588b5da18ddf' != '58bc40ceec4eacef798884ee1f3cf5ff53de933a'
+- 302d9dd50c1386b0896927701799588b5da18ddf
++ 58bc40ceec4eacef798884ee1f3cf5ff53de933a
+
+
+======================================================================
+FAIL: test_future_major_contract_uses_legacy_rule (__main__.NoContractBookkeepingTests.test_future_major_contract_uses_legacy_rule)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "<kit>/scripts/test-evidence.py", line 494, in test_future_major_contract_uses_legacy_rule
+    self.assertInvalid(self.verify(), '2.4')
+  File "<kit>/scripts/test-evidence.py", line 529, in assertInvalid
+    self.assertNotEqual(result.returncode, 0, result.stdout + result.stderr)
+AssertionError: 0 == 0 : OK：被審查提交之後只有記帳變更，原 review 可依其真實判定沿用。變更：新增報告 docs/issues/issue-1/review-7ab21fb.md、Timeline、待確認事項
+
+
+----------------------------------------------------------------------
+Ran 96 tests in 7.544s
+
+FAILED (failures=20)
+exit=1

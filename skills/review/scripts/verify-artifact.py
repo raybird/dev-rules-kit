@@ -1,8 +1,9 @@
 #!/usr/bin/env python3
 """唯讀驗證 PASS 之後的提交是否仍沿用原審查；不判斷報告內容的審查品質。
 
-流程契約 2.4 起，被審查提交之後只新增該報告、只改該 issue README 記帳區段時沿用；
-讀不到契約或低於 2.4 時，維持只接受一個「只新增該報告」提交的現行判定。
+流程契約 2.4 起的 2.x，被審查提交之後只新增該報告、只改該 issue README 記帳區段時沿用；
+讀不到契約、低於 2.4 或其他 major 時，維持只接受一個「只新增該報告」提交的現行判定。
+記帳區段內看起來像標題、code fence 或粗體欄位的非範本寫法一律視為凍結內容。
 """
 import argparse
 from pathlib import PurePosixPath
@@ -13,10 +14,16 @@ import sys
 BOOKKEEPING_SECTIONS = ('Timeline', '待確認事項', 'Gate 豁免紀錄')
 BOOKKEEPING_FIELDS = ('狀態', '核准 commit')
 FENCE = re.compile(r'^ {0,3}(`{3,}|~{3,})')
+LOOSE_FENCE = re.compile(r'^[ \t>]*(?:(?:[-*+]|\d+[.)])[ \t]+)?[ \t>]*(`{3,}|~{3,})')
 HEADING = re.compile(r'^## (?!#)(.*?)\s*$')
+LOOSE_HEADING = re.compile(r'^\s*(?:#{1,6}(?:\s|$)|<h[1-6][\s>])', re.I)
+SETEXT = re.compile(r'^ {0,3}(?:=+|-+)\s*$')
+NOT_PARAGRAPH = re.compile(r'^\s*(?:[|>]|[-*+]\s|\d+[.)]\s)')
 FIELD = re.compile(r'^\s*(?:[-*+]\s+)?\*\*([^*\n]+?)\*\*\s*[:：]\s*(.*?)\s*\\?\s*$')
+BOLD_LINE = re.compile(r'^\s*(?:[-*+]\s+)?(?:\*\*|__)')
 CONTRACT = re.compile(r'\*\*流程契約\*\*\s*[:：]\s*(\d+)\.(\d+)')
-SHA = re.compile(r'^`?([0-9a-fA-F]{7,40})`?(?:\s|$)')
+SHA = re.compile(r'^`?([0-9a-fA-F]{7,40})`?$')
+ADDABLE_SECTIONS = ('待確認事項', 'Gate 豁免紀錄')
 
 
 class Invalid(ValueError):
@@ -70,38 +77,57 @@ def legacy(git, reviewed, head, artifact, note):
     return 'OK：只有新增本次報告；原 review 可依其真實判定沿用。'
 
 
+def closes(line, fence, loose):
+    marker = (LOOSE_FENCE if loose else FENCE).match(line)
+    return bool(marker) and marker.group(1)[0] == fence[0] and len(marker.group(1)) >= len(fence) \
+        and not line[marker.end():].strip()
+
+
 def analyse(text):
-    """回傳 (凍結內容, 記帳欄位, 各記帳章節內容)。凍結內容逐項保留所在章節與種類。"""
-    frozen, fields, sections = [], [], {}
-    section, fence = '（標題前）', None
+    """回傳 (凍結內容, 記帳欄位, 各記帳章節內容, 章節標題順序)。凍結內容逐項保留所在章節與種類。"""
+    frozen, fields, sections, headings = [], [], {}, []
+    section, fence, loose, previous = '（標題前）', None, False, ''
     for raw in text.splitlines():
         line = raw.rstrip()
-        marker = FENCE.match(line)
         if fence:
             frozen.append((section, 'fence', line))
-            if marker and marker.group(1)[0] == fence[0] and len(marker.group(1)) >= len(fence) \
-                    and line.strip() == marker.group(1):
+            if closes(line, fence, loose):
                 fence = None
             continue
+        marker = FENCE.match(line) or LOOSE_FENCE.match(line)
         if marker:
-            fence = marker.group(1)
+            fence, loose = marker.group(1), not FENCE.match(line)
             frozen.append((section, 'fence', line))
             continue
         heading = HEADING.match(line)
         if heading:
             section = heading.group(1)
+            headings.append(section)
             if section in BOOKKEEPING_SECTIONS:
                 sections.setdefault(section, [])
             else:
                 frozen.append((section, 'heading', line))
+            previous = ''
             continue
+        if LOOSE_HEADING.match(line):
+            frozen.append((section, 'heading', line))
+            previous = line
+            continue
+        if SETEXT.match(line) and previous.strip() and not NOT_PARAGRAPH.match(previous):
+            if section in BOOKKEEPING_SECTIONS and sections[section][-1:] == [previous]:
+                sections[section].pop()
+                frozen.append((section, 'heading', previous))
+            frozen.append((section, 'heading', line))
+            previous = line
+            continue
+        previous = line
         field = FIELD.match(line)
         if field and field.group(1).strip() in BOOKKEEPING_FIELDS:
             name = field.group(1).strip()
             fields.append((name, field.group(2)))
             frozen.append((section, 'field', f'**{name}**'))
             continue
-        if field:
+        if field or BOLD_LINE.match(line):
             frozen.append((section, 'field', line))
             continue
         if not line.strip():
@@ -110,7 +136,7 @@ def analyse(text):
             sections[section].append(line)
         else:
             frozen.append((section, 'line', line))
-    return frozen, fields, sections
+    return frozen, fields, sections, headings
 
 
 def describe(entry):
@@ -123,6 +149,12 @@ def describe(entry):
 def check_readme(git, reviewed, head, readme):
     before = analyse(git('show', f'{reviewed}:{readme}').stdout)
     after = analyse(git('show', f'{head}:{readme}').stdout)
+    optional = [name for name in ADDABLE_SECTIONS if (name in before[3]) != (name in after[3])]
+    old_order = [name for name in before[3] if name not in optional]
+    new_order = [name for name in after[3] if name not in optional]
+    if old_order != new_order or any(after[3].count(name) > 1 for name in ADDABLE_SECTIONS):
+        raise Invalid(f'{readme} 的章節標題或順序與被審查版本不同：被審查版本為「{"／".join(before[3])}」，'
+                      f'目前為「{"／".join(after[3])}」；只能整節新增或刪除待確認事項、Gate 豁免紀錄；需重新審查')
     old_frozen, new_frozen = before[0], after[0]
     for index in range(max(len(old_frozen), len(new_frozen))):
         old = old_frozen[index] if index < len(old_frozen) else None
@@ -156,7 +188,7 @@ def bookkeeping(git, reviewed, head, artifact, issue):
     if git('rev-list', '--merges', f'{reviewed}..{head}').stdout.strip():
         raise Invalid('被審查提交之後含 merge 提交；需重新審查')
     readme = f'{issue}/README.md'
-    changes = git('diff', '--no-renames', '--name-status', '-z', reviewed, head, '--').stdout.split('\0')
+    changes = git('diff-tree', '-r', '--no-renames', '--name-status', '-z', reviewed, head).stdout.split('\0')
     entries = list(zip(changes[0::2], changes[1::2]))
     report_added = False
     for status, path in entries:
@@ -180,7 +212,7 @@ def bookkeeping(git, reviewed, head, artifact, issue):
 
 
 def verify(repo, reviewed, head, artifact=None, issue=None):
-    git = make_git(repo)
+    git = make_git(make_git(repo)('rev-parse', '--show-toplevel').stdout.strip())
     reviewed = git('rev-parse', '--verify', reviewed + '^{commit}').stdout.strip()
     head = git('rev-parse', '--verify', head + '^{commit}').stdout.strip()
     if artifact is None and issue is None:
@@ -195,10 +227,10 @@ def verify(repo, reviewed, head, artifact=None, issue=None):
     if artifact is not None and issue is not None and issue_dir(issue) != target:
         raise Invalid('--artifact 與 --issue 指向不同 issue')
     version = contract_of(git, reviewed)
-    if version is None or version < (2, 4):
+    if version is None or version[0] != 2 or version < (2, 4):
         found = '讀不到流程契約' if version is None else f'流程契約 {version[0]}.{version[1]}'
         return legacy(git, reviewed, head, artifact,
-                      f'（{found}；只動記帳區段的放行需要流程契約 2.4）')
+                      f'（{found}；只動記帳區段的放行需要流程契約 2.4 以上的 2.x）')
     return bookkeeping(git, reviewed, head, artifact, target)
 
 

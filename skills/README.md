@@ -55,7 +55,7 @@ bash scripts/install.sh claude
 
 腳本更新本 kit 技能資料夾內的同名檔案，保留其他檔案與個人技能；不會移除上游已刪除的舊檔。舊版安裝器若已產生 `<name>/<name>/SKILL.md`，更新後請檢查並手動移除確認無客製內容的巢狀副本。
 
-`review` 內含 `scripts/verify-artifact.py`，安裝時整個技能目錄一起複製；只複製 SKILL.md 會缺少本機報告檢查器。
+`review` 內含 `scripts/verify-artifact.py`，安裝時整個技能目錄一起複製；只複製 SKILL.md 會缺少審查後提交的有效性檢查器。
 
 核心技能另需專案內的文件規範：於本 kit 根目錄執行 `python3 scripts/init-project.py /path/to/project`。更新使用 `--update`，既有 `docs/agents/project.md` 保留。技能宣告最低流程契約，與文件編輯版本分離。詳見 [快速開始](../README.md#快速開始)。
 

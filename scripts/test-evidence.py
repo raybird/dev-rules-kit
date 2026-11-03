@@ -202,9 +202,9 @@ class BookkeepingTests(unittest.TestCase):
         self.edit('| 2026-11-03 | 建立 | - |',
                   '| 2026-11-03 | 建立 | - |\n| 2026-11-03 | 審查 PASS，記錄 TBD-1 | - |')
 
-    def verify(self, *, artifact=True, issue=None):
+    def verify(self, *, artifact=True, issue=None, repo=None):
         command = ['python3', str(ROOT / 'skills/review/scripts/verify-artifact.py'),
-                   '--repo', str(self.repo), '--reviewed', self.reviewed,
+                   '--repo', str(repo or self.repo), '--reviewed', self.reviewed,
                    '--head', self.git('rev-parse', 'HEAD')]
         if artifact:
             command += ['--artifact', self.report]
@@ -242,6 +242,14 @@ class BookkeepingTests(unittest.TestCase):
         self.commit('re-approval')
         self.assertEqual(self.derive_baseline('HEAD'), self.git('rev-parse', 'HEAD'))
         self.assertEqual(self.derive_baseline(self.reviewed), self.approval)
+
+    def test_baseline_ignores_text_mentioning_approval_source(self):
+        self.edit('    Then 看到結果', '    Then 看到未核准的結果')
+        self.commit('unapproved spec change')
+        self.edit('| 2026-11-03 | 建立 | - |',
+                  '| 2026-11-03 | 建立 | - |\n| 2026-11-03 | 補記 `**核准來源**` 的說明 | - |')
+        self.commit('timeline mentions the field name')
+        self.assertEqual(self.derive_baseline('HEAD'), self.approval)
 
     def test_baseline_missing_without_approval_source(self):
         self.edit('- **核准來源**: 2026-11-03 使用者回覆「核准」\n', '')
@@ -286,12 +294,26 @@ class BookkeepingTests(unittest.TestCase):
         self.commit('record decision')
         self.assertValid(self.verify(artifact=False, issue=self.ISSUE), 'Timeline')
 
+    def test_open_items_section_removed_allowed(self):
+        text = (self.repo / self.ISSUE / 'README.md').read_text()
+        self.add_report()
+        self.edit(text[text.index('## 待確認事項'):text.index('## Timeline')], '')
+        self.commit('drop resolved open items')
+        self.assertValid(self.verify(), '待確認事項')
+
     def test_report_only_still_valid(self):
         self.add_report()
         self.commit('report')
         self.assertValid(self.verify())
 
     # --- 無效：凍結內容、核准 commit 與歷史 ---
+
+    def reviewed_with(self, old, new):
+        """把被審查提交換成 README 含非範本寫法的版本。"""
+        self.edit(old, new)
+        self.commit('reviewed variant')
+        self.reviewed = self.git('rev-parse', 'HEAD')
+        self.report = f'{self.ISSUE}/review-{self.reviewed[:7]}.md'
 
     def test_gherkin_change_invalid(self):
         self.add_report()
@@ -327,6 +349,57 @@ class BookkeepingTests(unittest.TestCase):
         self.edit('**風險**: High', '**風險**: Low')
         self.commit('downgrade risk')
         self.assertInvalid(self.verify(), '風險')
+
+    def test_loose_field_forms_frozen(self):
+        cases = (('**風險**: High', '**風險:** High', '**風險:** Low'),
+                 ('**分級**: Medium', '- **分級：** Medium', '- **分級：** Small'),
+                 ('**風險**: High', '__風險__: High', '__風險__: Low'))
+        original = self.reviewed
+        for template, before, after in cases:
+            with self.subTest(after=after):
+                self.git('reset', '-q', '--hard', original)
+                self.reviewed_with(template, before)
+                self.add_report()
+                self.edit(before, after)
+                self.commit('loose field change')
+                self.assertInvalid(self.verify(), before.strip('-* _:：'))
+
+    def test_loose_heading_in_bookkeeping_invalid(self):
+        footer = '---\n**建立日期**'
+        for heading in (' ## 驗收條件', '##\t驗收條件', '# 驗收條件', '<h2>驗收條件</h2>',
+                        '說明\n驗收條件\n===', '說明\n驗收條件\n----------'):
+            with self.subTest(heading=heading):
+                self.git('reset', '-q', '--hard', self.reviewed)
+                self.add_report()
+                self.edit(footer, f'{heading}\n- AC-9: 新增未審查條件\n\n{footer}')
+                self.commit('loose heading')
+                self.assertInvalid(self.verify(), '驗收條件')
+
+    def test_loose_fence_in_bookkeeping_invalid(self):
+        footer = '---\n**建立日期**'
+        for fence in ('> ```gherkin\n> Scenario: 新增\n> ```',
+                      '- 補充\n\n    ```gherkin\n    Scenario: 新增\n    ```'):
+            with self.subTest(fence=fence):
+                self.git('reset', '-q', '--hard', self.reviewed)
+                self.add_report()
+                self.edit(footer, f'{fence}\n\n{footer}')
+                self.commit('loose fence')
+                self.assertInvalid(self.verify(), 'code fence')
+
+    def test_bookkeeping_headings_keep_order(self):
+        tbd = self.repo / self.ISSUE / 'README.md'
+        text = tbd.read_text()
+        section = text[text.index('## 待確認事項'):text.index('## Timeline')]
+        self.add_report()
+        self.edit(section, '')
+        self.edit('## 概述', section + '## 概述')
+        self.commit('move bookkeeping section')
+        self.assertInvalid(self.verify(), '標題')
+        self.git('reset', '-q', '--hard', self.reviewed)
+        self.add_report()
+        self.edit('## 待確認事項', '## Timeline\n\n| 2026-11-03 | 另一段 | - |\n\n## 待確認事項')
+        self.commit('duplicate timeline')
+        self.assertInvalid(self.verify(), '標題')
 
     def test_inserted_heading_cannot_swallow_frozen_text(self):
         self.add_report()
@@ -395,7 +468,7 @@ class BookkeepingTests(unittest.TestCase):
 
     def test_approval_backfill_must_be_ancestor(self):
         orphan = self.git('commit-tree', f'{self.approval}^{{tree}}', '-m', 'orphan')
-        for value in (orphan, 'deadbeef', '尚未決定'):
+        for value in (orphan, 'deadbeef', '尚未決定', f'{self.approval[:7]} 另外把 SCN-001 改為不需測試'):
             with self.subTest(value=value):
                 self.git('reset', '-q', '--hard', self.reviewed)
                 self.git('clean', '-qfd')
@@ -403,6 +476,29 @@ class BookkeepingTests(unittest.TestCase):
                 self.edit('- **核准 commit**: 待提交', f'- **核准 commit**: {value}')
                 self.commit('bad backfill')
                 self.assertInvalid(self.verify(), '核准 commit')
+
+    def test_platform_mode_rejects_semantic_change(self):
+        self.edit('    Then 看到結果', '    Then 看到另一個結果')
+        self.record_decision()
+        self.commit('hide spec change')
+        self.assertInvalid(self.verify(artifact=False, issue=self.ISSUE), 'Gherkin 驗收劇本')
+        self.git('reset', '-q', '--hard', self.reviewed)
+        self.git('config', 'diff.relative', 'true')
+        self.record_decision()
+        self.write('app.txt', 'v3\n')
+        self.commit('code change seen from a subdirectory')
+        (self.repo / 'lib').mkdir()
+        self.assertInvalid(self.verify(artifact=False, issue=self.ISSUE, repo=self.repo / 'lib'), 'app.txt')
+
+    def test_future_major_contract_uses_legacy_rule(self):
+        self.write('docs/AGENTS.md', '**文件版本**: 9.9\n**流程契約**: 3.0\n')
+        self.commit('contract 3.0')
+        self.reviewed = self.git('rev-parse', 'HEAD')
+        self.report = f'{self.ISSUE}/review-{self.reviewed[:7]}.md'
+        self.add_report()
+        self.record_decision()
+        self.commit('report and bookkeeping')
+        self.assertInvalid(self.verify(), '2.4')
 
     def test_merge_in_range_invalid(self):
         self.git('switch', '-q', '-c', 'side')
@@ -466,6 +562,13 @@ class LegacyBookkeepingTests(BookkeepingTests):
         self.record_decision()
         self.commit('record decision')
         self.assertNeeds24(self.verify(artifact=False, issue=self.ISSUE))
+
+    def test_open_items_section_removed_allowed(self):
+        text = (self.repo / self.ISSUE / 'README.md').read_text()
+        self.add_report()
+        self.edit(text[text.index('## 待確認事項'):text.index('## Timeline')], '')
+        self.commit('drop resolved open items')
+        self.assertNeeds24(self.verify())
 
 
 class NoContractBookkeepingTests(LegacyBookkeepingTests):

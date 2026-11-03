@@ -63,13 +63,13 @@ Scenario 使用唯一且穩定的 ID（SCN-001 為範例，不限制前綴），
 git diff "${approval_commit}" -- "docs/issues/issue-${issue_id}/README.md"
 ```
 
-核准 commit 仍是 `待提交`、規格已提交時，以最後一個修改 `**核准來源**` 行的提交作為 `approval_commit`；`ref` 在實作前為 `HEAD`，審查時為被審查提交：
+核准 commit 仍是 `待提交`、規格已提交時，以最後一個修改 `**核准來源**` 欄位行的提交作為 `approval_commit`；`ref` 在實作前為 `HEAD`，審查時為被審查提交。pattern 錨定在行首的欄位，Timeline 或說明文字提到欄位名不算：
 
 ```bash
-git log -1 --format=%H -G '\*\*核准來源\*\*' "${ref}" -- "docs/issues/issue-${issue_id}/README.md"
+git log -1 --format=%H -G '^[[:space:]]*([-*+][[:space:]]+)?\*\*核准來源\*\*[[:space:]]*(:|：)' "${ref}" -- "docs/issues/issue-${issue_id}/README.md"
 ```
 
-沒有輸出，或 `ref` 的 README 已沒有 `**核准來源**` 行（刪除該行的提交也會被找到），都代表缺少核准基線，依下方重寫歷史的規則恢復或重新取得同意。reviewer 把推導出的 SHA 記入報告，協調者隨報告提交回填。
+沒有輸出，或 `ref` 的 README 已沒有符合同一 pattern 的欄位行（刪除該行的提交也會被找到），都代表缺少核准基線，依下方重寫歷史的規則恢復或重新取得同意。reviewer 把推導出的 SHA 記入報告，協調者隨報告提交回填。
 
 交付時另外確認 issue 文件與其他交付檔案均已提交，再以固定交付 HEAD 比對。未追蹤的新規格沒有 Git 比對基線，須先依來源完成核准與初始提交；`待提交` 不代表自動核准。
 
