@@ -32,6 +32,8 @@ git diff "${base_sha}" "${head_sha}" | git patch-id --stable
 - `PASS`／`RETURN TO execute-task` 判定與 artifact URL／路徑。
 - 核准 commit 為 `待提交` 時，依 [acceptance.md](acceptance.md#規格修訂的查核)推導出的核准基線 SHA。
 
+流程契約 2.5 起，保存報告的同一個提交把 issue README `## 現況` 的 `**現行 review**` 改成這份報告的 repo-relative 路徑或平台連結；README 還沒有 `## 現況` 時，依 [document-types.md](document-types.md#readmemd必備) 在 `## 概述` 之後建立。讀者以這個欄位找現行報告，舊報告留在原處作為歷史。
+
 兩種保存方式皆失敗時回報 `UNPERSISTED` 並停止，不能把對話報告當成已持久化的 PASS。
 
 ### 審查之後的提交
@@ -43,6 +45,8 @@ git diff "${base_sha}" "${head_sha}" | git patch-id --stable
 1. 被審查提交是目前 HEAD 的祖先，中間沒有 merge 提交。
 2. 淨差異只有新增該次報告（本機保存時；新增後不再修改），以及該 issue `README.md` 的**記帳區段**：`## Timeline`、`## 待確認事項`、`## Gate 豁免紀錄` 三節的內容（後兩節可整節新增或刪除；節內有標題、code fence 或粗體開頭的行時整節增刪判定無效），與 `**狀態**`、`**核准 commit**` 兩個欄位的值。
 3. `**核准 commit**` 的值只由 `待提交` 改成被審查提交或它的祖先。
+
+**流程契約 2.5 起**，記帳區段另含 `## 現況`：可整節新增或刪除，節內的一般行、表格列與一行 `**現行 review**` 可改，節內的標題、code fence 與其他粗體開頭的行照下段凍結。2.4 的專案，`## 現況` 屬凍結章節。
 
 記帳區段以外都是凍結內容：其他章節、所有 `##` 標題與其順序、code fence、其他粗體欄位（包括寫在記帳章節底下的 `**分級**`、`**風險**`）、implementation-plan.md、evidence、既有報告與 issue 目錄外的檔案；標題名稱與範本不同的章節同樣凍結。記帳章節內看起來像標題的行、引用或清單裡的 code fence、以粗體開頭的行，即使不是範本寫法也視為凍結內容。保存報告、記下使用者對 `需決策` 的答案、回填核准 commit 可以併在同一個提交。PR 證據與 review 記錄列出被審查 HEAD、目前 HEAD 與工具回報的變更區段。
 
