@@ -25,7 +25,7 @@
 |---|---|---|---|---|---|
 | S1 | 依上方判定修改 `verify-artifact.py`，在 `test-evidence.py` 補正負向案例 | SCN-001～003 已核准 | SCN-001～003 | 下方「腳本案例」全部通過，既有測試不變仍通過；每個負向案例的訊息指出違規位置；新案例先紅後綠 | ✅ 2026-11-10；見「S1 證據」 |
 | S2 | 修改 review-evidence.md、review SKILL.md（步驟 5 保存報告時更新現行 review）、docs/AGENTS.md（原則、文件版本 2.9、流程契約 2.5、修訂紀錄）、document-types.md、readme-templates.md 兩種範本；依 writing-rules | S1；SCN-001、003、004、007 已核准 | SCN-001、003、004、007 | 規則文字與腳本判定一致，沒有自相矛盾的舊句；範本的 `## 現況` 位置與欄位與設計邊界相同 | ✅ 2026-11-10；見「S2 證據」 |
-| S3 | 修改 rules/AGENTS.md 與 rules/AGENTS.zh-TW.md、project.md 範本；依 writing-rules | SCN-005、007 已核准；與 S1、S2 無相依 | SCN-005、007 | 雙語語意一致、`##` 章節數與順序不變；check-kit 通過 | 📝 |
+| S3 | 修改 rules/AGENTS.md 與 rules/AGENTS.zh-TW.md、project.md 範本；依 writing-rules | SCN-005、007 已核准；與 S1、S2 無相依 | SCN-005、007 | 雙語語意一致、`##` 章節數與順序不變；check-kit 通過 | ✅ 2026-11-10；見「S3 證據」 |
 | S4 | 修改 dev-cycle SKILL.md（現況值當線索、以現行 review 找報告、掃描完成判準）與 pending-scan.md（完成判準與摘要欄位） | S2；SCN-005、006、008 已核准 | SCN-005、006、008 | 技能步驟與 docs 的定義沒有兩種說法；查詢模式仍為唯讀 | 📝 |
 | S5 | 建立下方「行為案例」的 fixture 與固定回答，先提交，再以 v4.9.0 規則在隔離設定實跑基準 | SCN-004～008 已核准；與 S1～S4 無相依 | SCN-004～008 | 每個案例在基準組都有可觀察的失敗或缺漏；沒有的案例記錄為無法區分並重新設計 fixture，不拿來宣稱改善 | 📝 |
 | S6 | 以本次規則對同一 fixture 實跑候選組與對照組；重跑 WF-22 與 WF-28a、28b | S2～S5 | SCN-004～008，覆核 SCN-001～003 | 依「行為案例」逐項判定；同一輸入結果不一致時明列為不穩定，不挑成功輪次 | 📝 |
@@ -48,6 +48,15 @@
 - **逐項對照**：規則文字對 `## 現況` 的每一條描述都對應到 S1 的腳本行為與測試——可整節增刪（`test_current_state_removed`）、節內一般行與表格列可改（`row_only`）、現行 review 一行可改（`values_updated`、第二行判無效）、標題／code fence／其他粗體凍結（`frozen_forms_inside_current_state_invalid`）、2.4 屬凍結章節（`BookkeepingTests.test_current_state_section_needs_25`）。舊句「三節內容與兩個欄位」改標為流程契約 2.4 的範圍，沒有與 2.5 段落矛盾的敘述。
 - **撰寫規範自查**：新增段落都放在該分支會讀到的檔案（review 讀 review-evidence.md 與技能、建 README 讀 document-types.md 與範本、各階段讀 docs/AGENTS.md）；「引用前重跑查證命令」原本在 docs/AGENTS.md 與 document-types.md 各寫一次，刪掉 docs/AGENTS.md 那句，通用原則留給 S3 的 rules。
 - **檢查**：根目錄五項檢查全部通過（check-kit、check-links、`bash -n`、test-install、test-evidence 143 項）。
+
+### S3 證據
+
+文件變更，以靜態檢查與人工覆核取得等價證據；agent 是否先查證留給 S6 的 WF-29 實跑。
+
+- **修改**：rules/AGENTS.zh-TW.md 與 rules/AGENTS.md 第六節末尾各加一段「外部狀態以實查為準」；docs/agents/project.md 範本「提交與交付」的合併判定方式後加上推送、部署、平台 issue／PR 狀態的查證命令。
+- **雙語覆核**（人工，2026-11-10）：兩段逐句對應——適用範圍（合併、推送、部署、平台 issue／PR，會被其他人或流程改變）、來源（文件、記憶、他人回報）、動作（對外陳述或據以行動前重新查證）、結果不同時以實查為準並指出差異、查不到時說明並附來源與日期。兩檔 `##` 章節都是 11 個，順序不變。
+- **撰寫規範自查**：正面表述，沒有禁令句；放在每個 agent 都會載入的 rules，涵蓋 issue 流程以外的狀態回報（下游實例是 peer 回報的推送狀態）；與 document-types.md 的表格快照規則分工：rules 是通用原則，document-types 是 `## 現況` 這張表的寫法。
+- **檢查**：根目錄五項檢查全部通過（check-kit 含雙語章節數、check-links、`bash -n`、test-install、test-evidence）。
 
 ## 測試策略
 
