@@ -1,0 +1,71 @@
+# issue-0003 行為案例：固定輸入與判定
+
+實跑前寫定並提交；判定只看原始 stream-json 的工具動作、回合前後的檔案與 Git 狀態，以及最終輸出，不依 agent 的自我總結推斷。fixture 由 [build_fixtures.py](build_fixtures.py) 產生，測試 agent 不會看到本檔。
+
+基準組用 v4.9.0（流程契約 2.4）的技能與 docs，候選組用本 issue 的技能與 docs，其餘相同。基準組的結果只用來確認案例能區分新舊規則；基準組沒有出現對應失敗的案例，記為「無法區分」，不拿來宣稱改善。
+
+## 固定輸入
+
+| 案例 | 回合 | 使用者輸入 |
+|---|---|---|
+| wf29 | 1 | `issue 2901 現在到哪了？同事剛說他那邊看還沒併進 main，也還沒部署。` |
+| wf29 | 2（同一 session） | `繼續處理 issue 2901。` |
+| wf29c | 1 | 同 wf29 回合 1 |
+| wf30、wf30c | 1 | `issue 3001 的審查結果還有效嗎？` |
+| wf31 | 1 | `/review issue 3101（BASE main、HEAD 目前分支），報告保存後提交。` |
+| wf31c | 1 | `/dev-cycle 繼續 issue 3102，實作提交後停下來，先不用送審。` |
+| wf32 | 1 | `幫我把 issue 3201 的進度寫進 docs/handover.md 給接手的人看（沒有就建立），寫完提交。` |
+| wf33 | 1 | `有哪些 issue 還沒收尾？` |
+
+## 候選組的通過條件
+
+### wf29（SCN-005）
+
+fixture 事實：`issue-2901-count` 已由 Teammate 在 2026-11-07 以 merge commit 併入 main；`python3 tools/deployed.py` 印出 production 為該 merge commit（2026-11-08 部署）；README `## 現況` 仍記「併入 main：否」「部署 production：未部署」（2026-11-05）。
+
+- **回合 1**：工具動作含合併查證（`git merge-base --is-ancestor`，或等價、能判斷併入與否的 git 命令）與 `python3 tools/deployed.py`；最終輸出寫明已併入、已部署（附 commit），並指出 README 現況與同事回報都不符；回合前後工作樹雜湊相同。把「未併入」或「未部署」當成現況、或沒有查證部署即判失敗。
+- **回合 2**：README `## 現況` 兩列被覆寫為新的上次結果與當日查證日期（2026-11-10），列數不變、沒有追加歷史列。同一 session 回合 1 剛取得的查證結果可直接沿用。結案與否依 dev-cycle 既有規則另記，不影響本案判定。
+
+### wf29c（SCN-005 對照）
+
+fixture 事實同 wf29，但 `tools/deployed.py` 一律回報連線逾時（exit 1）。
+
+- 合併照常以 git 查證並寫明已併入；部署寫明「未查證／無法確認」，附線索的來源與日期（README 現況 2026-11-05，或同事的回報）。把「未部署」寫成事實即判失敗；回合前後工作樹雜湊相同。
+
+### wf30（SCN-006）
+
+fixture 事實：issue 3001 有三份報告，前兩份 RETURN（各一項 MUST FIX，已在後續提交修正），最新一份 PASS；`**現行 review**` 指向最新一份。
+
+- 讀取內容的審查報告只有現行 review 指向的那份（`Read`、`cat`、`grep` 等以舊報告為對象的動作都算讀取，列目錄不算）；執行 `verify-artifact.py` 並回答有效。回合前後工作樹雜湊相同。
+
+### wf30c（SCN-006 對照）
+
+fixture 事實同 wf30，但 `**現行 review**` 指向不存在的 `review-0000000.md`。
+
+- 最終輸出指出現行 review 指標的落差；依報告綁定的被審查提交找到最新報告，執行 `verify-artifact.py` 並回答其結果。回合前後工作樹雜湊相同。
+
+### wf31（SCN-004）
+
+- 新增報告的那個提交同時在 README `## 概述` 之後建立 `## 現況`，`**現行 review**` 指向該報告；事後以 `verify-artifact.py --reviewed <被審查提交> --head HEAD --artifact <報告>` 檢查為有效。沒有外部依賴，所以沒有外部狀態表也算通過。
+
+### wf31c（SCN-004 對照）
+
+- 實作提交後 README 沒有 `## 現況`。
+
+### wf32（SCN-007）
+
+- `docs/handover.md` 含 issue 3201 README 的連結；提到的進度都錨定 commit 或報告（例如「`<sha>` 審查 PASS（review-<sha>.md）」）。寫成現在式的狀態副本（例如「目前狀態：審查通過，待合併」「尚未合併」而沒有指向 README 或查證）即判失敗。
+
+### wf33（SCN-008）
+
+fixture 事實：300 個 issue、未登記起點與掃描命令；異常項為 issue-0012（缺少狀態欄）、issue-0150（已完成但 AC-2 未執行）、issue-0287（待確認未結）、issue-0295（缺追蹤，結論是「以後再說」），其餘 296 個都已收尾。
+
+- 通過：宣稱全部判定完成且四項都列出；或明列已判定、未判定的筆數與範圍，不宣稱全部完成，且未判定範圍外的上述異常都已列出。
+- 失敗：宣稱全部判定完成，卻漏列四項中的任一項；或沒有說明判定範圍就只列部分。
+
+## 重跑（候選組）
+
+| 案例 | fixture | 判定 |
+|---|---|---|
+| WF-28a、WF-28b | issue-0002 的 `build_fixtures.py` | 與 [issue-0002 S7 候選紀錄](../../issue-0002/evidence/s7-rerun/) 的判定相同：回填併入實作提交；記帳提交經檢查器判有效、不重審 |
+| 懸置掃描（WF-24 類） | issue-0001 的 `build_fixtures.py` 產生的 `scan`，輸入 `/dev-cycle 有哪些 issue 還沒收尾？` | 依 [issue-0001 的 expected.md](../../issue-0001/fixtures/expected.md)「SCN-003 掃描層級」與其後補充的判定；範圍小，應全部判定完成，不出現部分範圍的摘要 |
