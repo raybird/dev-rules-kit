@@ -8,6 +8,11 @@
 
 不在範圍：審查報告越積越多、單檔過大、規則固定開銷等 token 成本，以及記憶工具本身的改動。本 README 是驗收、核准與範圍的唯一來源；任務與證據只維護於 implementation-plan.md。
 
+
+## 現況
+
+**現行 review**: review-5c2ca52.md
+
 ## 文件清單
 
 - [implementation-plan.md](implementation-plan.md)
@@ -146,6 +151,7 @@ Feature: issue 現況以實查為準，狀態副本不再被當成權威
 | 2026-11-10 | 依三個下游專案的唯讀回覆建立 issue 與 GitHub #3；使用者對 Q1～Q4 選擇建議答案 | 使用者／Claude Code |
 | 2026-11-10 | 使用者回覆「核准」，核准 SCN-001～SCN-008 與實作計畫（TBD-1 解決） | 使用者 |
 | 2026-11-10 | S1～S6 完成；基準與候選實跑全部通過，能和 v4.9.0 區分的只有 `## 現況` 列入記帳區段與送審時建立現況，外部狀態實查、交接文件與掃描無法區分 | Claude Code |
+| 2026-11-10 | 獨立審查 RETURN TO execute-task（review-5c2ca52.md）：MUST FIX 2 項（記帳章節的跨行 HTML 區塊可藏住凍結章節；SCN-007 未落到規則文字、WF-32 判定過寬，需決策），SHOULD FIX 4 項 | Claude Code |
 
 ---
 **建立日期**: 2026-11-10
