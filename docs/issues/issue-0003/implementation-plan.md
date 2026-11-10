@@ -66,6 +66,24 @@
 - **覆核**（人工，2026-11-10）：現行 review 的位置與更新時機與 review-evidence.md、document-types.md 同一說法；外部狀態的「快照、重跑、以實查為準、覆寫該列」與 document-types.md 及 rules 第六節一致；「偵測是唯讀操作」不變，覆寫只發生在推進。dev-cycle 宣告的最低流程契約 2.2 不變：沒有 `## 現況` 時新增的句子不適用。
 - **檢查**：根目錄五項檢查全部通過。
 
+### S5 證據
+
+- **環境**：kit v4.9.0（`git archive v4.9.0`）的技能以 `install.sh claude` 裝進 scratchpad 的隔離 HOME，`CLAUDE_CONFIG_DIR` 指向該處，`.credentials.json` 以 symlink 連回；fixture 以同一份 [build_fixtures.py](fixtures/build_fixtures.py) 用 v4.9.0 部署 docs（流程契約 2.4）。執行器是 issue-0001 的 `run_case.py`（`claude -p`，claude-opus-5-5，Claude Code 2.1.322，允許工具同該腳本）。fixture 與判定先提交（`b26c73a`）再實跑。
+- **基準組結果**（[s5-baseline/](evidence/s5-baseline/)，2026-11-10，依 [expected.md](fixtures/expected.md)）：
+
+| 案例 | 基準組行為 | 能否區分 |
+|---|---|---|
+| wf29 | 兩回合都重跑 `git merge-base` 與 `tools/deployed.py`，指出 README 與同事回報都不符；回合 2 覆寫兩列 | 無法區分。表格的「查證命令」欄與 project.md 的登記把查證方法直接交給 agent |
+| wf29c | 合併以 git 查證；部署寫「無法確認」，附 2026-11-05 的最後紀錄 | 無法區分 |
+| wf30 | 只讀現行 review 指向的報告；`verify-artifact.py`（2.4）判 `## 現況` 的指標變更為凍結內容，結論「需重新審查」 | 有效性能區分（SCN-001）；只讀現行報告無法區分 |
+| wf30c | 發現 `review-0000000.md` 不存在，改用被審查提交對應的報告；同樣判需重新審查 | 有效性能區分；指標落差的回報無法區分 |
+| wf31 | 報告提交只新增報告，沒有 `## 現況` | 能區分 |
+| wf31c | 實作提交後沒有 `## 現況` | 對照組，符合預期 |
+| wf32 | 交接文件附 README 連結，另存一張帶查證日期與命令的狀態表 | 依寫定的判準無法區分（判準只在沒有指向 README 或查證時判失敗）；狀態副本仍在，留待候選組比較 |
+| wf33 | 以 grep 判定全部 300 個，四項異常都列出，宣稱逐一判定 | 無法區分。結構化的偵測規則都能用 grep 一次判定，讀不完的情境沒有出現 |
+
+- **重新設計**：wf29 追加舊格式的 wf29b（沒有 `## 現況`、過時資訊只在 Timeline 敘述、project.md 不登記查證命令），測 rules 原則本身；wf30 追加無指標的 wf30b，只跑基準組，比較指標是否減少讀取。兩案的判準在實跑前寫入 expected.md。wf32、wf33 不重新設計：要能區分就得事後改判準或限制工具，記為無法區分，SCN-007、SCN-008 的效果不以本組宣稱。
+
 ## 測試策略
 
 腳本判定以 `test-evidence.py` 在拋棄式 Git repo 實跑真實命令。agent 是否先查證、是否只讀現行 review、掃描是否如實回報，只能以宿主新 session 實跑驗證，靜態檢查與腳本測試不能代替（根目錄 AGENTS.md）。實跑沿用隔離設定：以 scratchpad 為 HOME 安裝工作樹技能，`CLAUDE_CONFIG_DIR` 指向該處，不動全域技能；fixture 含真實可執行的查證命令與實作；測試 agent 只收到 fixture 與使用者輸入，不給預期答案。

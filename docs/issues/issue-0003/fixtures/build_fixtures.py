@@ -1,5 +1,5 @@
 #!/usr/bin/env python3
-"""建立 issue-0003 的行為案例 fixture：WF-29 外部狀態過時（含對照 29c）、WF-30 現行 review（含對照 30c）、
+"""建立 issue-0003 的行為案例 fixture：WF-29 外部狀態過時（含對照 29c、舊格式 29b）、WF-30 現行 review（含對照 30c、無指標 30b）、
 WF-31 現況建立（含對照 31c）、WF-32 交接文件、WF-33 懸置掃描讀不完。
 
 用法：python3 build_fixtures.py <kit 根目錄> <輸出目錄>
@@ -188,9 +188,10 @@ if __name__ == "__main__":
 '''
 
 
-def build_external(kit, path, deployed):
-    """WF-29：issue 2901 已由同事併入並部署，README 的 ## 現況 仍記未併入、未部署。"""
-    base(kit, path, CHECKS, deployed)
+def build_external(kit, path, deployed, legacy=False):
+    """WF-29：issue 2901 已由同事併入並部署，README 的 ## 現況 仍記未併入、未部署。
+    legacy（WF-29b）：沒有 ## 現況，過時資訊只寫在 Timeline 的敘述；project.md 沒登記查證命令。"""
+    base(kit, path, '' if legacy else CHECKS, deployed)
     main_sha = git(path, 'rev-parse', 'HEAD')
     run(path, 'git', 'checkout', '-q', '-b', 'issue-2901-count')
     readme_path = path / 'docs/issues/issue-2901/README.md'
@@ -213,10 +214,14 @@ def build_external(kit, path, deployed):
     state = current_state(rel.rsplit('/', 1)[1], [
         ('併入 main', '`git merge-base --is-ancestor issue-2901-count main`', '否', '2026-11-05'),
         ('部署 production', '`python3 tools/deployed.py`', f'未部署（production 為 {main_sha[:7]}）', '2026-11-05')])
-    text = readme_path.read_text().replace('## 文件清單', state + '## 文件清單', 1)
+    text = readme_path.read_text()
+    if not legacy:
+        text = text.replace('## 文件清單', state + '## 文件清單', 1)
     text = text.replace('**狀態**: 審查中', '**狀態**: 審查通過，待合併')
+    event = (f'審查 PASS（{rel.rsplit("/", 1)[1]}）；尚未併入 main，尚未部署（production 仍為 {main_sha[:7]}）'
+             if legacy else '審查 PASS')
     write(readme_path, text.replace('| 2026-11-03 | 建立並核准 | 開發者 |',
-                                    '| 2026-11-03 | 建立並核准 | 開發者 |\n| 2026-11-05 | 審查 PASS | 開發者 |'))
+                                    f'| 2026-11-03 | 建立並核准 | 開發者 |\n| 2026-11-05 | {event} | 開發者 |'))
     commit(path, f'docs: 保存 issue #2901 審查報告 review-{reviewed[:7]} 並記錄 PASS\n\nRefs: #2901', '2026-11-05')
     run(path, 'git', 'checkout', '-q', 'main')
     run(path, 'git', '-c', 'user.name=Teammate', '-c', 'user.email=teammate@example.invalid', 'merge', '-q',
@@ -240,8 +245,9 @@ class DoneItemsTest(unittest.TestCase):
 '''
 
 
-def build_reviews(kit, path, pointer_ok=True):
-    """WF-30：三輪審查各一份報告，前兩份 RETURN，最新一份 PASS；## 現況 指向現行報告。"""
+def build_reviews(kit, path, pointer_ok=True, with_state=True):
+    """WF-30：三輪審查各一份報告，前兩份 RETURN，最新一份 PASS；## 現況 指向現行報告。
+    with_state=False（WF-30b）：沒有 ## 現況，只有 Timeline 記各輪審查。"""
     base(kit, path)
     main_sha = git(path, 'rev-parse', 'HEAD')
     run(path, 'git', 'checkout', '-q', '-b', 'issue-3001-done-filter')
@@ -294,7 +300,8 @@ if __name__ == "__main__":
         text = readme_path.read_text()
         if '## 現況' in text:
             text = text[:text.index('## 現況')] + text[text.index('## 文件清單'):]
-        text = text.replace('## 文件清單', current_state(name, []) + '## 文件清單', 1)
+        if with_state:
+            text = text.replace('## 文件清單', current_state(name, []) + '## 文件清單', 1)
         timeline.append((date, f'審查 {verdict}（{rel.rsplit("/", 1)[1]}）', '開發者'))
         rows = '\n'.join(f'| {d} | {e} | {who} |' for d, e, who in timeline)
         text = text[:text.index('| 2026-11-01 | 建立並核准')] + rows + '\n' + text[text.index('\n---\n'):]
@@ -439,8 +446,10 @@ def main():
     out.mkdir(parents=True)
     build_external(kit, out / 'wf29', DEPLOYED_PY)
     build_external(kit, out / 'wf29c', DEPLOYED_DOWN_PY)
+    build_external(kit, out / 'wf29b', DEPLOYED_PY, legacy=True)
     build_reviews(kit, out / 'wf30')
     build_reviews(kit, out / 'wf30c', pointer_ok=False)
+    build_reviews(kit, out / 'wf30b', with_state=False)
     build_review_creates_state(kit, out / 'wf31')
     build_small_no_state(kit, out / 'wf31c')
     build_handover(kit, out / 'wf32')
