@@ -527,6 +527,144 @@ class BookkeepingTests(unittest.TestCase):
         self.commit('symlink')
         self.assertInvalid(self.verify(), 'symlink')
 
+    # --- issue #3：## 現況 只在流程契約 2.5 起列入記帳區段 ---
+
+    def add_current_state(self, body=None):
+        self.edit('## Gherkin 驗收劇本', current_state(body or self.report.rsplit('/', 1)[1])
+                  + '## Gherkin 驗收劇本')
+
+    def test_current_state_section_needs_25(self):
+        self.add_report()
+        self.add_current_state()
+        self.commit('report and current state')
+        self.assertInvalid(self.verify(), '現況', '2.5')
+
+
+def current_state(review, row='| 併入 main | `git merge-base --is-ancestor HEAD main` | 否 | 2026-11-10 |'):
+    return ('## 現況\n\n'
+            f'**現行 review**: {review}\n\n'
+            '| 外部狀態 | 查證命令 | 上次結果 | 查證日期 |\n'
+            '|---|---|---|---|\n'
+            f'{row}\n\n')
+
+
+class CurrentStateTests(BookkeepingTests):
+    """issue #3：流程契約 2.5 起 ## 現況 可整節增刪、節內可改；夾帶凍結內容仍需重審。"""
+    CONTRACT = '2.5'
+    OLD_ROW = '| 併入 main | `git merge-base --is-ancestor HEAD main` | 否 | 2026-11-10 |'
+    NEW_ROW = '| 併入 main | `git merge-base --is-ancestor HEAD main` | 是 | 2026-11-12 |'
+
+    def reviewed_with_current_state(self):
+        """被審查版本已含 ## 現況，指向上一份報告。"""
+        self.add_current_state('review-0000000.md')
+        self.commit('reviewed with current state')
+        self.reviewed = self.git('rev-parse', 'HEAD')
+        self.report = f'{self.ISSUE}/review-{self.reviewed[:7]}.md'
+
+    # --- 有效 ---
+
+    def test_current_state_section_needs_25(self):
+        self.add_report()
+        self.add_current_state()
+        self.commit('report and current state')
+        self.assertValid(self.verify(), '現況', f'現行 review（（無） → review-{self.reviewed[:7]}.md）')
+
+    def test_current_state_values_updated(self):
+        self.reviewed_with_current_state()
+        self.add_report()
+        self.edit('**現行 review**: review-0000000.md', f'**現行 review**: review-{self.reviewed[:7]}.md')
+        self.edit(self.OLD_ROW, self.NEW_ROW)
+        self.commit('update current state')
+        self.assertValid(self.verify(), '現況', 'review-0000000.md → ')
+
+    def test_current_state_row_only(self):
+        self.reviewed_with_current_state()
+        self.edit(self.OLD_ROW, self.NEW_ROW)
+        self.commit('recheck external state')
+        self.assertValid(self.verify(artifact=False, issue=self.ISSUE), '現況')
+
+    def test_current_state_removed(self):
+        self.reviewed_with_current_state()
+        self.add_report()
+        self.edit(current_state('review-0000000.md'), '')
+        self.commit('drop current state')
+        self.assertValid(self.verify(), '現況')
+
+    def test_current_state_with_other_bookkeeping(self):
+        self.add_report()
+        self.add_current_state()
+        self.record_decision()
+        self.edit('**狀態**: 實作中', '**狀態**: 待合併')
+        self.commit('report, current state and decision')
+        self.assertValid(self.verify(), '現況', 'Timeline', '待確認事項', '狀態')
+
+    # --- 無效 ---
+
+    def test_frozen_forms_inside_current_state_invalid(self):
+        cases = (('### 補充', '補充'),
+                 ('```text\nAC-9 新增\n```', 'code fence'),
+                 ('**分級**: Small', '分級'),
+                 ('**現行 review:** review-1111111.md', '現行 review'),
+                 ('**現行 review**: review-1111111.md', '現行 review'))
+        original = self.reviewed
+        for extra, mention in cases:
+            with self.subTest(extra=extra, mode='整節新增'):
+                self.reset_to(original)
+                self.add_report()
+                self.add_current_state()
+                self.edit(self.OLD_ROW + '\n', self.OLD_ROW + '\n\n' + extra + '\n')
+                self.commit('new current state with frozen form')
+                self.assertInvalid(self.verify(), mention)
+            with self.subTest(extra=extra, mode='既有現況'):
+                self.reset_to(original)
+                self.reviewed_with_current_state()
+                self.add_report()
+                self.edit(self.OLD_ROW + '\n', self.OLD_ROW + '\n\n' + extra + '\n')
+                self.commit('frozen form inside existing current state')
+                self.assertInvalid(self.verify(), mention)
+
+    def reset_to(self, sha):
+        self.git('reset', '-q', '--hard', sha)
+        self.reviewed = sha
+        self.report = f'{self.ISSUE}/review-{sha[:7]}.md'
+
+    def test_frozen_text_moved_into_current_state_invalid(self):
+        self.reviewed_with_current_state()
+        self.add_report()
+        self.edit('固定的範例需求。\n', '')
+        self.edit(self.OLD_ROW + '\n', self.OLD_ROW + '\n\n固定的範例需求。\n')
+        self.commit('move overview into current state')
+        self.assertInvalid(self.verify(), '概述')
+
+    def test_inserted_current_state_cannot_swallow_frozen_text(self):
+        self.add_report()
+        self.edit('## 概述\n', '## 概述\n\n## 現況\n')
+        self.commit('swallow overview into current state')
+        self.assertInvalid(self.verify(), '概述')
+
+    def test_duplicate_current_state_invalid(self):
+        self.add_report()
+        self.add_current_state()
+        self.add_current_state()
+        self.commit('two current state sections')
+        self.assertInvalid(self.verify(), '標題')
+
+    def test_current_review_outside_section_invalid(self):
+        footer = '---\n**建立日期**'
+        self.add_report()
+        self.edit(footer, f'**現行 review**: review-{self.reviewed[:7]}.md\n\n{footer}')
+        self.commit('current review outside current state')
+        self.assertInvalid(self.verify(), '現行 review')
+        self.reset_to(self.approval)
+        self.write('app.txt', 'v2\n')
+        self.edit(footer, f'**現行 review**: review-0000000.md\n\n{footer}')
+        self.commit('reviewed with current review outside current state')
+        self.reset_to(self.git('rev-parse', 'HEAD'))
+        self.add_report()
+        self.edit('**現行 review**: review-0000000.md', f'**現行 review**: review-{self.reviewed[:7]}.md')
+        self.commit('change current review outside current state')
+        self.assertInvalid(self.verify(), '現行 review')
+
 
 class LegacyBookkeepingTests(BookkeepingTests):
     """流程契約 2.3：維持只新增報告的現行判定；無效時不承諾指出違規位置。"""

@@ -9,7 +9,7 @@
 沿用 issue #2 的區段判定，只加入 `## 現況`：
 
 1. 被審查提交上的流程契約為 2.5 以上的 2.x 時，`現況` 加入可整節新增或刪除的記帳章節；2.4 時維持現行判定，`## 現況` 是一般凍結章節，新增時的無效訊息附註需要 2.5。
-2. `## 現況` 節內：一般行與表格列屬記帳內容；`**現行 review**` 欄位只比欄位名稱與數量，值可改；標題、code fence、其他粗體開頭的行凍結，整節增刪時節內出現這些行即判無效（與待確認事項、Gate 豁免紀錄相同）。
+2. `## 現況` 節內：一般行、表格列與 `**現行 review**` 欄位屬記帳內容，`**現行 review**` 最多一行、值可改；標題、code fence、其他粗體開頭的行（含 `**現行 review:**` 這類非範本寫法）凍結，整節增刪時節內出現這些行即判無效（與待確認事項、Gate 豁免紀錄相同）。
 3. `**現行 review**` 出現在 `## 現況` 之外時，當作一般粗體欄位凍結；`## 現況` 重複出現時判無效。
 4. 有效時變更區段列出「現況」與現行 review 的新舊值；無效時指出第一個違規的章節與內容。指令維持唯讀。
 
@@ -23,13 +23,21 @@
 
 | 編號 | 工作與產出 | 相依／啟用條件 | 驗收編號 | 完成判準 | 狀態／證據 |
 |---|---|---|---|---|---|
-| S1 | 依上方判定修改 `verify-artifact.py`，在 `test-evidence.py` 補正負向案例 | SCN-001～003 已核准 | SCN-001～003 | 下方「腳本案例」全部通過，既有測試不變仍通過；每個負向案例的訊息指出違規位置；新案例先紅後綠 | 📝 |
+| S1 | 依上方判定修改 `verify-artifact.py`，在 `test-evidence.py` 補正負向案例 | SCN-001～003 已核准 | SCN-001～003 | 下方「腳本案例」全部通過，既有測試不變仍通過；每個負向案例的訊息指出違規位置；新案例先紅後綠 | ✅ 2026-11-10；見「S1 證據」 |
 | S2 | 修改 review-evidence.md、review SKILL.md（步驟 5 保存報告時更新現行 review）、docs/AGENTS.md（原則、文件版本 2.9、流程契約 2.5、修訂紀錄）、document-types.md、readme-templates.md 兩種範本；依 writing-rules | S1；SCN-001、003、004、007 已核准 | SCN-001、003、004、007 | 規則文字與腳本判定一致，沒有自相矛盾的舊句；範本的 `## 現況` 位置與欄位與設計邊界相同 | 📝 |
 | S3 | 修改 rules/AGENTS.md 與 rules/AGENTS.zh-TW.md、project.md 範本；依 writing-rules | SCN-005、007 已核准；與 S1、S2 無相依 | SCN-005、007 | 雙語語意一致、`##` 章節數與順序不變；check-kit 通過 | 📝 |
 | S4 | 修改 dev-cycle SKILL.md（現況值當線索、以現行 review 找報告、掃描完成判準）與 pending-scan.md（完成判準與摘要欄位） | S2；SCN-005、006、008 已核准 | SCN-005、006、008 | 技能步驟與 docs 的定義沒有兩種說法；查詢模式仍為唯讀 | 📝 |
 | S5 | 建立下方「行為案例」的 fixture 與固定回答，先提交，再以 v4.9.0 規則在隔離設定實跑基準 | SCN-004～008 已核准；與 S1～S4 無相依 | SCN-004～008 | 每個案例在基準組都有可觀察的失敗或缺漏；沒有的案例記錄為無法區分並重新設計 fixture，不拿來宣稱改善 | 📝 |
 | S6 | 以本次規則對同一 fixture 實跑候選組與對照組；重跑 WF-22 與 WF-28a、28b | S2～S5 | SCN-004～008，覆核 SCN-001～003 | 依「行為案例」逐項判定；同一輸入結果不一致時明列為不穩定，不挑成功輪次 | 📝 |
 | S7 | 更新 CHANGELOG（v4.10.0）、workflow-regression、rule-verification-status 與回歸紀錄；檢查 README、usage、INSTALL、execute-task、create-pr 的引用；跑根目錄五項檢查；送獨立審查 | S6 | SCN-001～008 | 五項檢查通過；未實跑分支登記為僅靜態撰寫；獨立審查 PASS 或已依使用者決定處理 | 📝 |
+
+### S1 證據
+
+- **紅燈**（[s1-red.txt](evidence/s1-red.txt)，2026-11-10，基於 `fe43877`，只加測試、腳本未改）：143 個測試中 11 個失敗。SCN-001 的五個正向案例都判無效，因為 `## 現況` 還不是記帳區段；整節新增 `## 現況` 夾帶凍結內容的五個子案例雖然判無效，訊息卻只說章節順序不同，沒指出違規內容；2.4 專案新增 `## 現況` 的訊息沒說明需要 2.5。
+- **綠燈**（[s1-green.txt](evidence/s1-green.txt)，2026-11-10，`-v` 逐案輸出）：143 個測試全部通過，原有 99 個不變。驗證對象是同一工作區的 `verify-artifact.py` 與 `test-evidence.py`，隨本步驟提交。
+- **對應**：SCN-001 → `CurrentStateTests` 的 `test_current_state_section_needs_25`、`values_updated`、`row_only`（平台模式）、`removed`、`with_other_bookkeeping`；SCN-002 → `frozen_forms_inside_current_state_invalid`（標題、code fence、其他粗體欄位、非範本寫法、第二行現行 review，各跑整節新增與既有現況兩種）、`frozen_text_moved_into_current_state_invalid`、`inserted_current_state_cannot_swallow_frozen_text`、`duplicate_current_state_invalid`、`current_review_outside_section_invalid`；SCN-003 → `BookkeepingTests`（2.4）的 `test_current_state_section_needs_25` 判無效並提到 2.5，以及 2.4、2.3、無 AGENTS.md 三組沿用的既有案例。`CurrentStateTests` 繼承全部既有案例，2.5 下的記帳判定與 2.4 相同。
+- **限制**：搬移、吞併、重複、節外欄位這四個防護案例在改腳本前就判無效（當時整個 `## 現況` 都是凍結章節），不算紅燈，只用來確認放寬後仍擋得住。
+- **精煉**：綠燈後依 code-simplify 檢查一次，`current_review` 改為每行只比對一次正規式，重跑後仍全數通過；其餘沒有可改善處。根目錄五項檢查中 check-kit、check-links、`bash -n`、test-install 同時通過。
 
 ## 測試策略
 

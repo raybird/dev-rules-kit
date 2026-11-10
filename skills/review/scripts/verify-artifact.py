@@ -2,6 +2,7 @@
 """唯讀驗證 PASS 之後的提交是否仍沿用原審查；不判斷報告內容的審查品質。
 
 流程契約 2.4 起的 2.x，被審查提交之後只新增該報告、只改該 issue README 記帳區段時沿用；
+2.5 起 `## 現況` 也是記帳區段，節內的 `**現行 review**` 欄位可改值。
 讀不到契約、低於 2.4 或其他 major 時，維持只接受一個「只新增該報告」提交的現行判定。
 記帳區段內看起來像標題、code fence 或粗體欄位的非範本寫法一律視為凍結內容。
 """
@@ -24,6 +25,8 @@ BOLD_LINE = re.compile(r'^\s*(?:[-*+]\s+)?(?:\*\*|__)')
 CONTRACT = re.compile(r'\*\*流程契約\*\*\s*[:：]\s*(\d+)\.(\d+)')
 SHA = re.compile(r'^`?([0-9a-fA-F]{7,40})`?$')
 ADDABLE_SECTIONS = ('待確認事項', 'Gate 豁免紀錄')
+CURRENT_STATE = '現況'
+CURRENT_REVIEW = '現行 review'
 
 
 class Invalid(ValueError):
@@ -83,7 +86,7 @@ def closes(line, fence, loose):
         and not line[marker.end():].strip()
 
 
-def analyse(text):
+def analyse(text, bookkeeping_sections=BOOKKEEPING_SECTIONS):
     """回傳 (凍結內容, 記帳欄位, 各記帳章節內容, 章節標題順序)。凍結內容逐項保留所在章節與種類。"""
     frozen, fields, sections, headings = [], [], {}, []
     section, fence, loose, previous = '（標題前）', None, False, ''
@@ -103,7 +106,7 @@ def analyse(text):
         if heading:
             section = heading.group(1)
             headings.append(section)
-            if section in BOOKKEEPING_SECTIONS:
+            if section in bookkeeping_sections:
                 sections.setdefault(section, [])
             else:
                 frozen.append((section, 'heading', line))
@@ -114,7 +117,7 @@ def analyse(text):
             previous = line
             continue
         if SETEXT.match(line) and previous.strip() and not NOT_PARAGRAPH.match(previous):
-            if section in BOOKKEEPING_SECTIONS and sections[section][-1:] == [previous]:
+            if section in bookkeeping_sections and sections[section][-1:] == [previous]:
                 sections[section].pop()
                 frozen.append((section, 'heading', previous))
             frozen.append((section, 'heading', line))
@@ -122,6 +125,10 @@ def analyse(text):
             continue
         previous = line
         field = FIELD.match(line)
+        if field and section == CURRENT_STATE and section in bookkeeping_sections \
+                and field.group(1).strip() == CURRENT_REVIEW:
+            sections[section].append(line)
+            continue
         if field and field.group(1).strip() in BOOKKEEPING_FIELDS:
             name = field.group(1).strip()
             fields.append((name, field.group(2)))
@@ -132,7 +139,7 @@ def analyse(text):
             continue
         if not line.strip():
             continue
-        if section in BOOKKEEPING_SECTIONS:
+        if section in bookkeeping_sections:
             sections[section].append(line)
         else:
             frozen.append((section, 'line', line))
@@ -146,15 +153,34 @@ def describe(entry):
     return f'章節「{section}」的' + (f'「{text}」' if text.strip() else '空行') + ('（code fence 內容一律凍結）' if kind == 'fence' else '')
 
 
-def check_readme(git, reviewed, head, readme):
-    before = analyse(git('show', f'{reviewed}:{readme}').stdout)
-    after = analyse(git('show', f'{head}:{readme}').stdout)
-    optional = [name for name in ADDABLE_SECTIONS if (name in before[3]) != (name in after[3])]
+def current_review(lines):
+    values = [match.group(2) for match in map(FIELD.match, lines or ()) if match]
+    if len(values) > 1:
+        raise Invalid(f'## {CURRENT_STATE} 只能有一行 **{CURRENT_REVIEW}**，目前有 {len(values)} 行；需重新審查')
+    return values[0] if values else '（無）'
+
+
+def check_readme(git, reviewed, head, readme, version):
+    with_state = version >= (2, 5)
+    sections = BOOKKEEPING_SECTIONS + ((CURRENT_STATE,) if with_state else ())
+    addable = ADDABLE_SECTIONS + ((CURRENT_STATE,) if with_state else ())
+    before = analyse(git('show', f'{reviewed}:{readme}').stdout, sections)
+    after = analyse(git('show', f'{head}:{readme}').stdout, sections)
+    note = '' if with_state or CURRENT_STATE not in before[3] + after[3] else \
+        f'（## {CURRENT_STATE} 列入記帳區段需要流程契約 2.5 以上）'
+    try:
+        return compare_readme(git, reviewed, readme, before, after, sections, addable)
+    except Invalid as error:
+        raise Invalid(f'{error}{note}') from None
+
+
+def compare_readme(git, reviewed, readme, before, after, sections, addable):
+    optional = [name for name in addable if (name in before[3]) != (name in after[3])]
     old_order = [name for name in before[3] if name not in optional]
     new_order = [name for name in after[3] if name not in optional]
-    if old_order != new_order or any(after[3].count(name) > 1 for name in ADDABLE_SECTIONS):
+    if old_order != new_order or any(after[3].count(name) > 1 for name in addable):
         raise Invalid(f'{readme} 的章節標題或順序與被審查版本不同：被審查版本為「{"／".join(before[3])}」，'
-                      f'目前為「{"／".join(after[3])}」；只能整節新增或刪除待確認事項、Gate 豁免紀錄；需重新審查')
+                      f'目前為「{"／".join(after[3])}」；只能整節新增或刪除{"、".join(addable)}；需重新審查')
     old_frozen, new_frozen = before[0], after[0]
     for index in range(max(len(old_frozen), len(new_frozen))):
         old = old_frozen[index] if index < len(old_frozen) else None
@@ -175,13 +201,17 @@ def check_readme(git, reviewed, head, readme):
                                         reviewed, check=False).returncode:
                 raise Invalid(f'核准 commit「{new}」不是被審查提交或其祖先；需重新審查')
         changed.append(f'{name}（{old} → {new}）')
-    for name in BOOKKEEPING_SECTIONS:
+    for name in sections:
         if before[2].get(name) != after[2].get(name):
             changed.append(name)
+    if CURRENT_STATE in sections:
+        old, new = current_review(before[2].get(CURRENT_STATE)), current_review(after[2].get(CURRENT_STATE))
+        if old != new:
+            changed.append(f'{CURRENT_REVIEW}（{old} → {new}）')
     return changed
 
 
-def bookkeeping(git, reviewed, head, artifact, issue):
+def bookkeeping(git, reviewed, head, artifact, issue, version):
     """流程契約 2.4 起：淨差異只有該報告與該 issue README 的記帳區段。"""
     if git('merge-base', '--is-ancestor', reviewed, head, check=False).returncode:
         raise Invalid('被審查提交不是目前 HEAD 的祖先（歷史已改寫或分支不同）；需重新審查')
@@ -205,7 +235,7 @@ def bookkeeping(git, reviewed, head, artifact, issue):
         if len(touched) != 1:
             raise Invalid(f'報告 {artifact} 新增後又被修改；需重新審查')
         check_report(git, reviewed, head, artifact)
-    changed = check_readme(git, reviewed, head, readme) if any(p == readme for _, p in entries) else []
+    changed = check_readme(git, reviewed, head, readme, version) if any(p == readme for _, p in entries) else []
     parts = ([f'新增報告 {artifact}'] if artifact else []) + changed
     summary = '、'.join(parts) if parts else '無變更'
     return f'OK：被審查提交之後只有記帳變更，原 review 可依其真實判定沿用。變更：{summary}'
@@ -231,7 +261,7 @@ def verify(repo, reviewed, head, artifact=None, issue=None):
         found = '讀不到流程契約' if version is None else f'流程契約 {version[0]}.{version[1]}'
         return legacy(git, reviewed, head, artifact,
                       f'（{found}；只動記帳區段的放行需要流程契約 2.4 以上的 2.x）')
-    return bookkeeping(git, reviewed, head, artifact, target)
+    return bookkeeping(git, reviewed, head, artifact, target, version)
 
 
 def main():

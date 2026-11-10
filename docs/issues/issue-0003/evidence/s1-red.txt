@@ -1,0 +1,123 @@
+# S1 紅燈：2026-11-10T17:10:23+08:00；工作區基於 fe43877，verify-artifact.py 未修改，只新增 test-evidence.py 案例；traceback 的本機絕對路徑已改為 repo 相對路徑
+$ python3 scripts/test-evidence.py
+...........F................................FFFFF...FFFFF.........................................................................................
+======================================================================
+FAIL: test_current_state_section_needs_25 (__main__.BookkeepingTests.test_current_state_section_needs_25)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "scripts/test-evidence.py", line 540, in test_current_state_section_needs_25
+    self.assertInvalid(self.verify(), '現況', '2.5')
+  File "scripts/test-evidence.py", line 223, in assertInvalid
+    self.assertIn(mention, result.stderr)
+AssertionError: '2.5' not found in 'INVALID：docs/issues/issue-1/README.md 的章節標題或順序與被審查版本不同：被審查版本為「概述／Gherkin 驗收劇本／Gherkin 核准紀錄／待確認事項／Timeline」，目前為「概述／現況／Gherkin 驗收劇本／Gherkin 核准紀錄／待確認事項／Timeline」；只能整節新增或刪除待確認事項、Gate 豁免紀錄；需重新審查\n'
+
+======================================================================
+FAIL: test_current_state_removed (__main__.CurrentStateTests.test_current_state_removed)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "scripts/test-evidence.py", line 591, in test_current_state_removed
+    self.assertValid(self.verify(), '現況')
+  File "scripts/test-evidence.py", line 216, in assertValid
+    self.assertEqual(result.returncode, 0, result.stdout + result.stderr)
+AssertionError: 1 != 0 : INVALID：docs/issues/issue-1/README.md 的章節標題或順序與被審查版本不同：被審查版本為「概述／現況／Gherkin 驗收劇本／Gherkin 核准紀錄／待確認事項／Timeline」，目前為「概述／Gherkin 驗收劇本／Gherkin 核准紀錄／待確認事項／Timeline」；只能整節新增或刪除待確認事項、Gate 豁免紀錄；需重新審查
+
+
+======================================================================
+FAIL: test_current_state_row_only (__main__.CurrentStateTests.test_current_state_row_only)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "scripts/test-evidence.py", line 584, in test_current_state_row_only
+    self.assertValid(self.verify(artifact=False, issue=self.ISSUE), '現況')
+  File "scripts/test-evidence.py", line 216, in assertValid
+    self.assertEqual(result.returncode, 0, result.stdout + result.stderr)
+AssertionError: 1 != 0 : INVALID：docs/issues/issue-1/README.md 的凍結內容與被審查版本不同：被審查版本為章節「現況」的「| 併入 main | `git merge-base --is-ancestor HEAD main` | 否 | 2026-11-10 |」，目前為章節「現況」的「| 併入 main | `git merge-base --is-ancestor HEAD main` | 是 | 2026-11-12 |」；需重新審查
+
+
+======================================================================
+FAIL: test_current_state_section_needs_25 (__main__.CurrentStateTests.test_current_state_section_needs_25)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "scripts/test-evidence.py", line 570, in test_current_state_section_needs_25
+    self.assertValid(self.verify(), '現況', f'現行 review（（無） → review-{self.reviewed[:7]}.md）')
+  File "scripts/test-evidence.py", line 216, in assertValid
+    self.assertEqual(result.returncode, 0, result.stdout + result.stderr)
+AssertionError: 1 != 0 : INVALID：docs/issues/issue-1/README.md 的章節標題或順序與被審查版本不同：被審查版本為「概述／Gherkin 驗收劇本／Gherkin 核准紀錄／待確認事項／Timeline」，目前為「概述／現況／Gherkin 驗收劇本／Gherkin 核准紀錄／待確認事項／Timeline」；只能整節新增或刪除待確認事項、Gate 豁免紀錄；需重新審查
+
+
+======================================================================
+FAIL: test_current_state_values_updated (__main__.CurrentStateTests.test_current_state_values_updated)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "scripts/test-evidence.py", line 578, in test_current_state_values_updated
+    self.assertValid(self.verify(), '現況', 'review-0000000.md → ')
+  File "scripts/test-evidence.py", line 216, in assertValid
+    self.assertEqual(result.returncode, 0, result.stdout + result.stderr)
+AssertionError: 1 != 0 : INVALID：docs/issues/issue-1/README.md 的凍結內容與被審查版本不同：被審查版本為章節「現況」的「**現行 review**: review-0000000.md」，目前為章節「現況」的「**現行 review**: review-597709d.md」；需重新審查
+
+
+======================================================================
+FAIL: test_current_state_with_other_bookkeeping (__main__.CurrentStateTests.test_current_state_with_other_bookkeeping)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "scripts/test-evidence.py", line 599, in test_current_state_with_other_bookkeeping
+    self.assertValid(self.verify(), '現況', 'Timeline', '待確認事項', '狀態')
+  File "scripts/test-evidence.py", line 216, in assertValid
+    self.assertEqual(result.returncode, 0, result.stdout + result.stderr)
+AssertionError: 1 != 0 : INVALID：docs/issues/issue-1/README.md 的章節標題或順序與被審查版本不同：被審查版本為「概述／Gherkin 驗收劇本／Gherkin 核准紀錄／待確認事項／Timeline」，目前為「概述／現況／Gherkin 驗收劇本／Gherkin 核准紀錄／待確認事項／Timeline」；只能整節新增或刪除待確認事項、Gate 豁免紀錄；需重新審查
+
+
+======================================================================
+FAIL: test_frozen_forms_inside_current_state_invalid (__main__.CurrentStateTests.test_frozen_forms_inside_current_state_invalid) (extra='### 補充', mode='整節新增')
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "scripts/test-evidence.py", line 617, in test_frozen_forms_inside_current_state_invalid
+    self.assertInvalid(self.verify(), mention)
+  File "scripts/test-evidence.py", line 223, in assertInvalid
+    self.assertIn(mention, result.stderr)
+AssertionError: '補充' not found in 'INVALID：docs/issues/issue-1/README.md 的章節標題或順序與被審查版本不同：被審查版本為「概述／Gherkin 驗收劇本／Gherkin 核准紀錄／待確認事項／Timeline」，目前為「概述／現況／Gherkin 驗收劇本／Gherkin 核准紀錄／待確認事項／Timeline」；只能整節新增或刪除待確認事項、Gate 豁免紀錄；需重新審查\n'
+
+======================================================================
+FAIL: test_frozen_forms_inside_current_state_invalid (__main__.CurrentStateTests.test_frozen_forms_inside_current_state_invalid) (extra='```text\nAC-9 新增\n```', mode='整節新增')
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "scripts/test-evidence.py", line 617, in test_frozen_forms_inside_current_state_invalid
+    self.assertInvalid(self.verify(), mention)
+  File "scripts/test-evidence.py", line 223, in assertInvalid
+    self.assertIn(mention, result.stderr)
+AssertionError: 'code fence' not found in 'INVALID：docs/issues/issue-1/README.md 的章節標題或順序與被審查版本不同：被審查版本為「概述／Gherkin 驗收劇本／Gherkin 核准紀錄／待確認事項／Timeline」，目前為「概述／現況／Gherkin 驗收劇本／Gherkin 核准紀錄／待確認事項／Timeline」；只能整節新增或刪除待確認事項、Gate 豁免紀錄；需重新審查\n'
+
+======================================================================
+FAIL: test_frozen_forms_inside_current_state_invalid (__main__.CurrentStateTests.test_frozen_forms_inside_current_state_invalid) (extra='**分級**: Small', mode='整節新增')
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "scripts/test-evidence.py", line 617, in test_frozen_forms_inside_current_state_invalid
+    self.assertInvalid(self.verify(), mention)
+  File "scripts/test-evidence.py", line 223, in assertInvalid
+    self.assertIn(mention, result.stderr)
+AssertionError: '分級' not found in 'INVALID：docs/issues/issue-1/README.md 的章節標題或順序與被審查版本不同：被審查版本為「概述／Gherkin 驗收劇本／Gherkin 核准紀錄／待確認事項／Timeline」，目前為「概述／現況／Gherkin 驗收劇本／Gherkin 核准紀錄／待確認事項／Timeline」；只能整節新增或刪除待確認事項、Gate 豁免紀錄；需重新審查\n'
+
+======================================================================
+FAIL: test_frozen_forms_inside_current_state_invalid (__main__.CurrentStateTests.test_frozen_forms_inside_current_state_invalid) (extra='**現行 review:** review-1111111.md', mode='整節新增')
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "scripts/test-evidence.py", line 617, in test_frozen_forms_inside_current_state_invalid
+    self.assertInvalid(self.verify(), mention)
+  File "scripts/test-evidence.py", line 223, in assertInvalid
+    self.assertIn(mention, result.stderr)
+AssertionError: '現行 review' not found in 'INVALID：docs/issues/issue-1/README.md 的章節標題或順序與被審查版本不同：被審查版本為「概述／Gherkin 驗收劇本／Gherkin 核准紀錄／待確認事項／Timeline」，目前為「概述／現況／Gherkin 驗收劇本／Gherkin 核准紀錄／待確認事項／Timeline」；只能整節新增或刪除待確認事項、Gate 豁免紀錄；需重新審查\n'
+
+======================================================================
+FAIL: test_frozen_forms_inside_current_state_invalid (__main__.CurrentStateTests.test_frozen_forms_inside_current_state_invalid) (extra='**現行 review**: review-1111111.md', mode='整節新增')
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "scripts/test-evidence.py", line 617, in test_frozen_forms_inside_current_state_invalid
+    self.assertInvalid(self.verify(), mention)
+  File "scripts/test-evidence.py", line 223, in assertInvalid
+    self.assertIn(mention, result.stderr)
+AssertionError: '現行 review' not found in 'INVALID：docs/issues/issue-1/README.md 的章節標題或順序與被審查版本不同：被審查版本為「概述／Gherkin 驗收劇本／Gherkin 核准紀錄／待確認事項／Timeline」，目前為「概述／現況／Gherkin 驗收劇本／Gherkin 核准紀錄／待確認事項／Timeline」；只能整節新增或刪除待確認事項、Gate 豁免紀錄；需重新審查\n'
+
+----------------------------------------------------------------------
+Ran 142 tests in 12.909s
+
+FAILED (failures=11)
+exit=1
