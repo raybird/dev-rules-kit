@@ -29,7 +29,7 @@
 | S4 | 修改 dev-cycle SKILL.md（現況值當線索、以現行 review 找報告、掃描完成判準）與 pending-scan.md（完成判準與摘要欄位） | S2；SCN-005、006、008 已核准 | SCN-005、006、008 | 技能步驟與 docs 的定義沒有兩種說法；查詢模式仍為唯讀 | ✅ 2026-11-10；見「S4 證據」 |
 | S5 | 建立下方「行為案例」的 fixture 與固定回答，先提交，再以 v4.9.0 規則在隔離設定實跑基準 | SCN-004～008 已核准；與 S1～S4 無相依 | SCN-004～008 | 每個案例在基準組都有可觀察的失敗或缺漏；沒有的案例記錄為無法區分並重新設計 fixture，不拿來宣稱改善 | ✅ 2026-11-10；fixture 與判定 `b26c73a`、基準組與追加案例 `f10c3c1`，見下方「S5 證據」 |
 | S6 | 以本次規則對同一 fixture 實跑候選組與對照組；重跑 WF-28a、28b 與懸置掃描（issue-0001 的 scan fixture） | S2～S5 | SCN-004～008，覆核 SCN-001～003 | 依「行為案例」逐項判定；同一輸入結果不一致時明列為不穩定，不挑成功輪次 | ✅ 2026-11-10；每案一輪，全部通過，能區分的只有 wf30、wf30c 的有效性與 wf31；見下方「S6 證據」 |
-| S7 | 更新 CHANGELOG（v4.10.0）、workflow-regression、rule-verification-status 與回歸紀錄；檢查 README、usage、INSTALL、execute-task、create-pr 的引用；跑根目錄五項檢查；送獨立審查 | S6 | SCN-001～008 | 五項檢查通過；未實跑分支登記為僅靜態撰寫；獨立審查 PASS 或已依使用者決定處理 | 📝 |
+| S7 | 更新 CHANGELOG（v4.10.0）、workflow-regression、rule-verification-status 與回歸紀錄；檢查 README、usage、INSTALL、execute-task、create-pr 的引用；跑根目錄五項檢查；送獨立審查 | S6 | SCN-001～008 | 五項檢查通過；未實跑分支登記為僅靜態撰寫；獨立審查 PASS 或已依使用者決定處理 | ⏳ 2026-11-10 文件更新完成：CHANGELOG v4.10.0、WF-29～WF-33、v4.10.0 驗證狀態、[2026-11-10 回歸紀錄](../../workflow-results/2026-11-10.md)、usage.md 與 INSTALL.md 各一處；README.md、execute-task、create-pr 沒有相關敘述、未改。五項檢查通過（check-kit、check-links、`bash -n`、test-install 14 項、test-evidence 143 項）。待獨立審查 |
 
 ### S1 證據
 
@@ -148,7 +148,7 @@ python3 scripts/test-evidence.py
 ## 檢查清單
 
 - [x] SCN-001～008 已核准，TBD-1 已解決
-- [ ] S1 腳本案例全部通過後才改規則文字
+- [x] S1 腳本案例全部通過後才改規則文字（S1 `874992d` 先於 S2 `9fa384e`）
 - [ ] 規則文字、範本、review 與 dev-cycle 技能對 `## 現況` 沒有兩種說法
-- [ ] 基準與候選實跑紀錄齊全，未實跑分支登記為僅靜態撰寫
-- [ ] CHANGELOG 與 docs/AGENTS.md 版本一致，下游更新方式（含 project.md 手動補登）寫明
+- [x] 基準與候選實跑紀錄齊全，未實跑分支登記為僅靜態撰寫
+- [x] CHANGELOG 與 docs/AGENTS.md 版本一致，下游更新方式（含 project.md 手動補登）寫明
