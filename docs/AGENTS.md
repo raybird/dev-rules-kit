@@ -126,7 +126,7 @@ Small 與 Medium 的實作步驟本身即為可執行的任務清單，**直接�
 
 ## Gate 豁免紀錄
 
-使用者明確要求跳過 gate 時，在 issue README 的 `## Gate 豁免紀錄` 記錄日期、豁免項目、使用者原話與殘餘風險，以表格或一般清單書寫，行首不用粗體，也不放子標題或 code fence；否則審查之後補記會讓 PASS 失效。只豁免明列項目；已記錄的授權持續有效。不得將未執行的驗證或獨立審查寫成已通過。
+使用者明確要求跳過 gate 時，在 issue README 的 `## Gate 豁免紀錄` 記錄日期、豁免項目、使用者原話與殘餘風險，以表格或一般清單書寫，行首不用粗體，也不放子標題、code fence 或 HTML（提到標籤名時寫在 code span 裡）；否則審查之後補記會讓 PASS 失效。只豁免明列項目；已記錄的授權持續有效。不得將未執行的驗證或獨立審查寫成已通過。
 
 ## 待確認事項
 
@@ -177,7 +177,7 @@ Small 與 Medium 的實作步驟本身即為可執行的任務清單，**直接�
 3. 實作後在原任務項目寫入狀態與證據連結。README Timeline 只記建立、核准、規格修訂及結案等語意事件。
 4. 當前驗收區塊與任務清單保持可執行的最新版；被推翻的分析保留帶日期的 NOTE，規格修訂前後差異交給 Git，Timeline 記決策來源。issue 文件不再增加檔尾 Changelog。
 5. 依下節更新受影響的常青文件；結案後的 issue 保留歷史，後續需求另建 issue。
-6. issue 的現況以 issue 目錄的文件為唯一權威：README 的 `**狀態**` 與流程契約 2.5 起可選的 `## 現況`（現行 review 與 issue 依賴的外部狀態，格式見 [document-types.md](agents/document-types.md#readmemd必備)），以及任務來源（Small 在 README，Medium／Large 在 implementation-plan.md）的任務狀態。交接文件、平台留言與跨 session 記憶提到 issue 時，只寫 README 連結或錨定 commit 的事件（例如「`abc1234` 已併入主幹」），不另存目前狀態或查證結果；外部狀態的查證結果寫回 README 的 `## 現況`。
+6. issue 的現況以 issue 目錄的文件為唯一權威：README 的 `**狀態**` 與流程契約 2.5 起可選的 `## 現況`（現行 review 與 issue 依賴的外部狀態，格式見 [document-types.md](agents/document-types.md#readmemd必備)），以及任務來源（Small 在 README，Medium／Large 在 implementation-plan.md）的任務狀態。交接文件、平台留言與跨 session 記憶提到 issue 時，只寫 README 連結或錨定 commit 的事件（例如「`abc1234` 已併入主幹」），不另存目前狀態或查證結果；要保存外部狀態的查證結果時，寫回 README 的 `## 現況`（時機見 document-types.md）。
 
 ## 常青文件更新責任 (Evergreen Docs)
 

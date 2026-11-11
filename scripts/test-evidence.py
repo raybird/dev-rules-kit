@@ -426,7 +426,8 @@ class BookkeepingTests(unittest.TestCase):
                     else:
                         self.add_to_timeline(opener)
                     self.commit('html block hides frozen text')
-                    self.assertInvalid(self.verify(), opener)
+                    # 跨章節的未關閉註解吞掉其後的標題，訊息報成章節順序不同。
+                    self.assertInvalid(self.verify(), '需重新審查' if across and opener == '<!--' else opener)
 
     def test_html_and_nested_forms_frozen_in_bookkeeping(self):
         cases = (('- - ```gherkin\n  - Scenario: 新增\n- 下一項', 'code fence'),
@@ -449,8 +450,81 @@ class BookkeepingTests(unittest.TestCase):
 
     def test_harmless_html_in_bookkeeping_valid(self):
         self.add_report()
-        self.edit(self.TIMELINE_ROW, self.TIMELINE_ROW + '\n| 2026-11-04 | 審查 PASS（review-<sha>.md）<br>補記 <!-- 備註 --> | - |')
+        self.edit(self.TIMELINE_ROW, self.TIMELINE_ROW + '\n| 2026-11-04 | 審查 PASS（`review-<sha>.md`）<br>補記 <!-- 備註 --> | - |')
         self.commit('harmless inline html')
+        self.assertValid(self.verify(), 'Timeline')
+
+    # --- review-acd488f：標籤改用允許清單、追蹤多行註解、code span 與跳脫不算標籤 ---
+
+    SPLIT_AND_UNLISTED = (('<details\nclass="note">', '<details'),
+                          ('<details ', '<details'),
+                          ('補記 <details\nclass="n">', '<details'),
+                          ('補記 <details>', '<details>'),
+                          ('<script', '<script'),
+                          ('<style', '<style'),
+                          ('<textarea', '<textarea'),
+                          ('<pre', '<pre'),
+                          ('補記 <title>', '<title>'),
+                          ('補記 <dialog>', '<dialog>'),
+                          ('補記 <s>', '<s>'),
+                          ('補記 <a href="#x">', '<a href'),
+                          ('補記 <small>', '<small>'),
+                          ('\\`<details>\\`', '<details>'),
+                          ('| 2026-11-04 | `x | <details> | y` | - |', '<details>'),
+                          ('補記 `開頭\n結尾` <details> `x`', '<details>'),
+                          ('| 2026-11-04 | 單獨的 ` 符號 | - |\n結尾` <details> `x`', '<details>'),
+                          ('[spec]: https://example.com/new', '[spec]'),
+                          ('- 驗收條件已變更\n  ===', '驗收條件已變更'),
+                          ('> 驗收條件已變更\n> ---', '驗收條件已變更'))
+
+    def test_split_and_unlisted_html_frozen_in_bookkeeping(self):
+        for extra, mention in self.SPLIT_AND_UNLISTED:
+            with self.subTest(extra=extra):
+                self.git('reset', '-q', '--hard', self.reviewed)
+                self.add_report()
+                self.add_to_timeline(extra)
+                self.commit('split or unlisted html in timeline')
+                self.assertInvalid(self.verify(), mention)
+
+    MULTILINE_COMMENT = '<!--\n舊的決策說明\n-->'
+
+    def test_multiline_comment_frozen_until_close(self):
+        original = self.reviewed
+        changes = (('刪除結尾', lambda: self.edit('舊的決策說明\n-->\n', '舊的決策說明\n')),
+                   ('搬移結尾', lambda: (self.edit('舊的決策說明\n-->\n', '舊的決策說明\n'),
+                                       self.edit(self.TIMELINE_ROW + '\n', self.TIMELINE_ROW + '\n-->\n'))),
+                   ('改註解內容', lambda: self.edit('舊的決策說明', '新的決策說明')))
+        for name, change in changes:
+            with self.subTest(change=name):
+                self.git('reset', '-q', '--hard', original)
+                self.reviewed_with('| TBD-1 | 範例決策 | 待確認 | SCN-001 |\n',
+                                   '| TBD-1 | 範例決策 | 待確認 | SCN-001 |\n\n' + self.MULTILINE_COMMENT + '\n')
+                self.add_report()
+                change()
+                self.commit('touch multiline comment')
+                # 少了結尾的註解吞掉 Timeline 標題，訊息報成章節順序不同。
+                self.assertInvalid(self.verify(), '需重新審查' if name != '改註解內容' else '決策說明')
+
+    def test_multiline_comment_kept_bookkeeping_valid(self):
+        self.reviewed_with('| TBD-1 | 範例決策 | 待確認 | SCN-001 |\n',
+                           '| TBD-1 | 範例決策 | 待確認 | SCN-001 |\n\n' + self.MULTILINE_COMMENT + '\n')
+        self.add_report()
+        self.record_decision()
+        self.commit('bookkeeping next to multiline comment')
+        self.assertValid(self.verify(), 'Timeline')
+
+    def test_safe_html_mentions_in_bookkeeping_valid(self):
+        self.add_report()
+        rows = ('| 2026-11-04 | 修正 `<template>` 的生命週期，改用 `<table>` 呈現 | - |',
+                '| 2026-11-04 | 修正未關閉的 `<!--`；``<details>`` 摺疊 | - |',
+                '| 2026-11-04 | 跳脫寫法 \\<div> 與自動連結 <https://example.com/x> | - |',
+                '| 2026-11-04 | 換行<br/>與<wbr>斷行 | - |',
+                '| 2026-11-04 | 查證 `curl -s https://example.invalid \\| grep -c "<title>"` | - |')
+        self.edit(self.TIMELINE_ROW, '\n'.join((self.TIMELINE_ROW,) + rows))
+        # 表格逐列解析：前一列留下未配對的 backtick，不影響下一列的 code span。
+        self.edit(rows[-1], rows[-1] + '\n| 2026-11-04 | 單獨的 ` 符號 | - |\n| 2026-11-04 | 改用 `<dialog>` | - |')
+        self.edit('| 2026-11-04 | 改用 `<dialog>` | - |\n', '| 2026-11-04 | 改用 `<dialog>` | - |\n\n- 2026-11-04 補記\n---\n')
+        self.commit('safe html mentions')
         self.assertValid(self.verify(), 'Timeline')
 
     def test_current_state_note_only_when_relevant(self):
@@ -664,13 +738,19 @@ class CurrentStateTests(BookkeepingTests):
                  ('**分級**: Small', '分級'),
                  ('**現行 review:** review-1111111.md', '現行 review'),
                  ('**現行 review**: review-1111111.md', '現行 review'),
-                 ('<!--', '<!--'),
+                 # 未關閉的註解吞掉其後的標題，訊息報成章節順序不同。
+                 ('<!--', '需重新審查'),
                  ('<details><summary>舊規格</summary>', '<details>'),
                  # 未關閉的巢狀 fence 會吞到下一個 fence，訊息因此報成章節順序不同。
                  ('- - ```gherkin\n  - Scenario: 新增\n- 下一項', '需重新審查'),
                  ('1. **分級**: Small', '分級'),
                  ('> **分級**: Small', '分級'),
-                 ('<pre>AC-9</pre>', '<pre>'))
+                 ('<pre>AC-9</pre>', '<pre>'),
+                 ('<details\nclass="note">', '<details'),
+                 ('<script', '<script'),
+                 ('補記 <s>', '<s>'),
+                 ('[spec]: https://example.com/new', '[spec]'),
+                 ('- 驗收條件已變更\n  ===', '驗收條件已變更'))
         original = self.reviewed
         for extra, mention in cases:
             with self.subTest(extra=extra, mode='整節新增'):
@@ -777,6 +857,20 @@ class LegacyBookkeepingTests(BookkeepingTests):
         self.add_report()
         self.edit(self.TIMELINE_ROW, self.TIMELINE_ROW + '\n| 2026-11-04 | 審查 PASS<br>補記 <!-- 備註 --> | - |')
         self.commit('harmless inline html')
+        self.assertNeeds24(self.verify())
+
+    def test_multiline_comment_kept_bookkeeping_valid(self):
+        self.reviewed_with('| TBD-1 | 範例決策 | 待確認 | SCN-001 |\n',
+                           '| TBD-1 | 範例決策 | 待確認 | SCN-001 |\n\n' + self.MULTILINE_COMMENT + '\n')
+        self.add_report()
+        self.record_decision()
+        self.commit('bookkeeping next to multiline comment')
+        self.assertNeeds24(self.verify())
+
+    def test_safe_html_mentions_in_bookkeeping_valid(self):
+        self.add_report()
+        self.edit(self.TIMELINE_ROW, self.TIMELINE_ROW + '\n| 2026-11-04 | 修正 `<template>` | - |')
+        self.commit('safe html mentions')
         self.assertNeeds24(self.verify())
 
 

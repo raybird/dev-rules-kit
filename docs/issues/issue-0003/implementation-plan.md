@@ -28,9 +28,10 @@
 | S3 | 修改 rules/AGENTS.md 與 rules/AGENTS.zh-TW.md、project.md 範本；依 writing-rules | SCN-005、007 已核准；與 S1、S2 無相依 | SCN-005、007 | 雙語語意一致、`##` 章節數與順序不變；check-kit 通過 | ✅ 2026-11-10；見「S3 證據」 |
 | S4 | 修改 dev-cycle SKILL.md（現況值當線索、以現行 review 找報告、掃描完成判準）與 pending-scan.md（完成判準與摘要欄位） | S2；SCN-005、006、008 已核准 | SCN-005、006、008 | 技能步驟與 docs 的定義沒有兩種說法；查詢模式仍為唯讀 | ✅ 2026-11-10；見「S4 證據」 |
 | S5 | 建立下方「行為案例」的 fixture 與固定回答，先提交，再以 v4.9.0 規則在隔離設定實跑基準 | SCN-004～008 已核准；與 S1～S4 無相依 | SCN-004～008 | 每個案例在基準組都有可觀察的失敗或缺漏；沒有的案例記錄為無法區分並重新設計 fixture，不拿來宣稱改善 | ✅ 2026-11-10；fixture 與判定 `b26c73a`、基準組與追加案例 `f10c3c1`，見下方「S5 證據」 |
-| S6 | 以本次規則對同一 fixture 實跑候選組與對照組；重跑 WF-28a、28b 與懸置掃描（issue-0001 的 scan fixture） | S2～S5 | SCN-004～008，覆核 SCN-001～003 | 依「行為案例」逐項判定；同一輸入結果不一致時明列為不穩定，不挑成功輪次 | ✅ 2026-11-10；每案一輪，全部通過，能區分的只有 wf30、wf30c 的有效性與 wf31；見下方「S6 證據」 |
+| S6 | 以本次規則對同一 fixture 實跑候選組與對照組；重跑 WF-28a、28b 與懸置掃描（issue-0001 的 scan fixture） | S2～S5 | SCN-004～008，覆核 SCN-001～003 | 依「行為案例」逐項判定；同一輸入結果不一致時明列為不穩定，不挑成功輪次 | ✅ 2026-11-10；每案一輪，依當時寫定的判準全部通過（WF-32 於 2026-11-11 依 SCN-007 原文重判為未符合，見 S8），能區分的只有 wf30、wf30c 的有效性與 wf31；見下方「S6 證據」 |
 | S7 | 更新 CHANGELOG（v4.10.0）、workflow-regression、rule-verification-status 與回歸紀錄；檢查 README、usage、INSTALL、execute-task、create-pr 的引用；跑根目錄五項檢查；送獨立審查 | S6 | SCN-001～008 | 五項檢查通過；未實跑分支登記為僅靜態撰寫；獨立審查 PASS 或已依使用者決定處理 | ⏳ 2026-11-10 文件更新完成：CHANGELOG v4.10.0、WF-29～WF-33、v4.10.0 驗證狀態、[2026-11-10 回歸紀錄](../../workflow-results/2026-11-10.md)、usage.md 與 INSTALL.md 各一處；README.md、execute-task、create-pr 沒有相關敘述、未改。五項檢查通過（check-kit、check-links、`bash -n`、test-install 14 項、test-evidence 143 項）。待獨立審查 |
-| S8 | 依 [review-5c2ca52](review-5c2ca52.md) 與 TBD-2～TBD-4 修正：`verify-artifact.py` 凍結跨行 HTML 區塊、HTML 標籤、巢狀容器與編號／引用的粗體欄位，2.4 附註只在現況變動時出現；docs/AGENTS.md 第 6 項、document-types.md、review-evidence.md、英文 rules、dev-cycle 依審查修正；證據遮蔽；重跑 wf29、wf29d、wf30c、wf31、wf32、WF-28b 並依 SCN-007 原文重判 wf32；更新發布文件後重新送審 | TBD-2～TBD-4 已解決 | SCN-001～002、004～007 | 新負向案例先紅後綠，既有測試仍通過；重跑依 expected.md「審查後重跑」判定；獨立覆審 PASS 或已依使用者決定處理 | ⏳ |
+| S8 | 依 [review-5c2ca52](review-5c2ca52.md) 與 TBD-2～TBD-4 修正：`verify-artifact.py` 凍結跨行 HTML 區塊、HTML 標籤、巢狀容器與編號／引用的粗體欄位，2.4 附註只在現況變動時出現；docs/AGENTS.md 第 6 項、document-types.md、review-evidence.md、英文 rules、dev-cycle 依審查修正；證據遮蔽；重跑 wf29、wf29d、wf30c、wf31、wf32、WF-28b 並依 SCN-007 原文重判 wf32；更新發布文件後重新送審 | TBD-2～TBD-4 已解決 | SCN-001～002、004～007 | 新負向案例先紅後綠，既有測試仍通過；重跑依 expected.md「審查後重跑」判定；獨立覆審 PASS 或已依使用者決定處理 | ✅ 2026-11-11；覆審 review-acd488f 退回，由 S9 接續 |
+| S9 | 依 [review-acd488f](review-acd488f.md) 與 TBD-5 修正：記帳章節的 HTML 改用允許清單並追蹤多行註解，code span、反斜線跳脫與表格逐列不算 HTML；凍結清單與引用裡的 setext 標題與連結參照定義；`**現行 review**` 改寫檔名；發布文件與紀錄跟上 S8；`run_case.py` 保存回合內提交；重跑 wf29、wf30c、wf31、wf32、WF-28b 後重新送審 | TBD-5 已決定 | SCN-001～002、004、006、007 | 新負向案例先紅後綠；reviewer 的對抗案例全部判 INVALID、合理寫法判 OK；重跑依 expected.md「第二輪審查後重跑」判定；獨立覆審 PASS 或已依使用者決定處理 | ⏳ |
 
 ### S1 證據
 
@@ -137,6 +138,19 @@
 | WF-28b | 1 個提交（`407ee6d`）保存報告、待確認事項、Timeline、狀態，並在 `## 概述` 之後新增 `## 現況`；新檢查器 OK，沒有重審 | 通過 |
 
 - 隔離設定的技能摘要在本輪出現三種值：Claude Code 會在 `CLAUDE_CONFIG_DIR/skills/synced/` 寫入同步資料，摘要涵蓋整個技能目錄，所以同一份安裝的摘要隨執行而變。產品技能內容以 kit HEAD 為準。
+
+### S9 證據
+
+2026-11-11，依 [review-acd488f](review-acd488f.md) 修正。
+
+| 項目 | 結果 | 證據 |
+|---|---|---|
+| 紅燈 | 先加測試、腳本未改：175 個測試 48 個失敗，全部是新案例（`<details` 換行或行尾空白、`<script`／`<style`／`<textarea`／`<pre` 獨佔一行、行內 `<title>`／`<dialog>`／`<s>`／`<a>`／`<small>`、跳脫的 backtick、表格切欄與跨行 code span、連結參照定義、清單與引用裡的 setext、多行註解的 `-->` 與內容、code span 與跳脫的標籤名） | [s9-red.txt](evidence/s9-red.txt) |
+| 綠燈 | 改 `verify-artifact.py` 後 175 個全過 | [s9-green.txt](evidence/s9-green.txt) |
+| 紅燈後改的期望 | 三處負向案例的期望訊息由 `<!--` 改為「需重新審查」：未關閉的註解現在整段凍結，吞掉其後的 `##` 標題，檢查器先回報章節順序不同。判定仍是 INVALID。另補兩個案例（表格逐列的 backtick、表格內 `\|` 跳脫的 code span），由下兩列的誤判發現 | 本節 |
+| 對抗案例 | review-acd488f 留在暫存區的 46 個案例重跑：攻擊寫法 37 個全部 INVALID；控制組與合理寫法 9 個中，8 個 OK，`1. **日期**` 依 TBD-3 判 INVALID。過程中發現兩項誤判並修正：表格內以 `\|` 跳脫的 code span 被當成未配對，以及前一列表格未配對的 backtick 延續到下一列 | 暫存區（未進版控） |
+| 下游影響 | 唯讀掃描本機 682 份不重複的 issue README：與 v4.9.0 相比，11 份共 26 行記帳內容改為凍結，全部是引用或編號清單加粗體開頭的行（TBD-3 的決定）；HTML 允許清單沒有新增凍結行。既有行不變時不影響判定，只有審查後新增這些寫法才需重審 | 本節 |
+| 精煉 | 判斷 HTML 只剩 `SAFE_HTML`、`ANY_HTML` 兩個式子，移除封閉的標籤清單與 HTML 區塊式子；code span 與註解狀態各一個輔助函式 | — |
 
 ## 測試策略
 

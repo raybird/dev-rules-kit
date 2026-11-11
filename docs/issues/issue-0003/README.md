@@ -144,8 +144,9 @@ Feature: issue 現況以實查為準，狀態副本不再被當成權威
 |---|---|---|---|
 | TBD-1 | SCN-001～SCN-008 是從 Q1～Q3 的答案推導，其中位置（`## 概述` 之後）、報告與現行 review 同一提交、現行 review 缺漏時的退路、2.4 專案新增現況判無效、掃描摘要的欄位屬推導細節 | 已解決 | 2026-11-10 使用者回覆「核准」，五項推導細節照列出內容採用；SCN-001～SCN-008 全部核准 |
 | TBD-2 | review-5c2ca52 MUST FIX 2：SCN-007 維持原文，或放寬為允許帶查證命令與日期的查證結果 | 已解決 | 2026-11-11 使用者選「維持原文」：docs/AGENTS.md 第 6 項改為只寫 README 連結或錨定 commit 的事件，查證結果寫回 README `## 現況`；WF-32 改依原文判定，判準先於重跑提交；既有輪次照實重判 |
-| TBD-3 | review-5c2ca52 SHOULD FIX 1：記帳章節的繞過寫法（巢狀容器、編號與引用的粗體、HTML 標籤）本 issue 收緊，或只登記已知限制 | 已解決 | 2026-11-11 使用者選「本 issue 一起收緊」：與 MUST FIX 1 的跨行 HTML 區塊一起改 `verify-artifact.py`，所有記帳章節變嚴；縮排程式碼區塊與表格接 `---` 維持 issue #2 的已知限制 |
+| TBD-3 | review-5c2ca52 SHOULD FIX 1：記帳章節的繞過寫法（巢狀容器、編號與引用的粗體、HTML 標籤）本 issue 收緊，或只登記已知限制 | 已解決 | 2026-11-11 使用者選「本 issue 一起收緊」：與 MUST FIX 1 的跨行 HTML 區塊一起改 `verify-artifact.py`，所有記帳章節變嚴；縮排程式碼區塊與表格接 `---` 維持 issue #2 的已知限制。SCN-003 的「判定與現行相同」不含這次對 HTML 與巢狀寫法的收緊（2026-11-11 補註，review-acd488f NICE 8） |
 | TBD-4 | review-5c2ca52 的 8 項 NICE TO HAVE | 已解決 | 2026-11-11 使用者選「修有實質影響的」：NICE 1、2、3、5、6、8 修正；NICE 4 的現況位置登記為已知限制；NICE 7 只清掉未用的預設參數 |
+| TBD-5 | review-acd488f SHOULD FIX 4：交接文件提交到已審查的 issue 分支會讓 PASS 失效，agent 沒有告知 | 不影響本次交付 | 2026-11-11 使用者選「補紀錄、另開 issue」：本 issue 在證據、回歸紀錄與驗證狀態寫明這個失敗形態，規則不改。追蹤：[#4](https://github.com/raybird/dev-rules-kit/issues/4) |
 
 ## Timeline
 
@@ -158,6 +159,7 @@ Feature: issue 現況以實查為準，狀態副本不再被當成權威
 | 2026-11-11 | 使用者對審查的需決策項目選擇建議答案（TBD-2～TBD-4 解決） | 使用者 |
 | 2026-11-11 | S8：依審查修正（`3e448fc`），重跑判準先提交（`9456504`）；重跑 wf29、wf29d、wf31、wf32、WF-28b 通過，wf30c 未執行檢查器；2026-11-10 的 WF-32 兩組依 SCN-007 原文重判為未符合 | Claude Code |
 | 2026-11-11 | 獨立覆審 RETURN TO execute-task（review-acd488f.md）：MUST FIX 1 項（記帳章節仍有寫法能藏住凍結章節，例如 `<details` 換行、未追蹤的多行註解），SHOULD FIX 5 項（其一需決策） | Claude Code |
+| 2026-11-11 | 使用者對覆審的需決策項目選擇建議答案（TBD-5，另開 #4） | 使用者 |
 
 ---
 **建立日期**: 2026-11-10

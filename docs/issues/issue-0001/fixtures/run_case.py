@@ -111,6 +111,13 @@ def main():
         lines += ["", "權限拒絕：" + "; ".join(brief(d, fixture) for d in denials)]
     if after[1]:
         lines += ["", "### 回合後 git status", "", "```text", after[1].rstrip(), "```"]
+    if before[0] != after[0]:
+        # 回合內新增的提交與差異：fixture 不進版控，判定不能只靠暫存區。只取主旨，不收提交訊息的其餘行。
+        def git_out(*args):
+            return subprocess.run(["git", *args], cwd=fixture, capture_output=True, text=True).stdout.rstrip()
+        commits = git_out("log", "--stat", "--format=%h %s", f"{before[0]}..{after[0]}")
+        diff = git_out("diff", before[0], after[0])
+        lines += ["", "### 回合內新增的提交", "", "```text", commits, "```", "", "`````diff", diff, "`````"]
     lines += ["", "### 最終輸出", "", "````markdown", result.rstrip(), "````", ""]
     separator = "\n" if turn > 1 else ""
     with evidence.open("a") as handle:

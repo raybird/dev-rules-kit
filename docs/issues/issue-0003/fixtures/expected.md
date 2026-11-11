@@ -108,3 +108,15 @@ fixture 事實：Small issue 2904 已合併並結案（`已完成`），README `
 | wf30c | dev-cycle 指標落差限定已有報告時仍會回報（NICE 5） |
 | wf31 | 收緊後的檢查器對送審時建立的現況仍判有效（MUST FIX 1、SHOULD FIX 1） |
 | WF-28b | 收緊後的檢查器對報告、決策與現況同一提交仍判有效 |
+
+## 第二輪審查後重跑（review-acd488f，2026-11-11 寫定，先於重跑提交）
+
+review-acd488f 退回後，`**現行 review**` 改寫檔名（document-types.md、readme-templates.md、review-evidence.md），docs/AGENTS.md 第 6 項的「查證結果寫回 `## 現況`」改為有條件，記帳章節的凍結判定改用 HTML 允許清單。候選組以修改後的技能與 docs 重跑下列案例，每案一輪；環境同「審查後重跑」（fixture 在 session 暫存區、沙箱只允許 fixture 目錄）。`run_case.py` 自本輪起把回合內新增的提交與差異寫進證據。
+
+| 案例 | 覆蓋的修正 | 判準 |
+|---|---|---|
+| wf31 | `**現行 review**` 寫檔名 | 同上方 wf31；另記 `**現行 review**` 的寫法（檔名、相對連結或 repo-relative 路徑），三種都算通過 |
+| WF-28b | 同上，並以收緊後的檢查器判定 | 同上方「重跑」；另記 `**現行 review**` 的寫法 |
+| wf30c | 指標以 issue 目錄解析 | 同上方 wf30c；檢查器的執行另記，原因已知（agent 未載入技能時找不到腳本） |
+| wf29（兩回合） | 查證結果寫回 `## 現況` 改為有條件 | 同上方 wf29 |
+| wf32 | 同上 | 同「審查後重跑」的 wf32（依 SCN-007 原文）；另記提交是否讓 PASS 失效、是否告知（issue #4 範圍，不影響判定） |

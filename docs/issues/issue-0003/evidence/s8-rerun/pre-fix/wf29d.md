@@ -3,6 +3,7 @@
 - fixture：`wf29d`
 - 指定模型：`claude-opus-5-5`
 - kit HEAD：`9456504`；隔離設定技能摘要：`f224288775101c40`
+- 技能與 docs 來源：`git archive d0e3287`（修正前對照；上一行的 kit HEAD 是執行 run_case.py 的工作樹，2026-11-11 補記）
 - 允許工具：Read, Edit, Write, Glob, Grep, Skill, Bash(git:*), Bash(python3:*), Bash(ls:*), Bash(cat:*), Bash(date:*)
 
 ## 回合 1
