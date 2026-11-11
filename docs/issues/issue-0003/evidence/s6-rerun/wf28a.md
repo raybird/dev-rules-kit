@@ -27,7 +27,7 @@
 6. `Bash {"command": "cat .gitignore && git status --short && git checkout -b issue-2801-count && git add docs/issues/issue-2801 && git commit -q -m \"docs(todo): 新增 ...`
 7. `Edit {"replace_all": false, "file_path": "<fixtures>/wf28a/test_todo.py", "old_string": "import unittest\n\nimport todo\n\n\nclass RenderTest(unittest.TestCase):\...`
 8. `Bash {"command": "python3 -m unittest -v 2>&1 | tail -25; echo \"exit=${PIPESTATUS[0]}\"", "description": "Run tests to get red light"}`
-9. `Bash {"command": "python3 -m unittest -v > <tmp>/red.txt 2>&1; echo \"exit=$?\"; grep -E \"^(test_|FAIL|AssertionError|Ran|FAILED|OK)\" /tmp/claude-100...`
+9. `Bash {"command": "python3 -m unittest -v > <tmp>/red.txt 2>&1; echo \"exit=$?\"; grep -E \"^(test_|FAIL|AssertionError|Ran|FAILED|OK)\" <tmp>...`
 10. `Bash {"command": "python3 -m unittest -v", "description": "Run tests to get red light"}`
 11. `Edit {"replace_all": false, "file_path": "<fixtures>/wf28a/todo.py", "old_string": "        done(int(argv[1]))\n    else:", "new_string": "        done(int(argv[1...`
 12. `Edit {"replace_all": false, "file_path": "<fixtures>/wf28a/README.md", "old_string": "- `python3 todo.py`：列出\n", "new_string": "- `python3 todo.py`：列出\n- `python3...`

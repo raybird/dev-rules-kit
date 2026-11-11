@@ -407,6 +407,64 @@ class BookkeepingTests(unittest.TestCase):
         self.commit('swallow overview')
         self.assertInvalid(self.verify(), '概述')
 
+    # --- issue #3 審查：跨行 HTML 區塊、HTML 標籤與巢狀容器不能藏住或偽造凍結內容 ---
+
+    TIMELINE_ROW = '| 2026-11-03 | 建立 | - |'
+
+    def add_to_timeline(self, extra):
+        self.edit(self.TIMELINE_ROW + '\n', self.TIMELINE_ROW + '\n\n' + extra + '\n')
+
+    def test_html_block_hiding_frozen_text_invalid(self):
+        for opener, closer in (('<!--', '-->'), ('<details><summary>舊規格</summary>', '</details>')):
+            for across in (False, True):
+                with self.subTest(opener=opener, across=across):
+                    self.git('reset', '-q', '--hard', self.reviewed)
+                    self.add_report()
+                    if across:
+                        self.edit('## Gherkin 驗收劇本', f'## Gate 豁免紀錄\n\n{opener}\n\n## Gherkin 驗收劇本')
+                        self.add_to_timeline(closer)
+                    else:
+                        self.add_to_timeline(opener)
+                    self.commit('html block hides frozen text')
+                    self.assertInvalid(self.verify(), opener)
+
+    def test_html_and_nested_forms_frozen_in_bookkeeping(self):
+        cases = (('- - ```gherkin\n  - Scenario: 新增\n- 下一項', 'code fence'),
+                 ('1. - ```gherkin\n     Scenario: 新增\n2. 下一項', 'code fence'),
+                 ('1. **分級**: Small', '分級'),
+                 ('> **分級**: Small', '分級'),
+                 ('> ## 驗收條件', '驗收條件'),
+                 ('說明 <h2>驗收條件</h2>', '驗收條件'),
+                 ('<pre>Scenario: 新增</pre>', '<pre>'),
+                 ('<strong>分級</strong>: Small', '分級'),
+                 ('<b>風險</b>: Low', '風險'),
+                 ('<custom-note>', '<custom-note>'))
+        for extra, mention in cases:
+            with self.subTest(extra=extra):
+                self.git('reset', '-q', '--hard', self.reviewed)
+                self.add_report()
+                self.add_to_timeline(extra)
+                self.commit('frozen form in timeline')
+                self.assertInvalid(self.verify(), mention)
+
+    def test_harmless_html_in_bookkeeping_valid(self):
+        self.add_report()
+        self.edit(self.TIMELINE_ROW, self.TIMELINE_ROW + '\n| 2026-11-04 | 審查 PASS（review-<sha>.md）<br>補記 <!-- 備註 --> | - |')
+        self.commit('harmless inline html')
+        self.assertValid(self.verify(), 'Timeline')
+
+    def test_current_state_note_only_when_relevant(self):
+        self.add_current_state('review-0000000.md')
+        self.commit('reviewed with current state')
+        self.reviewed = self.git('rev-parse', 'HEAD')
+        self.report = f'{self.ISSUE}/review-{self.reviewed[:7]}.md'
+        self.add_report()
+        self.edit('    Then 看到結果', '    Then 看到其他結果')
+        self.commit('gherkin change')
+        result = self.verify()
+        self.assertInvalid(result, 'Gherkin')
+        self.assertNotIn('2.5', result.stderr)
+
     def test_gherkin_moved_under_timeline_invalid(self):
         text = (self.repo / self.ISSUE / 'README.md').read_text()
         block = text[text.index('```gherkin'):text.index('```\n', text.index('```gherkin') + 3) + 4]
@@ -605,7 +663,14 @@ class CurrentStateTests(BookkeepingTests):
                  ('```text\nAC-9 新增\n```', 'code fence'),
                  ('**分級**: Small', '分級'),
                  ('**現行 review:** review-1111111.md', '現行 review'),
-                 ('**現行 review**: review-1111111.md', '現行 review'))
+                 ('**現行 review**: review-1111111.md', '現行 review'),
+                 ('<!--', '<!--'),
+                 ('<details><summary>舊規格</summary>', '<details>'),
+                 # 未關閉的巢狀 fence 會吞到下一個 fence，訊息因此報成章節順序不同。
+                 ('- - ```gherkin\n  - Scenario: 新增\n- 下一項', '需重新審查'),
+                 ('1. **分級**: Small', '分級'),
+                 ('> **分級**: Small', '分級'),
+                 ('<pre>AC-9</pre>', '<pre>'))
         original = self.reviewed
         for extra, mention in cases:
             with self.subTest(extra=extra, mode='整節新增'):
@@ -706,6 +771,12 @@ class LegacyBookkeepingTests(BookkeepingTests):
         self.add_report()
         self.edit(text[text.index('## 待確認事項'):text.index('## Timeline')], '')
         self.commit('drop resolved open items')
+        self.assertNeeds24(self.verify())
+
+    def test_harmless_html_in_bookkeeping_valid(self):
+        self.add_report()
+        self.edit(self.TIMELINE_ROW, self.TIMELINE_ROW + '\n| 2026-11-04 | 審查 PASS<br>補記 <!-- 備註 --> | - |')
+        self.commit('harmless inline html')
         self.assertNeeds24(self.verify())
 
 

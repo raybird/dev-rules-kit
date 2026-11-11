@@ -4,7 +4,8 @@
 流程契約 2.4 起的 2.x，被審查提交之後只新增該報告、只改該 issue README 記帳區段時沿用；
 2.5 起 `## 現況` 也是記帳區段，節內的 `**現行 review**` 欄位可改值。
 讀不到契約、低於 2.4 或其他 major 時，維持只接受一個「只新增該報告」提交的現行判定。
-記帳區段內看起來像標題、code fence 或粗體欄位的非範本寫法一律視為凍結內容。
+記帳區段內看起來像標題、code fence 或粗體欄位的非範本寫法（含巢狀清單與引用裡的寫法）、
+HTML 標籤與未在同一行關閉的 HTML 註解一律視為凍結內容，避免藏住或偽造凍結章節。
 """
 import argparse
 from pathlib import PurePosixPath
@@ -14,14 +15,24 @@ import sys
 
 BOOKKEEPING_SECTIONS = ('Timeline', '待確認事項', 'Gate 豁免紀錄')
 BOOKKEEPING_FIELDS = ('狀態', '核准 commit')
+# 引用與清單容器可以多層巢狀（`> - 1. `），裡面的標題、fence 與粗體一樣會渲染。
+CONTAINER = r'^[ \t]*(?:(?:>|(?:[-*+]|\d+[.)])(?=[ \t]))[ \t]*)*'
 FENCE = re.compile(r'^ {0,3}(`{3,}|~{3,})')
-LOOSE_FENCE = re.compile(r'^[ \t>]*(?:(?:[-*+]|\d+[.)])[ \t]+)?[ \t>]*(`{3,}|~{3,})')
+LOOSE_FENCE = re.compile(CONTAINER + r'(`{3,}|~{3,})')
 HEADING = re.compile(r'^## (?!#)(.*?)\s*$')
-LOOSE_HEADING = re.compile(r'^\s*(?:#{1,6}(?:\s|$)|<h[1-6][\s>])', re.I)
+LOOSE_HEADING = re.compile(CONTAINER + r'#{1,6}(?:\s|$)')
 SETEXT = re.compile(r'^ {0,3}(?:=+|-+)\s*$')
 NOT_PARAGRAPH = re.compile(r'^\s*(?:[|>]|[-*+]\s|\d+[.)]\s)')
-FIELD = re.compile(r'^\s*(?:[-*+]\s+)?\*\*([^*\n]+?)\*\*\s*[:：]\s*(.*?)\s*\\?\s*$')
-BOLD_LINE = re.compile(r'^\s*(?:[-*+]\s+)?(?:\*\*|__)')
+FIELD = re.compile(CONTAINER + r'\*\*([^*\n]+?)\*\*\s*[:：]\s*(.*?)\s*\\?\s*$')
+BOLD_LINE = re.compile(CONTAINER + r'(?:\*\*|__)')
+# 會渲染成標題、程式區塊、粗體或能折疊後續內容的標籤；`<br>`、`<sha>` 這類佔位字不在內。
+HTML_TAG = re.compile(r'</?(?:h[1-6]|pre|strong|b|details|summary|div|table|thead|tbody|tfoot|tr|td|th|section|'
+                      r'article|aside|header|footer|nav|main|blockquote|figure|figcaption|dl|dt|dd|ul|ol|li|p|'
+                      r'center|script|style|textarea|iframe|object|embed|form|fieldset|template|noscript|hr)'
+                      r'(?=[\s>/])', re.I)
+# CommonMark 的 HTML 區塊：獨佔一行的任意標籤、處理指令、宣告與 CDATA，會延續到空行或結束標記。
+HTML_BLOCK = re.compile(CONTAINER + r'(?:<[A-Za-z][A-Za-z0-9-]*(?:\s[^>]*)?/?>\s*$|</[A-Za-z][A-Za-z0-9-]*\s*>\s*$'
+                        r'|<\?|<![A-Za-z]|<!\[CDATA\[)')
 CONTRACT = re.compile(r'\*\*流程契約\*\*\s*[:：]\s*(\d+)\.(\d+)')
 SHA = re.compile(r'^`?([0-9a-fA-F]{7,40})`?$')
 ADDABLE_SECTIONS = ('待確認事項', 'Gate 豁免紀錄')
@@ -86,7 +97,12 @@ def closes(line, fence, loose):
         and not line[marker.end():].strip()
 
 
-def analyse(text, bookkeeping_sections=BOOKKEEPING_SECTIONS):
+def html(line):
+    """會改變其後內容渲染方式的 HTML：標籤、獨佔一行的 HTML 區塊，或同一行沒有關閉的註解。"""
+    return bool(HTML_TAG.search(line) or HTML_BLOCK.match(line)) or line.rfind('<!--') > line.rfind('-->')
+
+
+def analyse(text, bookkeeping_sections):
     """回傳 (凍結內容, 記帳欄位, 各記帳章節內容, 章節標題順序)。凍結內容逐項保留所在章節與種類。"""
     frozen, fields, sections, headings = [], [], {}, []
     section, fence, loose, previous = '（標題前）', None, False, ''
@@ -114,6 +130,10 @@ def analyse(text, bookkeeping_sections=BOOKKEEPING_SECTIONS):
             continue
         if LOOSE_HEADING.match(line):
             frozen.append((section, 'heading', line))
+            previous = line
+            continue
+        if html(line):
+            frozen.append((section, 'html', line))
             previous = line
             continue
         if SETEXT.match(line) and previous.strip() and not NOT_PARAGRAPH.match(previous):
@@ -150,7 +170,8 @@ def describe(entry):
     if entry is None:
         return '（無）'
     section, kind, text = entry
-    return f'章節「{section}」的' + (f'「{text}」' if text.strip() else '空行') + ('（code fence 內容一律凍結）' if kind == 'fence' else '')
+    suffix = {'fence': '（code fence 內容一律凍結）', 'html': '（HTML 標籤與未關閉的註解一律凍結）'}.get(kind, '')
+    return f'章節「{section}」的' + (f'「{text}」' if text.strip() else '空行') + suffix
 
 
 def current_review(lines):
@@ -166,8 +187,9 @@ def check_readme(git, reviewed, head, readme, version):
     addable = ADDABLE_SECTIONS + ((CURRENT_STATE,) if with_state else ())
     before = analyse(git('show', f'{reviewed}:{readme}').stdout, sections)
     after = analyse(git('show', f'{head}:{readme}').stdout, sections)
-    note = '' if with_state or CURRENT_STATE not in before[3] + after[3] else \
-        f'（## {CURRENT_STATE} 列入記帳區段需要流程契約 2.5 以上）'
+    state = [[entry for entry in result[0] if entry[0] == CURRENT_STATE] for result in (before, after)]
+    state_changed = state[0] != state[1] or (CURRENT_STATE in before[3]) != (CURRENT_STATE in after[3])
+    note = f'（## {CURRENT_STATE} 列入記帳區段需要流程契約 2.5 以上）' if state_changed and not with_state else ''
     try:
         return compare_readme(git, reviewed, readme, before, after, sections, addable)
     except Invalid as error:
