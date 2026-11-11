@@ -11,7 +11,7 @@
 
 ## 現況
 
-**現行 review**: review-73202f8.md
+**現行 review**: review-c6eb117.md
 
 ## 文件清單
 
@@ -176,6 +176,7 @@ Feature: issue 現況以實查為準，狀態副本不再被當成權威
 | 2026-11-11 | S14：表格辨識改為只認範本形狀，下游筆數改由提交的掃描腳本產生；v4.9.0 起就有的 V5、V6 補進 #5（`1b0d862`）；重跑 WF-28b、wf31 通過 | Claude Code |
 | 2026-11-11 | 第八輪獨立覆審 RETURN TO execute-task（review-73202f8.md）：MUST FIX 1 項（現況裡處理指令、宣告與 CDATA 區塊的結束行可以改掉，區塊延伸到檔尾）；表格白名單未找到繞過寫法；另列 v4.9.0 起就有的 V7 | Claude Code |
 | 2026-11-11 | 使用者決定收窄阻擋門檻（TBD-7）。S15：未關閉的處理指令、宣告與 CDATA 比照註解整段凍結；V7 補進 #5（`486936a`）；重跑 WF-28b、wf31 通過 | Claude Code |
+| 2026-11-11 | 第九輪獨立覆審 PASS（review-c6eb117.md，依 TBD-7 深審差異、其餘抽查）：無 MUST FIX，SHOULD FIX 1 項（凍結章節 code span 裡未關閉的處理指令或宣告會讓之後全部凍結），NICE 4 項；R9-1～R9-3 依 TBD-7 登記到 #5 | Claude Code |
 
 ---
 **建立日期**: 2026-11-10
