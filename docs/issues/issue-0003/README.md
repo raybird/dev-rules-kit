@@ -11,7 +11,7 @@
 
 ## 現況
 
-**現行 review**: review-5c2ca52.md
+**現行 review**: review-acd488f.md
 
 ## 文件清單
 
@@ -157,6 +157,7 @@ Feature: issue 現況以實查為準，狀態副本不再被當成權威
 | 2026-11-10 | 獨立審查 RETURN TO execute-task（review-5c2ca52.md）：MUST FIX 2 項（記帳章節的跨行 HTML 區塊可藏住凍結章節；SCN-007 未落到規則文字、WF-32 判定過寬，需決策），SHOULD FIX 4 項 | Claude Code |
 | 2026-11-11 | 使用者對審查的需決策項目選擇建議答案（TBD-2～TBD-4 解決） | 使用者 |
 | 2026-11-11 | S8：依審查修正（`3e448fc`），重跑判準先提交（`9456504`）；重跑 wf29、wf29d、wf31、wf32、WF-28b 通過，wf30c 未執行檢查器；2026-11-10 的 WF-32 兩組依 SCN-007 原文重判為未符合 | Claude Code |
+| 2026-11-11 | 獨立覆審 RETURN TO execute-task（review-acd488f.md）：MUST FIX 1 項（記帳章節仍有寫法能藏住凍結章節，例如 `<details` 換行、未追蹤的多行註解），SHOULD FIX 5 項（其一需決策） | Claude Code |
 
 ---
 **建立日期**: 2026-11-10
