@@ -23,16 +23,17 @@ FENCE = re.compile(r'^ {0,3}(`{3,}|~{3,})')
 LOOSE_FENCE = re.compile(CONTAINER + r'(`{3,}|~{3,})')
 HEADING = re.compile(r'^## (?!#)(.*?)\s*$')
 LOOSE_HEADING = re.compile(CONTAINER + r'#{1,6}(?:\s|$)')
-SETEXT = re.compile(r'^ {0,3}(?:=+|-+)\s*$')
-NOT_PARAGRAPH = re.compile(r'^\s*(?:[|>]|[-*+]\s|\d+[.)]\s)')
 QUOTES = re.compile(r'^(?:[ \t]*>)*')
 FIELD = re.compile(CONTAINER + r'\*\*([^*\n]+?)\*\*\s*[:：]\s*(.*?)\s*\\?\s*$')
 BOLD_LINE = re.compile(CONTAINER + r'(?:\*\*|__)')
 # 記帳章節的行含 `<` 就凍結：只放行不在行首（容器前綴之後）的換行標籤。
 LINE_BREAK = re.compile(r'<(?:br|wbr)\s*/?>', re.I)
-# 連結參照定義的標籤可以跨行，以 `[` 開頭就凍結；`[ ]`、`[x]` 任務清單照一般行處理。
-LINK_DEFINITION = re.compile(CONTAINER + r'\[(?![ xX]\][ \t])')
+# 連結參照定義的標籤可以跨行，以 `[` 開頭就凍結。放行三種不可能接 `]:` 的寫法：任務清單的 `[ ]`／`[x]`、
+# 獨佔一行的 GitHub alert（`[!NOTE]`），以及同一行就關閉、後接 `(` 的行內連結。
+LINK_DEFINITION = re.compile(CONTAINER + r'\[(?![ xX]\](?:[ \t]|$)|![A-Za-z]+\][ \t]*$|[^\[\]\\\n]*\]\()')
 UNDERLINE = re.compile(r'^(?:=+|-+)$')
+LINE_END = re.compile(r'\r\n|\r|\n')
+BLANK = ' \t'
 CONTRACT = re.compile(r'\*\*流程契約\*\*\s*[:：]\s*(\d+)\.(\d+)')
 SHA = re.compile(r'^`?([0-9a-fA-F]{7,40})`?$')
 ADDABLE_SECTIONS = ('待確認事項', 'Gate 豁免紀錄')
@@ -94,7 +95,7 @@ def legacy(git, reviewed, head, artifact, note):
 def closes(line, fence, loose):
     marker = (LOOSE_FENCE if loose else FENCE).match(line)
     return bool(marker) and marker.group(1)[0] == fence[0] and len(marker.group(1)) >= len(fence) \
-        and not line[marker.end():].strip()
+        and not line[marker.end():].strip(BLANK)
 
 
 def html(line):
@@ -112,10 +113,10 @@ def setext_underline(line, previous):
 
     清單續行的縮排、引用層數與編號長度都不比對，寧可把段落後的分隔線也當成標題凍結。
     """
-    content = previous[re.match(CONTAINER, previous).end():].strip()
+    content = previous[re.match(CONTAINER, previous).end():].strip(BLANK)
     if not content or content.startswith('|'):
         return False
-    return bool(UNDERLINE.match(line[QUOTES.match(line).end():].strip()))
+    return bool(UNDERLINE.match(line[QUOTES.match(line).end():].strip(BLANK)))
 
 
 def analyse(text, bookkeeping_sections):
@@ -123,8 +124,9 @@ def analyse(text, bookkeeping_sections):
     frozen, fields, sections, headings = [], [], {}, []
     section, fence, loose, previous = '（標題前）', None, False, ''
     comment = False
-    for raw in text.splitlines():
-        line = raw.rstrip()
+    # CommonMark 只以 \n、\r 分行，只把空格與 tab 當空白；splitlines() 與 strip() 會多認 U+2028、NBSP 等字元。
+    for raw in LINE_END.split(text):
+        line = raw.rstrip(BLANK)
         if comment:
             frozen.append((section, 'html', line))
             comment = '-->' not in line or opens_comment(line[line.index('-->') + 3:])
@@ -180,7 +182,9 @@ def analyse(text, bookkeeping_sections):
         if field or BOLD_LINE.match(line):
             frozen.append((section, 'field', line))
             continue
-        if not line.strip():
+        if not line:
+            if section not in bookkeeping_sections:
+                frozen.append((section, 'line', line))
             continue
         if section in bookkeeping_sections:
             sections[section].append(line)

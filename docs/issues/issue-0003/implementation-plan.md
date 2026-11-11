@@ -32,7 +32,8 @@
 | S7 | 更新 CHANGELOG（v4.10.0）、workflow-regression、rule-verification-status 與回歸紀錄；檢查 README、usage、INSTALL、execute-task、create-pr 的引用；跑根目錄五項檢查；送獨立審查 | S6 | SCN-001～008 | 五項檢查通過；未實跑分支登記為僅靜態撰寫；獨立審查 PASS 或已依使用者決定處理 | ⏳ 2026-11-10 文件更新完成：CHANGELOG v4.10.0、WF-29～WF-33、v4.10.0 驗證狀態、[2026-11-10 回歸紀錄](../../workflow-results/2026-11-10.md)、usage.md 與 INSTALL.md 各一處；README.md、execute-task、create-pr 沒有相關敘述、未改。五項檢查通過（check-kit、check-links、`bash -n`、test-install 14 項、test-evidence 143 項）。待獨立審查 |
 | S8 | 依 [review-5c2ca52](review-5c2ca52.md) 與 TBD-2～TBD-4 修正：`verify-artifact.py` 凍結跨行 HTML 區塊、HTML 標籤、巢狀容器與編號／引用的粗體欄位，2.4 附註只在現況變動時出現；docs/AGENTS.md 第 6 項、document-types.md、review-evidence.md、英文 rules、dev-cycle 依審查修正；證據遮蔽；重跑 wf29、wf29d、wf30c、wf31、wf32、WF-28b 並依 SCN-007 原文重判 wf32；更新發布文件後重新送審 | TBD-2～TBD-4 已解決 | SCN-001～002、004～007 | 新負向案例先紅後綠，既有測試仍通過；重跑依 expected.md「審查後重跑」判定；獨立覆審 PASS 或已依使用者決定處理 | ✅ 2026-11-11；覆審 review-acd488f 退回，由 S9 接續 |
 | S9 | 依 [review-acd488f](review-acd488f.md) 與 TBD-5 修正：記帳章節的 HTML 改用允許清單並追蹤多行註解，code span、反斜線跳脫與表格逐列不算 HTML；凍結清單與引用裡的 setext 標題與連結參照定義；`**現行 review**` 改寫檔名；發布文件與紀錄跟上 S8；`run_case.py` 保存回合內提交；重跑 wf29、wf30c、wf31、wf32、WF-28b 後重新送審 | TBD-5 已決定 | SCN-001～002、004、006、007 | 新負向案例先紅後綠；reviewer 的對抗案例全部判 INVALID、合理寫法判 OK；重跑依 expected.md「第二輪審查後重跑」判定；獨立覆審 PASS 或已依使用者決定處理 | ✅ 2026-11-11；覆審 review-4d0df5c 退回，由 S10 接續 |
-| S10 | 依 [review-4d0df5c](review-4d0df5c.md) 與 2026-11-11 使用者決定（記帳章節的行含 `<` 一律凍結）修正：移除 code span、跳脫與表格的模擬，`<` 只放行不在行首的換行標籤；以 `[` 開頭的行與緊接在文字後的分隔線凍結；docs/AGENTS.md 寫明記帳內容不含 `<`；發布文件的落差；重跑 wf31、WF-28b 後重新送審 | 使用者決定 | SCN-001～002、004 | 新負向案例先紅後綠；三輪審查的對抗案例全部 INVALID；重跑依 expected.md「第三輪審查後重跑」判定；獨立覆審 PASS 或已依使用者決定處理 | ⏳ |
+| S10 | 依 [review-4d0df5c](review-4d0df5c.md) 與 2026-11-11 使用者決定（記帳章節的行含 `<` 一律凍結）修正：移除 code span、跳脫與表格的模擬，`<` 只放行不在行首的換行標籤；以 `[` 開頭的行與緊接在文字後的分隔線凍結；docs/AGENTS.md 寫明記帳內容不含 `<`；發布文件的落差；重跑 wf31、WF-28b 後重新送審 | 使用者決定 | SCN-001～002、004 | 新負向案例先紅後綠；三輪審查的對抗案例全部 INVALID；重跑依 expected.md「第三輪審查後重跑」判定；獨立覆審 PASS 或已依使用者決定處理 | ✅ 2026-11-11；覆審 review-4e0177a 退回，由 S11 接續 |
+| S11 | 依 [review-4e0177a](review-4e0177a.md) 修正：分行只認換行字元、行尾只去空格與 tab；凍結章節的空行列入比對；以 `[` 開頭的行放行任務清單、alert 與行內連結；移除未用常數；撰寫規範與發布文件補上 `[`、粗體與分隔線；重跑 WF-28b、wf31 後重新送審 | TBD-6 | SCN-001～002、004 | 新負向案例先紅後綠；四輪審查的對抗案例中攻擊寫法全部 INVALID；重跑依 expected.md「第四輪審查後重跑」判定；獨立覆審 PASS 或已依使用者決定處理 | ⏳ |
 
 ### S1 證據
 
@@ -192,6 +193,19 @@
 | wf31 | 報告提交（`2eaf42b`）在 `## 概述` 之後建立 `## 現況`，`**現行 review**` 寫檔名；新檢查器 OK | 通過 |
 
 每案只有一輪，不能說明 agent 穩定避開 `<`；上一輪同一案例的 agent 寫過含 `<` 的佔位字。
+
+### S11 證據
+
+2026-11-11，依 [review-4e0177a](review-4e0177a.md) 修正。
+
+| 項目 | 結果 | 證據 |
+|---|---|---|
+| 紅燈 | 先加測試、腳本未改：181 個測試 12 個失敗，全部是新案例（收尾 fence 後的 NBSP、標題前的 U+2028、以 U+0085／U+2028 注入的假章節、凍結章節刪除空行、alert 與連結開頭的記帳行）。清單裡的 `<br>`、引用裡的參照定義與重開的註解三個防護案例在改前已通過，用來擋住審查列出的存活變異 | [s11-red.txt](evidence/s11-red.txt) |
+| 綠燈 | 改 `verify-artifact.py` 後全過；另補 `[x foo` 換行接 `]:` 與 `[!NOTE]:` 兩個負向案例，擋住任務清單與 alert 放行寫得太寬的情況（第一版的放行式子會把 `[x foo` 當成任務清單） | [s11-green.txt](evidence/s11-green.txt) |
+| 對抗案例 | 四輪審查留在暫存區的案例重跑：96 個 INVALID。判 OK 的是控制組、行中間的 `<br/>`、不帶粗體的編號清單、reviewer 腳本沒有改動 README 的 K6、已登記的 `\|` 開頭接分隔線（N1 系列）、行首不是粗體的仿粗體欄位（N2、N3，登記為已知限制）、改為放行的 alert 與連結（N4 系列）、不含凍結列的記帳表格（N5），以及不是參照定義的 X1、X7 | 暫存區（未進版控） |
+| 下游影響 | 唯讀掃描本機 683 份 issue README：放行 alert 與連結後，以 `[` 開頭而新凍結的記帳行為 0；新凍結的仍是含 `<` 的 44 行（33 份）與引用或編號清單加粗體的 26 行（11 份） | 本節 |
+| 精煉 | 移除未用的 `SETEXT`、`NOT_PARAGRAPH`；分行與空白各一個常數 | — |
+| 未處理 | 審查 NICE 3 的「表格末列接 `---`」變異沒有補案例：這是已登記的已知限制，補案例只會把限制寫死 | — |
 
 ## 測試策略
 

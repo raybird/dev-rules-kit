@@ -489,7 +489,12 @@ class BookkeepingTests(unittest.TestCase):
                           ('[spec\n]: https://example.com/new', '[spec'),
                           ('- 驗收條件\n      ===', '驗收條件'),
                           ('1234567890. 驗收條件\n===', '驗收條件'),
-                          ('<!-- 開頭\n說明 --> <!--\n- **分級**: Small', '<!--'))
+                          ('<!-- 開頭\n說明 --> <!--\n- **分級**: Small', '<!--'),
+                          # review-4e0177a：清單裡行首的換行標籤、引用裡的連結參照定義。
+                          ('- <br>', '<br>'),
+                          ('> [spec]: https://example.com/new', '[spec]'),
+                          ('- [x foo\n]: https://example.com/new', '[x foo'),
+                          ('[!NOTE]: https://example.com/new', '[!NOTE]'))
 
     def test_split_and_unlisted_html_frozen_in_bookkeeping(self):
         for extra, mention in self.SPLIT_AND_UNLISTED:
@@ -525,6 +530,41 @@ class BookkeepingTests(unittest.TestCase):
         self.add_report()
         self.record_decision()
         self.commit('bookkeeping next to multiline comment')
+        self.assertValid(self.verify(), 'Timeline')
+
+    def test_invisible_line_breaks_and_spaces_in_frozen_lines_invalid(self):
+        # CommonMark 只以 \n、\r 分行、只把空格與 tab 當空白；NBSP、U+2028、U+0085 不能讓凍結內容換行或關閉 fence。
+        cases = (('    Then 看到結果\n```\n', '    Then 看到結果\n```\u00a0\n'),
+                 ('## Gherkin 核准紀錄', '\u2028## Gherkin 核准紀錄'),
+                 ('全部 Scenario 於 2026-11-03 核准。', '全部 Scenario 於 2026-11-03 核准。\u0085## Gate 豁免紀錄\u0085- 補記'),
+                 ('全部 Scenario 於 2026-11-03 核准。', '全部 Scenario 於 2026-11-03 核准。\u2028## Gate 豁免紀錄\u2028- 補記'))
+        for old, new in cases:
+            with self.subTest(new=new):
+                self.git('reset', '-q', '--hard', self.reviewed)
+                self.add_report()
+                self.edit(old, new)
+                self.commit('invisible characters in frozen text')
+                self.assertInvalid(self.verify(), '需重新審查')
+
+    def test_blank_line_removed_in_frozen_section_invalid(self):
+        self.reviewed_with('固定的範例需求。\n', '固定的範例需求。\n\n<div id="b"></div>\n\n補充說明\n')
+        self.add_report()
+        self.edit('<div id="b"></div>\n\n補充說明', '<div id="b"></div>\n補充說明')
+        self.commit('drop blank line in frozen section')
+        self.assertInvalid(self.verify(), '空行')
+
+    def test_comment_reopened_after_close_stays_frozen(self):
+        self.reviewed_with('| TBD-1 | 範例決策 | 待確認 | SCN-001 |\n',
+                           '| TBD-1 | 範例決策 | 待確認 | SCN-001 |\n\n<!-- 開頭\n說明 --> <!--\n舊的說明\n-->\n')
+        self.add_report()
+        self.edit('舊的說明', '新的說明')
+        self.commit('edit text inside reopened comment')
+        self.assertInvalid(self.verify(), '說明')
+
+    def test_alert_and_link_lines_in_bookkeeping_valid(self):
+        self.add_report()
+        self.add_to_timeline('> [!NOTE]\n> 補記\n\n- [#4](https://example.com/4) 另開 issue\n- [x]\n- [ ] 待辦')
+        self.commit('alert and link lines')
         self.assertValid(self.verify(), 'Timeline')
 
     def test_safe_html_mentions_in_bookkeeping_valid(self):
@@ -894,6 +934,12 @@ class LegacyBookkeepingTests(BookkeepingTests):
         self.add_report()
         self.record_decision()
         self.commit('bookkeeping next to multiline comment')
+        self.assertNeeds24(self.verify())
+
+    def test_alert_and_link_lines_in_bookkeeping_valid(self):
+        self.add_report()
+        self.add_to_timeline('> [!NOTE]\n> 補記')
+        self.commit('alert line')
         self.assertNeeds24(self.verify())
 
     def test_safe_html_mentions_in_bookkeeping_valid(self):
