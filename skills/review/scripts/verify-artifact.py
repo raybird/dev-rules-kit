@@ -33,7 +33,7 @@ LINE_BREAK = re.compile(r'<(?:br|wbr)\s*/?>', re.I)
 # 獨佔一行的 GitHub alert（`[!NOTE]`），以及同一行就關閉、後接 `(` 的行內連結。
 LINK_DEFINITION = re.compile(CONTAINER + r'\[(?![ xX]\](?:[ \t]|$)|![A-Za-z]+\][ \t]*$|[^\[\]\\\n]*\]\()')
 UNDERLINE = re.compile(r'^(?:=+|-+)$')
-DELIMITER_ROW = re.compile(r'^\|(?:[ \t]*:?-+:?[ \t]*\|)+$')
+DELIMITER_ROW = re.compile(r'^\|(?: *:?-+:? *\|)+$')
 LINE_END = re.compile(r'\r\n|\r|\n')
 BLANK = ' \t'
 CONTRACT = re.compile(r'\*\*流程契約\*\*\s*[:：]\s*(\d+)\.(\d+)')
@@ -122,17 +122,21 @@ def setext_underline(line, previous):
 
 
 def cells(line):
-    """GFM 只去掉頭尾各一個 `|`；`\\|` 的算法各渲染器不同，回傳 None 不當表格。"""
-    if '\\|' in line:
+    """只認範本形狀：頭尾都是 `|`、每格有空格以外的內容、空白只有一般空格、沒有反斜線。
+
+    其他寫法（含 GFM 也接受的省略頭尾 `|`、空格）回傳 None，照段落處理；寧可多凍結，
+    不必逐一追各渲染器對空白、跳脫與空格的算法。
+    """
+    if len(line) < 3 or not (line.startswith('|') and line.endswith('|')) or '\\' in line \
+            or any(not char.isprintable() and char != ' ' or char.isspace() and char != ' ' for char in line):
         return None
-    body = line[1:] if line.startswith('|') else line
-    return len((body[:-1] if body.endswith('|') else body).split('|'))
+    parts = line[1:-1].split('|')
+    return len(parts) if all(part.strip(' ') for part in parts) else None
 
 
 def starts_table(line, following):
-    """表頭與欄數相同的分隔列都以 `|` 開頭才算表格；其他寫法照段落處理（凍結得較多）。"""
-    return line.startswith('|') and bool(DELIMITER_ROW.match(following)) \
-        and cells(line) is not None and cells(line) == cells(following)
+    """表頭與欄數相同的分隔列都符合範本形狀才算表格；其他寫法照段落處理（凍結得較多）。"""
+    return bool(DELIMITER_ROW.match(following)) and cells(line) is not None and cells(line) == cells(following)
 
 
 def analyse(text, bookkeeping_sections):

@@ -627,7 +627,7 @@ class BookkeepingTests(unittest.TestCase):
         head = '| 日期 | 異動 | 負責人 |\n|---|---|---|'
         self.reviewed_with(self.TIMELINE_ROW + '\n', f'{self.TIMELINE_ROW}\n{frozen_row}\n')
         for new_head in ('|| 日期 | 異動 | 負責人 |\n|---|---|---|', '| 日期 | 異動 |\n|---|---|',
-                         '| 日期 | 異動 | 負責人 ||\n|---|---|---|'):
+                         '| 日期 | 異動 | 負責人 ||\n|---|---|---|', '| 日期 | 異動 | 負責人 |\n|:---|---|---|'):
             with self.subTest(head=new_head):
                 self.git('reset', '-q', '--hard', self.reviewed)
                 self.add_report()
@@ -656,6 +656,18 @@ class BookkeepingTests(unittest.TestCase):
                 self.add_report()
                 self.edit(frozen_row, frozen_row + '\n| 2026-11-05 | 補記 | - |')
                 self.commit('append row')
+                self.assertInvalid(self.verify(), '同一段落')
+
+    def test_fake_table_before_frozen_paragraph_invalid(self):
+        # 渲染器不當表格的寫法要和後面的段落一起比對（review-4d7ba1f）：只有一個 `|` 的表頭、tab、U+2028、空白格。
+        frozen = '用 `<details>` 收合舊說明。'
+        self.reviewed_with(self.TIMELINE_ROW + '\n', f'{self.TIMELINE_ROW}\n\n{frozen}\n')
+        for fake in ('|\n|-|', '| 補記 |\n|\t-|', '| 補記\u2028|\n|-|', '|  |\n|-|', '補記 |\n-|'):
+            with self.subTest(fake=fake):
+                self.git('reset', '-q', '--hard', self.reviewed)
+                self.add_report()
+                self.edit(f'\n\n{frozen}', f'\n\n{fake}\n| ` |\n{frozen}')
+                self.commit('fake table joined to frozen paragraph')
                 self.assertInvalid(self.verify(), '同一段落')
 
     def test_extra_blank_line_in_frozen_section_valid(self):
