@@ -11,7 +11,7 @@
 
 ## 現況
 
-**現行 review**: review-ac2183c.md
+**現行 review**: review-20d0847.md
 
 ## 文件清單
 
@@ -169,6 +169,7 @@ Feature: issue 現況以實查為準，狀態副本不再被當成權威
 | 2026-11-11 | S11：依第四輪覆審修正分行、凍結章節空行與左方括號開頭的放行（`df2a444`）；重跑 WF-28b、wf31 通過 | Claude Code |
 | 2026-11-11 | 第五輪獨立覆審 RETURN TO execute-task（review-ac2183c.md）：MUST FIX 1 項（記帳行能和同一段落的凍結行組成跨行的行內語法，例如連結 title 吞掉檔尾 metadata），SHOULD FIX 1 項 | Claude Code |
 | 2026-11-11 | 使用者選擇本 issue 修正第五輪 MUST FIX 再送審；下一輪若只找到 v4.9.0 就有的同類缺口則另開 issue。S12：記帳章節含凍結內容的段落整段凍結，表格逐列判定（`3fc926a`）；重跑 WF-28b、wf31 通過 | Claude Code |
+| 2026-11-11 | 第六輪獨立覆審 RETURN TO execute-task（review-20d0847.md）：MUST FIX 1 項（表格欄數計算和 GFM 不同，是 S12 新引入），SHOULD FIX 1 項；另列 v4.9.0 起就有的同類缺口 V1～V4 | Claude Code |
 
 ---
 **建立日期**: 2026-11-10
