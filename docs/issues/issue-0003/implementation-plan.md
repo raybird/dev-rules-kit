@@ -31,7 +31,8 @@
 | S6 | 以本次規則對同一 fixture 實跑候選組與對照組；重跑 WF-28a、28b 與懸置掃描（issue-0001 的 scan fixture） | S2～S5 | SCN-004～008，覆核 SCN-001～003 | 依「行為案例」逐項判定；同一輸入結果不一致時明列為不穩定，不挑成功輪次 | ✅ 2026-11-10；每案一輪，依當時寫定的判準全部通過（WF-32 於 2026-11-11 依 SCN-007 原文重判為未符合，見 S8），能區分的只有 wf30、wf30c 的有效性與 wf31；見下方「S6 證據」 |
 | S7 | 更新 CHANGELOG（v4.10.0）、workflow-regression、rule-verification-status 與回歸紀錄；檢查 README、usage、INSTALL、execute-task、create-pr 的引用；跑根目錄五項檢查；送獨立審查 | S6 | SCN-001～008 | 五項檢查通過；未實跑分支登記為僅靜態撰寫；獨立審查 PASS 或已依使用者決定處理 | ⏳ 2026-11-10 文件更新完成：CHANGELOG v4.10.0、WF-29～WF-33、v4.10.0 驗證狀態、[2026-11-10 回歸紀錄](../../workflow-results/2026-11-10.md)、usage.md 與 INSTALL.md 各一處；README.md、execute-task、create-pr 沒有相關敘述、未改。五項檢查通過（check-kit、check-links、`bash -n`、test-install 14 項、test-evidence 143 項）。待獨立審查 |
 | S8 | 依 [review-5c2ca52](review-5c2ca52.md) 與 TBD-2～TBD-4 修正：`verify-artifact.py` 凍結跨行 HTML 區塊、HTML 標籤、巢狀容器與編號／引用的粗體欄位，2.4 附註只在現況變動時出現；docs/AGENTS.md 第 6 項、document-types.md、review-evidence.md、英文 rules、dev-cycle 依審查修正；證據遮蔽；重跑 wf29、wf29d、wf30c、wf31、wf32、WF-28b 並依 SCN-007 原文重判 wf32；更新發布文件後重新送審 | TBD-2～TBD-4 已解決 | SCN-001～002、004～007 | 新負向案例先紅後綠，既有測試仍通過；重跑依 expected.md「審查後重跑」判定；獨立覆審 PASS 或已依使用者決定處理 | ✅ 2026-11-11；覆審 review-acd488f 退回，由 S9 接續 |
-| S9 | 依 [review-acd488f](review-acd488f.md) 與 TBD-5 修正：記帳章節的 HTML 改用允許清單並追蹤多行註解，code span、反斜線跳脫與表格逐列不算 HTML；凍結清單與引用裡的 setext 標題與連結參照定義；`**現行 review**` 改寫檔名；發布文件與紀錄跟上 S8；`run_case.py` 保存回合內提交；重跑 wf29、wf30c、wf31、wf32、WF-28b 後重新送審 | TBD-5 已決定 | SCN-001～002、004、006、007 | 新負向案例先紅後綠；reviewer 的對抗案例全部判 INVALID、合理寫法判 OK；重跑依 expected.md「第二輪審查後重跑」判定；獨立覆審 PASS 或已依使用者決定處理 | ⏳ |
+| S9 | 依 [review-acd488f](review-acd488f.md) 與 TBD-5 修正：記帳章節的 HTML 改用允許清單並追蹤多行註解，code span、反斜線跳脫與表格逐列不算 HTML；凍結清單與引用裡的 setext 標題與連結參照定義；`**現行 review**` 改寫檔名；發布文件與紀錄跟上 S8；`run_case.py` 保存回合內提交；重跑 wf29、wf30c、wf31、wf32、WF-28b 後重新送審 | TBD-5 已決定 | SCN-001～002、004、006、007 | 新負向案例先紅後綠；reviewer 的對抗案例全部判 INVALID、合理寫法判 OK；重跑依 expected.md「第二輪審查後重跑」判定；獨立覆審 PASS 或已依使用者決定處理 | ✅ 2026-11-11；覆審 review-4d0df5c 退回，由 S10 接續 |
+| S10 | 依 [review-4d0df5c](review-4d0df5c.md) 與 2026-11-11 使用者決定（記帳章節的行含 `<` 一律凍結）修正：移除 code span、跳脫與表格的模擬，`<` 只放行不在行首的換行標籤；以 `[` 開頭的行與緊接在文字後的分隔線凍結；docs/AGENTS.md 寫明記帳內容不含 `<`；發布文件的落差；重跑 wf31、WF-28b 後重新送審 | 使用者決定 | SCN-001～002、004 | 新負向案例先紅後綠；三輪審查的對抗案例全部 INVALID；重跑依 expected.md「第三輪審查後重跑」判定；獨立覆審 PASS 或已依使用者決定處理 | ⏳ |
 
 ### S1 證據
 
@@ -148,7 +149,7 @@
 | 紅燈 | 先加測試、腳本未改：175 個測試 48 個失敗，全部是新案例（`<details` 換行或行尾空白、`<script`／`<style`／`<textarea`／`<pre` 獨佔一行、行內 `<title>`／`<dialog>`／`<s>`／`<a>`／`<small>`、跳脫的 backtick、表格切欄與跨行 code span、連結參照定義、清單與引用裡的 setext、多行註解的 `-->` 與內容、code span 與跳脫的標籤名） | [s9-red.txt](evidence/s9-red.txt) |
 | 綠燈 | 改 `verify-artifact.py` 後 175 個全過 | [s9-green.txt](evidence/s9-green.txt) |
 | 紅燈後改的期望 | 三處負向案例的期望訊息由 `<!--` 改為「需重新審查」：未關閉的註解現在整段凍結，吞掉其後的 `##` 標題，檢查器先回報章節順序不同。判定仍是 INVALID。另補兩個案例（表格逐列的 backtick、表格內 `\|` 跳脫的 code span），由下兩列的誤判發現 | 本節 |
-| 對抗案例 | review-acd488f 留在暫存區的 46 個案例重跑：攻擊寫法 37 個全部 INVALID；控制組與合理寫法 9 個中，8 個 OK，`1. **日期**` 依 TBD-3 判 INVALID。過程中發現兩項誤判並修正：表格內以 `\|` 跳脫的 code span 被當成未配對，以及前一列表格未配對的 backtick 延續到下一列 | 暫存區（未進版控） |
+| 對抗案例 | review-acd488f 留在暫存區的 46 個案例重跑：攻擊寫法 36 個全部 INVALID；控制組 1 個與合理寫法 8 個判 OK，`1. **日期**` 依 TBD-3 判 INVALID（共 37 個 INVALID、9 個 OK；2026-11-11 依 review-4d0df5c NICE 2 更正計數）。過程中發現兩項誤判並修正：表格內以 `\|` 跳脫的 code span 被當成未配對，以及前一列表格未配對的 backtick 延續到下一列 | 暫存區（未進版控） |
 | 下游影響 | 唯讀掃描本機 682 份不重複的 issue README：與 v4.9.0 相比，11 份共 26 行記帳內容改為凍結，全部是引用或編號清單加粗體開頭的行（TBD-3 的決定）；HTML 允許清單沒有新增凍結行。既有行不變時不影響判定，只有審查後新增這些寫法才需重審 | 本節 |
 | 精煉 | 判斷 HTML 只剩 `SAFE_HTML`、`ANY_HTML` 兩個式子，移除封閉的標籤清單與 HTML 區塊式子；code span 與註解狀態各一個輔助函式 | — |
 
@@ -164,9 +165,24 @@
 | wf32 第 1 輪 | 交接文件另有「目前進度」表（「併入 main：尚未併入」「部署：尚無部署紀錄」）與外部狀態查證表；沒有寫回 README | 依 SCN-007 原文未符合 |
 | wf32 第 2～4 輪 | 交接文件只有 README 連結與錨定 commit 的事件，寫明狀態以 issue 目錄的文件為準 | 依 SCN-007 原文通過 |
 
+- 追加的 3 輪是看到第 1 輪失敗後才決定，沒有事先寫進 expected.md；判準沿用已提交的版本，四輪全部列出（review-4d0df5c NICE 3）。
 - **wf32 不穩定**：依現行文字 4 輪中 3 輪通過；S8 的 1 輪（第 6 項的寫回尚未加條件）也通過。第 1 輪失敗與第 6 項改成有條件是否有關，輪數太少無法判斷。
 - **4 輪都把交接文件提交到 issue 分支，讓 PASS 失效，輸出都沒有提到失效或需要重審**（[issue #4](https://github.com/raybird/dev-rules-kit/issues/4) 的範圍）。
 - 追加輪次第一次執行時，runner 以改名後的案例名稱查不到輸入，送出空白訊息、未建立 session（exit 1）；三份無效證據已刪除，修正 runner 後重跑，上表只列有效輪次。
+
+### S10 證據
+
+2026-11-11，依 [review-4d0df5c](review-4d0df5c.md) 修正。審查找到允許清單本身會開出 HTML 區塊（`<br>` 獨佔一行、行首的同行註解），以及 code span 判定與渲染器不一致；使用者決定不再模擬 CommonMark，記帳章節的行含 `<` 就凍結。
+
+| 項目 | 結果 | 證據 |
+|---|---|---|
+| 紅燈 | 先加測試、腳本未改：175 個測試 24 個失敗，全部是新案例（`<br>`／`<wbr>`／`</br>` 獨佔一行、行首註解後接 code span、code span 與跳脫的標籤名、`` `|` `` 夾住的標籤、自動連結、跨行的連結參照定義、10 位數編號後接 `===`） | [s10-red.txt](evidence/s10-red.txt) |
+| 綠燈 | 改 `verify-artifact.py` 後全過；另補 `**現行 review**` 平台連結三種寫法的案例，共 176 個 | [s10-green.txt](evidence/s10-green.txt) |
+| 對抗案例 | 三輪審查留在暫存區的案例（含本輪的 G、J、K、S 系列）重跑：攻擊寫法全部 INVALID；判 OK 的只有控制組、行中間的 `<br/>`、不帶粗體的編號清單 Timeline，以及 reviewer 腳本實際沒有改動 README 的 K6。code span 裡的標籤名、`\<div>`、`<網址>`、`n<k` 依決定判 INVALID | 暫存區（未進版控） |
+| 既有記帳提交 | `31c6bae`（review-4d0df5c 與現況）判 OK。`18f0e64` 改判 INVALID：當時寫的 Timeline 列在 code span 裡含 `<details`，正是新規則的代價；該提交是已被後續修正取代的 RETURN 記帳，不影響現行判定。WF-28b fixture 的記帳提交也因待確認事項寫了 `` `done <id>` `` 改判 INVALID，所以 docs/AGENTS.md 加寫記帳內容不含 `<`，並重跑驗證 agent 會照做 | 本節命令輸出 |
+| 下游影響 | 唯讀掃描本機 683 份不重複的 issue README：33 份共 44 行記帳內容含 `<`（41 行在 code span 裡）；另有 1 份因 code fence 數為奇數，標題被未關閉的 fence 吞掉，與本次修改無關 | 本節 |
+| 精煉 | 移除 `outside_code`、`escaped_count`、`SAFE_HTML`、`ANY_HTML`、`TABLE_DELIMITER` 與逐行的 code span 狀態；HTML 判定剩一個函式 | — |
+| 上一輪 NICE 7 | 外部狀態列在 2.4 專案覆寫會讓 PASS 失效：`## 現況` 只在 2.5 定義，review-evidence.md 已寫 2.4 的 `## 現況` 屬凍結章節，不另改 | — |
 
 ## 測試策略
 

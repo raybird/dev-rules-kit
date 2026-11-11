@@ -450,7 +450,7 @@ class BookkeepingTests(unittest.TestCase):
 
     def test_harmless_html_in_bookkeeping_valid(self):
         self.add_report()
-        self.edit(self.TIMELINE_ROW, self.TIMELINE_ROW + '\n| 2026-11-04 | 審查 PASS（`review-<sha>.md`）<br>補記 <!-- 備註 --> | - |')
+        self.edit(self.TIMELINE_ROW, self.TIMELINE_ROW + '\n| 2026-11-04 | 審查 PASS（review-abc1234.md）<br>補記 | - |')
         self.commit('harmless inline html')
         self.assertValid(self.verify(), 'Timeline')
 
@@ -475,7 +475,21 @@ class BookkeepingTests(unittest.TestCase):
                           ('| 2026-11-04 | 單獨的 ` 符號 | - |\n結尾` <details> `x`', '<details>'),
                           ('[spec]: https://example.com/new', '[spec]'),
                           ('- 驗收條件已變更\n  ===', '驗收條件已變更'),
-                          ('> 驗收條件已變更\n> ---', '驗收條件已變更'))
+                          ('> 驗收條件已變更\n> ---', '驗收條件已變更'),
+                          # review-4d0df5c：記帳章節的行含 `<` 就凍結，只放行行中間的 <br>、<wbr>。
+                          ('<br>\n`<details>`', '<br>'),
+                          ('<wbr>', '<wbr>'),
+                          ('</br>', '</br>'),
+                          ('<!-- 說明 --> `<details>`', '<!--'),
+                          ('補記 `<details>`', '<details>'),
+                          ('補記 `|` <details> `|`', '<details>'),
+                          ('補記 \\<details>', '<details>'),
+                          ('補記 <https://example.com/x>', '<https'),
+                          ('補記 a<b', 'a<b'),
+                          ('[spec\n]: https://example.com/new', '[spec'),
+                          ('- 驗收條件\n      ===', '驗收條件'),
+                          ('1234567890. 驗收條件\n===', '驗收條件'),
+                          ('<!-- 開頭\n說明 --> <!--\n- **分級**: Small', '<!--'))
 
     def test_split_and_unlisted_html_frozen_in_bookkeeping(self):
         for extra, mention in self.SPLIT_AND_UNLISTED:
@@ -515,16 +529,12 @@ class BookkeepingTests(unittest.TestCase):
 
     def test_safe_html_mentions_in_bookkeeping_valid(self):
         self.add_report()
-        rows = ('| 2026-11-04 | 修正 `<template>` 的生命週期，改用 `<table>` 呈現 | - |',
-                '| 2026-11-04 | 修正未關閉的 `<!--`；``<details>`` 摺疊 | - |',
-                '| 2026-11-04 | 跳脫寫法 \\<div> 與自動連結 <https://example.com/x> | - |',
-                '| 2026-11-04 | 換行<br/>與<wbr>斷行 | - |',
-                '| 2026-11-04 | 查證 `curl -s https://example.invalid \\| grep -c "<title>"` | - |')
+        rows = ('| 2026-11-04 | 修正 template 元素的生命週期，改用 table 呈現；`x > y` 比較 | - |',
+                '| 2026-11-04 | 換行<br/>與<wbr>斷行，<BR >補記 | - |',
+                '| 2026-11-04 | 查證 `curl -s https://example.invalid \\| grep -c title` | - |')
         self.edit(self.TIMELINE_ROW, '\n'.join((self.TIMELINE_ROW,) + rows))
-        # 表格逐列解析：前一列留下未配對的 backtick，不影響下一列的 code span。
-        self.edit(rows[-1], rows[-1] + '\n| 2026-11-04 | 單獨的 ` 符號 | - |\n| 2026-11-04 | 改用 `<dialog>` | - |')
-        self.edit('| 2026-11-04 | 改用 `<dialog>` | - |\n', '| 2026-11-04 | 改用 `<dialog>` | - |\n\n- 2026-11-04 補記\n---\n')
-        self.commit('safe html mentions')
+        self.add_to_timeline('- [x] 2026-11-04 補記，見 https://example.com/x\n\n---')
+        self.commit('safe mentions')
         self.assertValid(self.verify(), 'Timeline')
 
     def test_current_state_note_only_when_relevant(self):
@@ -709,6 +719,23 @@ class CurrentStateTests(BookkeepingTests):
         self.commit('update current state')
         self.assertValid(self.verify(), '現況', 'review-0000000.md → ')
 
+    def test_current_review_platform_link_forms(self):
+        """平台連結寫成一般網址或 Markdown 連結；`<https://…>` 含 `<`，照記帳章節的規則凍結。"""
+        original = self.reviewed
+        for value, valid in (('https://example.com/o/r/pull/1#pullrequestreview-1', True),
+                             ('[PR 審查](https://example.com/o/r/pull/1#pullrequestreview-1)', True),
+                             ('<https://example.com/o/r/pull/1#pullrequestreview-1>', False)):
+            with self.subTest(value=value):
+                self.reset_to(original)
+                self.reviewed_with_current_state()
+                self.edit('**現行 review**: review-0000000.md', f'**現行 review**: {value}')
+                self.commit('platform review link')
+                result = self.verify(artifact=False, issue=self.ISSUE)
+                if valid:
+                    self.assertValid(result, '現行 review')
+                else:
+                    self.assertInvalid(result, '<https')
+
     def test_current_state_row_only(self):
         self.reviewed_with_current_state()
         self.edit(self.OLD_ROW, self.NEW_ROW)
@@ -750,7 +777,9 @@ class CurrentStateTests(BookkeepingTests):
                  ('<script', '<script'),
                  ('補記 <s>', '<s>'),
                  ('[spec]: https://example.com/new', '[spec]'),
-                 ('- 驗收條件已變更\n  ===', '驗收條件已變更'))
+                 ('- 驗收條件已變更\n  ===', '驗收條件已變更'),
+                 ('<br>\n`<details>`', '<br>'),
+                 ('補記 `|` <details> `|`', '<details>'))
         original = self.reviewed
         for extra, mention in cases:
             with self.subTest(extra=extra, mode='整節新增'):
@@ -869,8 +898,8 @@ class LegacyBookkeepingTests(BookkeepingTests):
 
     def test_safe_html_mentions_in_bookkeeping_valid(self):
         self.add_report()
-        self.edit(self.TIMELINE_ROW, self.TIMELINE_ROW + '\n| 2026-11-04 | 修正 `<template>` | - |')
-        self.commit('safe html mentions')
+        self.edit(self.TIMELINE_ROW, self.TIMELINE_ROW + '\n| 2026-11-04 | 修正 template 元素 | - |')
+        self.commit('safe mentions')
         self.assertNeeds24(self.verify())
 
 

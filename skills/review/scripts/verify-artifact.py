@@ -5,8 +5,9 @@
 2.5 起 `## 現況` 也是記帳區段，節內的 `**現行 review**` 欄位可改值。
 讀不到契約、低於 2.4 或其他 major 時，維持只接受一個「只新增該報告」提交的現行判定。
 記帳區段內看起來像標題、code fence 或粗體欄位的非範本寫法（含巢狀清單與引用裡的寫法）、
-連結參照定義，以及 `<br>`、`<wbr>`、自動連結與同一行關閉的註解以外的 HTML 一律視為凍結內容；
-未在同一行關閉的註解到 `-->` 為止整段凍結。避免藏住或偽造凍結章節。
+以 `[` 開頭的行（連結參照定義；任務清單除外）、緊接在段落後的 `===`／`---`，以及含 `<` 的行
+（只放行行中間的 `<br>`、`<wbr>`）一律視為凍結內容；未在同一行關閉的註解到 `-->` 為止整段凍結。
+不模擬 CommonMark 的 code span、表格與 HTML 區塊，寧可多凍結，避免藏住或偽造凍結章節。
 """
 import argparse
 from pathlib import PurePosixPath
@@ -25,15 +26,13 @@ LOOSE_HEADING = re.compile(CONTAINER + r'#{1,6}(?:\s|$)')
 SETEXT = re.compile(r'^ {0,3}(?:=+|-+)\s*$')
 NOT_PARAGRAPH = re.compile(r'^\s*(?:[|>]|[-*+]\s|\d+[.)]\s)')
 QUOTES = re.compile(r'^(?:[ \t]*>)*')
-TABLE_DELIMITER = re.compile(r'^\s*\|?\s*:?-+:?\s*(?:\|\s*:?-+:?\s*)*\|?\s*$')
 FIELD = re.compile(CONTAINER + r'\*\*([^*\n]+?)\*\*\s*[:：]\s*(.*?)\s*\\?\s*$')
 BOLD_LINE = re.compile(CONTAINER + r'(?:\*\*|__)')
-# 記帳章節只放行不會改變其後渲染的 HTML：換行標籤、自動連結與同一行關閉的註解；其餘 `<` 後接字母、`/`、`!`、`?` 都凍結。
-SAFE_HTML = re.compile(r'<(?:/?(?:br|wbr)\s*/?>|[A-Za-z][A-Za-z0-9+.-]{1,31}:[^\s<>]*>'
-                       r'|[\w.!#$%&\'*+/=?^`{|}~-]+@[A-Za-z0-9-]+(?:\.[A-Za-z0-9-]+)*>|!--.*?-->)', re.I)
-ANY_HTML = re.compile(r'<[A-Za-z/!?]')
-LINK_DEFINITION = re.compile(CONTAINER + r'\[[^\]]+\]:')
-PUNCTUATION = set('!"#$%&\'()*+,-./:;<=>?@[\\]^_`{|}~')
+# 記帳章節的行含 `<` 就凍結：只放行不在行首（容器前綴之後）的換行標籤。
+LINE_BREAK = re.compile(r'<(?:br|wbr)\s*/?>', re.I)
+# 連結參照定義的標籤可以跨行，以 `[` 開頭就凍結；`[ ]`、`[x]` 任務清單照一般行處理。
+LINK_DEFINITION = re.compile(CONTAINER + r'\[(?![ xX]\][ \t])')
+UNDERLINE = re.compile(r'^(?:=+|-+)$')
 CONTRACT = re.compile(r'\*\*流程契約\*\*\s*[:：]\s*(\d+)\.(\d+)')
 SHA = re.compile(r'^`?([0-9a-fA-F]{7,40})`?$')
 ADDABLE_SECTIONS = ('待確認事項', 'Gate 豁免紀錄')
@@ -98,52 +97,10 @@ def closes(line, fence, loose):
         and not line[marker.end():].strip()
 
 
-def escaped_count(line, index):
-    """index 前面連續的反斜線數。"""
-    return len(line[:index]) - len(line[:index].rstrip('\\'))
-
-
-def outside_code(line, strip_spans):
-    """去掉 code span 與反斜線跳脫，回傳 (渲染成 HTML 的文字, 是否留下未配對的 backtick)。
-
-    code span 依 CommonMark 由左而右配對同長度的 backtick 串，不跨越未跳脫的 `|`（GFM 表格先切欄，`\\|` 不切）；
-    前一行留下未配對的 backtick 時，這一行可能在跨行的 code span 裡，改為不去掉，寧可多凍結。
-    """
-    out, i, unmatched = [], 0, False
-    while i < len(line):
-        char = line[i]
-        if char == '\\' and i + 1 < len(line) and line[i + 1] in PUNCTUATION:
-            out.append(' ')
-            i += 2
-            continue
-        if char != '`':
-            out.append(char)
-            i += 1
-            continue
-        run = len(line[i:]) - len(line[i:].lstrip('`'))
-        j, close = i + run, None
-        while strip_spans and j < len(line) and not (line[j] == '|' and escaped_count(line, j) % 2 == 0):
-            if line[j] == '`':
-                length = len(line[j:]) - len(line[j:].lstrip('`'))
-                if length == run:
-                    close = j
-                    break
-                j += length
-            else:
-                j += 1
-        if close is None:
-            unmatched = True
-            out.append(' ' * run)
-            i += run
-        else:
-            out.append(' ')
-            i = close + run
-    return ''.join(out), unmatched
-
-
-def html(text):
-    """記帳章節不放行的 HTML；text 已去掉 code span。"""
-    return bool(ANY_HTML.search(SAFE_HTML.sub(' ', text)))
+def html(line):
+    """含 `<` 的行；行中間的 `<br>`、`<wbr>` 不算。行首的換行標籤會開出 HTML 區塊，所以照樣凍結。"""
+    content = line[re.match(CONTAINER, line).end():]
+    return content.startswith('<') or '<' in LINE_BREAK.sub(' ', content)
 
 
 def opens_comment(text):
@@ -151,30 +108,21 @@ def opens_comment(text):
 
 
 def setext_underline(line, previous):
-    """line 是否把 previous 變成 setext 標題；引用與清單裡的段落也算。"""
-    if not previous.strip():
+    """line 是否可能把 previous 變成 setext 標題：去掉引用標記與空白後只剩 `=` 或 `-`，前一行是非表格的文字。
+
+    清單續行的縮排、引用層數與編號長度都不比對，寧可把段落後的分隔線也當成標題凍結。
+    """
+    content = previous[re.match(CONTAINER, previous).end():].strip()
+    if not content or content.startswith('|'):
         return False
-    if SETEXT.match(line) and not NOT_PARAGRAPH.match(previous):
-        return True
-    prefix = re.match(CONTAINER, previous).group(0)
-    content = previous[len(prefix):]
-    if not prefix.strip() or not content.strip() or content.lstrip().startswith('|'):
-        return False
-    quotes = QUOTES.match(prefix).group(0)
-    if QUOTES.match(line).group(0).count('>') != quotes.count('>'):
-        return False
-    rest = line[len(QUOTES.match(line).group(0)):]
-    nested = prefix[len(quotes):]
-    if nested.strip() and len(rest) - len(rest.lstrip()) < len(nested) - len(nested.lstrip()) + 2:
-        return False
-    return bool(re.match(r'^[ \t]*(?:=+|-+)\s*$', rest))
+    return bool(UNDERLINE.match(line[QUOTES.match(line).end():].strip()))
 
 
 def analyse(text, bookkeeping_sections):
     """回傳 (凍結內容, 記帳欄位, 各記帳章節內容, 章節標題順序)。凍結內容逐項保留所在章節與種類。"""
     frozen, fields, sections, headings = [], [], {}, []
     section, fence, loose, previous = '（標題前）', None, False, ''
-    comment, open_code, table = False, False, False
+    comment = False
     for raw in text.splitlines():
         line = raw.rstrip()
         if comment:
@@ -192,16 +140,8 @@ def analyse(text, bookkeeping_sections):
             fence, loose = marker.group(1), not FENCE.match(line)
             frozen.append((section, 'fence', line))
             continue
-        if not line.strip():
-            open_code = False
-        # 確認過分隔列的 GFM 表格逐列解析，code span 不跨列；其他行未配對的 backtick 可能延續到下一行。
-        table = (table or (TABLE_DELIMITER.match(line) and '|' in line and previous.lstrip().startswith('|'))) \
-            and line.lstrip().startswith('|')
-        rendered, unmatched = outside_code(line, table or not open_code)
-        open_code = not table and (open_code or unmatched)
         heading = HEADING.match(line)
         if heading:
-            open_code = False
             section = heading.group(1)
             headings.append(section)
             if section in bookkeeping_sections:
@@ -214,9 +154,9 @@ def analyse(text, bookkeeping_sections):
             frozen.append((section, 'heading', line))
             previous = line
             continue
-        if html(rendered) or LINK_DEFINITION.match(line):
+        if html(line) or LINK_DEFINITION.match(line):
             frozen.append((section, 'html', line))
-            comment = opens_comment(rendered)
+            comment = opens_comment(line)
             previous = line
             continue
         if setext_underline(line, previous):
@@ -253,7 +193,7 @@ def describe(entry):
     if entry is None:
         return '（無）'
     section, kind, text = entry
-    suffix = {'fence': '（code fence 內容一律凍結）', 'html': '（HTML、未關閉的註解與連結參照定義一律凍結）'}.get(kind, '')
+    suffix = {'fence': '（code fence 內容一律凍結）', 'html': '（記帳章節含 `<` 或以 `[` 開頭的行一律凍結）'}.get(kind, '')
     return f'章節「{section}」的' + (f'「{text}」' if text.strip() else '空行') + suffix
 
 

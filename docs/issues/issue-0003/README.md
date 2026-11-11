@@ -147,6 +147,7 @@ Feature: issue 現況以實查為準，狀態副本不再被當成權威
 | TBD-3 | review-5c2ca52 SHOULD FIX 1：記帳章節的繞過寫法（巢狀容器、編號與引用的粗體、HTML 標籤）本 issue 收緊，或只登記已知限制 | 已解決 | 2026-11-11 使用者選「本 issue 一起收緊」：與 MUST FIX 1 的跨行 HTML 區塊一起改 `verify-artifact.py`，所有記帳章節變嚴；縮排程式碼區塊與表格接 `---` 維持 issue #2 的已知限制。SCN-003 的「判定與現行相同」不含這次對 HTML 與巢狀寫法的收緊（2026-11-11 補註，review-acd488f NICE 8） |
 | TBD-4 | review-5c2ca52 的 8 項 NICE TO HAVE | 已解決 | 2026-11-11 使用者選「修有實質影響的」：NICE 1、2、3、5、6、8 修正；NICE 4 的現況位置登記為已知限制；NICE 7 只清掉未用的預設參數 |
 | TBD-5 | review-acd488f SHOULD FIX 4：交接文件提交到已審查的 issue 分支會讓 PASS 失效，agent 沒有告知 | 不影響本次交付 | 2026-11-11 使用者選「補紀錄、另開 issue」：本 issue 在證據、回歸紀錄與驗證狀態寫明這個失敗形態，規則不改。追蹤：[#4](https://github.com/raybird/dev-rules-kit/issues/4) |
+| TBD-6 | review-4d0df5c：記帳章節的 HTML 判定繼續修補允許清單，或改為含左角括號的行一律凍結 | 已解決 | 2026-11-11 使用者選「一律拒絕含左角括號的行」：不再模擬 CommonMark，只放行行中間的 br、wbr；代價是審查後在記帳內容寫 code span 裡的標籤名或佔位字也要重審，docs/AGENTS.md 寫明改用文字與 {id} |
 
 ## Timeline
 
@@ -162,6 +163,7 @@ Feature: issue 現況以實查為準，狀態副本不再被當成權威
 | 2026-11-11 | 使用者對覆審的需決策項目選擇建議答案（TBD-5，另開 #4） | 使用者 |
 | 2026-11-11 | S9：依覆審修正（`b2f321f`）；重跑 wf29、wf31、WF-28b 通過，wf30c 未執行檢查器，wf32 4 輪 3 輪通過（不穩定） | Claude Code |
 | 2026-11-11 | 第三輪獨立覆審 RETURN TO execute-task（review-4d0df5c.md）：MUST FIX 2 項（允許清單的 `<br>`／行首註解會開出 HTML 區塊；code span 判定與渲染器不一致），SHOULD FIX 2 項 | Claude Code |
+| 2026-11-11 | 使用者決定記帳章節含左角括號的行一律凍結（TBD-6） | 使用者 |
 
 ---
 **建立日期**: 2026-11-10
