@@ -1,0 +1,10 @@
+# S2 範本與判定一致性：2026-11-10T17:15:53+08:00；工作區基於 874992d（S2 文件已修改、未提交）
+$ python3 -I docs/issues/issue-0003/evidence/s2_template_check.py .
+## 流程契約 2.5
+exit=0
+OK：被審查提交之後只有記帳變更，原 review 可依其真實判定沿用。變更：新增報告 docs/issues/issue-9/review-def9541.md、現況、現行 review（{現行報告的 repo-relative 路徑或平台連結} → docs/issues/issue-9/review-def9541.md）
+
+## 流程契約 2.4
+exit=1
+INVALID：docs/issues/issue-9/README.md 的凍結內容與被審查版本不同：被審查版本為章節「現況」的「**現行 review**: {現行報告的 repo-relative 路徑或平台連結}」，目前為章節「現況」的「**現行 review**: docs/issues/issue-9/review-5632798.md」；需重新審查（## 現況 列入記帳區段需要流程契約 2.5 以上）
+

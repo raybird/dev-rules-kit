@@ -15,7 +15,7 @@ description: 由獨立 reviewer 審查變更或不修復決策，核對驗收、
 2. 派給宿主獨立 subagent／task，傳入同一組範圍、規格與證據；使用者明確要求時改用 Superpowers requesting-code-review。原實作者不兼任獨立 reviewer；能力缺漏或豁免依 review-evidence.md 回報。
 3. 核對規格修訂與核准來源（核准 commit 為 `待提交` 時，acceptance.md 有推導命令就依它推導核准基線，沒有則依該檔判定缺少核准基線）、完整驗收覆蓋、正確性、相關安全／權限／依賴失敗面、架構邊界與測試真偽。以 code-simplify 的標準檢查整份 diff 中跨 Task 的重複邏輯與過度設計。依風險提出具體邊界案例，各重要失敗面都有覆蓋結論，無固定數量。
 4. 區分 MUST FIX 與改善建議，需要使用者決策才能處理的發現依 review-evidence.md 加註 `需決策`，交由協調者確認；重複邏輯已分歧而造成行為不一致或正確性風險時列 MUST FIX，其餘重複與過度設計列改善建議。依 verification.md 將證據持久力、限制揭露與假綠燈分開判定。待確認事項維持原狀態，覆核其交付影響；豁免只適用紀錄明列項目。
-5. 依 review-evidence.md 保存完整報告，並檢查被審查版本與 artifact 有效性。流程契約 2.4 起，報告記有核准基線且 README 仍為 `待提交` 時，保存報告的同一個提交把 `**核准 commit**` 改成該 SHA。被審查提交之後的提交（保存報告、記錄使用者決策、回填核准 commit）依「審查之後的提交」（流程契約 2.3 以下為「本機 artifact 提交後的有效性」）判定：執行本 skill 目錄下的 `scripts/verify-artifact.py --repo <專案> --reviewed <SHA> --head <SHA> --artifact <repo-relative 報告路徑>`，報告保存在平台時以 `--issue docs/issues/issue-<ID>` 取代 `--artifact`。結果有效才沿用原 PASS，並把它回報的變更區段寫進 PR 證據；指令為唯讀，成功只代表版本有效，審查結論仍須讀報告。
+5. 依 review-evidence.md 保存完整報告，並檢查被審查版本與 artifact 有效性。流程契約 2.4 起，報告記有核准基線且 README 仍為 `待提交` 時，保存報告的同一個提交把 `**核准 commit**` 改成該 SHA；流程契約 2.5 起，同一個提交也把 `## 現況` 的 `**現行 review**` 指向這份報告（沒有 `## 現況` 時依該檔建立）。被審查提交之後的提交（保存報告、記錄使用者決策、回填核准 commit、更新現況）依「審查之後的提交」（流程契約 2.3 以下為「本機 artifact 提交後的有效性」）判定：執行本 skill 目錄下的 `scripts/verify-artifact.py --repo <專案> --reviewed <SHA> --head <SHA> --artifact <repo-relative 報告路徑>`，報告保存在平台時以 `--issue docs/issues/issue-<ID>` 取代 `--artifact`。結果有效才沿用原 PASS，並把它回報的變更區段寫進 PR 證據；指令為唯讀，成功只代表版本有效，審查結論仍須讀報告。
 
 不修復／等待窗口時改審查其決策與當下可完成工作，不要求尚未到期的外部結果，也不輸出程式驗收 PASS。
 

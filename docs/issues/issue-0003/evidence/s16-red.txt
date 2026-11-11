@@ -1,0 +1,354 @@
+test_alert_and_link_lines_in_bookkeeping_valid (__main__.BookkeepingTests.test_alert_and_link_lines_in_bookkeeping_valid) ... ok
+test_append_to_paragraph_with_frozen_line (__main__.BookkeepingTests.test_append_to_paragraph_with_frozen_line) ... ok
+test_approval_backfill_must_be_ancestor (__main__.BookkeepingTests.test_approval_backfill_must_be_ancestor) ... ok
+test_approval_record_change_invalid (__main__.BookkeepingTests.test_approval_record_change_invalid) ... ok
+test_approval_sha_replaced_invalid (__main__.BookkeepingTests.test_approval_sha_replaced_invalid) ... ok
+test_approval_source_change_invalid (__main__.BookkeepingTests.test_approval_source_change_invalid) ... ok
+test_backtick_before_frozen_code_span_invalid (__main__.BookkeepingTests.test_backtick_before_frozen_code_span_invalid) ... ok
+test_bad_report_invalid (__main__.BookkeepingTests.test_bad_report_invalid) ... ok
+test_baseline_derived_from_approval_source (__main__.BookkeepingTests.test_baseline_derived_from_approval_source) ... ok
+test_baseline_ignores_text_mentioning_approval_source (__main__.BookkeepingTests.test_baseline_ignores_text_mentioning_approval_source) ... ok
+test_baseline_missing_without_approval_source (__main__.BookkeepingTests.test_baseline_missing_without_approval_source) ... ok
+test_blank_line_after_frozen_html_in_bookkeeping_invalid (__main__.BookkeepingTests.test_blank_line_after_frozen_html_in_bookkeeping_invalid) ... ok
+test_blank_line_removed_in_frozen_section_invalid (__main__.BookkeepingTests.test_blank_line_removed_in_frozen_section_invalid) ... ok
+test_bookkeeping_across_several_commits (__main__.BookkeepingTests.test_bookkeeping_across_several_commits) ... ok
+test_bookkeeping_headings_keep_order (__main__.BookkeepingTests.test_bookkeeping_headings_keep_order) ... ok
+test_code_fence_in_timeline_invalid (__main__.BookkeepingTests.test_code_fence_in_timeline_invalid) ... ok
+test_comment_and_processing_closed_on_same_line (__main__.BookkeepingTests.test_comment_and_processing_closed_on_same_line) ... 
+  test_comment_and_processing_closed_on_same_line (__main__.BookkeepingTests.test_comment_and_processing_closed_on_same_line) (opener='<!-->') ... FAIL
+  test_comment_and_processing_closed_on_same_line (__main__.BookkeepingTests.test_comment_and_processing_closed_on_same_line) (opener='<!--->') ... FAIL
+  test_comment_and_processing_closed_on_same_line (__main__.BookkeepingTests.test_comment_and_processing_closed_on_same_line) (opener='<?>') ... FAIL
+test_comment_reopened_after_close_stays_frozen (__main__.BookkeepingTests.test_comment_reopened_after_close_stays_frozen) ... ok
+test_current_state_note_only_when_relevant (__main__.BookkeepingTests.test_current_state_note_only_when_relevant) ... ok
+test_current_state_section_needs_25 (__main__.BookkeepingTests.test_current_state_section_needs_25) ... ok
+test_existing_report_modified_invalid (__main__.BookkeepingTests.test_existing_report_modified_invalid) ... ok
+test_extra_blank_line_in_frozen_section_valid (__main__.BookkeepingTests.test_extra_blank_line_in_frozen_section_valid) ... ok
+test_fake_table_before_frozen_paragraph_invalid (__main__.BookkeepingTests.test_fake_table_before_frozen_paragraph_invalid) ... ok
+test_frozen_field_inside_timeline_invalid (__main__.BookkeepingTests.test_frozen_field_inside_timeline_invalid) ... ok
+test_future_major_contract_uses_legacy_rule (__main__.BookkeepingTests.test_future_major_contract_uses_legacy_rule) ... ok
+test_gherkin_change_invalid (__main__.BookkeepingTests.test_gherkin_change_invalid) ... ok
+test_gherkin_moved_under_timeline_invalid (__main__.BookkeepingTests.test_gherkin_moved_under_timeline_invalid) ... ok
+test_harmless_html_in_bookkeeping_valid (__main__.BookkeepingTests.test_harmless_html_in_bookkeeping_valid) ... ok
+test_html_and_nested_forms_frozen_in_bookkeeping (__main__.BookkeepingTests.test_html_and_nested_forms_frozen_in_bookkeeping) ... ok
+test_html_block_closer_without_lt_stays_frozen (__main__.BookkeepingTests.test_html_block_closer_without_lt_stays_frozen) ... ok
+test_html_block_hiding_frozen_text_invalid (__main__.BookkeepingTests.test_html_block_hiding_frozen_text_invalid) ... ok
+test_inline_span_across_frozen_paragraph_invalid (__main__.BookkeepingTests.test_inline_span_across_frozen_paragraph_invalid) ... ok
+test_inserted_heading_cannot_swallow_frozen_text (__main__.BookkeepingTests.test_inserted_heading_cannot_swallow_frozen_text) ... ok
+test_invisible_line_breaks_and_spaces_in_frozen_lines_invalid (__main__.BookkeepingTests.test_invisible_line_breaks_and_spaces_in_frozen_lines_invalid) ... ok
+test_loose_fence_in_bookkeeping_invalid (__main__.BookkeepingTests.test_loose_fence_in_bookkeeping_invalid) ... ok
+test_loose_field_forms_frozen (__main__.BookkeepingTests.test_loose_field_forms_frozen) ... ok
+test_loose_heading_in_bookkeeping_invalid (__main__.BookkeepingTests.test_loose_heading_in_bookkeeping_invalid) ... ok
+test_merge_in_range_invalid (__main__.BookkeepingTests.test_merge_in_range_invalid) ... ok
+test_multiline_comment_frozen_until_close (__main__.BookkeepingTests.test_multiline_comment_frozen_until_close) ... ok
+test_multiline_comment_kept_bookkeeping_valid (__main__.BookkeepingTests.test_multiline_comment_kept_bookkeeping_valid) ... ok
+test_new_gate_waiver_section_allowed (__main__.BookkeepingTests.test_new_gate_waiver_section_allowed) ... ok
+test_open_items_section_removed_allowed (__main__.BookkeepingTests.test_open_items_section_removed_allowed) ... ok
+test_other_paths_invalid (__main__.BookkeepingTests.test_other_paths_invalid) ... ok
+test_platform_mode_rejects_semantic_change (__main__.BookkeepingTests.test_platform_mode_rejects_semantic_change) ... ok
+test_platform_report_mode (__main__.BookkeepingTests.test_platform_report_mode) ... ok
+test_reopened_block_across_blank_lines_stays_frozen (__main__.BookkeepingTests.test_reopened_block_across_blank_lines_stays_frozen) ... ok
+test_report_and_bookkeeping_in_one_commit (__main__.BookkeepingTests.test_report_and_bookkeeping_in_one_commit) ... ok
+test_report_only_still_valid (__main__.BookkeepingTests.test_report_only_still_valid) ... ok
+test_report_rewritten_after_added_invalid (__main__.BookkeepingTests.test_report_rewritten_after_added_invalid) ... ok
+test_reviewed_not_ancestor_invalid (__main__.BookkeepingTests.test_reviewed_not_ancestor_invalid) ... ok
+test_rows_after_frozen_table_row_valid (__main__.BookkeepingTests.test_rows_after_frozen_table_row_valid) ... ok
+test_rows_without_gfm_table_freeze_as_paragraph (__main__.BookkeepingTests.test_rows_without_gfm_table_freeze_as_paragraph) ... ok
+test_safe_html_mentions_in_bookkeeping_valid (__main__.BookkeepingTests.test_safe_html_mentions_in_bookkeeping_valid) ... ok
+test_small_ac_change_invalid (__main__.BookkeepingTests.test_small_ac_change_invalid) ... ok
+test_split_and_unlisted_html_frozen_in_bookkeeping (__main__.BookkeepingTests.test_split_and_unlisted_html_frozen_in_bookkeeping) ... ok
+test_table_head_frozen_with_frozen_row (__main__.BookkeepingTests.test_table_head_frozen_with_frozen_row) ... ok
+test_unclosed_opener_in_frozen_section_named_in_message (__main__.BookkeepingTests.test_unclosed_opener_in_frozen_section_named_in_message) ... FAIL
+test_alert_and_link_lines_in_bookkeeping_valid (__main__.CurrentStateTests.test_alert_and_link_lines_in_bookkeeping_valid) ... ok
+test_append_to_paragraph_with_frozen_line (__main__.CurrentStateTests.test_append_to_paragraph_with_frozen_line) ... ok
+test_approval_backfill_must_be_ancestor (__main__.CurrentStateTests.test_approval_backfill_must_be_ancestor) ... ok
+test_approval_record_change_invalid (__main__.CurrentStateTests.test_approval_record_change_invalid) ... ok
+test_approval_sha_replaced_invalid (__main__.CurrentStateTests.test_approval_sha_replaced_invalid) ... ok
+test_approval_source_change_invalid (__main__.CurrentStateTests.test_approval_source_change_invalid) ... ok
+test_backtick_before_frozen_code_span_invalid (__main__.CurrentStateTests.test_backtick_before_frozen_code_span_invalid) ... ok
+test_bad_report_invalid (__main__.CurrentStateTests.test_bad_report_invalid) ... ok
+test_baseline_derived_from_approval_source (__main__.CurrentStateTests.test_baseline_derived_from_approval_source) ... ok
+test_baseline_ignores_text_mentioning_approval_source (__main__.CurrentStateTests.test_baseline_ignores_text_mentioning_approval_source) ... ok
+test_baseline_missing_without_approval_source (__main__.CurrentStateTests.test_baseline_missing_without_approval_source) ... ok
+test_blank_line_after_frozen_html_in_bookkeeping_invalid (__main__.CurrentStateTests.test_blank_line_after_frozen_html_in_bookkeeping_invalid) ... ok
+test_blank_line_removed_in_frozen_section_invalid (__main__.CurrentStateTests.test_blank_line_removed_in_frozen_section_invalid) ... ok
+test_bookkeeping_across_several_commits (__main__.CurrentStateTests.test_bookkeeping_across_several_commits) ... ok
+test_bookkeeping_headings_keep_order (__main__.CurrentStateTests.test_bookkeeping_headings_keep_order) ... ok
+test_code_fence_in_timeline_invalid (__main__.CurrentStateTests.test_code_fence_in_timeline_invalid) ... ok
+test_comment_and_processing_closed_on_same_line (__main__.CurrentStateTests.test_comment_and_processing_closed_on_same_line) ... 
+  test_comment_and_processing_closed_on_same_line (__main__.CurrentStateTests.test_comment_and_processing_closed_on_same_line) (opener='<!-->') ... FAIL
+  test_comment_and_processing_closed_on_same_line (__main__.CurrentStateTests.test_comment_and_processing_closed_on_same_line) (opener='<!--->') ... FAIL
+  test_comment_and_processing_closed_on_same_line (__main__.CurrentStateTests.test_comment_and_processing_closed_on_same_line) (opener='<?>') ... FAIL
+test_comment_reopened_after_close_stays_frozen (__main__.CurrentStateTests.test_comment_reopened_after_close_stays_frozen) ... ok
+test_current_review_outside_section_invalid (__main__.CurrentStateTests.test_current_review_outside_section_invalid) ... ok
+test_current_review_platform_link_forms (__main__.CurrentStateTests.test_current_review_platform_link_forms)
+平台連結寫成一般網址或 Markdown 連結；`<https://…>` 含 `<`，照記帳章節的規則凍結。 ... ok
+test_current_state_note_only_when_relevant (__main__.CurrentStateTests.test_current_state_note_only_when_relevant) ... ok
+test_current_state_removed (__main__.CurrentStateTests.test_current_state_removed) ... ok
+test_current_state_row_only (__main__.CurrentStateTests.test_current_state_row_only) ... ok
+test_current_state_section_needs_25 (__main__.CurrentStateTests.test_current_state_section_needs_25) ... ok
+test_current_state_values_updated (__main__.CurrentStateTests.test_current_state_values_updated) ... ok
+test_current_state_with_other_bookkeeping (__main__.CurrentStateTests.test_current_state_with_other_bookkeeping) ... ok
+test_duplicate_current_state_invalid (__main__.CurrentStateTests.test_duplicate_current_state_invalid) ... ok
+test_existing_report_modified_invalid (__main__.CurrentStateTests.test_existing_report_modified_invalid) ... ok
+test_extra_blank_line_in_frozen_section_valid (__main__.CurrentStateTests.test_extra_blank_line_in_frozen_section_valid) ... ok
+test_fake_table_before_frozen_paragraph_invalid (__main__.CurrentStateTests.test_fake_table_before_frozen_paragraph_invalid) ... ok
+test_frozen_field_inside_timeline_invalid (__main__.CurrentStateTests.test_frozen_field_inside_timeline_invalid) ... ok
+test_frozen_forms_inside_current_state_invalid (__main__.CurrentStateTests.test_frozen_forms_inside_current_state_invalid) ... ok
+test_frozen_text_moved_into_current_state_invalid (__main__.CurrentStateTests.test_frozen_text_moved_into_current_state_invalid) ... ok
+test_future_major_contract_uses_legacy_rule (__main__.CurrentStateTests.test_future_major_contract_uses_legacy_rule) ... ok
+test_gherkin_change_invalid (__main__.CurrentStateTests.test_gherkin_change_invalid) ... ok
+test_gherkin_moved_under_timeline_invalid (__main__.CurrentStateTests.test_gherkin_moved_under_timeline_invalid) ... ok
+test_harmless_html_in_bookkeeping_valid (__main__.CurrentStateTests.test_harmless_html_in_bookkeeping_valid) ... ok
+test_html_and_nested_forms_frozen_in_bookkeeping (__main__.CurrentStateTests.test_html_and_nested_forms_frozen_in_bookkeeping) ... ok
+test_html_block_closer_without_lt_stays_frozen (__main__.CurrentStateTests.test_html_block_closer_without_lt_stays_frozen) ... ok
+test_html_block_hiding_frozen_text_invalid (__main__.CurrentStateTests.test_html_block_hiding_frozen_text_invalid) ... ok
+test_inline_span_across_frozen_paragraph_invalid (__main__.CurrentStateTests.test_inline_span_across_frozen_paragraph_invalid) ... ok
+test_inserted_current_state_cannot_swallow_frozen_text (__main__.CurrentStateTests.test_inserted_current_state_cannot_swallow_frozen_text) ... ok
+test_inserted_heading_cannot_swallow_frozen_text (__main__.CurrentStateTests.test_inserted_heading_cannot_swallow_frozen_text) ... ok
+test_invisible_line_breaks_and_spaces_in_frozen_lines_invalid (__main__.CurrentStateTests.test_invisible_line_breaks_and_spaces_in_frozen_lines_invalid) ... ok
+test_loose_fence_in_bookkeeping_invalid (__main__.CurrentStateTests.test_loose_fence_in_bookkeeping_invalid) ... ok
+test_loose_field_forms_frozen (__main__.CurrentStateTests.test_loose_field_forms_frozen) ... ok
+test_loose_heading_in_bookkeeping_invalid (__main__.CurrentStateTests.test_loose_heading_in_bookkeeping_invalid) ... ok
+test_merge_in_range_invalid (__main__.CurrentStateTests.test_merge_in_range_invalid) ... ok
+test_multiline_comment_frozen_until_close (__main__.CurrentStateTests.test_multiline_comment_frozen_until_close) ... ok
+test_multiline_comment_kept_bookkeeping_valid (__main__.CurrentStateTests.test_multiline_comment_kept_bookkeeping_valid) ... ok
+test_new_gate_waiver_section_allowed (__main__.CurrentStateTests.test_new_gate_waiver_section_allowed) ... ok
+test_open_items_section_removed_allowed (__main__.CurrentStateTests.test_open_items_section_removed_allowed) ... ok
+test_other_paths_invalid (__main__.CurrentStateTests.test_other_paths_invalid) ... ok
+test_platform_mode_rejects_semantic_change (__main__.CurrentStateTests.test_platform_mode_rejects_semantic_change) ... ok
+test_platform_report_mode (__main__.CurrentStateTests.test_platform_report_mode) ... ok
+test_reopened_block_across_blank_lines_stays_frozen (__main__.CurrentStateTests.test_reopened_block_across_blank_lines_stays_frozen) ... ok
+test_report_and_bookkeeping_in_one_commit (__main__.CurrentStateTests.test_report_and_bookkeeping_in_one_commit) ... ok
+test_report_only_still_valid (__main__.CurrentStateTests.test_report_only_still_valid) ... ok
+test_report_rewritten_after_added_invalid (__main__.CurrentStateTests.test_report_rewritten_after_added_invalid) ... ok
+test_reviewed_not_ancestor_invalid (__main__.CurrentStateTests.test_reviewed_not_ancestor_invalid) ... ok
+test_rows_after_frozen_table_row_valid (__main__.CurrentStateTests.test_rows_after_frozen_table_row_valid) ... ok
+test_rows_without_gfm_table_freeze_as_paragraph (__main__.CurrentStateTests.test_rows_without_gfm_table_freeze_as_paragraph) ... ok
+test_safe_html_mentions_in_bookkeeping_valid (__main__.CurrentStateTests.test_safe_html_mentions_in_bookkeeping_valid) ... ok
+test_small_ac_change_invalid (__main__.CurrentStateTests.test_small_ac_change_invalid) ... ok
+test_split_and_unlisted_html_frozen_in_bookkeeping (__main__.CurrentStateTests.test_split_and_unlisted_html_frozen_in_bookkeeping) ... ok
+test_table_head_frozen_with_frozen_row (__main__.CurrentStateTests.test_table_head_frozen_with_frozen_row) ... ok
+test_unclosed_opener_in_frozen_section_named_in_message (__main__.CurrentStateTests.test_unclosed_opener_in_frozen_section_named_in_message) ... FAIL
+test_artifact_only_commit_keeps_review_valid (__main__.EvidenceTests.test_artifact_only_commit_keeps_review_valid) ... ok
+test_artifact_plus_code_change_requires_review (__main__.EvidenceTests.test_artifact_plus_code_change_requires_review) ... ok
+test_document_edit_does_not_break_contract (__main__.EvidenceTests.test_document_edit_does_not_break_contract) ... ok
+test_report_rewrite_requires_review (__main__.EvidenceTests.test_report_rewrite_requires_review) ... ok
+test_spec_diff_includes_staged_and_unstaged (__main__.EvidenceTests.test_spec_diff_includes_staged_and_unstaged) ... ok
+test_symlink_report_rejected (__main__.EvidenceTests.test_symlink_report_rejected) ... ok
+test_alert_and_link_lines_in_bookkeeping_valid (__main__.LegacyBookkeepingTests.test_alert_and_link_lines_in_bookkeeping_valid) ... ok
+test_append_to_paragraph_with_frozen_line (__main__.LegacyBookkeepingTests.test_append_to_paragraph_with_frozen_line) ... ok
+test_approval_backfill_must_be_ancestor (__main__.LegacyBookkeepingTests.test_approval_backfill_must_be_ancestor) ... ok
+test_approval_record_change_invalid (__main__.LegacyBookkeepingTests.test_approval_record_change_invalid) ... ok
+test_approval_sha_replaced_invalid (__main__.LegacyBookkeepingTests.test_approval_sha_replaced_invalid) ... ok
+test_approval_source_change_invalid (__main__.LegacyBookkeepingTests.test_approval_source_change_invalid) ... ok
+test_backtick_before_frozen_code_span_invalid (__main__.LegacyBookkeepingTests.test_backtick_before_frozen_code_span_invalid) ... ok
+test_bad_report_invalid (__main__.LegacyBookkeepingTests.test_bad_report_invalid) ... ok
+test_baseline_derived_from_approval_source (__main__.LegacyBookkeepingTests.test_baseline_derived_from_approval_source) ... ok
+test_baseline_ignores_text_mentioning_approval_source (__main__.LegacyBookkeepingTests.test_baseline_ignores_text_mentioning_approval_source) ... ok
+test_baseline_missing_without_approval_source (__main__.LegacyBookkeepingTests.test_baseline_missing_without_approval_source) ... ok
+test_blank_line_after_frozen_html_in_bookkeeping_invalid (__main__.LegacyBookkeepingTests.test_blank_line_after_frozen_html_in_bookkeeping_invalid) ... ok
+test_blank_line_removed_in_frozen_section_invalid (__main__.LegacyBookkeepingTests.test_blank_line_removed_in_frozen_section_invalid) ... ok
+test_bookkeeping_across_several_commits (__main__.LegacyBookkeepingTests.test_bookkeeping_across_several_commits) ... ok
+test_bookkeeping_headings_keep_order (__main__.LegacyBookkeepingTests.test_bookkeeping_headings_keep_order) ... ok
+test_code_fence_in_timeline_invalid (__main__.LegacyBookkeepingTests.test_code_fence_in_timeline_invalid) ... ok
+test_comment_and_processing_closed_on_same_line (__main__.LegacyBookkeepingTests.test_comment_and_processing_closed_on_same_line) ... ok
+test_comment_reopened_after_close_stays_frozen (__main__.LegacyBookkeepingTests.test_comment_reopened_after_close_stays_frozen) ... ok
+test_current_state_note_only_when_relevant (__main__.LegacyBookkeepingTests.test_current_state_note_only_when_relevant) ... ok
+test_current_state_section_needs_25 (__main__.LegacyBookkeepingTests.test_current_state_section_needs_25) ... ok
+test_existing_report_modified_invalid (__main__.LegacyBookkeepingTests.test_existing_report_modified_invalid) ... ok
+test_extra_blank_line_in_frozen_section_valid (__main__.LegacyBookkeepingTests.test_extra_blank_line_in_frozen_section_valid) ... ok
+test_fake_table_before_frozen_paragraph_invalid (__main__.LegacyBookkeepingTests.test_fake_table_before_frozen_paragraph_invalid) ... ok
+test_frozen_field_inside_timeline_invalid (__main__.LegacyBookkeepingTests.test_frozen_field_inside_timeline_invalid) ... ok
+test_future_major_contract_uses_legacy_rule (__main__.LegacyBookkeepingTests.test_future_major_contract_uses_legacy_rule) ... ok
+test_gherkin_change_invalid (__main__.LegacyBookkeepingTests.test_gherkin_change_invalid) ... ok
+test_gherkin_moved_under_timeline_invalid (__main__.LegacyBookkeepingTests.test_gherkin_moved_under_timeline_invalid) ... ok
+test_harmless_html_in_bookkeeping_valid (__main__.LegacyBookkeepingTests.test_harmless_html_in_bookkeeping_valid) ... ok
+test_html_and_nested_forms_frozen_in_bookkeeping (__main__.LegacyBookkeepingTests.test_html_and_nested_forms_frozen_in_bookkeeping) ... ok
+test_html_block_closer_without_lt_stays_frozen (__main__.LegacyBookkeepingTests.test_html_block_closer_without_lt_stays_frozen) ... ok
+test_html_block_hiding_frozen_text_invalid (__main__.LegacyBookkeepingTests.test_html_block_hiding_frozen_text_invalid) ... ok
+test_inline_span_across_frozen_paragraph_invalid (__main__.LegacyBookkeepingTests.test_inline_span_across_frozen_paragraph_invalid) ... ok
+test_inserted_heading_cannot_swallow_frozen_text (__main__.LegacyBookkeepingTests.test_inserted_heading_cannot_swallow_frozen_text) ... ok
+test_invisible_line_breaks_and_spaces_in_frozen_lines_invalid (__main__.LegacyBookkeepingTests.test_invisible_line_breaks_and_spaces_in_frozen_lines_invalid) ... ok
+test_loose_fence_in_bookkeeping_invalid (__main__.LegacyBookkeepingTests.test_loose_fence_in_bookkeeping_invalid) ... ok
+test_loose_field_forms_frozen (__main__.LegacyBookkeepingTests.test_loose_field_forms_frozen) ... ok
+test_loose_heading_in_bookkeeping_invalid (__main__.LegacyBookkeepingTests.test_loose_heading_in_bookkeeping_invalid) ... ok
+test_merge_in_range_invalid (__main__.LegacyBookkeepingTests.test_merge_in_range_invalid) ... ok
+test_multiline_comment_frozen_until_close (__main__.LegacyBookkeepingTests.test_multiline_comment_frozen_until_close) ... ok
+test_multiline_comment_kept_bookkeeping_valid (__main__.LegacyBookkeepingTests.test_multiline_comment_kept_bookkeeping_valid) ... ok
+test_new_gate_waiver_section_allowed (__main__.LegacyBookkeepingTests.test_new_gate_waiver_section_allowed) ... ok
+test_open_items_section_removed_allowed (__main__.LegacyBookkeepingTests.test_open_items_section_removed_allowed) ... ok
+test_other_paths_invalid (__main__.LegacyBookkeepingTests.test_other_paths_invalid) ... ok
+test_platform_mode_rejects_semantic_change (__main__.LegacyBookkeepingTests.test_platform_mode_rejects_semantic_change) ... ok
+test_platform_report_mode (__main__.LegacyBookkeepingTests.test_platform_report_mode) ... ok
+test_reopened_block_across_blank_lines_stays_frozen (__main__.LegacyBookkeepingTests.test_reopened_block_across_blank_lines_stays_frozen) ... ok
+test_report_and_bookkeeping_in_one_commit (__main__.LegacyBookkeepingTests.test_report_and_bookkeeping_in_one_commit) ... ok
+test_report_only_still_valid (__main__.LegacyBookkeepingTests.test_report_only_still_valid) ... ok
+test_report_rewritten_after_added_invalid (__main__.LegacyBookkeepingTests.test_report_rewritten_after_added_invalid) ... ok
+test_reviewed_not_ancestor_invalid (__main__.LegacyBookkeepingTests.test_reviewed_not_ancestor_invalid) ... ok
+test_rows_after_frozen_table_row_valid (__main__.LegacyBookkeepingTests.test_rows_after_frozen_table_row_valid) ... ok
+test_rows_without_gfm_table_freeze_as_paragraph (__main__.LegacyBookkeepingTests.test_rows_without_gfm_table_freeze_as_paragraph) ... ok
+test_safe_html_mentions_in_bookkeeping_valid (__main__.LegacyBookkeepingTests.test_safe_html_mentions_in_bookkeeping_valid) ... ok
+test_small_ac_change_invalid (__main__.LegacyBookkeepingTests.test_small_ac_change_invalid) ... ok
+test_split_and_unlisted_html_frozen_in_bookkeeping (__main__.LegacyBookkeepingTests.test_split_and_unlisted_html_frozen_in_bookkeeping) ... ok
+test_table_head_frozen_with_frozen_row (__main__.LegacyBookkeepingTests.test_table_head_frozen_with_frozen_row) ... ok
+test_unclosed_opener_in_frozen_section_named_in_message (__main__.LegacyBookkeepingTests.test_unclosed_opener_in_frozen_section_named_in_message) ... ok
+test_alert_and_link_lines_in_bookkeeping_valid (__main__.NoContractBookkeepingTests.test_alert_and_link_lines_in_bookkeeping_valid) ... ok
+test_append_to_paragraph_with_frozen_line (__main__.NoContractBookkeepingTests.test_append_to_paragraph_with_frozen_line) ... ok
+test_approval_backfill_must_be_ancestor (__main__.NoContractBookkeepingTests.test_approval_backfill_must_be_ancestor) ... ok
+test_approval_record_change_invalid (__main__.NoContractBookkeepingTests.test_approval_record_change_invalid) ... ok
+test_approval_sha_replaced_invalid (__main__.NoContractBookkeepingTests.test_approval_sha_replaced_invalid) ... ok
+test_approval_source_change_invalid (__main__.NoContractBookkeepingTests.test_approval_source_change_invalid) ... ok
+test_backtick_before_frozen_code_span_invalid (__main__.NoContractBookkeepingTests.test_backtick_before_frozen_code_span_invalid) ... ok
+test_bad_report_invalid (__main__.NoContractBookkeepingTests.test_bad_report_invalid) ... ok
+test_baseline_derived_from_approval_source (__main__.NoContractBookkeepingTests.test_baseline_derived_from_approval_source) ... ok
+test_baseline_ignores_text_mentioning_approval_source (__main__.NoContractBookkeepingTests.test_baseline_ignores_text_mentioning_approval_source) ... ok
+test_baseline_missing_without_approval_source (__main__.NoContractBookkeepingTests.test_baseline_missing_without_approval_source) ... ok
+test_blank_line_after_frozen_html_in_bookkeeping_invalid (__main__.NoContractBookkeepingTests.test_blank_line_after_frozen_html_in_bookkeeping_invalid) ... ok
+test_blank_line_removed_in_frozen_section_invalid (__main__.NoContractBookkeepingTests.test_blank_line_removed_in_frozen_section_invalid) ... ok
+test_bookkeeping_across_several_commits (__main__.NoContractBookkeepingTests.test_bookkeeping_across_several_commits) ... ok
+test_bookkeeping_headings_keep_order (__main__.NoContractBookkeepingTests.test_bookkeeping_headings_keep_order) ... ok
+test_code_fence_in_timeline_invalid (__main__.NoContractBookkeepingTests.test_code_fence_in_timeline_invalid) ... ok
+test_comment_and_processing_closed_on_same_line (__main__.NoContractBookkeepingTests.test_comment_and_processing_closed_on_same_line) ... ok
+test_comment_reopened_after_close_stays_frozen (__main__.NoContractBookkeepingTests.test_comment_reopened_after_close_stays_frozen) ... ok
+test_current_state_note_only_when_relevant (__main__.NoContractBookkeepingTests.test_current_state_note_only_when_relevant) ... ok
+test_current_state_section_needs_25 (__main__.NoContractBookkeepingTests.test_current_state_section_needs_25) ... ok
+test_existing_report_modified_invalid (__main__.NoContractBookkeepingTests.test_existing_report_modified_invalid) ... ok
+test_extra_blank_line_in_frozen_section_valid (__main__.NoContractBookkeepingTests.test_extra_blank_line_in_frozen_section_valid) ... ok
+test_fake_table_before_frozen_paragraph_invalid (__main__.NoContractBookkeepingTests.test_fake_table_before_frozen_paragraph_invalid) ... ok
+test_frozen_field_inside_timeline_invalid (__main__.NoContractBookkeepingTests.test_frozen_field_inside_timeline_invalid) ... ok
+test_future_major_contract_uses_legacy_rule (__main__.NoContractBookkeepingTests.test_future_major_contract_uses_legacy_rule) ... ok
+test_gherkin_change_invalid (__main__.NoContractBookkeepingTests.test_gherkin_change_invalid) ... ok
+test_gherkin_moved_under_timeline_invalid (__main__.NoContractBookkeepingTests.test_gherkin_moved_under_timeline_invalid) ... ok
+test_harmless_html_in_bookkeeping_valid (__main__.NoContractBookkeepingTests.test_harmless_html_in_bookkeeping_valid) ... ok
+test_html_and_nested_forms_frozen_in_bookkeeping (__main__.NoContractBookkeepingTests.test_html_and_nested_forms_frozen_in_bookkeeping) ... ok
+test_html_block_closer_without_lt_stays_frozen (__main__.NoContractBookkeepingTests.test_html_block_closer_without_lt_stays_frozen) ... ok
+test_html_block_hiding_frozen_text_invalid (__main__.NoContractBookkeepingTests.test_html_block_hiding_frozen_text_invalid) ... ok
+test_inline_span_across_frozen_paragraph_invalid (__main__.NoContractBookkeepingTests.test_inline_span_across_frozen_paragraph_invalid) ... ok
+test_inserted_heading_cannot_swallow_frozen_text (__main__.NoContractBookkeepingTests.test_inserted_heading_cannot_swallow_frozen_text) ... ok
+test_invisible_line_breaks_and_spaces_in_frozen_lines_invalid (__main__.NoContractBookkeepingTests.test_invisible_line_breaks_and_spaces_in_frozen_lines_invalid) ... ok
+test_loose_fence_in_bookkeeping_invalid (__main__.NoContractBookkeepingTests.test_loose_fence_in_bookkeeping_invalid) ... ok
+test_loose_field_forms_frozen (__main__.NoContractBookkeepingTests.test_loose_field_forms_frozen) ... ok
+test_loose_heading_in_bookkeeping_invalid (__main__.NoContractBookkeepingTests.test_loose_heading_in_bookkeeping_invalid) ... ok
+test_merge_in_range_invalid (__main__.NoContractBookkeepingTests.test_merge_in_range_invalid) ... ok
+test_multiline_comment_frozen_until_close (__main__.NoContractBookkeepingTests.test_multiline_comment_frozen_until_close) ... ok
+test_multiline_comment_kept_bookkeeping_valid (__main__.NoContractBookkeepingTests.test_multiline_comment_kept_bookkeeping_valid) ... ok
+test_new_gate_waiver_section_allowed (__main__.NoContractBookkeepingTests.test_new_gate_waiver_section_allowed) ... ok
+test_open_items_section_removed_allowed (__main__.NoContractBookkeepingTests.test_open_items_section_removed_allowed) ... ok
+test_other_paths_invalid (__main__.NoContractBookkeepingTests.test_other_paths_invalid) ... ok
+test_platform_mode_rejects_semantic_change (__main__.NoContractBookkeepingTests.test_platform_mode_rejects_semantic_change) ... ok
+test_platform_report_mode (__main__.NoContractBookkeepingTests.test_platform_report_mode) ... ok
+test_reopened_block_across_blank_lines_stays_frozen (__main__.NoContractBookkeepingTests.test_reopened_block_across_blank_lines_stays_frozen) ... ok
+test_report_and_bookkeeping_in_one_commit (__main__.NoContractBookkeepingTests.test_report_and_bookkeeping_in_one_commit) ... ok
+test_report_only_still_valid (__main__.NoContractBookkeepingTests.test_report_only_still_valid) ... ok
+test_report_rewritten_after_added_invalid (__main__.NoContractBookkeepingTests.test_report_rewritten_after_added_invalid) ... ok
+test_reviewed_not_ancestor_invalid (__main__.NoContractBookkeepingTests.test_reviewed_not_ancestor_invalid) ... ok
+test_rows_after_frozen_table_row_valid (__main__.NoContractBookkeepingTests.test_rows_after_frozen_table_row_valid) ... ok
+test_rows_without_gfm_table_freeze_as_paragraph (__main__.NoContractBookkeepingTests.test_rows_without_gfm_table_freeze_as_paragraph) ... ok
+test_safe_html_mentions_in_bookkeeping_valid (__main__.NoContractBookkeepingTests.test_safe_html_mentions_in_bookkeeping_valid) ... ok
+test_small_ac_change_invalid (__main__.NoContractBookkeepingTests.test_small_ac_change_invalid) ... ok
+test_split_and_unlisted_html_frozen_in_bookkeeping (__main__.NoContractBookkeepingTests.test_split_and_unlisted_html_frozen_in_bookkeeping) ... ok
+test_table_head_frozen_with_frozen_row (__main__.NoContractBookkeepingTests.test_table_head_frozen_with_frozen_row) ... ok
+test_unclosed_opener_in_frozen_section_named_in_message (__main__.NoContractBookkeepingTests.test_unclosed_opener_in_frozen_section_named_in_message) ... ok
+
+======================================================================
+FAIL: test_comment_and_processing_closed_on_same_line (__main__.BookkeepingTests.test_comment_and_processing_closed_on_same_line) (opener='<!-->')
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "scripts/test-evidence.py", line 601, in test_comment_and_processing_closed_on_same_line
+    self.assertBookkeepingValid(self.verify())
+  File "scripts/test-evidence.py", line 227, in assertBookkeepingValid
+    self.assertValid(result, '新增報告')
+  File "scripts/test-evidence.py", line 216, in assertValid
+    self.assertEqual(result.returncode, 0, result.stdout + result.stderr)
+AssertionError: 1 != 0 : INVALID：docs/issues/issue-1/README.md 的凍結內容與被審查版本不同：被審查版本為章節「概述」的「---」（記帳章節含 `<` 或以 `[` 開頭的行一律凍結），目前為章節「概述」的「| 2026-11-04 | 補記 | - |」（記帳章節含 `<` 或以 `[` 開頭的行一律凍結）；需重新審查
+
+
+======================================================================
+FAIL: test_comment_and_processing_closed_on_same_line (__main__.BookkeepingTests.test_comment_and_processing_closed_on_same_line) (opener='<!--->')
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "scripts/test-evidence.py", line 601, in test_comment_and_processing_closed_on_same_line
+    self.assertBookkeepingValid(self.verify())
+  File "scripts/test-evidence.py", line 227, in assertBookkeepingValid
+    self.assertValid(result, '新增報告')
+  File "scripts/test-evidence.py", line 216, in assertValid
+    self.assertEqual(result.returncode, 0, result.stdout + result.stderr)
+AssertionError: 1 != 0 : INVALID：docs/issues/issue-1/README.md 的凍結內容與被審查版本不同：被審查版本為章節「概述」的「---」（記帳章節含 `<` 或以 `[` 開頭的行一律凍結），目前為章節「概述」的「| 2026-11-04 | 補記 | - |」（記帳章節含 `<` 或以 `[` 開頭的行一律凍結）；需重新審查
+
+
+======================================================================
+FAIL: test_comment_and_processing_closed_on_same_line (__main__.BookkeepingTests.test_comment_and_processing_closed_on_same_line) (opener='<?>')
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "scripts/test-evidence.py", line 601, in test_comment_and_processing_closed_on_same_line
+    self.assertBookkeepingValid(self.verify())
+  File "scripts/test-evidence.py", line 227, in assertBookkeepingValid
+    self.assertValid(result, '新增報告')
+  File "scripts/test-evidence.py", line 216, in assertValid
+    self.assertEqual(result.returncode, 0, result.stdout + result.stderr)
+AssertionError: 1 != 0 : INVALID：docs/issues/issue-1/README.md 的凍結內容與被審查版本不同：被審查版本為章節「概述」的「---」（記帳章節含 `<` 或以 `[` 開頭的行一律凍結），目前為章節「概述」的「| 2026-11-04 | 補記 | - |」（記帳章節含 `<` 或以 `[` 開頭的行一律凍結）；需重新審查
+
+
+======================================================================
+FAIL: test_unclosed_opener_in_frozen_section_named_in_message (__main__.BookkeepingTests.test_unclosed_opener_in_frozen_section_named_in_message)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "scripts/test-evidence.py", line 589, in test_unclosed_opener_in_frozen_section_named_in_message
+    self.assertInvalid(self.verify(), '固定的範例需求。用 `<?php` 開頭。', '未關閉')
+  File "scripts/test-evidence.py", line 223, in assertInvalid
+    self.assertIn(mention, result.stderr)
+AssertionError: '固定的範例需求。用 `<?php` 開頭。' not found in 'INVALID：docs/issues/issue-1/README.md 的凍結內容與被審查版本不同：被審查版本為章節「概述」的「---」（記帳章節含 `<` 或以 `[` 開頭的行一律凍結），目前為章節「概述」的「| 2026-11-04 | 補記 | - |」（記帳章節含 `<` 或以 `[` 開頭的行一律凍結）；需重新審查\n'
+
+======================================================================
+FAIL: test_comment_and_processing_closed_on_same_line (__main__.CurrentStateTests.test_comment_and_processing_closed_on_same_line) (opener='<!-->')
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "scripts/test-evidence.py", line 601, in test_comment_and_processing_closed_on_same_line
+    self.assertBookkeepingValid(self.verify())
+  File "scripts/test-evidence.py", line 227, in assertBookkeepingValid
+    self.assertValid(result, '新增報告')
+  File "scripts/test-evidence.py", line 216, in assertValid
+    self.assertEqual(result.returncode, 0, result.stdout + result.stderr)
+AssertionError: 1 != 0 : INVALID：docs/issues/issue-1/README.md 的凍結內容與被審查版本不同：被審查版本為章節「概述」的「---」（記帳章節含 `<` 或以 `[` 開頭的行一律凍結），目前為章節「概述」的「| 2026-11-04 | 補記 | - |」（記帳章節含 `<` 或以 `[` 開頭的行一律凍結）；需重新審查
+
+
+======================================================================
+FAIL: test_comment_and_processing_closed_on_same_line (__main__.CurrentStateTests.test_comment_and_processing_closed_on_same_line) (opener='<!--->')
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "scripts/test-evidence.py", line 601, in test_comment_and_processing_closed_on_same_line
+    self.assertBookkeepingValid(self.verify())
+  File "scripts/test-evidence.py", line 227, in assertBookkeepingValid
+    self.assertValid(result, '新增報告')
+  File "scripts/test-evidence.py", line 216, in assertValid
+    self.assertEqual(result.returncode, 0, result.stdout + result.stderr)
+AssertionError: 1 != 0 : INVALID：docs/issues/issue-1/README.md 的凍結內容與被審查版本不同：被審查版本為章節「概述」的「---」（記帳章節含 `<` 或以 `[` 開頭的行一律凍結），目前為章節「概述」的「| 2026-11-04 | 補記 | - |」（記帳章節含 `<` 或以 `[` 開頭的行一律凍結）；需重新審查
+
+
+======================================================================
+FAIL: test_comment_and_processing_closed_on_same_line (__main__.CurrentStateTests.test_comment_and_processing_closed_on_same_line) (opener='<?>')
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "scripts/test-evidence.py", line 601, in test_comment_and_processing_closed_on_same_line
+    self.assertBookkeepingValid(self.verify())
+  File "scripts/test-evidence.py", line 227, in assertBookkeepingValid
+    self.assertValid(result, '新增報告')
+  File "scripts/test-evidence.py", line 216, in assertValid
+    self.assertEqual(result.returncode, 0, result.stdout + result.stderr)
+AssertionError: 1 != 0 : INVALID：docs/issues/issue-1/README.md 的凍結內容與被審查版本不同：被審查版本為章節「概述」的「---」（記帳章節含 `<` 或以 `[` 開頭的行一律凍結），目前為章節「概述」的「| 2026-11-04 | 補記 | - |」（記帳章節含 `<` 或以 `[` 開頭的行一律凍結）；需重新審查
+
+
+======================================================================
+FAIL: test_unclosed_opener_in_frozen_section_named_in_message (__main__.CurrentStateTests.test_unclosed_opener_in_frozen_section_named_in_message)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "scripts/test-evidence.py", line 589, in test_unclosed_opener_in_frozen_section_named_in_message
+    self.assertInvalid(self.verify(), '固定的範例需求。用 `<?php` 開頭。', '未關閉')
+  File "scripts/test-evidence.py", line 223, in assertInvalid
+    self.assertIn(mention, result.stderr)
+AssertionError: '固定的範例需求。用 `<?php` 開頭。' not found in 'INVALID：docs/issues/issue-1/README.md 的凍結內容與被審查版本不同：被審查版本為章節「概述」的「---」（記帳章節含 `<` 或以 `[` 開頭的行一律凍結），目前為章節「概述」的「| 2026-11-04 | 補記 | - |」（記帳章節含 `<` 或以 `[` 開頭的行一律凍結）；需重新審查\n'
+
+----------------------------------------------------------------------
+Ran 244 tests in 41.588s
+
+FAILED (failures=8)

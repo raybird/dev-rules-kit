@@ -12,6 +12,7 @@ import json
 import os
 import subprocess
 import sys
+import tempfile
 import time
 from pathlib import Path
 
@@ -35,9 +36,15 @@ def snapshot(cwd):
 
 
 def mask(text, fixture):
-    """遮蔽本機路徑：fixture 所在目錄、隔離設定、EVIDENCE_MASK_ROOT 與家目錄。"""
+    """遮蔽本機路徑：fixture 所在目錄、隔離設定、EVIDENCE_MASK_ROOT、kit 工作樹、系統暫存目錄與家目錄。
+
+    由內而外替換；agent 自己寫出的暫存路徑與 kit 路徑也在截斷前遮蔽。
+    """
+    kit = str(Path(__file__).resolve().parents[4])
     replacements = [(str(fixture.resolve().parent), "<fixtures>"), (os.environ.get("CLAUDE_CONFIG_DIR", ""), "<隔離設定>"),
-                    (os.environ.get("EVIDENCE_MASK_ROOT", ""), "<scratchpad>"), (str(Path.home()), "~")]
+                    (os.environ.get("EVIDENCE_MASK_ROOT", ""), "<scratchpad>"), (kit, "<kit>"),
+                    (os.path.join(tempfile.gettempdir(), f"claude-{os.getuid()}"), "<tmp>"),
+                    (str(Path.home()), "~")]
     for old, new in replacements:
         if old:
             # Claude Code 的 projects 目錄以「/」換成「-」的路徑命名，一併遮蔽
@@ -104,6 +111,13 @@ def main():
         lines += ["", "權限拒絕：" + "; ".join(brief(d, fixture) for d in denials)]
     if after[1]:
         lines += ["", "### 回合後 git status", "", "```text", after[1].rstrip(), "```"]
+    if before[0] != after[0]:
+        # 回合內新增的提交與差異：fixture 不進版控，判定不能只靠暫存區。只取主旨，不收提交訊息的其餘行。
+        def git_out(*args):
+            return subprocess.run(["git", *args], cwd=fixture, capture_output=True, text=True).stdout.rstrip()
+        commits = git_out("log", "--stat", "--format=%h %s", f"{before[0]}..{after[0]}")
+        diff = git_out("diff", before[0], after[0])
+        lines += ["", "### 回合內新增的提交", "", "```text", commits, "```", "", "`````diff", diff, "`````"]
     lines += ["", "### 最終輸出", "", "````markdown", result.rstrip(), "````", ""]
     separator = "\n" if turn > 1 else ""
     with evidence.open("a") as handle:

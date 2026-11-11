@@ -1,0 +1,453 @@
+...........F.......FFFFFFFFFFFFFF....................................FFFFFFFFFFFF.....FFFFFFFFFFFFFF..............................................................................................
+======================================================================
+FAIL: test_current_state_note_only_when_relevant (__main__.BookkeepingTests.test_current_state_note_only_when_relevant)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "scripts/test-evidence.py", line 466, in test_current_state_note_only_when_relevant
+    self.assertNotIn('2.5', result.stderr)
+AssertionError: '2.5' unexpectedly found in 'INVALID：docs/issues/issue-1/README.md 的凍結內容與被審查版本不同：被審查版本為章節「Gherkin 驗收劇本」的「    Then 看到結果」（code fence 內容一律凍結），目前為章節「Gherkin 驗收劇本」的「    Then 看到其他結果」（code fence 內容一律凍結）；需重新審查（## 現況 列入記帳區段需要流程契約 2.5 以上）\n'
+
+======================================================================
+FAIL: test_html_and_nested_forms_frozen_in_bookkeeping (__main__.BookkeepingTests.test_html_and_nested_forms_frozen_in_bookkeeping) (extra='- - ```gherkin\n  - Scenario: 新增\n- 下一項')
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "scripts/test-evidence.py", line 448, in test_html_and_nested_forms_frozen_in_bookkeeping
+    self.assertInvalid(self.verify(), mention)
+  File "scripts/test-evidence.py", line 221, in assertInvalid
+    self.assertNotEqual(result.returncode, 0, result.stdout + result.stderr)
+AssertionError: 0 == 0 : OK：被審查提交之後只有記帳變更，原 review 可依其真實判定沿用。變更：新增報告 docs/issues/issue-1/review-aefc7ec.md、Timeline
+
+
+======================================================================
+FAIL: test_html_and_nested_forms_frozen_in_bookkeeping (__main__.BookkeepingTests.test_html_and_nested_forms_frozen_in_bookkeeping) (extra='1. - ```gherkin\n     Scenario: 新增\n2. 下一項')
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "scripts/test-evidence.py", line 448, in test_html_and_nested_forms_frozen_in_bookkeeping
+    self.assertInvalid(self.verify(), mention)
+  File "scripts/test-evidence.py", line 221, in assertInvalid
+    self.assertNotEqual(result.returncode, 0, result.stdout + result.stderr)
+AssertionError: 0 == 0 : OK：被審查提交之後只有記帳變更，原 review 可依其真實判定沿用。變更：新增報告 docs/issues/issue-1/review-aefc7ec.md、Timeline
+
+
+======================================================================
+FAIL: test_html_and_nested_forms_frozen_in_bookkeeping (__main__.BookkeepingTests.test_html_and_nested_forms_frozen_in_bookkeeping) (extra='1. **分級**: Small')
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "scripts/test-evidence.py", line 448, in test_html_and_nested_forms_frozen_in_bookkeeping
+    self.assertInvalid(self.verify(), mention)
+  File "scripts/test-evidence.py", line 221, in assertInvalid
+    self.assertNotEqual(result.returncode, 0, result.stdout + result.stderr)
+AssertionError: 0 == 0 : OK：被審查提交之後只有記帳變更，原 review 可依其真實判定沿用。變更：新增報告 docs/issues/issue-1/review-aefc7ec.md、Timeline
+
+
+======================================================================
+FAIL: test_html_and_nested_forms_frozen_in_bookkeeping (__main__.BookkeepingTests.test_html_and_nested_forms_frozen_in_bookkeeping) (extra='> **分級**: Small')
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "scripts/test-evidence.py", line 448, in test_html_and_nested_forms_frozen_in_bookkeeping
+    self.assertInvalid(self.verify(), mention)
+  File "scripts/test-evidence.py", line 221, in assertInvalid
+    self.assertNotEqual(result.returncode, 0, result.stdout + result.stderr)
+AssertionError: 0 == 0 : OK：被審查提交之後只有記帳變更，原 review 可依其真實判定沿用。變更：新增報告 docs/issues/issue-1/review-aefc7ec.md、Timeline
+
+
+======================================================================
+FAIL: test_html_and_nested_forms_frozen_in_bookkeeping (__main__.BookkeepingTests.test_html_and_nested_forms_frozen_in_bookkeeping) (extra='> ## 驗收條件')
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "scripts/test-evidence.py", line 448, in test_html_and_nested_forms_frozen_in_bookkeeping
+    self.assertInvalid(self.verify(), mention)
+  File "scripts/test-evidence.py", line 221, in assertInvalid
+    self.assertNotEqual(result.returncode, 0, result.stdout + result.stderr)
+AssertionError: 0 == 0 : OK：被審查提交之後只有記帳變更，原 review 可依其真實判定沿用。變更：新增報告 docs/issues/issue-1/review-aefc7ec.md、Timeline
+
+
+======================================================================
+FAIL: test_html_and_nested_forms_frozen_in_bookkeeping (__main__.BookkeepingTests.test_html_and_nested_forms_frozen_in_bookkeeping) (extra='說明 <h2>驗收條件</h2>')
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "scripts/test-evidence.py", line 448, in test_html_and_nested_forms_frozen_in_bookkeeping
+    self.assertInvalid(self.verify(), mention)
+  File "scripts/test-evidence.py", line 221, in assertInvalid
+    self.assertNotEqual(result.returncode, 0, result.stdout + result.stderr)
+AssertionError: 0 == 0 : OK：被審查提交之後只有記帳變更，原 review 可依其真實判定沿用。變更：新增報告 docs/issues/issue-1/review-aefc7ec.md、Timeline
+
+
+======================================================================
+FAIL: test_html_and_nested_forms_frozen_in_bookkeeping (__main__.BookkeepingTests.test_html_and_nested_forms_frozen_in_bookkeeping) (extra='<pre>Scenario: 新增</pre>')
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "scripts/test-evidence.py", line 448, in test_html_and_nested_forms_frozen_in_bookkeeping
+    self.assertInvalid(self.verify(), mention)
+  File "scripts/test-evidence.py", line 221, in assertInvalid
+    self.assertNotEqual(result.returncode, 0, result.stdout + result.stderr)
+AssertionError: 0 == 0 : OK：被審查提交之後只有記帳變更，原 review 可依其真實判定沿用。變更：新增報告 docs/issues/issue-1/review-aefc7ec.md、Timeline
+
+
+======================================================================
+FAIL: test_html_and_nested_forms_frozen_in_bookkeeping (__main__.BookkeepingTests.test_html_and_nested_forms_frozen_in_bookkeeping) (extra='<strong>分級</strong>: Small')
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "scripts/test-evidence.py", line 448, in test_html_and_nested_forms_frozen_in_bookkeeping
+    self.assertInvalid(self.verify(), mention)
+  File "scripts/test-evidence.py", line 221, in assertInvalid
+    self.assertNotEqual(result.returncode, 0, result.stdout + result.stderr)
+AssertionError: 0 == 0 : OK：被審查提交之後只有記帳變更，原 review 可依其真實判定沿用。變更：新增報告 docs/issues/issue-1/review-aefc7ec.md、Timeline
+
+
+======================================================================
+FAIL: test_html_and_nested_forms_frozen_in_bookkeeping (__main__.BookkeepingTests.test_html_and_nested_forms_frozen_in_bookkeeping) (extra='<b>風險</b>: Low')
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "scripts/test-evidence.py", line 448, in test_html_and_nested_forms_frozen_in_bookkeeping
+    self.assertInvalid(self.verify(), mention)
+  File "scripts/test-evidence.py", line 221, in assertInvalid
+    self.assertNotEqual(result.returncode, 0, result.stdout + result.stderr)
+AssertionError: 0 == 0 : OK：被審查提交之後只有記帳變更，原 review 可依其真實判定沿用。變更：新增報告 docs/issues/issue-1/review-aefc7ec.md、Timeline
+
+
+======================================================================
+FAIL: test_html_and_nested_forms_frozen_in_bookkeeping (__main__.BookkeepingTests.test_html_and_nested_forms_frozen_in_bookkeeping) (extra='<custom-note>')
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "scripts/test-evidence.py", line 448, in test_html_and_nested_forms_frozen_in_bookkeeping
+    self.assertInvalid(self.verify(), mention)
+  File "scripts/test-evidence.py", line 221, in assertInvalid
+    self.assertNotEqual(result.returncode, 0, result.stdout + result.stderr)
+AssertionError: 0 == 0 : OK：被審查提交之後只有記帳變更，原 review 可依其真實判定沿用。變更：新增報告 docs/issues/issue-1/review-aefc7ec.md、Timeline
+
+
+======================================================================
+FAIL: test_html_block_hiding_frozen_text_invalid (__main__.BookkeepingTests.test_html_block_hiding_frozen_text_invalid) (opener='<!--', across=False)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "scripts/test-evidence.py", line 429, in test_html_block_hiding_frozen_text_invalid
+    self.assertInvalid(self.verify(), opener)
+  File "scripts/test-evidence.py", line 221, in assertInvalid
+    self.assertNotEqual(result.returncode, 0, result.stdout + result.stderr)
+AssertionError: 0 == 0 : OK：被審查提交之後只有記帳變更，原 review 可依其真實判定沿用。變更：新增報告 docs/issues/issue-1/review-aefc7ec.md、Timeline
+
+
+======================================================================
+FAIL: test_html_block_hiding_frozen_text_invalid (__main__.BookkeepingTests.test_html_block_hiding_frozen_text_invalid) (opener='<!--', across=True)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "scripts/test-evidence.py", line 429, in test_html_block_hiding_frozen_text_invalid
+    self.assertInvalid(self.verify(), opener)
+  File "scripts/test-evidence.py", line 221, in assertInvalid
+    self.assertNotEqual(result.returncode, 0, result.stdout + result.stderr)
+AssertionError: 0 == 0 : OK：被審查提交之後只有記帳變更，原 review 可依其真實判定沿用。變更：新增報告 docs/issues/issue-1/review-aefc7ec.md、Timeline、Gate 豁免紀錄
+
+
+======================================================================
+FAIL: test_html_block_hiding_frozen_text_invalid (__main__.BookkeepingTests.test_html_block_hiding_frozen_text_invalid) (opener='<details><summary>舊規格</summary>', across=False)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "scripts/test-evidence.py", line 429, in test_html_block_hiding_frozen_text_invalid
+    self.assertInvalid(self.verify(), opener)
+  File "scripts/test-evidence.py", line 221, in assertInvalid
+    self.assertNotEqual(result.returncode, 0, result.stdout + result.stderr)
+AssertionError: 0 == 0 : OK：被審查提交之後只有記帳變更，原 review 可依其真實判定沿用。變更：新增報告 docs/issues/issue-1/review-aefc7ec.md、Timeline
+
+
+======================================================================
+FAIL: test_html_block_hiding_frozen_text_invalid (__main__.BookkeepingTests.test_html_block_hiding_frozen_text_invalid) (opener='<details><summary>舊規格</summary>', across=True)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "scripts/test-evidence.py", line 429, in test_html_block_hiding_frozen_text_invalid
+    self.assertInvalid(self.verify(), opener)
+  File "scripts/test-evidence.py", line 221, in assertInvalid
+    self.assertNotEqual(result.returncode, 0, result.stdout + result.stderr)
+AssertionError: 0 == 0 : OK：被審查提交之後只有記帳變更，原 review 可依其真實判定沿用。變更：新增報告 docs/issues/issue-1/review-aefc7ec.md、Timeline、Gate 豁免紀錄
+
+
+======================================================================
+FAIL: test_frozen_forms_inside_current_state_invalid (__main__.CurrentStateTests.test_frozen_forms_inside_current_state_invalid) (extra='<!--', mode='整節新增')
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "scripts/test-evidence.py", line 681, in test_frozen_forms_inside_current_state_invalid
+    self.assertInvalid(self.verify(), mention)
+  File "scripts/test-evidence.py", line 221, in assertInvalid
+    self.assertNotEqual(result.returncode, 0, result.stdout + result.stderr)
+AssertionError: 0 == 0 : OK：被審查提交之後只有記帳變更，原 review 可依其真實判定沿用。變更：新增報告 docs/issues/issue-1/review-228fb23.md、現況、現行 review（（無） → review-228fb23.md）
+
+
+======================================================================
+FAIL: test_frozen_forms_inside_current_state_invalid (__main__.CurrentStateTests.test_frozen_forms_inside_current_state_invalid) (extra='<!--', mode='既有現況')
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "scripts/test-evidence.py", line 688, in test_frozen_forms_inside_current_state_invalid
+    self.assertInvalid(self.verify(), mention)
+  File "scripts/test-evidence.py", line 221, in assertInvalid
+    self.assertNotEqual(result.returncode, 0, result.stdout + result.stderr)
+AssertionError: 0 == 0 : OK：被審查提交之後只有記帳變更，原 review 可依其真實判定沿用。變更：新增報告 docs/issues/issue-1/review-ef03f7a.md、現況
+
+
+======================================================================
+FAIL: test_frozen_forms_inside_current_state_invalid (__main__.CurrentStateTests.test_frozen_forms_inside_current_state_invalid) (extra='<details><summary>舊規格</summary>', mode='整節新增')
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "scripts/test-evidence.py", line 681, in test_frozen_forms_inside_current_state_invalid
+    self.assertInvalid(self.verify(), mention)
+  File "scripts/test-evidence.py", line 221, in assertInvalid
+    self.assertNotEqual(result.returncode, 0, result.stdout + result.stderr)
+AssertionError: 0 == 0 : OK：被審查提交之後只有記帳變更，原 review 可依其真實判定沿用。變更：新增報告 docs/issues/issue-1/review-228fb23.md、現況、現行 review（（無） → review-228fb23.md）
+
+
+======================================================================
+FAIL: test_frozen_forms_inside_current_state_invalid (__main__.CurrentStateTests.test_frozen_forms_inside_current_state_invalid) (extra='<details><summary>舊規格</summary>', mode='既有現況')
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "scripts/test-evidence.py", line 688, in test_frozen_forms_inside_current_state_invalid
+    self.assertInvalid(self.verify(), mention)
+  File "scripts/test-evidence.py", line 221, in assertInvalid
+    self.assertNotEqual(result.returncode, 0, result.stdout + result.stderr)
+AssertionError: 0 == 0 : OK：被審查提交之後只有記帳變更，原 review 可依其真實判定沿用。變更：新增報告 docs/issues/issue-1/review-ef03f7a.md、現況
+
+
+======================================================================
+FAIL: test_frozen_forms_inside_current_state_invalid (__main__.CurrentStateTests.test_frozen_forms_inside_current_state_invalid) (extra='- - ```gherkin\n  - Scenario: 新增\n- 下一項', mode='整節新增')
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "scripts/test-evidence.py", line 681, in test_frozen_forms_inside_current_state_invalid
+    self.assertInvalid(self.verify(), mention)
+  File "scripts/test-evidence.py", line 221, in assertInvalid
+    self.assertNotEqual(result.returncode, 0, result.stdout + result.stderr)
+AssertionError: 0 == 0 : OK：被審查提交之後只有記帳變更，原 review 可依其真實判定沿用。變更：新增報告 docs/issues/issue-1/review-228fb23.md、現況、現行 review（（無） → review-228fb23.md）
+
+
+======================================================================
+FAIL: test_frozen_forms_inside_current_state_invalid (__main__.CurrentStateTests.test_frozen_forms_inside_current_state_invalid) (extra='- - ```gherkin\n  - Scenario: 新增\n- 下一項', mode='既有現況')
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "scripts/test-evidence.py", line 688, in test_frozen_forms_inside_current_state_invalid
+    self.assertInvalid(self.verify(), mention)
+  File "scripts/test-evidence.py", line 221, in assertInvalid
+    self.assertNotEqual(result.returncode, 0, result.stdout + result.stderr)
+AssertionError: 0 == 0 : OK：被審查提交之後只有記帳變更，原 review 可依其真實判定沿用。變更：新增報告 docs/issues/issue-1/review-ef03f7a.md、現況
+
+
+======================================================================
+FAIL: test_frozen_forms_inside_current_state_invalid (__main__.CurrentStateTests.test_frozen_forms_inside_current_state_invalid) (extra='1. **分級**: Small', mode='整節新增')
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "scripts/test-evidence.py", line 681, in test_frozen_forms_inside_current_state_invalid
+    self.assertInvalid(self.verify(), mention)
+  File "scripts/test-evidence.py", line 221, in assertInvalid
+    self.assertNotEqual(result.returncode, 0, result.stdout + result.stderr)
+AssertionError: 0 == 0 : OK：被審查提交之後只有記帳變更，原 review 可依其真實判定沿用。變更：新增報告 docs/issues/issue-1/review-228fb23.md、現況、現行 review（（無） → review-228fb23.md）
+
+
+======================================================================
+FAIL: test_frozen_forms_inside_current_state_invalid (__main__.CurrentStateTests.test_frozen_forms_inside_current_state_invalid) (extra='1. **分級**: Small', mode='既有現況')
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "scripts/test-evidence.py", line 688, in test_frozen_forms_inside_current_state_invalid
+    self.assertInvalid(self.verify(), mention)
+  File "scripts/test-evidence.py", line 221, in assertInvalid
+    self.assertNotEqual(result.returncode, 0, result.stdout + result.stderr)
+AssertionError: 0 == 0 : OK：被審查提交之後只有記帳變更，原 review 可依其真實判定沿用。變更：新增報告 docs/issues/issue-1/review-ef03f7a.md、現況
+
+
+======================================================================
+FAIL: test_frozen_forms_inside_current_state_invalid (__main__.CurrentStateTests.test_frozen_forms_inside_current_state_invalid) (extra='> **分級**: Small', mode='整節新增')
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "scripts/test-evidence.py", line 681, in test_frozen_forms_inside_current_state_invalid
+    self.assertInvalid(self.verify(), mention)
+  File "scripts/test-evidence.py", line 221, in assertInvalid
+    self.assertNotEqual(result.returncode, 0, result.stdout + result.stderr)
+AssertionError: 0 == 0 : OK：被審查提交之後只有記帳變更，原 review 可依其真實判定沿用。變更：新增報告 docs/issues/issue-1/review-228fb23.md、現況、現行 review（（無） → review-228fb23.md）
+
+
+======================================================================
+FAIL: test_frozen_forms_inside_current_state_invalid (__main__.CurrentStateTests.test_frozen_forms_inside_current_state_invalid) (extra='> **分級**: Small', mode='既有現況')
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "scripts/test-evidence.py", line 688, in test_frozen_forms_inside_current_state_invalid
+    self.assertInvalid(self.verify(), mention)
+  File "scripts/test-evidence.py", line 221, in assertInvalid
+    self.assertNotEqual(result.returncode, 0, result.stdout + result.stderr)
+AssertionError: 0 == 0 : OK：被審查提交之後只有記帳變更，原 review 可依其真實判定沿用。變更：新增報告 docs/issues/issue-1/review-59193fd.md、現況
+
+
+======================================================================
+FAIL: test_frozen_forms_inside_current_state_invalid (__main__.CurrentStateTests.test_frozen_forms_inside_current_state_invalid) (extra='<pre>AC-9</pre>', mode='整節新增')
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "scripts/test-evidence.py", line 681, in test_frozen_forms_inside_current_state_invalid
+    self.assertInvalid(self.verify(), mention)
+  File "scripts/test-evidence.py", line 221, in assertInvalid
+    self.assertNotEqual(result.returncode, 0, result.stdout + result.stderr)
+AssertionError: 0 == 0 : OK：被審查提交之後只有記帳變更，原 review 可依其真實判定沿用。變更：新增報告 docs/issues/issue-1/review-228fb23.md、現況、現行 review（（無） → review-228fb23.md）
+
+
+======================================================================
+FAIL: test_frozen_forms_inside_current_state_invalid (__main__.CurrentStateTests.test_frozen_forms_inside_current_state_invalid) (extra='<pre>AC-9</pre>', mode='既有現況')
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "scripts/test-evidence.py", line 688, in test_frozen_forms_inside_current_state_invalid
+    self.assertInvalid(self.verify(), mention)
+  File "scripts/test-evidence.py", line 221, in assertInvalid
+    self.assertNotEqual(result.returncode, 0, result.stdout + result.stderr)
+AssertionError: 0 == 0 : OK：被審查提交之後只有記帳變更，原 review 可依其真實判定沿用。變更：新增報告 docs/issues/issue-1/review-59193fd.md、現況
+
+
+======================================================================
+FAIL: test_html_and_nested_forms_frozen_in_bookkeeping (__main__.CurrentStateTests.test_html_and_nested_forms_frozen_in_bookkeeping) (extra='- - ```gherkin\n  - Scenario: 新增\n- 下一項')
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "scripts/test-evidence.py", line 448, in test_html_and_nested_forms_frozen_in_bookkeeping
+    self.assertInvalid(self.verify(), mention)
+  File "scripts/test-evidence.py", line 221, in assertInvalid
+    self.assertNotEqual(result.returncode, 0, result.stdout + result.stderr)
+AssertionError: 0 == 0 : OK：被審查提交之後只有記帳變更，原 review 可依其真實判定沿用。變更：新增報告 docs/issues/issue-1/review-cdfafa5.md、Timeline
+
+
+======================================================================
+FAIL: test_html_and_nested_forms_frozen_in_bookkeeping (__main__.CurrentStateTests.test_html_and_nested_forms_frozen_in_bookkeeping) (extra='1. - ```gherkin\n     Scenario: 新增\n2. 下一項')
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "scripts/test-evidence.py", line 448, in test_html_and_nested_forms_frozen_in_bookkeeping
+    self.assertInvalid(self.verify(), mention)
+  File "scripts/test-evidence.py", line 221, in assertInvalid
+    self.assertNotEqual(result.returncode, 0, result.stdout + result.stderr)
+AssertionError: 0 == 0 : OK：被審查提交之後只有記帳變更，原 review 可依其真實判定沿用。變更：新增報告 docs/issues/issue-1/review-cdfafa5.md、Timeline
+
+
+======================================================================
+FAIL: test_html_and_nested_forms_frozen_in_bookkeeping (__main__.CurrentStateTests.test_html_and_nested_forms_frozen_in_bookkeeping) (extra='1. **分級**: Small')
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "scripts/test-evidence.py", line 448, in test_html_and_nested_forms_frozen_in_bookkeeping
+    self.assertInvalid(self.verify(), mention)
+  File "scripts/test-evidence.py", line 221, in assertInvalid
+    self.assertNotEqual(result.returncode, 0, result.stdout + result.stderr)
+AssertionError: 0 == 0 : OK：被審查提交之後只有記帳變更，原 review 可依其真實判定沿用。變更：新增報告 docs/issues/issue-1/review-cdfafa5.md、Timeline
+
+
+======================================================================
+FAIL: test_html_and_nested_forms_frozen_in_bookkeeping (__main__.CurrentStateTests.test_html_and_nested_forms_frozen_in_bookkeeping) (extra='> **分級**: Small')
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "scripts/test-evidence.py", line 448, in test_html_and_nested_forms_frozen_in_bookkeeping
+    self.assertInvalid(self.verify(), mention)
+  File "scripts/test-evidence.py", line 221, in assertInvalid
+    self.assertNotEqual(result.returncode, 0, result.stdout + result.stderr)
+AssertionError: 0 == 0 : OK：被審查提交之後只有記帳變更，原 review 可依其真實判定沿用。變更：新增報告 docs/issues/issue-1/review-cdfafa5.md、Timeline
+
+
+======================================================================
+FAIL: test_html_and_nested_forms_frozen_in_bookkeeping (__main__.CurrentStateTests.test_html_and_nested_forms_frozen_in_bookkeeping) (extra='> ## 驗收條件')
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "scripts/test-evidence.py", line 448, in test_html_and_nested_forms_frozen_in_bookkeeping
+    self.assertInvalid(self.verify(), mention)
+  File "scripts/test-evidence.py", line 221, in assertInvalid
+    self.assertNotEqual(result.returncode, 0, result.stdout + result.stderr)
+AssertionError: 0 == 0 : OK：被審查提交之後只有記帳變更，原 review 可依其真實判定沿用。變更：新增報告 docs/issues/issue-1/review-cdfafa5.md、Timeline
+
+
+======================================================================
+FAIL: test_html_and_nested_forms_frozen_in_bookkeeping (__main__.CurrentStateTests.test_html_and_nested_forms_frozen_in_bookkeeping) (extra='說明 <h2>驗收條件</h2>')
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "scripts/test-evidence.py", line 448, in test_html_and_nested_forms_frozen_in_bookkeeping
+    self.assertInvalid(self.verify(), mention)
+  File "scripts/test-evidence.py", line 221, in assertInvalid
+    self.assertNotEqual(result.returncode, 0, result.stdout + result.stderr)
+AssertionError: 0 == 0 : OK：被審查提交之後只有記帳變更，原 review 可依其真實判定沿用。變更：新增報告 docs/issues/issue-1/review-cdfafa5.md、Timeline
+
+
+======================================================================
+FAIL: test_html_and_nested_forms_frozen_in_bookkeeping (__main__.CurrentStateTests.test_html_and_nested_forms_frozen_in_bookkeeping) (extra='<pre>Scenario: 新增</pre>')
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "scripts/test-evidence.py", line 448, in test_html_and_nested_forms_frozen_in_bookkeeping
+    self.assertInvalid(self.verify(), mention)
+  File "scripts/test-evidence.py", line 221, in assertInvalid
+    self.assertNotEqual(result.returncode, 0, result.stdout + result.stderr)
+AssertionError: 0 == 0 : OK：被審查提交之後只有記帳變更，原 review 可依其真實判定沿用。變更：新增報告 docs/issues/issue-1/review-cdfafa5.md、Timeline
+
+
+======================================================================
+FAIL: test_html_and_nested_forms_frozen_in_bookkeeping (__main__.CurrentStateTests.test_html_and_nested_forms_frozen_in_bookkeeping) (extra='<strong>分級</strong>: Small')
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "scripts/test-evidence.py", line 448, in test_html_and_nested_forms_frozen_in_bookkeeping
+    self.assertInvalid(self.verify(), mention)
+  File "scripts/test-evidence.py", line 221, in assertInvalid
+    self.assertNotEqual(result.returncode, 0, result.stdout + result.stderr)
+AssertionError: 0 == 0 : OK：被審查提交之後只有記帳變更，原 review 可依其真實判定沿用。變更：新增報告 docs/issues/issue-1/review-cdfafa5.md、Timeline
+
+
+======================================================================
+FAIL: test_html_and_nested_forms_frozen_in_bookkeeping (__main__.CurrentStateTests.test_html_and_nested_forms_frozen_in_bookkeeping) (extra='<b>風險</b>: Low')
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "scripts/test-evidence.py", line 448, in test_html_and_nested_forms_frozen_in_bookkeeping
+    self.assertInvalid(self.verify(), mention)
+  File "scripts/test-evidence.py", line 221, in assertInvalid
+    self.assertNotEqual(result.returncode, 0, result.stdout + result.stderr)
+AssertionError: 0 == 0 : OK：被審查提交之後只有記帳變更，原 review 可依其真實判定沿用。變更：新增報告 docs/issues/issue-1/review-cdfafa5.md、Timeline
+
+
+======================================================================
+FAIL: test_html_and_nested_forms_frozen_in_bookkeeping (__main__.CurrentStateTests.test_html_and_nested_forms_frozen_in_bookkeeping) (extra='<custom-note>')
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "scripts/test-evidence.py", line 448, in test_html_and_nested_forms_frozen_in_bookkeeping
+    self.assertInvalid(self.verify(), mention)
+  File "scripts/test-evidence.py", line 221, in assertInvalid
+    self.assertNotEqual(result.returncode, 0, result.stdout + result.stderr)
+AssertionError: 0 == 0 : OK：被審查提交之後只有記帳變更，原 review 可依其真實判定沿用。變更：新增報告 docs/issues/issue-1/review-cdfafa5.md、Timeline
+
+
+======================================================================
+FAIL: test_html_block_hiding_frozen_text_invalid (__main__.CurrentStateTests.test_html_block_hiding_frozen_text_invalid) (opener='<!--', across=False)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "scripts/test-evidence.py", line 429, in test_html_block_hiding_frozen_text_invalid
+    self.assertInvalid(self.verify(), opener)
+  File "scripts/test-evidence.py", line 221, in assertInvalid
+    self.assertNotEqual(result.returncode, 0, result.stdout + result.stderr)
+AssertionError: 0 == 0 : OK：被審查提交之後只有記帳變更，原 review 可依其真實判定沿用。變更：新增報告 docs/issues/issue-1/review-52f9041.md、Timeline
+
+
+======================================================================
+FAIL: test_html_block_hiding_frozen_text_invalid (__main__.CurrentStateTests.test_html_block_hiding_frozen_text_invalid) (opener='<!--', across=True)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "scripts/test-evidence.py", line 429, in test_html_block_hiding_frozen_text_invalid
+    self.assertInvalid(self.verify(), opener)
+  File "scripts/test-evidence.py", line 221, in assertInvalid
+    self.assertNotEqual(result.returncode, 0, result.stdout + result.stderr)
+AssertionError: 0 == 0 : OK：被審查提交之後只有記帳變更，原 review 可依其真實判定沿用。變更：新增報告 docs/issues/issue-1/review-52f9041.md、Timeline、Gate 豁免紀錄
+
+
+======================================================================
+FAIL: test_html_block_hiding_frozen_text_invalid (__main__.CurrentStateTests.test_html_block_hiding_frozen_text_invalid) (opener='<details><summary>舊規格</summary>', across=False)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "scripts/test-evidence.py", line 429, in test_html_block_hiding_frozen_text_invalid
+    self.assertInvalid(self.verify(), opener)
+  File "scripts/test-evidence.py", line 221, in assertInvalid
+    self.assertNotEqual(result.returncode, 0, result.stdout + result.stderr)
+AssertionError: 0 == 0 : OK：被審查提交之後只有記帳變更，原 review 可依其真實判定沿用。變更：新增報告 docs/issues/issue-1/review-52f9041.md、Timeline
+
+
+======================================================================
+FAIL: test_html_block_hiding_frozen_text_invalid (__main__.CurrentStateTests.test_html_block_hiding_frozen_text_invalid) (opener='<details><summary>舊規格</summary>', across=True)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "scripts/test-evidence.py", line 429, in test_html_block_hiding_frozen_text_invalid
+    self.assertInvalid(self.verify(), opener)
+  File "scripts/test-evidence.py", line 221, in assertInvalid
+    self.assertNotEqual(result.returncode, 0, result.stdout + result.stderr)
+AssertionError: 0 == 0 : OK：被審查提交之後只有記帳變更，原 review 可依其真實判定沿用。變更：新增報告 docs/issues/issue-1/review-52f9041.md、Timeline、Gate 豁免紀錄
+
+
+----------------------------------------------------------------------
+Ran 159 tests in 17.352s
+
+FAILED (failures=41)

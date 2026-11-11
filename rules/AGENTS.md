@@ -120,6 +120,8 @@ If verification cannot be fully automated, provide explicit manual steps.
 
 **Not every task ends in a merge, and "no new commits" does not mean stuck.** Waiting on an external verification window (a weekly batch night, a month-end close, a reconciliation date, the next release) and a deliberate decision not to fix are both legitimate states: record the expected window and what will be observed, or the rationale and how it will be tracked. Neither may be used to hide verification that could already have been done.
 
+**External state is whatever a live check says.** Merge, push, deployment, platform issue/PR status, and similar state that other people or other processes can change: any value found in documents, memory, or someone else's report is a dated lead. Re-check it with a verification command before stating it or acting on it; when the result differs from the lead, go with the check and point out the difference. When it cannot be checked, say so and cite where the lead came from and when.
+
 ---
 
 ## 7. Issue Workflow and Evidence

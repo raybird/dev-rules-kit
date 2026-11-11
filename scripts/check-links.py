@@ -20,8 +20,9 @@ def check_file(md_path, root):
     errors = []
     with open(md_path, encoding='utf-8') as f:
         content = f.read()
-    # 移除程式碼區塊，避免把範例當成連結
+    # 移除程式碼區塊與行內 code，避免把範例當成連結
     content = re.sub(r'```.*?```', '', content, flags=re.DOTALL)
+    content = re.sub(r'`[^`\n]*`', '', content)
     for target in LINK_RE.findall(content):
         target = target.split('#')[0].strip()
         if not target or '://' in target or target.startswith('mailto:'):
