@@ -313,6 +313,15 @@
 
 WF-28b 不通過的原因是 issue-0002 fixture 本身的錯誤：S1 證據寫 4 個測試，fixture 的 `test_todo.py` 只有 3 個。前幾輪的 agent 沒有發現，這一輪發現並更正。檢查器判定與 agent 後續的重審都符合規則，與 S16 的修改無關；更正前沒有先說明會讓 PASS 失效，屬 [#4](https://github.com/raybird/dev-rules-kit/issues/4) 的範圍。沒有為了取得通過而加跑；fixture 的錯誤留待 #4 修 fixture 時一併處理，避免改變前幾輪的可比性。
 
+## 結案（2026-11-11）
+
+第十輪覆審 [review-b36de31](review-b36de31.md) 判 PASS，報告提交 `c5764dc` 經 `verify-artifact.py` 確認只動記帳區段。依使用者 2026-11-11「只在本機合併，先不推送」，以 `--no-ff` 合併到本機 main（merge commit `3ce55e0`），保留分支歷史：文件大量引用分支上的 SHA（核准 commit、十份報告的被審查版本、重跑前寫定判準的提交），squash 後無法查證。合併前確認分支歷史新增的行沒有本機路徑，提交訊息沒有 AI 署名。尚未推送與發布 v4.10.0，狀態記在 README `## 現況`，GitHub #3 維持開啟。
+
+後續去向：
+- [#4](https://github.com/raybird/dev-rules-kit/issues/4)：審查之後提交記帳以外的檔案時先說明會讓 PASS 失效；issue-0002 fixture 的測試數誤記一併更正。
+- [#5](https://github.com/raybird/dev-rules-kit/issues/5)：V3、V4、V6、V7 與 R9-1～R9-3，以及依 TBD-7 之後找到的同類寫法。
+- review-b36de31 的 4 項 NICE TO HAVE 留在報告：錯誤訊息在續行重開時指向第一個開頭行、CHANGELOG「下游更新」未提凍結章節的未關閉開頭、S16 少兩列證據（reviewer 已自行驗證相符）、rule-verification-status 未提 S16 的 WF-28b 不通過。
+
 ## 測試策略
 
 腳本判定以 `test-evidence.py` 在拋棄式 Git repo 實跑真實命令。agent 是否先查證、是否只讀現行 review、掃描是否如實回報，只能以宿主新 session 實跑驗證，靜態檢查與腳本測試不能代替（根目錄 AGENTS.md）。實跑沿用隔離設定：以 scratchpad 為 HOME 安裝工作樹技能，`CLAUDE_CONFIG_DIR` 指向該處，不動全域技能；fixture 含真實可執行的查證命令與實作；測試 agent 只收到 fixture 與使用者輸入，不給預期答案。
