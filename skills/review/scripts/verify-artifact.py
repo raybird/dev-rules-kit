@@ -122,12 +122,17 @@ def setext_underline(line, previous):
 
 
 def cells(line):
-    return len(re.split(r'(?<!\\)\|', line.strip('|')))
+    """GFM 只去掉頭尾各一個 `|`；`\\|` 的算法各渲染器不同，回傳 None 不當表格。"""
+    if '\\|' in line:
+        return None
+    body = line[1:] if line.startswith('|') else line
+    return len((body[:-1] if body.endswith('|') else body).split('|'))
 
 
 def starts_table(line, following):
     """表頭與欄數相同的分隔列都以 `|` 開頭才算表格；其他寫法照段落處理（凍結得較多）。"""
-    return line.startswith('|') and bool(DELIMITER_ROW.match(following)) and cells(line) == cells(following)
+    return line.startswith('|') and bool(DELIMITER_ROW.match(following)) \
+        and cells(line) is not None and cells(line) == cells(following)
 
 
 def analyse(text, bookkeeping_sections):
@@ -139,7 +144,7 @@ def analyse(text, bookkeeping_sections):
     """
     frozen, fields, sections, headings = [], [], {}, []
     section, fence, loose, previous = '（標題前）', None, False, ''
-    comment, table = False, False
+    comment, table, head = False, False, None
     block = []  # 記帳章節目前的段落：(凍結項目或 None, 原行)
 
     def keep(entry, line=None):
@@ -200,7 +205,10 @@ def analyse(text, bookkeeping_sections):
             continue
         if section in bookkeeping_sections:
             following = lines[index + 1] if index + 1 < len(lines) else ''
-            table = line.startswith('|') if table else not block and starts_table(line, following)
+            if table:
+                table = line.startswith('|')
+            elif not block and starts_table(line, following):
+                table, head = True, f'{line} {following}'
         if LOOSE_HEADING.match(line):
             keep((section, 'heading', line))
         elif setext_underline(line, previous):
@@ -224,6 +232,9 @@ def analyse(text, bookkeeping_sections):
             else:
                 keep(None if section in bookkeeping_sections else (section, 'line', line), line)
         if table:
+            if any(entry for entry, _ in block):
+                # 表頭與分隔列決定凍結列渲染幾欄，表格含凍結列時一併凍結
+                frozen.append((section, 'table', head))
             flush(None)
         previous = line
     if block:
@@ -237,6 +248,8 @@ def describe(entry):
     section, kind, text = entry[:3]
     if kind == 'end':
         return f'章節「{section}」含凍結內容的段落結尾（{text}）'
+    if kind == 'table':
+        return f'章節「{section}」含凍結列的表格的表頭與分隔列「{text}」（表格含凍結列時一併凍結）'
     if kind == 'paragraph':
         return f'章節「{section}」的「{text}」（與「{entry[3]}」同一段落，記帳章節含凍結內容的段落整段凍結）'
     suffix = {'fence': '（code fence 內容一律凍結）', 'html': '（記帳章節含 `<` 或以 `[` 開頭的行一律凍結）'}.get(kind, '')

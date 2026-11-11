@@ -621,6 +621,43 @@ class BookkeepingTests(unittest.TestCase):
         self.commit('drop delimiter row')
         self.assertInvalid(self.verify(), '同一段落')
 
+    def test_table_head_frozen_with_frozen_row(self):
+        # 表頭與分隔列決定凍結列渲染幾欄、是不是表格（review-20d0847）。
+        frozen_row = '| 2026-11-04 | 改用 `<details>` | - |'
+        head = '| 日期 | 異動 | 負責人 |\n|---|---|---|'
+        self.reviewed_with(self.TIMELINE_ROW + '\n', f'{self.TIMELINE_ROW}\n{frozen_row}\n')
+        for new_head in ('|| 日期 | 異動 | 負責人 |\n|---|---|---|', '| 日期 | 異動 |\n|---|---|',
+                         '| 日期 | 異動 | 負責人 ||\n|---|---|---|'):
+            with self.subTest(head=new_head):
+                self.git('reset', '-q', '--hard', self.reviewed)
+                self.add_report()
+                self.edit(head, new_head)
+                self.edit(frozen_row, '| 2026-11-03 | 補記 ` | - |\n' + frozen_row)
+                self.commit('change table head')
+                self.assertInvalid(self.verify(), '需重新審查')
+
+    def test_rows_without_gfm_table_freeze_as_paragraph(self):
+        # 欄數照 GFM 算（頭尾各去一個 `|`，含 `\|` 不當表格），不是表格或表格緊接在段落後時照段落處理。
+        frozen_row = '| 2026-11-04 | 改用 `<details>` | - |'
+        head = '| 日期 | 異動 | 負責人 |\n|---|---|---|'
+        base = self.reviewed
+        for old, new in ((head, '|| 日期 | 異動 | 負責人 |\n|---|---|---|'),
+                         (head, '| 日期 | 異動 | 負責人 ||\n|---|---|---|'),
+                         (head, '| 日期 \\| 異動 | 負責人 |\n|---|---|---|'),
+                         (head, '| 日期 | 異動 | 負責人 |\n|---|---|'),
+                         ('## Timeline\n\n' + head, '## Timeline\n\n說明 `<x>`\n' + head)):
+            with self.subTest(head=new):
+                self.git('reset', '-q', '--hard', base)
+                self.edit(self.TIMELINE_ROW + '\n', f'{self.TIMELINE_ROW}\n{frozen_row}\n')
+                self.edit(old, new)
+                self.commit('reviewed variant')
+                self.reviewed = self.git('rev-parse', 'HEAD')
+                self.report = f'{self.ISSUE}/review-{self.reviewed[:7]}.md'
+                self.add_report()
+                self.edit(frozen_row, frozen_row + '\n| 2026-11-05 | 補記 | - |')
+                self.commit('append row')
+                self.assertInvalid(self.verify(), '同一段落')
+
     def test_extra_blank_line_in_frozen_section_valid(self):
         # 連續空行渲染相同，合併後比對（review-ac2183c SHOULD FIX 1）。
         self.add_report()
