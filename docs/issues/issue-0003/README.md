@@ -11,7 +11,7 @@
 
 ## 現況
 
-**現行 review**: review-acd488f.md
+**現行 review**: review-4d0df5c.md
 
 ## 文件清單
 
@@ -161,6 +161,7 @@ Feature: issue 現況以實查為準，狀態副本不再被當成權威
 | 2026-11-11 | 獨立覆審 RETURN TO execute-task（review-acd488f.md）：MUST FIX 1 項（記帳章節仍有寫法能藏住凍結章節，例如 `<details` 換行、未追蹤的多行註解），SHOULD FIX 5 項（其一需決策） | Claude Code |
 | 2026-11-11 | 使用者對覆審的需決策項目選擇建議答案（TBD-5，另開 #4） | 使用者 |
 | 2026-11-11 | S9：依覆審修正（`b2f321f`）；重跑 wf29、wf31、WF-28b 通過，wf30c 未執行檢查器，wf32 4 輪 3 輪通過（不穩定） | Claude Code |
+| 2026-11-11 | 第三輪獨立覆審 RETURN TO execute-task（review-4d0df5c.md）：MUST FIX 2 項（允許清單的 `<br>`／行首註解會開出 HTML 區塊；code span 判定與渲染器不一致），SHOULD FIX 2 項 | Claude Code |
 
 ---
 **建立日期**: 2026-11-10
