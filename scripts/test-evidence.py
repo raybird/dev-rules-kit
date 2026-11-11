@@ -568,6 +568,18 @@ class BookkeepingTests(unittest.TestCase):
         self.commit('edit text inside reopened comment')
         self.assertInvalid(self.verify(), '說明')
 
+    def test_html_block_closer_without_lt_stays_frozen(self):
+        # 處理指令、宣告與 CDATA 的結束字串不含 `<`，跨空行的結束行也要凍結（review-73202f8）。
+        base = self.reviewed
+        for opener, closer in (('<?php', '?>'), ('<!DOCTYPE x', '>'), ('<![CDATA[', ']]>'), ('<!--', '-->')):
+            with self.subTest(opener=opener):
+                self.git('reset', '-q', '--hard', base)
+                self.reviewed_with(self.TIMELINE_ROW + '\n', f'{self.TIMELINE_ROW}\n\n{opener}\n\n說明 {closer}\n')
+                self.add_report()
+                self.edit(f'說明 {closer}', '說明')
+                self.commit('drop html block closer')
+                self.assertInvalid(self.verify(), '說明')
+
     def test_inline_span_across_frozen_paragraph_invalid(self):
         # 連結 title、圖片 alt、code span 可以跨行，記帳行能把檔尾 metadata 包進去（review-ac2183c）。
         for opener, closer in (('[補記](https://example.com/x "', '")'), ('![圖', '](https://example.com/a.png)'),
@@ -645,6 +657,7 @@ class BookkeepingTests(unittest.TestCase):
                          (head, '| 日期 | 異動 | 負責人 ||\n|---|---|---|'),
                          (head, '| 日期 \\| 異動 | 負責人 |\n|---|---|---|'),
                          (head, '| 日期 | 異動 | 負責人 |\n|---|---|'),
+                         (head, '| 日期 | 異動 | 負責人\n|---|---|---|'),
                          ('## Timeline\n\n' + head, '## Timeline\n\n說明 `<x>`\n' + head)):
             with self.subTest(head=new):
                 self.git('reset', '-q', '--hard', base)

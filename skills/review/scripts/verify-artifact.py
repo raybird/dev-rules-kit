@@ -106,8 +106,23 @@ def html(line):
     return content.startswith('<') or '<' in LINE_BREAK.sub(' ', content)
 
 
-def opens_comment(text):
-    return text.rfind('<!--') > text.rfind('-->')
+HTML_OPENER = re.compile(r'<!--|<!\[CDATA\[|<\?|<![A-Za-z]')
+HTML_CLOSER = {'<!--': '-->', '<![CDATA[': ']]>', '<?': '?>'}
+
+
+def unclosed(text, closer=None):
+    """回傳 text 結束時仍未關閉的註解、處理指令、CDATA 或宣告的結束字串；這些 HTML 區塊可以跨空行。"""
+    pos = 0
+    while True:
+        if closer:
+            end = text.find(closer, pos)
+            if end < 0:
+                return closer
+            pos, closer = end + len(closer), None
+        match = HTML_OPENER.search(text, pos)
+        if not match:
+            return None
+        closer, pos = HTML_CLOSER.get(match.group(), '>'), match.end()
 
 
 def setext_underline(line, previous):
@@ -148,7 +163,7 @@ def analyse(text, bookkeeping_sections):
     """
     frozen, fields, sections, headings = [], [], {}, []
     section, fence, loose, previous = '（標題前）', None, False, ''
-    comment, table, head = False, False, None
+    comment, table, head = None, False, None
     block = []  # 記帳章節目前的段落：(凍結項目或 None, 原行)
 
     def keep(entry, line=None):
@@ -173,7 +188,7 @@ def analyse(text, bookkeeping_sections):
     for index, line in enumerate(lines):
         if comment:
             keep((section, 'html', line))
-            comment = '-->' not in line or opens_comment(line[line.index('-->') + 3:])
+            comment = unclosed(line, comment)
             previous = line
             continue
         if fence:
@@ -222,7 +237,7 @@ def analyse(text, bookkeeping_sections):
             keep((section, 'heading', line))
         elif html(line) or LINK_DEFINITION.match(line):
             keep((section, 'html', line))
-            comment = opens_comment(line)
+            comment = unclosed(line)
         else:
             field = FIELD.match(line)
             name = field.group(1).strip() if field else None
