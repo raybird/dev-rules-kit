@@ -222,6 +222,10 @@ class BookkeepingTests(unittest.TestCase):
         for mention in mentions:
             self.assertIn(mention, result.stderr)
 
+    def assertBookkeepingValid(self, result):
+        """新增報告以外還有其他變更的有效案例；流程契約 2.3 以下只允許新增報告，由子類別改判。"""
+        self.assertValid(result, '新增報告')
+
     def derive_baseline(self, ref):
         # Run the literal second command shipped in acceptance.md.
         blocks = (ROOT / 'docs/agents/acceptance.md').read_text().split('```bash\n')
@@ -494,7 +498,10 @@ class BookkeepingTests(unittest.TestCase):
                           ('- <br>', '<br>'),
                           ('> [spec]: https://example.com/new', '[spec]'),
                           ('- [x foo\n]: https://example.com/new', '[x foo'),
-                          ('[!NOTE]: https://example.com/new', '[!NOTE]'))
+                          ('[!NOTE]: https://example.com/new', '[!NOTE]'),
+                          # review-ac2183c：任務清單與行內連結的放行不能涵蓋參照定義。
+                          ('[x]: https://example.com/new', '[x]'),
+                          ('[a\\](b]: https://example.com/new', '[a\\](b]'))
 
     def test_split_and_unlisted_html_frozen_in_bookkeeping(self):
         for extra, mention in self.SPLIT_AND_UNLISTED:
@@ -560,6 +567,66 @@ class BookkeepingTests(unittest.TestCase):
         self.edit('舊的說明', '新的說明')
         self.commit('edit text inside reopened comment')
         self.assertInvalid(self.verify(), '說明')
+
+    def test_inline_span_across_frozen_paragraph_invalid(self):
+        # 連結 title、圖片 alt、code span 可以跨行，記帳行能把檔尾 metadata 包進去（review-ac2183c）。
+        for opener, closer in (('[補記](https://example.com/x "', '")'), ('![圖', '](https://example.com/a.png)'),
+                               ('補記 `', '`')):
+            with self.subTest(opener=opener):
+                self.git('reset', '-q', '--hard', self.reviewed)
+                self.add_report()
+                self.add_to_timeline(opener)
+                path = self.repo / f'{self.ISSUE}/README.md'
+                path.write_text(path.read_text() + closer + '\n')
+                self.commit('inline span swallowing metadata')
+                self.assertInvalid(self.verify(), '同一段落')
+
+    def test_backtick_before_frozen_code_span_invalid(self):
+        self.reviewed_with(self.TIMELINE_ROW + '\n', self.TIMELINE_ROW + '\n\n用 `<details>` 收合舊說明。\n')
+        self.add_report()
+        self.edit('用 `<details>`', '補記 `\n用 `<details>`')
+        self.commit('lone backtick before frozen code span')
+        self.assertInvalid(self.verify(), '<details>')
+
+    def test_blank_line_after_frozen_html_in_bookkeeping_invalid(self):
+        self.reviewed_with(self.TIMELINE_ROW + '\n', self.TIMELINE_ROW + '\n\n<div id="x"></div>\n')
+        self.add_report()
+        self.edit('<div id="x"></div>\n\n', '<div id="x"></div>\n')
+        self.commit('drop blank line after html block')
+        self.assertInvalid(self.verify(), '段落結尾')
+
+    def test_append_to_paragraph_with_frozen_line(self):
+        self.reviewed_with(self.TIMELINE_ROW + '\n', self.TIMELINE_ROW + '\n\n- **補充**：舊說明\n- 第二項\n')
+        for extra, valid in (('- 第二項\n- 第三項', False), ('- 第二項\n\n- 第三項', True)):
+            with self.subTest(valid=valid):
+                self.git('reset', '-q', '--hard', self.reviewed)
+                self.add_report()
+                self.edit('- 第二項', extra)
+                self.commit('append after frozen bold line')
+                if valid:
+                    self.assertBookkeepingValid(self.verify())
+                else:
+                    self.assertInvalid(self.verify(), '同一段落')
+
+    def test_rows_after_frozen_table_row_valid(self):
+        # 表格每一列各自解析行內語法：含 `<` 的列凍結，同一張表的其他列照常記帳。
+        frozen_row = '| 2026-11-04 | 改用 `<details>` | - |'
+        self.reviewed_with(self.TIMELINE_ROW + '\n', f'{self.TIMELINE_ROW}\n{frozen_row}\n')
+        self.add_report()
+        self.edit(frozen_row, frozen_row + '\n| 2026-11-05 | 補記 | - |')
+        self.commit('append row after frozen row')
+        self.assertBookkeepingValid(self.verify())
+        # 刪掉分隔列，表格變成段落，含 `<` 的列與其他列合成一段，判需重審。
+        self.edit('| 日期 | 異動 | 負責人 |\n|---|---|---|\n', '| 日期 | 異動 | 負責人 |\n')
+        self.commit('drop delimiter row')
+        self.assertInvalid(self.verify(), '同一段落')
+
+    def test_extra_blank_line_in_frozen_section_valid(self):
+        # 連續空行渲染相同，合併後比對（review-ac2183c SHOULD FIX 1）。
+        self.add_report()
+        self.edit('固定的範例需求。\n', '固定的範例需求。\n\n')
+        self.commit('extra blank line')
+        self.assertBookkeepingValid(self.verify())
 
     def test_alert_and_link_lines_in_bookkeeping_valid(self):
         self.add_report()
@@ -890,6 +957,9 @@ class LegacyBookkeepingTests(BookkeepingTests):
     def assertNeeds24(self, result):
         self.assertNotEqual(result.returncode, 0, result.stdout + result.stderr)
         self.assertIn('2.4', result.stderr)
+
+    def assertBookkeepingValid(self, result):
+        self.assertNeeds24(result)
 
     def test_report_and_bookkeeping_in_one_commit(self):
         self.add_report()

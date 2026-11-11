@@ -5,9 +5,10 @@
 2.5 起 `## 現況` 也是記帳區段，節內的 `**現行 review**` 欄位可改值。
 讀不到契約、低於 2.4 或其他 major 時，維持只接受一個「只新增該報告」提交的現行判定。
 記帳區段內看起來像標題、code fence 或粗體欄位的非範本寫法（含巢狀清單與引用裡的寫法）、
-以 `[` 開頭的行（連結參照定義；任務清單除外）、緊接在段落後的 `===`／`---`，以及含 `<` 的行
-（只放行行中間的 `<br>`、`<wbr>`）一律視為凍結內容；未在同一行關閉的註解到 `-->` 為止整段凍結。
-不模擬 CommonMark 的 code span、表格與 HTML 區塊，寧可多凍結，避免藏住或偽造凍結章節。
+以 `[` 開頭的行（連結參照定義；任務清單、獨佔一行的 alert 與同一行關閉的行內連結除外）、
+緊接在段落後的 `===`／`---`，以及含 `<` 的行（只放行行中間的 `<br>`、`<wbr>`）一律視為凍結內容；
+未在同一行關閉的註解到 `-->` 為止整段凍結，含凍結內容的段落整段凍結（表格逐列判定）。
+不模擬 CommonMark 的 code span 與 HTML 區塊，寧可多凍結，避免藏住或偽造凍結章節。
 """
 import argparse
 from pathlib import PurePosixPath
@@ -32,6 +33,7 @@ LINE_BREAK = re.compile(r'<(?:br|wbr)\s*/?>', re.I)
 # 獨佔一行的 GitHub alert（`[!NOTE]`），以及同一行就關閉、後接 `(` 的行內連結。
 LINK_DEFINITION = re.compile(CONTAINER + r'\[(?![ xX]\](?:[ \t]|$)|![A-Za-z]+\][ \t]*$|[^\[\]\\\n]*\]\()')
 UNDERLINE = re.compile(r'^(?:=+|-+)$')
+DELIMITER_ROW = re.compile(r'^\|(?:[ \t]*:?-+:?[ \t]*\|)+$')
 LINE_END = re.compile(r'\r\n|\r|\n')
 BLANK = ' \t'
 CONTRACT = re.compile(r'\*\*流程契約\*\*\s*[:：]\s*(\d+)\.(\d+)')
@@ -119,32 +121,67 @@ def setext_underline(line, previous):
     return bool(UNDERLINE.match(line[QUOTES.match(line).end():].strip(BLANK)))
 
 
+def cells(line):
+    return len(re.split(r'(?<!\\)\|', line.strip('|')))
+
+
+def starts_table(line, following):
+    """表頭與欄數相同的分隔列都以 `|` 開頭才算表格；其他寫法照段落處理（凍結得較多）。"""
+    return line.startswith('|') and bool(DELIMITER_ROW.match(following)) and cells(line) == cells(following)
+
+
 def analyse(text, bookkeeping_sections):
-    """回傳 (凍結內容, 記帳欄位, 各記帳章節內容, 章節標題順序)。凍結內容逐項保留所在章節與種類。"""
+    """回傳 (凍結內容, 記帳欄位, 各記帳章節內容, 章節標題順序)。凍結內容逐項保留所在章節與種類。
+
+    連結 title、code span 這類行內語法可以跨行，所以記帳章節裡含凍結內容的段落（連續非空行）整段凍結，
+    並記下段落怎麼結束（空行、下一個標題或檔尾）。表格每一列各自解析行內語法，所以空行或標題之後開始的
+    表格逐列判定。凍結章節的連續空行合併成一個再比對。
+    """
     frozen, fields, sections, headings = [], [], {}, []
     section, fence, loose, previous = '（標題前）', None, False, ''
-    comment = False
+    comment, table = False, False
+    block = []  # 記帳章節目前的段落：(凍結項目或 None, 原行)
+
+    def keep(entry, line=None):
+        if section in bookkeeping_sections:
+            block.append((entry, line))
+        elif entry is not None:
+            frozen.append(entry)
+
+    def flush(end):
+        trigger = next((entry for entry, _ in block if entry), None)
+        if trigger:
+            # 同段落的一般行記下觸發凍結的那一項，錯誤訊息才指得出原因
+            frozen.extend(entry or (section, 'paragraph', line, trigger[2]) for entry, line in block)
+            if end:
+                frozen.append((section, 'end', end))
+        else:
+            sections[section].extend(line for _, line in block)
+        block.clear()
+
     # CommonMark 只以 \n、\r 分行，只把空格與 tab 當空白；splitlines() 與 strip() 會多認 U+2028、NBSP 等字元。
-    for raw in LINE_END.split(text):
-        line = raw.rstrip(BLANK)
+    lines = [raw.rstrip(BLANK) for raw in LINE_END.split(text)]
+    for index, line in enumerate(lines):
         if comment:
-            frozen.append((section, 'html', line))
+            keep((section, 'html', line))
             comment = '-->' not in line or opens_comment(line[line.index('-->') + 3:])
             previous = line
             continue
         if fence:
-            frozen.append((section, 'fence', line))
+            keep((section, 'fence', line))
             if closes(line, fence, loose):
                 fence = None
             continue
         marker = FENCE.match(line) or LOOSE_FENCE.match(line)
         if marker:
-            fence, loose = marker.group(1), not FENCE.match(line)
-            frozen.append((section, 'fence', line))
+            fence, loose, table = marker.group(1), not FENCE.match(line), False
+            keep((section, 'fence', line))
             continue
         heading = HEADING.match(line)
         if heading:
-            section = heading.group(1)
+            if block:
+                flush('下一個標題')
+            section, table = heading.group(1), False
             headings.append(section)
             if section in bookkeeping_sections:
                 sections.setdefault(section, [])
@@ -152,51 +189,56 @@ def analyse(text, bookkeeping_sections):
                 frozen.append((section, 'heading', line))
             previous = ''
             continue
-        if LOOSE_HEADING.match(line):
-            frozen.append((section, 'heading', line))
-            previous = line
-            continue
-        if html(line) or LINK_DEFINITION.match(line):
-            frozen.append((section, 'html', line))
-            comment = opens_comment(line)
-            previous = line
-            continue
-        if setext_underline(line, previous):
-            if section in bookkeeping_sections and sections[section][-1:] == [previous]:
-                sections[section].pop()
-                frozen.append((section, 'heading', previous))
-            frozen.append((section, 'heading', line))
-            previous = line
-            continue
-        previous = line
-        field = FIELD.match(line)
-        if field and section == CURRENT_STATE and section in bookkeeping_sections \
-                and field.group(1).strip() == CURRENT_REVIEW:
-            sections[section].append(line)
-            continue
-        if field and field.group(1).strip() in BOOKKEEPING_FIELDS:
-            name = field.group(1).strip()
-            fields.append((name, field.group(2)))
-            frozen.append((section, 'field', f'**{name}**'))
-            continue
-        if field or BOLD_LINE.match(line):
-            frozen.append((section, 'field', line))
-            continue
         if not line:
-            if section not in bookkeeping_sections:
-                frozen.append((section, 'line', line))
+            table = False
+            if section in bookkeeping_sections:
+                if block:
+                    flush('空行')
+            elif frozen[-1:] != [(section, 'line', '')]:
+                frozen.append((section, 'line', ''))
+            previous = line
             continue
         if section in bookkeeping_sections:
-            sections[section].append(line)
+            following = lines[index + 1] if index + 1 < len(lines) else ''
+            table = line.startswith('|') if table else not block and starts_table(line, following)
+        if LOOSE_HEADING.match(line):
+            keep((section, 'heading', line))
+        elif setext_underline(line, previous):
+            # 底線把上一行變成標題
+            if block and block[-1] == (None, previous):
+                block[-1] = ((section, 'heading', previous), previous)
+            keep((section, 'heading', line))
+        elif html(line) or LINK_DEFINITION.match(line):
+            keep((section, 'html', line))
+            comment = opens_comment(line)
         else:
-            frozen.append((section, 'line', line))
+            field = FIELD.match(line)
+            name = field.group(1).strip() if field else None
+            if name == CURRENT_REVIEW and section == CURRENT_STATE and section in bookkeeping_sections:
+                keep(None, line)
+            elif name in BOOKKEEPING_FIELDS:
+                fields.append((name, field.group(2)))
+                keep((section, 'field', f'**{name}**'))
+            elif field or BOLD_LINE.match(line):
+                keep((section, 'field', line))
+            else:
+                keep(None if section in bookkeeping_sections else (section, 'line', line), line)
+        if table:
+            flush(None)
+        previous = line
+    if block:
+        flush('檔尾')
     return frozen, fields, sections, headings
 
 
 def describe(entry):
     if entry is None:
         return '（無）'
-    section, kind, text = entry
+    section, kind, text = entry[:3]
+    if kind == 'end':
+        return f'章節「{section}」含凍結內容的段落結尾（{text}）'
+    if kind == 'paragraph':
+        return f'章節「{section}」的「{text}」（與「{entry[3]}」同一段落，記帳章節含凍結內容的段落整段凍結）'
     suffix = {'fence': '（code fence 內容一律凍結）', 'html': '（記帳章節含 `<` 或以 `[` 開頭的行一律凍結）'}.get(kind, '')
     return f'章節「{section}」的' + (f'「{text}」' if text.strip() else '空行') + suffix
 
