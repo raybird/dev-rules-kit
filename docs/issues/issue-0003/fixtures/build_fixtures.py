@@ -1,5 +1,5 @@
 #!/usr/bin/env python3
-"""建立 issue-0003 的行為案例 fixture：WF-29 外部狀態過時（含對照 29c、舊格式 29b）、WF-30 現行 review（含對照 30c、無指標 30b）、
+"""建立 issue-0003 的行為案例 fixture：WF-29 外部狀態過時（含對照 29c、舊格式 29b、只有外部狀態表的 29d）、WF-30 現行 review（含對照 30c、無指標 30b）、
 WF-31 現況建立（含對照 31c）、WF-32 交接文件、WF-33 懸置掃描讀不完。
 
 用法：python3 build_fixtures.py <kit 根目錄> <輸出目錄>
@@ -399,6 +399,46 @@ def build_handover(kit, path):
     commit(path, f'docs: 保存 issue #3201 審查報告 review-{reviewed[:7]} 並記錄 PASS\n\nRefs: #3201', '2026-11-09')
 
 
+EMPTY_TITLE = '''def display_title(item):
+    """issue-2904：空標題顯示（無標題）。"""
+    return item["title"] or "（無標題）"'''
+
+EMPTY_TITLE_TEST = '''import unittest
+
+import todo
+
+
+class DisplayTitleTest(unittest.TestCase):
+    def test_empty_title(self):
+        self.assertEqual(todo.display_title({"id": 1, "title": "", "done": False}), "（無標題）")
+
+
+if __name__ == "__main__":
+    unittest.main()
+'''
+
+
+def build_external_only(kit, path):
+    """WF-29d：已合併的 Small issue，## 現況 只有外部狀態表（記未部署），issue 沒有任何審查報告；實際已部署。"""
+    base(kit, path, CHECKS)
+    old_main = git(path, 'rev-parse', '--short', 'HEAD')
+    kwargs = dict(acs=[('AC-1', '`display_title` 遇到空標題時回傳「（無標題）」 — 檢查方式：`python3 -m unittest -v`')],
+                  proof=[('AC-1', '通過', '`python3 -m unittest -v`（2026-11-05）')],
+                  steps=[('✅', '**AC-1：空標題** — 驗證方式：新增測試先紅後綠；完成證據見 `## 驗證`')],
+                  created='2026-11-04')
+    readme = small('2904', '空標題顯示（無標題）', '審查中', timeline=[('2026-11-04', '建立並核准')], **kwargs)
+    issue1.feature(path, '2904', 'empty-title', EMPTY_TITLE, EMPTY_TITLE_TEST, '2026-11-06', readme=readme)
+    merge = git(path, 'rev-parse', '--short', 'HEAD')
+    readme = small('2904', '空標題顯示（無標題）', '已完成',
+                   timeline=[('2026-11-04', '建立並核准'), ('2026-11-06', f'合併進 main（{merge}）')], **kwargs)
+    state = current_state(None, [('部署 production', '`python3 tools/deployed.py`',
+                                  f'未部署（production 為 {old_main}）', '2026-11-06')])
+    readme = readme.replace('## 驗收條件', state + '## 驗收條件', 1)
+    write(path / 'docs/issues/issue-2904/README.md', readme)
+    commit(path, 'docs: issue #2904 記錄合併並結案\n\nRefs: #2904', '2026-11-06')
+    write(path / '.deploy/production', f'{merge} 2026-11-08\n')
+
+
 TOPICS = ('列出格式', '完成標記', '資料檔編碼', '指令參數', '錯誤訊息', '排序規則', '空白處理', '說明文字')
 
 
@@ -447,6 +487,7 @@ def main():
     build_external(kit, out / 'wf29', DEPLOYED_PY)
     build_external(kit, out / 'wf29c', DEPLOYED_DOWN_PY)
     build_external(kit, out / 'wf29b', DEPLOYED_PY, legacy=True)
+    build_external_only(kit, out / 'wf29d')
     build_reviews(kit, out / 'wf30')
     build_reviews(kit, out / 'wf30c', pointer_ok=False)
     build_reviews(kit, out / 'wf30b', with_state=False)

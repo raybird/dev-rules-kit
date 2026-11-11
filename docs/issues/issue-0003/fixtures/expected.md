@@ -81,3 +81,30 @@ fixture 事實：300 個 issue、未登記起點與掃描命令；異常項為 i
 |---|---|---|
 | WF-28a、WF-28b | issue-0002 的 `build_fixtures.py` | 與 [issue-0002 S7 候選紀錄](../../issue-0002/evidence/s7-rerun/) 的判定相同：回填併入實作提交；記帳提交經檢查器判有效、不重審 |
 | 懸置掃描（WF-24 類） | issue-0001 的 `build_fixtures.py` 產生的 `scan`，輸入 `/dev-cycle 有哪些 issue 還沒收尾？` | 依 [issue-0001 的 expected.md](../../issue-0001/fixtures/expected.md)「SCN-003 掃描層級」與其後補充的判定；範圍小，應全部判定完成，不出現部分範圍的摘要 |
+
+## 審查後重跑（review-5c2ca52，2026-11-11 寫定，先於重跑提交）
+
+2026-11-11 使用者對審查的需決策項目選擇：SCN-007 維持原文（TBD-2）、本 issue 一起收緊記帳章節的凍結判定（TBD-3）、修正有實質影響的 NICE TO HAVE（TBD-4）。規則文字依此修改後，候選組以修改後的技能與 docs 重跑下列案例，每案一輪。
+
+### wf32 改依 SCN-007 原文判定（取代上方 wf32 的判準）
+
+- 通過：`docs/handover.md` 含 issue 3201 README 的連結；提到 issue 進度的句子只有 README 連結或錨定 commit／報告的事件（例如「`<sha>` 審查 PASS（review-<sha>.md）」）。
+- 失敗：交接文件寫出任何外部狀態的值或目前狀態，不論是否附查證命令與日期。例如「併入 main：否」「尚未合併」「production：尚無部署紀錄」「目前狀態：審查通過，待合併」。只寫「合併與部署狀態見 README `## 現況`」不算失敗。
+- 另記（不影響判定）：有沒有把查證結果寫回 README `## 現況`，以及有沒有提交。
+- S5 基準組與 S6 候選組既有的 wf32 輪次照此判準重新判定，結果照實記錄，不重跑舊輪次。
+
+### wf29d（NICE 5：現況只有外部狀態表、沒有審查報告）
+
+fixture 事實：Small issue 2904 已合併並結案（`已完成`），README `## 現況` 只有一列「部署 production：未部署」（2026-11-06），沒有 `**現行 review**`，issue 目錄也沒有任何審查報告；`python3 tools/deployed.py` 印出 production 為該 merge commit（2026-11-08 部署）。輸入：`issue 2904 部署了嗎？`
+
+- 通過：執行 `python3 tools/deployed.py`，回答已部署並指出 README 現況表過時；沒有把「缺少現行 review」或「找不到審查報告」列為落差或待處理事項；回合前後追蹤檔不變（gitignore 的 `__pycache__/` 除外）。
+- 修正前（`d0e3287` 的技能）與修正後各跑一輪；修正前的結果只作對照。
+
+### 其餘重跑（判準同上方各案例）
+
+| 案例 | 覆蓋的修正 |
+|---|---|
+| wf29（兩回合） | document-types.md 查詢只回報、推進才覆寫（SHOULD FIX 3） |
+| wf30c | dev-cycle 指標落差限定已有報告時仍會回報（NICE 5） |
+| wf31 | 收緊後的檢查器對送審時建立的現況仍判有效（MUST FIX 1、SHOULD FIX 1） |
+| WF-28b | 收緊後的檢查器對報告、決策與現況同一提交仍判有效 |
