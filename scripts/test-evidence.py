@@ -580,6 +580,39 @@ class BookkeepingTests(unittest.TestCase):
                 self.commit('drop html block closer')
                 self.assertInvalid(self.verify(), '說明')
 
+    def test_unclosed_opener_in_frozen_section_named_in_message(self):
+        # 凍結章節沒有關閉的 `<?`、`<!` 接字母讓之後全部凍結；錯誤訊息要指出開頭所在的行（review-c6eb117）。
+        self.reviewed_with('固定的範例需求。\n', '固定的範例需求。用 `<?php` 開頭。\n')
+        self.add_report()
+        self.add_to_timeline('| 2026-11-04 | 補記 | - |')
+        self.commit('bookkeeping after unclosed opener')
+        self.assertInvalid(self.verify(), '固定的範例需求。用 `<?php` 開頭。', '未關閉')
+
+    def test_comment_and_processing_closed_on_same_line(self):
+        # `<!-->`、`<!--->`、`<?>` 在 CommonMark 同一行就關閉，之後照常判定。
+        base = self.reviewed
+        for opener in ('<!-->', '<!--->', '<?>'):
+            with self.subTest(opener=opener):
+                self.git('reset', '-q', '--hard', base)
+                self.reviewed_with('固定的範例需求。\n', f'固定的範例需求。`{opener}` 範例。\n')
+                self.add_report()
+                self.add_to_timeline('| 2026-11-04 | 補記 | - |')
+                self.commit('bookkeeping after closed opener')
+                self.assertBookkeepingValid(self.verify())
+
+    def test_reopened_block_across_blank_lines_stays_frozen(self):
+        # 同一行關閉後又開新的，跨空行的內容靠追蹤凍結，不靠段落凍結。
+        base = self.reviewed
+        for opener, closer in (('<!--', '-->'), ('<?x', '?>')):
+            with self.subTest(opener=opener):
+                self.git('reset', '-q', '--hard', base)
+                self.reviewed_with(self.TIMELINE_ROW + '\n',
+                                   f'{self.TIMELINE_ROW}\n\n{opener} 開頭 {closer} {opener}\n\n舊的說明\n\n{closer}\n')
+                self.add_report()
+                self.edit('舊的說明', '新的說明')
+                self.commit('edit text inside reopened block')
+                self.assertInvalid(self.verify(), '說明')
+
     def test_inline_span_across_frozen_paragraph_invalid(self):
         # 連結 title、圖片 alt、code span 可以跨行，記帳行能把檔尾 metadata 包進去（review-ac2183c）。
         for opener, closer in (('[補記](https://example.com/x "', '")'), ('![圖', '](https://example.com/a.png)'),

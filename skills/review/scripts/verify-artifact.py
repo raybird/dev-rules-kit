@@ -7,7 +7,8 @@
 記帳區段內看起來像標題、code fence 或粗體欄位的非範本寫法（含巢狀清單與引用裡的寫法）、
 以 `[` 開頭的行（連結參照定義；任務清單、獨佔一行的 alert 與同一行關閉的行內連結除外）、
 緊接在段落後的 `===`／`---`，以及含 `<` 的行（只放行行中間的 `<br>`、`<wbr>`）一律視為凍結內容；
-未在同一行關閉的註解到 `-->` 為止整段凍結，含凍結內容的段落整段凍結（表格逐列判定）。
+未在同一行關閉的註解、處理指令、宣告與 CDATA 到結束字串為止整段凍結（任何章節都追蹤），
+含凍結內容的段落整段凍結（表格逐列判定）。
 不模擬 CommonMark 的 code span 與 HTML 區塊，寧可多凍結，避免藏住或偽造凍結章節。
 """
 import argparse
@@ -108,6 +109,8 @@ def html(line):
 
 HTML_OPENER = re.compile(r'<!--|<!\[CDATA\[|<\?|<![A-Za-z]')
 HTML_CLOSER = {'<!--': '-->', '<![CDATA[': ']]>', '<?': '?>'}
+# `<!-->`、`<!--->`、`<?>` 同一行就關閉：結束字串從開頭字串中間開始找
+CLOSER_FROM = {'<!--': 2, '<?': 1}
 
 
 def unclosed(text, closer=None):
@@ -122,7 +125,8 @@ def unclosed(text, closer=None):
         match = HTML_OPENER.search(text, pos)
         if not match:
             return None
-        closer, pos = HTML_CLOSER.get(match.group(), '>'), match.end()
+        closer = HTML_CLOSER.get(match.group(), '>')
+        pos = match.start() + CLOSER_FROM.get(match.group(), len(match.group()))
 
 
 def setext_underline(line, previous):
@@ -164,6 +168,7 @@ def analyse(text, bookkeeping_sections):
     frozen, fields, sections, headings = [], [], {}, []
     section, fence, loose, previous = '（標題前）', None, False, ''
     comment, table, head = None, False, None
+    opener = None  # 尚未關閉的 HTML 開頭所在的行，錯誤訊息用
     block = []  # 記帳章節目前的段落：(凍結項目或 None, 原行)
 
     def keep(entry, line=None):
@@ -187,7 +192,7 @@ def analyse(text, bookkeeping_sections):
     lines = [raw.rstrip(BLANK) for raw in LINE_END.split(text)]
     for index, line in enumerate(lines):
         if comment:
-            keep((section, 'html', line))
+            keep((section, 'open', line, opener, comment))
             comment = unclosed(line, comment)
             previous = line
             continue
@@ -238,6 +243,7 @@ def analyse(text, bookkeeping_sections):
         elif html(line) or LINK_DEFINITION.match(line):
             keep((section, 'html', line))
             comment = unclosed(line)
+            opener = line
         else:
             field = FIELD.match(line)
             name = field.group(1).strip() if field else None
@@ -267,6 +273,9 @@ def describe(entry):
     section, kind, text = entry[:3]
     if kind == 'end':
         return f'章節「{section}」含凍結內容的段落結尾（{text}）'
+    if kind == 'open':
+        return (f'章節「{section}」的「{text}」（「{entry[3]}」的 HTML 開頭未關閉，到 `{entry[4]}` 為止的內容'
+                '一律凍結，其後的標題不另分章節）')
     if kind == 'table':
         return f'章節「{section}」含凍結列的表格的表頭與分隔列「{text}」（表格含凍結列時一併凍結）'
     if kind == 'paragraph':
