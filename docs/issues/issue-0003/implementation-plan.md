@@ -184,6 +184,15 @@
 | 精煉 | 移除 `outside_code`、`escaped_count`、`SAFE_HTML`、`ANY_HTML`、`TABLE_DELIMITER` 與逐行的 code span 狀態；HTML 判定剩一個函式 | — |
 | 上一輪 NICE 7 | 外部狀態列在 2.4 專案覆寫會讓 PASS 失效：`## 現況` 只在 2.5 定義，review-evidence.md 已寫 2.4 的 `## 現況` 屬凍結章節，不另改 | — |
 
+重跑（[s10-rerun/](evidence/s10-rerun/)，候選組用 `cff0449` 的工作樹技能與 docs，判準在同一提交寫定，每案一輪）：
+
+| 案例 | 結果 | 判定 |
+|---|---|---|
+| WF-28b | 1 個提交（`48ae482`）保存報告、TBD-1、Timeline，並在 `## 概述` 之後新增 `## 現況`。TBD-1 把審查報告裡的命令寫成「`done` 會同時標記兩筆」，記帳內容沒有 `<`；新檢查器 OK，沒有重審 | 通過 |
+| wf31 | 報告提交（`2eaf42b`）在 `## 概述` 之後建立 `## 現況`，`**現行 review**` 寫檔名；新檢查器 OK | 通過 |
+
+每案只有一輪，不能說明 agent 穩定避開 `<`；上一輪同一案例的 agent 寫過含 `<` 的佔位字。
+
 ## 測試策略
 
 腳本判定以 `test-evidence.py` 在拋棄式 Git repo 實跑真實命令。agent 是否先查證、是否只讀現行 review、掃描是否如實回報，只能以宿主新 session 實跑驗證，靜態檢查與腳本測試不能代替（根目錄 AGENTS.md）。實跑沿用隔離設定：以 scratchpad 為 HOME 安裝工作樹技能，`CLAUDE_CONFIG_DIR` 指向該處，不動全域技能；fixture 含真實可執行的查證命令與實作；測試 agent 只收到 fixture 與使用者輸入，不給預期答案。

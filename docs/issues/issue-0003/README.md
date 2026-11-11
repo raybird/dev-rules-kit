@@ -164,6 +164,7 @@ Feature: issue 現況以實查為準，狀態副本不再被當成權威
 | 2026-11-11 | S9：依覆審修正（`b2f321f`）；重跑 wf29、wf31、WF-28b 通過，wf30c 未執行檢查器，wf32 4 輪 3 輪通過（不穩定） | Claude Code |
 | 2026-11-11 | 第三輪獨立覆審 RETURN TO execute-task（review-4d0df5c.md）：MUST FIX 2 項（允許清單的 `<br>`／行首註解會開出 HTML 區塊；code span 判定與渲染器不一致），SHOULD FIX 2 項 | Claude Code |
 | 2026-11-11 | 使用者決定記帳章節含左角括號的行一律凍結（TBD-6） | 使用者 |
+| 2026-11-11 | S10：依決定修正（`cff0449`）；重跑 WF-28b、wf31 通過，記帳提交經新檢查器判有效 | Claude Code |
 
 ---
 **建立日期**: 2026-11-10
