@@ -11,7 +11,7 @@
 
 ## 現況
 
-**現行 review**: review-c6eb117.md
+**現行 review**: review-b36de31.md
 
 ## 文件清單
 
@@ -179,6 +179,7 @@ Feature: issue 現況以實查為準，狀態副本不再被當成權威
 | 2026-11-11 | 第九輪獨立覆審 PASS（review-c6eb117.md，依 TBD-7 深審差異、其餘抽查）：無 MUST FIX，SHOULD FIX 1 項（凍結章節 code span 裡未關閉的處理指令或宣告會讓之後全部凍結），NICE 4 項；R9-1～R9-3 依 TBD-7 登記到 #5 | Claude Code |
 | 2026-11-11 | 使用者選擇修正第九輪的 SHOULD FIX 與 NICE 後送第十輪（工具呼叫上限 30 次）。S16：錯誤訊息指出未關閉 HTML 開頭所在的行，同一行就關閉的註解與處理指令照常判定 | Claude Code |
 | 2026-11-11 | S16 重跑（`7f8d1e1`）：wf31 通過；WF-28b 不通過，agent 在記錄決策的提交裡更正 fixture 計畫的測試數誤記，檢查器正確判需重審後完整重審；原因是 fixture 錯誤，屬 #4 範圍，未加跑 | Claude Code |
+| 2026-11-11 | 第十輪獨立覆審 PASS（review-b36de31.md，只審差異、工具呼叫上限 30 次，實際 24 次）：無 MUST FIX、SHOULD FIX，NICE 4 項；reviewer 判 WF-28b 不通過不影響交付 | Claude Code |
 
 ---
 **建立日期**: 2026-11-10
