@@ -11,7 +11,7 @@
 
 ## 現況
 
-**現行 review**: review-4d7ba1f.md
+**現行 review**: review-73202f8.md
 
 ## 文件清單
 
@@ -173,6 +173,7 @@ Feature: issue 現況以實查為準，狀態副本不再被當成權威
 | 2026-11-11 | S13：表格欄數照 GFM 計算，含凍結列的表格表頭與分隔列一併凍結；v4.9.0 起就有的 V3、V4 依使用者先前決定另開 #5（`eea9ac8`）；重跑 WF-28b、wf31 通過 | Claude Code |
 | 2026-11-11 | 第七輪獨立覆審 RETURN TO execute-task（review-4d7ba1f.md）：MUST FIX 1 項（表頭只有一個管線的假表格仍被當成表格，S13 沒修完整），SHOULD FIX 2 項；另列 v4.9.0 起就有的 V5、V6 | Claude Code |
 | 2026-11-11 | S14：表格辨識改為只認範本形狀，下游筆數改由提交的掃描腳本產生；v4.9.0 起就有的 V5、V6 補進 #5（`1b0d862`）；重跑 WF-28b、wf31 通過 | Claude Code |
+| 2026-11-11 | 第八輪獨立覆審 RETURN TO execute-task（review-73202f8.md）：MUST FIX 1 項（現況裡處理指令、宣告與 CDATA 區塊的結束行可以改掉，區塊延伸到檔尾）；表格白名單未找到繞過寫法；另列 v4.9.0 起就有的 V7 | Claude Code |
 
 ---
 **建立日期**: 2026-11-10
