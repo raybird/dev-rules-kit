@@ -11,7 +11,7 @@
 
 ## 現況
 
-**現行 review**: review-20d0847.md
+**現行 review**: review-4d7ba1f.md
 
 ## 文件清單
 
@@ -171,6 +171,7 @@ Feature: issue 現況以實查為準，狀態副本不再被當成權威
 | 2026-11-11 | 使用者選擇本 issue 修正第五輪 MUST FIX 再送審；下一輪若只找到 v4.9.0 就有的同類缺口則另開 issue。S12：記帳章節含凍結內容的段落整段凍結，表格逐列判定（`3fc926a`）；重跑 WF-28b、wf31 通過 | Claude Code |
 | 2026-11-11 | 第六輪獨立覆審 RETURN TO execute-task（review-20d0847.md）：MUST FIX 1 項（表格欄數計算和 GFM 不同，是 S12 新引入），SHOULD FIX 1 項；另列 v4.9.0 起就有的同類缺口 V1～V4 | Claude Code |
 | 2026-11-11 | S13：表格欄數照 GFM 計算，含凍結列的表格表頭與分隔列一併凍結；v4.9.0 起就有的 V3、V4 依使用者先前決定另開 #5（`eea9ac8`）；重跑 WF-28b、wf31 通過 | Claude Code |
+| 2026-11-11 | 第七輪獨立覆審 RETURN TO execute-task（review-4d7ba1f.md）：MUST FIX 1 項（表頭只有一個管線的假表格仍被當成表格，S13 沒修完整），SHOULD FIX 2 項；另列 v4.9.0 起就有的 V5、V6 | Claude Code |
 
 ---
 **建立日期**: 2026-11-10
