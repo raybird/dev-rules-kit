@@ -17,6 +17,10 @@
 
 不在範圍：V4、V6、V7、R9 系列（已知限制）；凍結章節（記帳章節以外）的空行本來就逐行比對，不受影響。
 
+## 現況
+
+**現行 review**: review-5f5fb3e.md
+
 ## 涉及檔案
 
 - `skills/review/scripts/verify-artifact.py` - 記帳章節含凍結內容的段落，記下段落前接的內容；前接表格列時凍結該表格的表頭與分隔列
@@ -73,9 +77,10 @@
 | 2026-11-12 | 建立；以 marked 與 micromark 重現 V3 | Claude Code |
 | 2026-11-12 | 使用者核准 AC-1～AC-3 | 使用者 |
 | 2026-11-12 | 獨立審查 review-8d4f21a RETURN；使用者決定錯誤訊息加上段落內容、表格直接接凍結段落時凍結表頭（TBD-1、TBD-2） | 使用者／Claude Code |
+| 2026-11-12 | 差異覆審 [review-5f5fb3e](review-5f5fb3e.md) PASS；留下的 SHOULD FIX（rule-verification-status 表格儲存格未跳脫的直線符號，main 上既有）與 NICE TO HAVE（步驟 3 的測試數），使用者決定合併後在 main 另外修 | 使用者／Claude Code |
 
 ---
 **建立日期**: 2026-11-12  
 **分級**: Small  
 **風險**: Medium\
-**狀態**: 實作中
+**狀態**: 審查通過，待合併
