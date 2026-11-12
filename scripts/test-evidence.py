@@ -716,6 +716,35 @@ class BookkeepingTests(unittest.TestCase):
                 self.commit('fake table joined to frozen paragraph')
                 self.assertInvalid(self.verify(), '同一段落')
 
+    def test_blank_line_before_frozen_paragraph_compared(self):
+        # 表格後的空行決定凍結段落是不是表格的一列（issue #5 的 V3）：刪掉或補上空行都判需重審，
+        # 範本的 `---` 檔尾雖然渲染相同，也不另外辨認。
+        frozen = '用 `<details>` 收合舊說明。'
+        footer = '\n\n---\n**建立日期**'
+        cases = ((f'{self.TIMELINE_ROW}\n\n{frozen}\n', f'{self.TIMELINE_ROW}\n{frozen}\n'),
+                 (f'{self.TIMELINE_ROW}\n{frozen}\n', f'{self.TIMELINE_ROW}\n\n{frozen}\n'),
+                 (None, (footer, '\n---\n**建立日期**')))
+        base = self.reviewed
+        for reviewed, change in cases:
+            with self.subTest(change=change):
+                self.git('reset', '-q', '--hard', base)
+                self.reviewed = base
+                if reviewed:
+                    self.reviewed_with(self.TIMELINE_ROW + '\n', reviewed)
+                    change = (reviewed, change)
+                else:
+                    self.report = f'{self.ISSUE}/review-{self.reviewed[:7]}.md'
+                self.add_report()
+                self.edit(*change)
+                self.commit('blank line before frozen paragraph')
+                self.assertInvalid(self.verify(), '前接')
+
+    def test_row_appended_before_template_footer_valid(self):
+        self.add_report()
+        self.edit(self.TIMELINE_ROW + '\n', self.TIMELINE_ROW + '\n| 2026-11-05 | 補記 | - |\n')
+        self.commit('append row before footer')
+        self.assertBookkeepingValid(self.verify())
+
     def test_extra_blank_line_in_frozen_section_valid(self):
         # 連續空行渲染相同，合併後比對（review-ac2183c SHOULD FIX 1）。
         self.add_report()

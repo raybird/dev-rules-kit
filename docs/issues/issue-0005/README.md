@@ -35,7 +35,7 @@
 
 - **核准日期**: 2026-11-12
 - **核准來源**: 2026-11-12 使用者要求「#5 是否可以等的時間也一起處理」；修法採 #5 的待決定選項之一「記下段落前接的是表格、標題還是空行」；同日使用者回覆「核准」，適用 AC-1～AC-3
-- **核准 commit**: 待提交
+- **核准 commit**: c8165cb
 
 ## 風險與首要驗證
 
@@ -47,12 +47,16 @@
 
 ## 實作與驗證步驟
 
-1. ⏳ **AC-1、AC-2：檢查器與測試** — 先寫紅燈案例，再實作；跑五項檢查並重判實跑留下的記帳提交
-   - 完成證據：待回寫
-2. ⏳ **AC-3：下游統計** — 擴充 `scan_downstream.py` 或另寫唯讀統計，記錄數量（相依：1）
-   - 完成證據：待回寫
+1. ✅ **AC-1、AC-2：檢查器與測試** — 先寫紅燈案例，再實作；跑五項檢查並重判實跑留下的記帳提交
+   - 完成證據：2026-11-12。
+     - 紅燈：[s1-red.txt](evidence/s1-red.txt)，新增的 `test_blank_line_before_frozen_paragraph_compared` 3 個子案例（刪空行、補空行、範本檔尾刪空行）都判 OK 而失敗；`test_row_appended_before_template_footer_valid` 通過（行為本來就對，作為不變的保障）。
+     - 實作：`analyse()` 記下段落開始時前接的是檔頭、標題、空行還是表格列，含凍結內容的段落在結尾之後加一項 `start`；排在段落內容與結尾之後，內容或結尾不同時錯誤訊息仍先指出它們。第一版把 `start` 排在最前面，35 個既有子案例因錯誤訊息改指 `start` 而失敗，調整順序後全部通過。
+     - 綠燈：[s1-green.txt](evidence/s1-green.txt)，252 項通過（新增 2 個測試方法，四個測試類別各繼承一次）。check-kit、check-links、`bash -n`、test-install（14）OK。
+     - AC-2 重判：本分支的 `verify-artifact.py` 對 issue #4 的 wf28b3（`--reviewed 84a544b`）與 issue #3 最後一輪的 wf31（`--reviewed b2bfb79`）保留的 fixture 都判 OK，變更區段與先前相同。
+2. ✅ **AC-3：下游統計** — 擴充 `scan_downstream.py` 或另寫唯讀統計，記錄數量（相依：1）
+   - 完成證據：2026-11-12 以 [scan_start.py](evidence/scan_start.py) 讀 issue #3 同一份 README 清單，結果在 [s2-scan.txt](evidence/s2-scan.txt)：不重複的 683 份中，含凍結內容的段落前接空行 402 份 477 段、前接標題 6 份 6 段、前接表格列 1 份 1 段。這 1 份是 Timeline 表格後面直接接檔尾欄位（沒有 `---`），檔尾欄位在 GFM 已經渲染成表格列；之後在那裡補空行會判需重審。
 3. ⏳ **收尾** — review-evidence.md、CHANGELOG 4.10.0、rule-verification-status；送獨立審查（相依：2）
-   - 完成證據：待回寫
+   - 完成證據：2026-11-12 已更新 review-evidence.md「審查之後的提交」、CHANGELOG 4.10.0（變更、已知限制改寫、252 項）、rule-verification-status。獨立審查待執行
 
 ## Timeline
 
