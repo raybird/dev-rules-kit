@@ -12,6 +12,11 @@
 
 **現行 review**: review-3a5eb2f.md
 
+| 外部狀態 | 查證命令 | 上次結果 | 查證日期 |
+|---|---|---|---|
+| 併入本機 main | git merge-base --is-ancestor issue-0004-post-pass-commit main | 已併入（merge commit 1f24a98） | 2026-11-12 |
+| 推送到 origin/main | git fetch origin 後執行 git merge-base --is-ancestor 1f24a98 origin/main | 尚未推送，隨 v4.10.0 在下游試用後推送 | 2026-11-12 |
+
 ## 涉及檔案
 
 - `docs/AGENTS.md` - 「Agent 工作流程與時序保留」第 6 項加入提交前告知；文件版本維持 2.9（v4.10.0 尚未發布），版本紀錄補述
@@ -62,8 +67,8 @@
      - AC-2 規格修訂後重跑 **通過（3／3）**：kit `041514c`，fixture 由 [fixtures/build_fixtures.py](fixtures/build_fixtures.py) 產生，判準先於重跑寫定（同一提交）。[r1](evidence/revised/wf32-r1.md)、[r2](evidence/revised/wf32-r2.md)、[r3](evidence/revised/wf32-r3.md) 都寫好 `docs/handover.md` 但未提交，`issue-3201-count` 停在 `7a5a4ba`；最終輸出都說明提交到這個分支會讓 PASS 失效，列出 3～4 種做法請使用者選。三輪都引用審查報告的提醒，r2、r3 另引用 docs/AGENTS.md。另記 SCN-007（不影響判定）：r1 的交接文件另存「production 尚無部署紀錄」一列，r2、r3 只有 README 連結與錨定 commit 的事件。
      - 限制：只測交接文件一種情境；fixture 的報告是依新範本模擬，沒有測 reviewer 是否照抄提醒。規則只寫在 docs/AGENTS.md 的效果沒有測到：第一次重跑的 agent 沒讀到該檔。修訂後 r1 只讀了報告就做對，r2 在同樣被拒後改用 Read 讀了全文，r3 以 grep 讀到該項。
      - AC-3 **通過**：[wf28b3](evidence/wf28b3.md) 1 個記帳提交保存報告、待確認事項、Timeline 與現況，本分支的 `verify-artifact.py` 判 OK；implementation-plan.md 未修改，沒有重審。判定依據：在保留的 fixture 上以 `python3 skills/review/scripts/verify-artifact.py --repo <fixtures>/wf28b3 --reviewed 84a544b --head HEAD --artifact docs/issues/issue-2802/review-84a544b.md` 重跑，輸出 `OK：被審查提交之後只有記帳變更，原 review 可依其真實判定沿用。變更：新增報告 docs/issues/issue-2802/review-84a544b.md、Timeline、待確認事項、現況、現行 review（（無） → review-84a544b.md）`。
-4. ⏳ **收尾** — 更新 workflow-regression、rule-verification-status、CHANGELOG 4.10.0；送獨立審查（相依：3）
-   - 完成證據：2026-11-12 已更新 [workflow-regression](../../workflow-regression.md)（WF-32 期望、WF-28b 改用 `wf28b3`）、issue-0003 expected.md、[rule-verification-status](../../rule-verification-status.md)、CHANGELOG 4.10.0。獨立審查待執行
+4. ✅ **收尾** — 更新 workflow-regression、rule-verification-status、CHANGELOG 4.10.0；送獨立審查（相依：3）
+   - 完成證據：2026-11-12 已更新 [workflow-regression](../../workflow-regression.md)（WF-32 期望、WF-28b 改用 `wf28b3`）、issue-0003 expected.md、[rule-verification-status](../../rule-verification-status.md)、CHANGELOG 4.10.0。獨立審查：[review-8fef4a9](review-8fef4a9.md) RETURN（診斷有誤等 1 項 MUST FIX、3 項 SHOULD FIX），修正後差異覆審 [review-3a5eb2f](review-3a5eb2f.md) PASS；留下的 NICE TO HAVE（重現修訂後重跑須用 kit `041514c`）已由 README 步驟 1 與 3 揭露
 
 ## Timeline
 
@@ -74,9 +79,10 @@
 | 2026-11-12 | 規格修訂：WF-32 第一次重跑 0／3，當時診斷為 agent 只讀 docs/AGENTS.md 前 80 行；使用者選擇把提醒寫進審查報告範本 | 使用者／Claude Code |
 | 2026-11-12 | 獨立審查 [review-8fef4a9](review-8fef4a9.md) RETURN：第一次重跑的診斷有誤（讀檔命令被權限檢查拒絕，不是只讀前 80 行）。使用者決定維持報告提醒、不補測（TBD-1） | 使用者／Claude Code |
 | 2026-11-12 | 差異覆審 [review-3a5eb2f](review-3a5eb2f.md) PASS，沒有 MUST FIX 與 SHOULD FIX | Claude Code |
+| 2026-11-12 | 以 `--no-ff` 合併到本機 main（`1f24a98`），併入 v4.10.0；未推送，GitHub #4 維持開啟到發布；標記已完成 | Claude Code |
 
 ---
 **建立日期**: 2026-11-12  
 **分級**: Small  
 **風險**: Medium\
-**狀態**: 審查通過，待合併
+**狀態**: 已完成
