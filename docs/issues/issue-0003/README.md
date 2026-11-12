@@ -16,8 +16,8 @@
 | 外部狀態 | 查證命令 | 上次結果 | 查證日期 |
 |---|---|---|---|
 | 併入本機 main | git merge-base --is-ancestor issue-0003-current-state main | 已併入（merge commit 3ce55e0） | 2026-11-11 |
-| 推送到 origin/main | git fetch origin 後執行 git merge-base --is-ancestor 3ce55e0 origin/main | 尚未推送，使用者 2026-11-11 選擇先不推送 | 2026-11-11 |
-| 發布 v4.10.0 | git ls-remote --tags origin v4.10.0 | 尚未發布 | 2026-11-11 |
+| 推送到 origin/main | git fetch origin 後執行 git merge-base --is-ancestor 3ce55e0 origin/main | 已推送（exit 0） | 2026-11-12 |
+| 發布 v4.10.0 | git ls-remote --tags origin v4.10.0 | 已發布，tag 指向 d033065，GitHub release v4.10.0 | 2026-11-12 |
 | 下游試用 v4.10.0 | 向試用專案的 session 詢問試用結果 | 一個下游專案以 c4f9a51 跑完一個實際 issue，四輪審查都 PASS，檢查器判定都正確，未發現擋發布的問題；使用問題記在 #7 | 2026-11-12 |
 
 ## 文件清單
@@ -188,6 +188,7 @@ Feature: issue 現況以實查為準，狀態副本不再被當成權威
 | 2026-11-11 | S16 重跑（`7f8d1e1`）：wf31 通過；WF-28b 不通過，agent 在記錄決策的提交裡更正 fixture 計畫的測試數誤記，檢查器正確判需重審後完整重審；原因是 fixture 錯誤，屬 #4 範圍，未加跑 | Claude Code |
 | 2026-11-11 | 第十輪獨立覆審 PASS（review-b36de31.md，只審差異、工具呼叫上限 30 次，實際 24 次）：無 MUST FIX、SHOULD FIX，NICE 4 項；reviewer 判 WF-28b 不通過不影響交付 | Claude Code |
 | 2026-11-11 | 依使用者「只在本機合併，先不推送」以 `--no-ff` 合併到本機 main（`3ce55e0`，保留分支歷史）；未推送、未發布 v4.10.0，GitHub #3 維持開啟；標記已完成 | 使用者／Claude Code |
+| 2026-11-12 | 推送 main 並發布 v4.10.0（tag 指向 `d033065`），GitHub #3 關閉 | 使用者／Claude Code |
 
 ---
 **建立日期**: 2026-11-10

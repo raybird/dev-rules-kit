@@ -15,7 +15,7 @@
 | 外部狀態 | 查證命令 | 上次結果 | 查證日期 |
 |---|---|---|---|
 | 併入本機 main | git merge-base --is-ancestor issue-0004-post-pass-commit main | 已併入（merge commit 1f24a98） | 2026-11-12 |
-| 推送到 origin/main | git fetch origin 後執行 git merge-base --is-ancestor 1f24a98 origin/main | 尚未推送，隨 v4.10.0 在下游試用後推送 | 2026-11-12 |
+| 推送到 origin/main | git fetch origin 後執行 git merge-base --is-ancestor 1f24a98 origin/main | 已推送（exit 0），隨 v4.10.0 發布 | 2026-11-12 |
 
 ## 涉及檔案
 
@@ -80,6 +80,7 @@
 | 2026-11-12 | 獨立審查 [review-8fef4a9](review-8fef4a9.md) RETURN：第一次重跑的診斷有誤（讀檔命令被權限檢查拒絕，不是只讀前 80 行）。使用者決定維持報告提醒、不補測（TBD-1） | 使用者／Claude Code |
 | 2026-11-12 | 差異覆審 [review-3a5eb2f](review-3a5eb2f.md) PASS，沒有 MUST FIX 與 SHOULD FIX | Claude Code |
 | 2026-11-12 | 以 `--no-ff` 合併到本機 main（`1f24a98`），併入 v4.10.0；未推送，GitHub #4 維持開啟到發布；標記已完成 | Claude Code |
+| 2026-11-12 | 隨 v4.10.0 推送並發布，GitHub #4 關閉 | 使用者／Claude Code |
 
 ---
 **建立日期**: 2026-11-12  

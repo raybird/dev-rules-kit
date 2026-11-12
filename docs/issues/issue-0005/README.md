@@ -24,7 +24,7 @@
 | 外部狀態 | 查證命令 | 上次結果 | 查證日期 |
 |---|---|---|---|
 | 併入本機 main | git merge-base --is-ancestor issue-0005-table-continuation main | 已併入（merge commit cf42fbc） | 2026-11-12 |
-| 推送到 origin/main | git fetch origin 後執行 git merge-base --is-ancestor cf42fbc origin/main | 尚未推送，隨 v4.10.0 在下游試用後推送 | 2026-11-12 |
+| 推送到 origin/main | git fetch origin 後執行 git merge-base --is-ancestor cf42fbc origin/main | 已推送（exit 0），隨 v4.10.0 發布 | 2026-11-12 |
 
 ## 涉及檔案
 
@@ -84,6 +84,7 @@
 | 2026-11-12 | 獨立審查 review-8d4f21a RETURN；使用者決定錯誤訊息加上段落內容、表格直接接凍結段落時凍結表頭（TBD-1、TBD-2） | 使用者／Claude Code |
 | 2026-11-12 | 差異覆審 [review-5f5fb3e](review-5f5fb3e.md) PASS；留下的 SHOULD FIX（rule-verification-status 表格儲存格未跳脫的直線符號，main 上既有）與 NICE TO HAVE（步驟 3 的測試數），使用者決定合併後在 main 另外修 | 使用者／Claude Code |
 | 2026-11-12 | 以 `--no-ff` 合併到本機 main（`cf42fbc`），併入 v4.10.0；在 main 修正審查留下的兩項文字；未推送，GitHub #5 維持開啟到發布；標記已完成 | Claude Code |
+| 2026-11-12 | 隨 v4.10.0 推送並發布，GitHub #5 關閉 | 使用者／Claude Code |
 
 ---
 **建立日期**: 2026-11-12  
