@@ -50,9 +50,11 @@
      - 實作：`main()` 印出判定之後，另以 `tbd_reminders()` 比對被審查提交與 HEAD 的待確認事項表格，依編號找出新增或內容改變、狀態不合法的列，在 stdout 多印一行提醒，引用狀態欄前 20 個字。判定、輸出到 stderr 的 INVALID 與 exit code 不變；提醒的計算有任何例外都略過。
      - 綠燈：[s1-green.txt](evidence/s1-green.txt)，284 項通過。
      - AC-4 重判：[s1-rejudge.md](evidence/s1-rejudge.md)。issue #4 的 wf28b3、issue #3 的 wf31 與 v4.10.0 下游試用的 5 個記帳判定，main 版與本分支版的 exit code 都是 0、判定輸出相同，都沒有提醒。另外重判下游試用寫入「接受為殘餘風險」的那個記帳提交（之後已改正）：兩版都判 OK，本分支版多一行提醒指出該列，這是 #7 第 2 點的真實案例。
-2. 📝 **AC-1、AC-2：文件與懸置掃描** — 改狀態表與 pending-scan.md；寫定 fixture 與判準並提交後，實跑 2 輪（相依：1）
-   - 完成證據：
-3. 📝 **收尾** — CHANGELOG、rule-verification-status；送獨立審查（相依：2）
+2. ✅ **AC-1、AC-2：文件與懸置掃描** — 改狀態表與 pending-scan.md；寫定 fixture 與判準並提交後，實跑 2 輪（相依：1）
+   - 完成證據：2026-11-12。
+     - AC-1：`docs/AGENTS.md` 標題改為「有特殊意義的狀態值」，表格前補一句說明自由描述的例子與「寫在開頭、後面可接括號說明」，文件版本 2.10；`docs/agents/verification.md` 的錨點同步。check-links OK；舊標題只剩 CHANGELOG、rule-verification-status 的歷史列與 issue 文件。
+     - AC-2：`pending-scan.md` 偵測規則新增「待確認狀態不合法」，回報版面歸在建議整理。判準 [fixtures/expected.md](fixtures/expected.md) 與 fixture [build_fixtures.py](fixtures/build_fixtures.py) 先在 `8948ad9` 提交，候選組（kit `8948ad9`）以隔離設定實跑 2 輪：[r1](evidence/s2-wf34/wf34-r1.md)、[r2](evidence/s2-wf34/wf34-r2.md)。兩輪都在「建議整理」列出 3401，指出 TBD-1 的「已定案」不是三個值之一（r2 直接寫出偵測類型名稱）；3402 的粗體標準值與 3403 都沒有列出，兩輪都另外說明 3402 去掉粗體後合法；回合前後 HEAD 與工作樹雜湊相同；沒有權限拒絕。2／2 通過。
+3. ⏳ **收尾** — CHANGELOG、rule-verification-status；送獨立審查（相依：2）
    - 完成證據：
 
 - **核准日期**: 2026-11-12
