@@ -18,7 +18,7 @@
 | 併入本機 main | git merge-base --is-ancestor issue-0003-current-state main | 已併入（merge commit 3ce55e0） | 2026-11-11 |
 | 推送到 origin/main | git fetch origin 後執行 git merge-base --is-ancestor 3ce55e0 origin/main | 尚未推送，使用者 2026-11-11 選擇先不推送 | 2026-11-11 |
 | 發布 v4.10.0 | git ls-remote --tags origin v4.10.0 | 尚未發布 | 2026-11-11 |
-| 下游試用 v4.10.0 | 向試用專案的 session 詢問試用結果 | 已指定試用專案並傳送試用說明，尚未回覆；回覆前不推送 | 2026-11-12 |
+| 下游試用 v4.10.0 | 向試用專案的 session 詢問試用結果 | 一個下游專案以 c4f9a51 跑完一個實際 issue，四輪審查都 PASS，檢查器判定都正確，未發現擋發布的問題；使用問題記在 #7 | 2026-11-12 |
 
 ## 文件清單
 
