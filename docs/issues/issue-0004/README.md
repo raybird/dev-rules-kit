@@ -28,7 +28,7 @@
 
 - **核准日期**: 2026-11-12
 - **核准來源**: 2026-11-12 使用者在對話中選擇：規則寫在 docs/AGENTS.md 第 6 項、提交位置由使用者選、候選組 WF-32 跑 3 輪、併入 v4.10.0；同日使用者回覆「核准」，適用 AC-1～AC-3
-- **核准 commit**: 待提交
+- **核准 commit**: 475ebcf
 
 ## 風險與首要驗證
 
@@ -40,10 +40,10 @@
 
 ## 實作與驗證步驟
 
-1. ⏳ **AC-1：規則文字** — 驗證方式：同 AC-1
-   - 完成證據：待回寫
-2. ⏳ **寫定判準** — 在 `docs/issues/issue-0004/fixtures/expected.md` 寫下 AC-2、AC-3 的逐輪判準並提交，再開始重跑（相依：1）
-   - 完成證據：待回寫
+1. ✅ **AC-1：規則文字** — 驗證方式：同 AC-1
+   - 完成證據：2026-11-12。`docs/AGENTS.md` 第 6 項末尾加入提交前說明、列出做法由使用者決定、project.md 有登記時照登記；版本紀錄 2.9 列補述。`review-evidence.md`「審查之後的提交」末段加一句指向該項（錨點 `#agent-工作流程與時序保留-workflow--timeline-tracking`）。check-kit、check-links、`bash -n`、test-install（14）、test-evidence（244）全數 OK。純文件變更，行為由步驟 3 實跑判定
+2. ✅ **寫定判準** — 在 `docs/issues/issue-0004/fixtures/expected.md` 寫下 AC-2、AC-3 的逐輪判準並提交，再開始重跑（相依：1）
+   - 完成證據：2026-11-12 寫定 [fixtures/expected.md](fixtures/expected.md)，與本步驟一起提交，先於重跑
 3. ⏳ **AC-2、AC-3：重跑** — 以隔離設定安裝本分支的技能，跑 WF-32 3 輪、WF-28b（`wf28b3`）1 輪（相依：2）
    - 完成證據：待回寫
 4. ⏳ **收尾** — 更新 workflow-regression、rule-verification-status、CHANGELOG 4.10.0；送獨立審查（相依：3）

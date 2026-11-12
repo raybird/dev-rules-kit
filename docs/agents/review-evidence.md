@@ -52,7 +52,7 @@ git diff "${base_sha}" "${head_sha}" | git patch-id --stable
 
 **流程契約 2.3 以下**只接受單一報告提交：目前 HEAD 是被審查 SHA 的直接後繼、唯一一個非 merge 提交，唯一差異是新增這一份報告（`--name-status` 為 A、一般檔案模式）。PR 證據同時列出被審查 HEAD 與報告提交 HEAD。
 
-不符合所屬條件的新提交、重寫歷史或範圍改變都重新審查。使用者明確決定不重新審查時，依 [docs/AGENTS.md](../AGENTS.md)「Gate 豁免紀錄」記錄未經審查的提交與殘餘風險；報告的 PASS 仍只標在被審查 SHA，PR 證據照列有效性檢查的結果並引用該豁免。
+不符合所屬條件的新提交、重寫歷史或範圍改變都重新審查。在被審查分支做這類提交之前，先依 [docs/AGENTS.md](../AGENTS.md#agent-工作流程與時序保留-workflow--timeline-tracking)「Agent 工作流程與時序保留」第 6 項告知使用者。使用者明確決定不重新審查時，依 [docs/AGENTS.md](../AGENTS.md)「Gate 豁免紀錄」記錄未經審查的提交與殘餘風險；報告的 PASS 仍只標在被審查 SHA，PR 證據照列有效性檢查的結果並引用該豁免。
 
 ## 審查強度與流程判定
 
