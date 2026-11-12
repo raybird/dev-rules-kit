@@ -21,6 +21,11 @@
 
 **現行 review**: review-5f5fb3e.md
 
+| 外部狀態 | 查證命令 | 上次結果 | 查證日期 |
+|---|---|---|---|
+| 併入本機 main | git merge-base --is-ancestor issue-0005-table-continuation main | 已併入（merge commit cf42fbc） | 2026-11-12 |
+| 推送到 origin/main | git fetch origin 後執行 git merge-base --is-ancestor cf42fbc origin/main | 尚未推送，隨 v4.10.0 在下游試用後推送 | 2026-11-12 |
+
 ## 涉及檔案
 
 - `skills/review/scripts/verify-artifact.py` - 記帳章節含凍結內容的段落，記下段落前接的內容；前接表格列時凍結該表格的表頭與分隔列
@@ -67,8 +72,8 @@
      - 依 [review-8d4f21a](review-8d4f21a.md) 修正（2026-11-12，TBD-1、TBD-2）：紅燈 [s3-red.txt](evidence/s3-red.txt)，錯誤訊息沒有指出是哪一段、表格直接接凍結段落時縮減表頭判 OK，2 個測試失敗；實作後 `start` 項目帶出該段觸發凍結的行，前接表格列時一併凍結表頭與分隔列；綠燈 [s3-green.txt](evidence/s3-green.txt) 260 項通過。修正後重判的命令與輸出存在 [s1-rejudge.md](evidence/s1-rejudge.md)，兩個都仍 OK。
 2. ✅ **AC-3：下游統計** — 擴充 `scan_downstream.py` 或另寫唯讀統計，記錄數量（相依：1）
    - 完成證據：2026-11-12 以 [scan_start.py](evidence/scan_start.py) 讀 issue #3 同一份 README 清單，結果在 [s2-scan.txt](evidence/s2-scan.txt)：不重複的 683 份中，含凍結內容的段落前接空行 402 份 477 段、前接標題 6 份 6 段、前接表格列 1 份 1 段。這 1 份是 Timeline 表格後面直接接檔尾欄位（沒有 `---`），檔尾欄位在 GFM 已經渲染成表格列；之後在那裡補空行、或修改那張表格的表頭，會判需重審。修正後重跑，數字不變。
-3. ⏳ **收尾** — review-evidence.md、CHANGELOG 4.10.0、rule-verification-status；送獨立審查（相依：2）
-   - 完成證據：2026-11-12 已更新 review-evidence.md「審查之後的提交」、CHANGELOG 4.10.0（變更、已知限制改寫、252 項）、rule-verification-status。獨立審查 [review-8d4f21a](review-8d4f21a.md) RETURN（MUST FIX 1、SHOULD FIX 2、NICE TO HAVE 2），已全數修正，待差異覆審
+3. ✅ **收尾** — review-evidence.md、CHANGELOG 4.10.0、rule-verification-status；送獨立審查（相依：2）
+   - 完成證據：2026-11-12 已更新 review-evidence.md「審查之後的提交」、CHANGELOG 4.10.0（變更、已知限制改寫；第一輪時 252 項，修正後 260 項）、rule-verification-status。獨立審查 [review-8d4f21a](review-8d4f21a.md) RETURN（MUST FIX 1、SHOULD FIX 2、NICE TO HAVE 2），已全數修正；差異覆審 [review-5f5fb3e](review-5f5fb3e.md) PASS。合併後在 main 修正該報告留下的 SHOULD FIX（rule-verification-status 表格儲存格的直線符號改為跳脫）與 NICE TO HAVE（本步驟的測試數）
 
 ## Timeline
 
@@ -78,9 +83,10 @@
 | 2026-11-12 | 使用者核准 AC-1～AC-3 | 使用者 |
 | 2026-11-12 | 獨立審查 review-8d4f21a RETURN；使用者決定錯誤訊息加上段落內容、表格直接接凍結段落時凍結表頭（TBD-1、TBD-2） | 使用者／Claude Code |
 | 2026-11-12 | 差異覆審 [review-5f5fb3e](review-5f5fb3e.md) PASS；留下的 SHOULD FIX（rule-verification-status 表格儲存格未跳脫的直線符號，main 上既有）與 NICE TO HAVE（步驟 3 的測試數），使用者決定合併後在 main 另外修 | 使用者／Claude Code |
+| 2026-11-12 | 以 `--no-ff` 合併到本機 main（`cf42fbc`），併入 v4.10.0；在 main 修正審查留下的兩項文字；未推送，GitHub #5 維持開啟到發布；標記已完成 | Claude Code |
 
 ---
 **建立日期**: 2026-11-12  
 **分級**: Small  
 **風險**: Medium\
-**狀態**: 審查通過，待合併
+**狀態**: 已完成
