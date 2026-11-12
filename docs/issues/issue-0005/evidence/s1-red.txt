@@ -1,0 +1,38 @@
+FFF.
+======================================================================
+FAIL: test_blank_line_before_frozen_paragraph_compared (__main__.BookkeepingTests.test_blank_line_before_frozen_paragraph_compared) (change='| 2026-11-03 | 建立 | - |\n用 `<details>` 收合舊說明。\n')
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "~/Documents/RCodes/dev-rules-kit/scripts/test-evidence.py", line 740, in test_blank_line_before_frozen_paragraph_compared
+    self.assertInvalid(self.verify(), '前接')
+  File "~/Documents/RCodes/dev-rules-kit/scripts/test-evidence.py", line 221, in assertInvalid
+    self.assertNotEqual(result.returncode, 0, result.stdout + result.stderr)
+AssertionError: 0 == 0 : OK：被審查提交之後只有記帳變更，原 review 可依其真實判定沿用。變更：新增報告 docs/issues/issue-1/review-b1d7e54.md
+
+
+======================================================================
+FAIL: test_blank_line_before_frozen_paragraph_compared (__main__.BookkeepingTests.test_blank_line_before_frozen_paragraph_compared) (change='| 2026-11-03 | 建立 | - |\n\n用 `<details>` 收合舊說明。\n')
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "~/Documents/RCodes/dev-rules-kit/scripts/test-evidence.py", line 740, in test_blank_line_before_frozen_paragraph_compared
+    self.assertInvalid(self.verify(), '前接')
+  File "~/Documents/RCodes/dev-rules-kit/scripts/test-evidence.py", line 221, in assertInvalid
+    self.assertNotEqual(result.returncode, 0, result.stdout + result.stderr)
+AssertionError: 0 == 0 : OK：被審查提交之後只有記帳變更，原 review 可依其真實判定沿用。變更：新增報告 docs/issues/issue-1/review-61a2013.md
+
+
+======================================================================
+FAIL: test_blank_line_before_frozen_paragraph_compared (__main__.BookkeepingTests.test_blank_line_before_frozen_paragraph_compared) (change=('\n\n---\n**建立日期**', '\n---\n**建立日期**'))
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "~/Documents/RCodes/dev-rules-kit/scripts/test-evidence.py", line 740, in test_blank_line_before_frozen_paragraph_compared
+    self.assertInvalid(self.verify(), '前接')
+  File "~/Documents/RCodes/dev-rules-kit/scripts/test-evidence.py", line 221, in assertInvalid
+    self.assertNotEqual(result.returncode, 0, result.stdout + result.stderr)
+AssertionError: 0 == 0 : OK：被審查提交之後只有記帳變更，原 review 可依其真實判定沿用。變更：新增報告 docs/issues/issue-1/review-8704213.md
+
+
+----------------------------------------------------------------------
+Ran 2 tests in 0.258s
+
+FAILED (failures=3)

@@ -162,7 +162,8 @@ def analyse(text, bookkeeping_sections):
     """回傳 (凍結內容, 記帳欄位, 各記帳章節內容, 章節標題順序)。凍結內容逐項保留所在章節與種類。
 
     連結 title、code span 這類行內語法可以跨行，所以記帳章節裡含凍結內容的段落（連續非空行）整段凍結，
-    並記下段落怎麼結束（空行、下一個標題或檔尾）。表格每一列各自解析行內語法，所以空行或標題之後開始的
+    並記下段落前接什麼（空行、標題、表格列或檔頭）與怎麼結束（空行、下一個標題或檔尾）：表格後面不空行，
+    GFM 會把段落當成表格的一列。表格每一列各自解析行內語法，所以空行或標題之後開始的
     表格逐列判定。凍結章節的連續空行合併成一個再比對。
     """
     frozen, fields, sections, headings = [], [], {}, []
@@ -170,9 +171,12 @@ def analyse(text, bookkeeping_sections):
     comment, table, head = None, False, None
     opener = None  # 尚未關閉的 HTML 開頭所在的行，錯誤訊息用
     block = []  # 記帳章節目前的段落：(凍結項目或 None, 原行)
+    before = ['檔頭', None]  # [上一個結束的是什麼, 目前段落開始時前接的內容]
 
     def keep(entry, line=None):
         if section in bookkeeping_sections:
+            if not block:
+                before[1] = before[0]
             block.append((entry, line))
         elif entry is not None:
             frozen.append(entry)
@@ -183,7 +187,11 @@ def analyse(text, bookkeeping_sections):
             # 同段落的一般行記下觸發凍結的那一項，錯誤訊息才指得出原因
             frozen.extend(entry or (section, 'paragraph', line, trigger[2]) for entry, line in block)
             if end:
-                frozen.append((section, 'end', end))
+                # 結尾與前接排在段落內容之後，內容不同時錯誤訊息先指出內容
+                frozen.extend(((section, 'end', end), (section, 'start', before[1], trigger[2])))
+                if before[1] == '表格列':
+                    # 段落渲染成上一張表格的一列，表頭決定它顯示幾欄，一併凍結
+                    frozen.append((section, 'table', head))
         else:
             sections[section].extend(line for _, line in block)
         block.clear()
@@ -211,6 +219,7 @@ def analyse(text, bookkeeping_sections):
             if block:
                 flush('下一個標題')
             section, table = heading.group(1), False
+            before[0] = '標題'
             headings.append(section)
             if section in bookkeeping_sections:
                 sections.setdefault(section, [])
@@ -220,6 +229,7 @@ def analyse(text, bookkeeping_sections):
             continue
         if not line:
             table = False
+            before[0] = '空行'
             if section in bookkeeping_sections:
                 if block:
                     flush('空行')
@@ -261,6 +271,7 @@ def analyse(text, bookkeeping_sections):
                 # 表頭與分隔列決定凍結列渲染幾欄，表格含凍結列時一併凍結
                 frozen.append((section, 'table', head))
             flush(None)
+            before[0] = '表格列'
         previous = line
     if block:
         flush('檔尾')
@@ -273,6 +284,9 @@ def describe(entry):
     section, kind, text = entry[:3]
     if kind == 'end':
         return f'章節「{section}」含凍結內容的段落結尾（{text}）'
+    if kind == 'start':
+        return (f'章節「{section}」「{entry[3]}」所在段落前接的內容（{text}；'
+                '表格後面不空行時，段落會渲染成表格的一列）')
     if kind == 'open':
         return (f'章節「{section}」的「{text}」（「{entry[3]}」的 HTML 開頭未關閉，到 `{entry[4]}` 為止的內容'
                 '一律凍結，其後的標題不另分章節）')
