@@ -757,6 +757,68 @@ class BookkeepingTests(unittest.TestCase):
         self.commit('shrink table head')
         self.assertInvalid(self.verify(), '表頭')
 
+    # --- 待確認事項狀態的提醒（issue #7）：只提醒，不改判定 ---
+
+    TBD_ROW = '| TBD-1 | 範例決策 | 待確認 | SCN-001 |'
+
+    def assertNoReminder(self, result):
+        self.assertNotIn('提醒', result.stdout + result.stderr)
+
+    def test_tbd_changed_row_invalid_status_reminded(self):
+        self.add_report()
+        self.edit(self.TBD_ROW, '| TBD-1 | 範例決策 | 接受為殘餘風險 | SCN-001 |')
+        self.commit('nonstandard status')
+        result = self.verify()
+        self.assertBookkeepingValid(result)
+        for mention in ('提醒', 'TBD-1', '接受為殘餘風險', '不影響本次判定'):
+            self.assertIn(mention, result.stdout)
+
+    def test_tbd_added_row_invalid_status_reminded(self):
+        self.add_report()
+        self.edit(self.TBD_ROW, self.TBD_ROW + '\n| TBD-2 | 新事項 | 已確認：照建議 | SCN-001 |')
+        self.commit('new nonstandard row')
+        result = self.verify()
+        self.assertBookkeepingValid(result)
+        self.assertIn('TBD-2', result.stdout)
+        self.assertNotIn('TBD-1', result.stdout.split('提醒', 1)[-1])
+
+    def test_tbd_formatted_standard_status_not_reminded(self):
+        self.add_report()
+        self.edit(self.TBD_ROW, '| TBD-1 | 範例決策 | ✅ **已解決**（2026-11-12）：照建議 | SCN-001 |')
+        self.commit('formatted standard status')
+        result = self.verify()
+        self.assertBookkeepingValid(result)
+        self.assertNoReminder(result)
+
+    def test_tbd_unchanged_old_invalid_row_not_reminded(self):
+        self.reviewed_with(self.TBD_ROW, '| TBD-1 | 範例決策 | 已定案 | SCN-001 |')
+        self.add_report()
+        self.edit(self.TIMELINE_ROW + '\n', self.TIMELINE_ROW + '\n| 2026-11-12 | 補記 | - |\n')
+        self.commit('timeline only')
+        result = self.verify()
+        self.assertBookkeepingValid(result)
+        self.assertNoReminder(result)
+
+    def test_tbd_reminder_kept_when_invalid(self):
+        self.add_report()
+        self.edit(self.TBD_ROW, '| TBD-1 | 範例決策 | 已定案 | SCN-001 |')
+        self.write('app.txt', 'v3\n')
+        self.commit('code change and nonstandard status')
+        result = self.verify()
+        self.assertEqual(result.returncode, 1, result.stdout + result.stderr)
+        self.assertIn('INVALID', result.stderr)
+        self.assertIn('TBD-1', result.stdout)
+
+    def test_tbd_table_without_status_column_not_reminded(self):
+        self.reviewed_with('| 編號 | 事項 | 狀態 | 影響 |\n|---|---|---|---|\n' + self.TBD_ROW,
+                           '| 編號 | 事項 | 結論 | 影響 |\n|---|---|---|---|\n' + self.TBD_ROW)
+        self.add_report()
+        self.edit(self.TBD_ROW, '| TBD-1 | 範例決策 | 已定案 | SCN-001 |')
+        self.commit('table without status column')
+        result = self.verify()
+        self.assertBookkeepingValid(result)
+        self.assertNoReminder(result)
+
     def test_row_appended_before_template_footer_valid(self):
         self.add_report()
         self.edit(self.TIMELINE_ROW + '\n', self.TIMELINE_ROW + '\n| 2026-11-05 | 補記 | - |\n')

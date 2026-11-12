@@ -1,0 +1,101 @@
+FF.F..FF.F..FF.F..FF.F..
+======================================================================
+FAIL: test_tbd_added_row_invalid_status_reminded (__main__.BookkeepingTests.test_tbd_added_row_invalid_status_reminded)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "~/Documents/RCodes/dev-rules-kit/scripts/test-evidence.py", line 782, in test_tbd_added_row_invalid_status_reminded
+    self.assertIn('TBD-2', result.stdout)
+AssertionError: 'TBD-2' not found in 'OK：被審查提交之後只有記帳變更，原 review 可依其真實判定沿用。變更：新增報告 docs/issues/issue-1/review-dcc85ca.md、待確認事項\n'
+
+======================================================================
+FAIL: test_tbd_changed_row_invalid_status_reminded (__main__.BookkeepingTests.test_tbd_changed_row_invalid_status_reminded)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "~/Documents/RCodes/dev-rules-kit/scripts/test-evidence.py", line 774, in test_tbd_changed_row_invalid_status_reminded
+    self.assertIn(mention, result.stdout)
+AssertionError: '提醒' not found in 'OK：被審查提交之後只有記帳變更，原 review 可依其真實判定沿用。變更：新增報告 docs/issues/issue-1/review-dcc85ca.md、待確認事項\n'
+
+======================================================================
+FAIL: test_tbd_reminder_kept_when_invalid (__main__.BookkeepingTests.test_tbd_reminder_kept_when_invalid)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "~/Documents/RCodes/dev-rules-kit/scripts/test-evidence.py", line 810, in test_tbd_reminder_kept_when_invalid
+    self.assertIn('TBD-1', result.stdout)
+AssertionError: 'TBD-1' not found in ''
+
+======================================================================
+FAIL: test_tbd_added_row_invalid_status_reminded (__main__.CurrentStateTests.test_tbd_added_row_invalid_status_reminded)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "~/Documents/RCodes/dev-rules-kit/scripts/test-evidence.py", line 782, in test_tbd_added_row_invalid_status_reminded
+    self.assertIn('TBD-2', result.stdout)
+AssertionError: 'TBD-2' not found in 'OK：被審查提交之後只有記帳變更，原 review 可依其真實判定沿用。變更：新增報告 docs/issues/issue-1/review-66ad866.md、待確認事項\n'
+
+======================================================================
+FAIL: test_tbd_changed_row_invalid_status_reminded (__main__.CurrentStateTests.test_tbd_changed_row_invalid_status_reminded)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "~/Documents/RCodes/dev-rules-kit/scripts/test-evidence.py", line 774, in test_tbd_changed_row_invalid_status_reminded
+    self.assertIn(mention, result.stdout)
+AssertionError: '提醒' not found in 'OK：被審查提交之後只有記帳變更，原 review 可依其真實判定沿用。變更：新增報告 docs/issues/issue-1/review-66ad866.md、待確認事項\n'
+
+======================================================================
+FAIL: test_tbd_reminder_kept_when_invalid (__main__.CurrentStateTests.test_tbd_reminder_kept_when_invalid)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "~/Documents/RCodes/dev-rules-kit/scripts/test-evidence.py", line 810, in test_tbd_reminder_kept_when_invalid
+    self.assertIn('TBD-1', result.stdout)
+AssertionError: 'TBD-1' not found in ''
+
+======================================================================
+FAIL: test_tbd_added_row_invalid_status_reminded (__main__.LegacyBookkeepingTests.test_tbd_added_row_invalid_status_reminded)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "~/Documents/RCodes/dev-rules-kit/scripts/test-evidence.py", line 782, in test_tbd_added_row_invalid_status_reminded
+    self.assertIn('TBD-2', result.stdout)
+AssertionError: 'TBD-2' not found in ''
+
+======================================================================
+FAIL: test_tbd_changed_row_invalid_status_reminded (__main__.LegacyBookkeepingTests.test_tbd_changed_row_invalid_status_reminded)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "~/Documents/RCodes/dev-rules-kit/scripts/test-evidence.py", line 774, in test_tbd_changed_row_invalid_status_reminded
+    self.assertIn(mention, result.stdout)
+AssertionError: '提醒' not found in ''
+
+======================================================================
+FAIL: test_tbd_reminder_kept_when_invalid (__main__.LegacyBookkeepingTests.test_tbd_reminder_kept_when_invalid)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "~/Documents/RCodes/dev-rules-kit/scripts/test-evidence.py", line 810, in test_tbd_reminder_kept_when_invalid
+    self.assertIn('TBD-1', result.stdout)
+AssertionError: 'TBD-1' not found in ''
+
+======================================================================
+FAIL: test_tbd_added_row_invalid_status_reminded (__main__.NoContractBookkeepingTests.test_tbd_added_row_invalid_status_reminded)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "~/Documents/RCodes/dev-rules-kit/scripts/test-evidence.py", line 782, in test_tbd_added_row_invalid_status_reminded
+    self.assertIn('TBD-2', result.stdout)
+AssertionError: 'TBD-2' not found in ''
+
+======================================================================
+FAIL: test_tbd_changed_row_invalid_status_reminded (__main__.NoContractBookkeepingTests.test_tbd_changed_row_invalid_status_reminded)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "~/Documents/RCodes/dev-rules-kit/scripts/test-evidence.py", line 774, in test_tbd_changed_row_invalid_status_reminded
+    self.assertIn(mention, result.stdout)
+AssertionError: '提醒' not found in ''
+
+======================================================================
+FAIL: test_tbd_reminder_kept_when_invalid (__main__.NoContractBookkeepingTests.test_tbd_reminder_kept_when_invalid)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "~/Documents/RCodes/dev-rules-kit/scripts/test-evidence.py", line 810, in test_tbd_reminder_kept_when_invalid
+    self.assertIn('TBD-1', result.stdout)
+AssertionError: 'TBD-1' not found in ''
+
+----------------------------------------------------------------------
+Ran 24 tests in 1.502s
+
+FAILED (failures=12)
