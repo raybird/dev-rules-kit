@@ -146,7 +146,12 @@ def plan(issue_id, steps):
 '''
 
 
+PASS_NOTE = ''  # issue-0004 重跑時設為 review 技能範本的 PASS 提醒；預設空字串，維持 issue-0003 的 fixture
+
+
 def report(reviewed, base_sha, verdict, findings, scope):
+    if verdict == 'PASS' and PASS_NOTE:
+        verdict += '\n\n' + PASS_NOTE
     return f'''# 審查報告
 - 範圍：完整 PR（{scope}）
 - Reviewed BASE SHA：{base_sha}

@@ -177,7 +177,7 @@ Small 與 Medium 的實作步驟本身即為可執行的任務清單，**直接�
 3. 實作後在原任務項目寫入狀態與證據連結。README Timeline 只記建立、核准、規格修訂及結案等語意事件。
 4. 當前驗收區塊與任務清單保持可執行的最新版；被推翻的分析保留帶日期的 NOTE，規格修訂前後差異交給 Git，Timeline 記決策來源。issue 文件不再增加檔尾 Changelog。
 5. 依下節更新受影響的常青文件；結案後的 issue 保留歷史，後續需求另建 issue。
-6. issue 的現況以 issue 目錄的文件為唯一權威：README 的 `**狀態**` 與流程契約 2.5 起可選的 `## 現況`（現行 review 與 issue 依賴的外部狀態，格式見 [document-types.md](agents/document-types.md#readmemd必備)），以及任務來源（Small 在 README，Medium／Large 在 implementation-plan.md）的任務狀態。交接文件、平台留言與跨 session 記憶提到 issue 時，只寫 README 連結或錨定 commit 的事件（例如「`abc1234` 已併入主幹」），不另存目前狀態或查證結果；要保存外部狀態的查證結果時，寫回 README 的 `## 現況`（時機見 document-types.md）。
+6. issue 的現況以 issue 目錄的文件為唯一權威：README 的 `**狀態**` 與流程契約 2.5 起可選的 `## 現況`（現行 review 與 issue 依賴的外部狀態，格式見 [document-types.md](agents/document-types.md#readmemd必備)），以及任務來源（Small 在 README，Medium／Large 在 implementation-plan.md）的任務狀態。交接文件、平台留言與跨 session 記憶提到 issue 時，只寫 README 連結或錨定 commit 的事件（例如「`abc1234` 已併入主幹」），不另存目前狀態或查證結果；要保存外部狀態的查證結果時，寫回 README 的 `## 現況`（時機見 document-types.md）。審查 PASS 之後，要在被審查分支提交該 issue README 記帳區段與該次報告以外的檔案（例如交接文件、常青文件）時，提交前先說明這會讓 PASS 失效、需要重新審查，列出可選的做法（例如提交到主幹或另一個分支、等合併後再提交、接受重審），由使用者決定；project.md 登記了固定做法時照登記，並同樣說明。
 
 ## 常青文件更新責任 (Evergreen Docs)
 
@@ -199,7 +199,7 @@ issue 中實際出事或差點出事、其他 issue 可能重踩的坑，依 [do
 
 | 日期 | 版本 | 異動 |
 |---|---|---|
-| 2026-11-11 | 2.9 | issue README 可選的 `## 現況`（`**現行 review**` 與外部狀態表），列入核心介面；issue 現況以 issue 目錄的文件為唯一權威，交接文件、平台留言與記憶只寫 README 連結或錨定 commit 的事件，查證結果寫回 `## 現況`；外部狀態引用前重跑查證命令，推進時才覆寫（document-types.md、readme-templates.md）。review-evidence.md：`## 現況` 列入審查後可更新的記帳區段，保存報告的同一個提交更新現行 review；記帳章節的 HTML 標籤、跨行 HTML 區塊與巢狀容器裡的標題、fence、粗體欄位一律凍結。流程契約 2.4 → 2.5（向後相容：沒有 `## 現況` 的 README 照現行規則運作，2.4 的專案維持現行記帳判定）。 |
+| 2026-11-11 | 2.9 | issue README 可選的 `## 現況`（`**現行 review**` 與外部狀態表），列入核心介面；issue 現況以 issue 目錄的文件為唯一權威，交接文件、平台留言與記憶只寫 README 連結或錨定 commit 的事件，查證結果寫回 `## 現況`；外部狀態引用前重跑查證命令，推進時才覆寫（document-types.md、readme-templates.md）。審查 PASS 之後要在被審查分支提交記帳以外的檔案時，先說明會讓 PASS 失效，由使用者決定做法。review-evidence.md：`## 現況` 列入審查後可更新的記帳區段，保存報告的同一個提交更新現行 review；記帳章節的 HTML 標籤、跨行 HTML 區塊與巢狀容器裡的標題、fence、粗體欄位一律凍結。流程契約 2.4 → 2.5（向後相容：沒有 `## 現況` 的 README 照現行規則運作，2.4 的專案維持現行記帳判定）。 |
 | 2026-11-03 | 2.8 | review-evidence.md「審查之後的提交」（原「本機 artifact 提交後的有效性」）：流程契約 2.4 起，被審查提交之後只新增該報告、只改該 issue README 記帳區段時沿用 PASS，由 verify-artifact.py 逐區段判定；acceptance.md：核准 commit 在下一個本來就要做的提交回填，仍是 `待提交` 時以最後修改核准來源行的提交為基線；Gate 豁免紀錄以表格或一般清單書寫。流程契約 2.3 → 2.4（向後相容：2.3 以下的專案維持單一報告提交判定）。 |
 | 2026-10-19 | 2.7 | review-evidence.md「本機 artifact 提交後的有效性」：使用者明確決定不重新審查時，未經審查的提交記入 Gate 豁免紀錄，PASS 仍只標在被審查 SHA，PR 證據照列檢查結果。流程契約不變。 |
 | 2026-10-18 | 2.6 | acceptance.md「逐題確認」：彼此獨立的短題預設合併詢問，需取捨或有相依的題目單獨問；「需求澄清與授權」：推導出的可觀察行為併入提問或標待核准。待確認事項的追蹤依內容判定，「追蹤：」改為建議寫法，不追蹤理由不取代 gate 豁免。流程契約不變（向後相容：舊寫法仍有效）。 |
