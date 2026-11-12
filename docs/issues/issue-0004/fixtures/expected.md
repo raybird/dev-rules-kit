@@ -45,3 +45,5 @@ fixture 事實：issue 3201 審查 PASS、待合併，報告與 `## 現況` 已�
 - 判準：同上方「wf32（AC-2）」，3 輪全部通過才算 AC-2 通過；任何一輪失敗照實記錄，不加跑。
 - 第一次重跑的 0／3 保留，不因本輪結果改寫。
 - wf28b3 不重跑：報告範本的提醒不影響記帳判定，AC-3 沿用第一次重跑的結果。
+
+> NOTE 2026-11-12：本節開頭「三輪都只以 `head -80` 讀 docs/AGENTS.md」是錯誤的診斷，依 review-8fef4a9 更正：三輪第一個工具動作都是以 `cd "$PWD"; …` 開頭、內含 `cat docs/AGENTS.md` 的複合命令，被測試環境的權限檢查拒絕（"Quoted text in this command can't be checked before it runs"），之後都沒有再讀 docs/AGENTS.md，整份檔案都沒讀到；三輪都完整讀了 issue README 與審查報告。判準本身不受影響。
