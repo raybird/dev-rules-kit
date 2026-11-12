@@ -19,7 +19,7 @@
 
 ## 涉及檔案
 
-- `skills/review/scripts/verify-artifact.py` - 記帳章節含凍結內容的段落，記下段落前接的內容
+- `skills/review/scripts/verify-artifact.py` - 記帳章節含凍結內容的段落，記下段落前接的內容；前接表格列時凍結該表格的表頭與分隔列
 - `scripts/test-evidence.py` - 正負向案例
 - `docs/agents/review-evidence.md` - 「審查之後的提交」補一句：段落前接的內容也列入比對
 - `CHANGELOG.md`、`docs/rule-verification-status.md` - 併入 4.10.0；已知限制刪掉 V3
@@ -45,6 +45,13 @@
 - **選擇理由**：直接量測一般記帳會不會被誤判
 - **完成證據**：測試輸出與重判結果
 
+## 待確認事項
+
+| 編號 | 事項 | 狀態 | 影響 |
+|------|------|------|------|
+| TBD-1 | review-8d4f21a MUST FIX 1 `需決策`：錯誤訊息沒有指出是哪一段，要補上段落內容，還是把 AC-1 改成只指出章節 | 已確認：2026-11-12 使用者選「訊息加上段落內容」，AC-1 不變 | AC-1 |
+| TBD-2 | review-8d4f21a SHOULD FIX 1 `需決策`：被審查版本已是表格直接接凍結段落時，縮減表頭能藏住段落裡 `|` 之後的文字，要修還是列為已知限制 | 已確認：2026-11-12 使用者選「修」，這種排法沒有明確違反撰寫規範 | AC-1 |
+
 ## 實作與驗證步驟
 
 1. ✅ **AC-1、AC-2：檢查器與測試** — 先寫紅燈案例，再實作；跑五項檢查並重判實跑留下的記帳提交
@@ -53,10 +60,11 @@
      - 實作：`analyse()` 記下段落開始時前接的是檔頭、標題、空行還是表格列，含凍結內容的段落在結尾之後加一項 `start`；排在段落內容與結尾之後，內容或結尾不同時錯誤訊息仍先指出它們。第一版把 `start` 排在最前面，35 個既有子案例因錯誤訊息改指 `start` 而失敗，調整順序後全部通過。
      - 綠燈：[s1-green.txt](evidence/s1-green.txt)，252 項通過（新增 2 個測試方法，四個測試類別各繼承一次）。check-kit、check-links、`bash -n`、test-install（14）OK。
      - AC-2 重判：本分支的 `verify-artifact.py` 對 issue #4 的 wf28b3（`--reviewed 84a544b`）與 issue #3 最後一輪的 wf31（`--reviewed b2bfb79`）保留的 fixture 都判 OK，變更區段與先前相同。
+     - 依 [review-8d4f21a](review-8d4f21a.md) 修正（2026-11-12，TBD-1、TBD-2）：紅燈 [s3-red.txt](evidence/s3-red.txt)，錯誤訊息沒有指出是哪一段、表格直接接凍結段落時縮減表頭判 OK，2 個測試失敗；實作後 `start` 項目帶出該段觸發凍結的行，前接表格列時一併凍結表頭與分隔列；綠燈 [s3-green.txt](evidence/s3-green.txt) 260 項通過。修正後重判的命令與輸出存在 [s1-rejudge.md](evidence/s1-rejudge.md)，兩個都仍 OK。
 2. ✅ **AC-3：下游統計** — 擴充 `scan_downstream.py` 或另寫唯讀統計，記錄數量（相依：1）
-   - 完成證據：2026-11-12 以 [scan_start.py](evidence/scan_start.py) 讀 issue #3 同一份 README 清單，結果在 [s2-scan.txt](evidence/s2-scan.txt)：不重複的 683 份中，含凍結內容的段落前接空行 402 份 477 段、前接標題 6 份 6 段、前接表格列 1 份 1 段。這 1 份是 Timeline 表格後面直接接檔尾欄位（沒有 `---`），檔尾欄位在 GFM 已經渲染成表格列；之後在那裡補空行會判需重審。
+   - 完成證據：2026-11-12 以 [scan_start.py](evidence/scan_start.py) 讀 issue #3 同一份 README 清單，結果在 [s2-scan.txt](evidence/s2-scan.txt)：不重複的 683 份中，含凍結內容的段落前接空行 402 份 477 段、前接標題 6 份 6 段、前接表格列 1 份 1 段。這 1 份是 Timeline 表格後面直接接檔尾欄位（沒有 `---`），檔尾欄位在 GFM 已經渲染成表格列；之後在那裡補空行、或修改那張表格的表頭，會判需重審。修正後重跑，數字不變。
 3. ⏳ **收尾** — review-evidence.md、CHANGELOG 4.10.0、rule-verification-status；送獨立審查（相依：2）
-   - 完成證據：2026-11-12 已更新 review-evidence.md「審查之後的提交」、CHANGELOG 4.10.0（變更、已知限制改寫、252 項）、rule-verification-status。獨立審查待執行
+   - 完成證據：2026-11-12 已更新 review-evidence.md「審查之後的提交」、CHANGELOG 4.10.0（變更、已知限制改寫、252 項）、rule-verification-status。獨立審查 [review-8d4f21a](review-8d4f21a.md) RETURN（MUST FIX 1、SHOULD FIX 2、NICE TO HAVE 2），已全數修正，待差異覆審
 
 ## Timeline
 
@@ -64,6 +72,7 @@
 |------|------|--------|
 | 2026-11-12 | 建立；以 marked 與 micromark 重現 V3 | Claude Code |
 | 2026-11-12 | 使用者核准 AC-1～AC-3 | 使用者 |
+| 2026-11-12 | 獨立審查 review-8d4f21a RETURN；使用者決定錯誤訊息加上段落內容、表格直接接凍結段落時凍結表頭（TBD-1、TBD-2） | 使用者／Claude Code |
 
 ---
 **建立日期**: 2026-11-12  

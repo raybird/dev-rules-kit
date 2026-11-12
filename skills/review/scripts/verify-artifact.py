@@ -188,7 +188,10 @@ def analyse(text, bookkeeping_sections):
             frozen.extend(entry or (section, 'paragraph', line, trigger[2]) for entry, line in block)
             if end:
                 # 結尾與前接排在段落內容之後，內容不同時錯誤訊息先指出內容
-                frozen.extend(((section, 'end', end), (section, 'start', before[1])))
+                frozen.extend(((section, 'end', end), (section, 'start', before[1], trigger[2])))
+                if before[1] == '表格列':
+                    # 段落渲染成上一張表格的一列，表頭決定它顯示幾欄，一併凍結
+                    frozen.append((section, 'table', head))
         else:
             sections[section].extend(line for _, line in block)
         block.clear()
@@ -282,7 +285,8 @@ def describe(entry):
     if kind == 'end':
         return f'章節「{section}」含凍結內容的段落結尾（{text}）'
     if kind == 'start':
-        return f'章節「{section}」含凍結內容的段落前接的內容（{text}；表格後面不空行時，段落會渲染成表格的一列）'
+        return (f'章節「{section}」「{entry[3]}」所在段落前接的內容（{text}；'
+                '表格後面不空行時，段落會渲染成表格的一列）')
     if kind == 'open':
         return (f'章節「{section}」的「{text}」（「{entry[3]}」的 HTML 開頭未關閉，到 `{entry[4]}` 為止的內容'
                 '一律凍結，其後的標題不另分章節）')

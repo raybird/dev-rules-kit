@@ -1,0 +1,26 @@
+FF
+======================================================================
+FAIL: test_start_message_names_paragraph (__main__.BookkeepingTests.test_start_message_names_paragraph)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "~/Documents/RCodes/dev-rules-kit/scripts/test-evidence.py", line 749, in test_start_message_names_paragraph
+    self.assertInvalid(self.verify(), '前接', second)
+  File "~/Documents/RCodes/dev-rules-kit/scripts/test-evidence.py", line 223, in assertInvalid
+    self.assertIn(mention, result.stderr)
+AssertionError: '用 `<b>` 標記第二段。' not found in 'INVALID：docs/issues/issue-1/README.md 的凍結內容與被審查版本不同：被審查版本為章節「Timeline」含凍結內容的段落前接的內容（空行；表格後面不空行時，段落會渲染成表格的一列），目前為章節「Timeline」含凍結內容的段落前接的內容（表格列；表格後面不空行時，段落會渲染成表格的一列）；需重新審查\n'
+
+======================================================================
+FAIL: test_table_head_frozen_when_paragraph_follows_row (__main__.BookkeepingTests.test_table_head_frozen_when_paragraph_follows_row)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "~/Documents/RCodes/dev-rules-kit/scripts/test-evidence.py", line 758, in test_table_head_frozen_when_paragraph_follows_row
+    self.assertInvalid(self.verify(), '表頭')
+  File "~/Documents/RCodes/dev-rules-kit/scripts/test-evidence.py", line 221, in assertInvalid
+    self.assertNotEqual(result.returncode, 0, result.stdout + result.stderr)
+AssertionError: 0 == 0 : OK：被審查提交之後只有記帳變更，原 review 可依其真實判定沿用。變更：新增報告 docs/issues/issue-1/review-2ae481f.md、Timeline
+
+
+----------------------------------------------------------------------
+Ran 2 tests in 0.144s
+
+FAILED (failures=2)

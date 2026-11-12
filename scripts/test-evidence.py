@@ -739,6 +739,24 @@ class BookkeepingTests(unittest.TestCase):
                 self.commit('blank line before frozen paragraph')
                 self.assertInvalid(self.verify(), '前接')
 
+    def test_start_message_names_paragraph(self):
+        # 同章節有兩段凍結段落時，錯誤訊息要指出是哪一段（review-8d4f21a MUST FIX 1）。
+        first, second = '用 `<a>` 標記第一段。', '用 `<b>` 標記第二段。'
+        self.reviewed_with(self.TIMELINE_ROW + '\n', f'{self.TIMELINE_ROW}\n\n{first}\n\n| 補 | 記 | - |\n|---|---|---|\n| x | y | - |\n\n{second}\n')
+        self.add_report()
+        self.edit(f'| x | y | - |\n\n{second}', f'| x | y | - |\n{second}')
+        self.commit('drop blank line before second paragraph')
+        self.assertInvalid(self.verify(), '前接', second)
+
+    def test_table_head_frozen_when_paragraph_follows_row(self):
+        # 表格後面不空行的凍結段落渲染成表格的一列，表頭決定它顯示幾欄（review-8d4f21a SHOULD FIX 1）。
+        head = '| 日期 | 異動 | 負責人 |\n|---|---|---|'
+        self.reviewed_with(self.TIMELINE_ROW + '\n', self.TIMELINE_ROW + '\n**風險**: a | b | c\n')
+        self.add_report()
+        self.edit(head, '| 日期 |\n|---|')
+        self.commit('shrink table head')
+        self.assertInvalid(self.verify(), '表頭')
+
     def test_row_appended_before_template_footer_valid(self):
         self.add_report()
         self.edit(self.TIMELINE_ROW + '\n', self.TIMELINE_ROW + '\n| 2026-11-05 | 補記 | - |\n')
