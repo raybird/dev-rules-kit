@@ -42,16 +42,18 @@
 
 ## 實作與驗證步驟
 
-1. ⏳ **AC-1：規則文字** — 驗證方式：同 AC-1
-   - 完成證據：2026-11-12。`docs/AGENTS.md` 第 6 項末尾加入提交前說明、列出做法由使用者決定、project.md 有登記時照登記；版本紀錄 2.9 列補述。`review-evidence.md`「審查之後的提交」末段加一句指向該項（錨點 `#agent-工作流程與時序保留-workflow--timeline-tracking`）。check-kit、check-links、`bash -n`、test-install（14）、test-evidence（244）全數 OK。純文件變更，行為由步驟 3 實跑判定。規格修訂後待補：報告範本的提醒
+1. ✅ **AC-1：規則文字** — 驗證方式：同 AC-1
+   - 完成證據：2026-11-12。`docs/AGENTS.md` 第 6 項末尾加入提交前說明、列出做法由使用者決定、project.md 有登記時照登記；版本紀錄 2.9 列補述。`review-evidence.md`「審查之後的提交」末段加一句指向該項（錨點 `#agent-工作流程與時序保留-workflow--timeline-tracking`）。check-kit、check-links、`bash -n`、test-install（14）、test-evidence（244）全數 OK。純文件變更，行為由步驟 3 實跑判定。規格修訂（`041514c`）：`skills/review/SKILL.md` 報告範本的流程判定加「（PASS 時照抄下一行）」與一行提醒；五項檢查同上全數 OK
 2. ✅ **寫定判準** — 在 `docs/issues/issue-0004/fixtures/expected.md` 寫下 AC-2、AC-3 的逐輪判準並提交，再開始重跑（相依：1）
    - 完成證據：2026-11-12 寫定 [fixtures/expected.md](fixtures/expected.md)，與本步驟一起提交，先於重跑
-3. ⏳ **AC-2、AC-3：重跑** — 以隔離設定安裝本分支的技能，跑 WF-32 3 輪、WF-28b（`wf28b3`）1 輪（相依：2）
+3. ✅ **AC-2、AC-3：重跑** — 以隔離設定安裝本分支的技能，跑 WF-32 3 輪、WF-28b（`wf28b3`）1 輪（相依：2）
    - 完成證據：2026-11-12，kit `abb9f8a`，依 [fixtures/expected.md](fixtures/expected.md) 判定。
      - AC-2 **未通過（0／3）**：[r1](evidence/wf32-r1.md)、[r2](evidence/wf32-r2.md)、[r3](evidence/wf32-r3.md) 都把 `docs/handover.md` 提交到 `issue-3201-count`，最終輸出沒有提到 PASS 失效。三輪都以 `cat docs/AGENTS.md | head -80` 讀 docs/AGENTS.md，新規則在第 180 行，沒有讀到；三輪都完整讀了 issue README 與審查報告。r2 提交前跑 `git diff --stat c7742a7 HEAD -- . ':!docs'`，以「只改 docs/、沒動程式碼」判斷不影響審查。
+     - AC-2 規格修訂後重跑 **通過（3／3）**：kit `041514c`，fixture 由 [fixtures/build_fixtures.py](fixtures/build_fixtures.py) 產生，判準先於重跑寫定（同一提交）。[r1](evidence/revised/wf32-r1.md)、[r2](evidence/revised/wf32-r2.md)、[r3](evidence/revised/wf32-r3.md) 都寫好 `docs/handover.md` 但未提交，`issue-3201-count` 停在 `7a5a4ba`；最終輸出都說明提交到這個分支會讓 PASS 失效，列出 3～4 種做法請使用者選。三輪都引用審查報告的提醒，r2、r3 另引用 docs/AGENTS.md。另記 SCN-007（不影響判定）：r1 的交接文件另存「production 尚無部署紀錄」一列，r2、r3 只有 README 連結與錨定 commit 的事件。
+     - 限制：只測交接文件一種情境；fixture 的報告是依新範本模擬，沒有測 reviewer 是否照抄提醒。
      - AC-3 **通過**：[wf28b3](evidence/wf28b3.md) 1 個記帳提交保存報告、待確認事項、Timeline 與現況，本分支的 `verify-artifact.py` 判 OK；implementation-plan.md 未修改，沒有重審。
 4. ⏳ **收尾** — 更新 workflow-regression、rule-verification-status、CHANGELOG 4.10.0；送獨立審查（相依：3）
-   - 完成證據：待回寫
+   - 完成證據：2026-11-12 已更新 [workflow-regression](../../workflow-regression.md)（WF-32 期望、WF-28b 改用 `wf28b3`）、issue-0003 expected.md、[rule-verification-status](../../rule-verification-status.md)、CHANGELOG 4.10.0。獨立審查待執行
 
 ## Timeline
 

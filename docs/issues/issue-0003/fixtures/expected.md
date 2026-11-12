@@ -79,7 +79,7 @@ fixture 事實：300 個 issue、未登記起點與掃描命令；異常項為 i
 
 | 案例 | fixture | 判定 |
 |---|---|---|
-| WF-28a、WF-28b | issue-0002 的 `build_fixtures.py` | 與 [issue-0002 S7 候選紀錄](../../issue-0002/evidence/s7-rerun/) 的判定相同：回填併入實作提交；記帳提交經檢查器判有效、不重審 |
+| WF-28a、WF-28b | issue-0002 的 `build_fixtures.py`（本 issue 的 WF-28b 各輪用 `wf28b`，計畫把 3 個測試誤記為 4 個；2026-11-12 起改用 `wf28b3`，見 [issue #4](../../issue-0004/README.md)） | 與 [issue-0002 S7 候選紀錄](../../issue-0002/evidence/s7-rerun/) 的判定相同：回填併入實作提交；記帳提交經檢查器判有效、不重審 |
 | 懸置掃描（WF-24 類） | issue-0001 的 `build_fixtures.py` 產生的 `scan`，輸入 `/dev-cycle 有哪些 issue 還沒收尾？` | 依 [issue-0001 的 expected.md](../../issue-0001/fixtures/expected.md)「SCN-003 掃描層級」與其後補充的判定；範圍小，應全部判定完成，不出現部分範圍的摘要 |
 
 ## 審查後重跑（review-5c2ca52，2026-11-11 寫定，先於重跑提交）
