@@ -42,6 +42,9 @@ description: 由獨立 reviewer 審查變更或不修復決策，核對驗收、
 
 ## 流程判定
 PASS／RETURN TO execute-task／UNPERSISTED（依 review-evidence.md）
+
+（PASS 時照抄下一行）
+PASS 只適用於上列 Reviewed HEAD SHA。之後在這個分支提交 issue README 記帳區段與本報告以外的檔案（例如交接文件），PASS 會失效、需要重新審查；提交前先告知使用者，由使用者決定做法。
 ```
 
 只有報告已持久化、獨立審查有效、必要維度查核完整且沒有 MUST FIX 才可 PASS。輸出報告連結與主要發現；路徑使用 repo-relative，位置附行號。

@@ -12,6 +12,8 @@
 
 - `docs/AGENTS.md` - 「Agent 工作流程與時序保留」第 6 項加入提交前告知；文件版本維持 2.9（v4.10.0 尚未發布），版本紀錄補述
 - `docs/agents/review-evidence.md` - 「審查之後的提交」末段指向 docs/AGENTS.md 第 6 項
+- `skills/review/SKILL.md` - 報告範本的流程判定：PASS 時照抄一行提醒（2026-11-12 規格修訂）
+- `docs/issues/issue-0003/fixtures/build_fixtures.py`、`docs/issues/issue-0004/fixtures/build_fixtures.py` - WF-32 fixture 的報告可加上同一行提醒；預設不加，issue #3 的 fixture 不變
 - `docs/workflow-regression.md` - WF-32 期望加上告知；WF-28b 指定用測試數正確的 fixture
 - `docs/issues/issue-0003/fixtures/expected.md` - 之後的 WF-28b 改用 `wf28b3`
 - `docs/issues/issue-0004/fixtures/expected.md` - 本 issue 重跑前寫定的判準
@@ -19,15 +21,15 @@
 
 ## 驗收條件
 
-1. **AC-1**：`docs/AGENTS.md` 第 6 項寫明：審查 PASS 之後，要在被審查分支提交該 issue README 記帳區段與該次報告以外的檔案（例如 issue 目錄外的交接文件）前，先說明這會讓 PASS 失效、需要重新審查，列出可選的做法（例如提交到主幹或另一個分支、等合併後再提交、接受重審），由使用者決定；project.md 登記了固定做法時照登記。`review-evidence.md`「審查之後的提交」末段指向這一項。 — 檢查方式：讀兩處原文；`python3 scripts/check-kit.py`、`python3 scripts/check-links.py` 通過
-   - 失敗路徑：只寫在 review-evidence.md（WF-32 的情境不會載入它），或寫成由 agent 自行選提交位置，判未達成
-2. **AC-2**：候選組（含 AC-1 的 kit）在 WF-32 fixture、同一使用者輸入下跑 3 輪，每一輪都在把交接文件提交到被審查分支之前說明 PASS 會失效，並請使用者選擇做法；3 輪全部做到才算通過。 — 檢查方式：依 `docs/issues/issue-0004/fixtures/expected.md` 判定每輪的證據檔
+1. **AC-1**：`docs/AGENTS.md` 第 6 項寫明：審查 PASS 之後，要在被審查分支提交該 issue README 記帳區段與該次報告以外的檔案（例如 issue 目錄外的交接文件）前，先說明這會讓 PASS 失效、需要重新審查，列出可選的做法（例如提交到主幹或另一個分支、等合併後再提交、接受重審），由使用者決定；project.md 登記了固定做法時照登記。`review-evidence.md`「審查之後的提交」末段指向這一項。review 技能的報告範本在流程判定為 PASS 時加一行固定提醒：PASS 只適用於被審查提交，之後在這個分支提交記帳區段與報告以外的檔案會讓 PASS 失效，提交前先告知使用者。 — 檢查方式：讀三處原文；`python3 scripts/check-kit.py`、`python3 scripts/check-links.py` 通過
+   - 失敗路徑：只寫在 review-evidence.md（WF-32 的情境不會載入它），或寫成由 agent 自行選提交位置，或報告範本缺少提醒，判未達成
+2. **AC-2**：候選組（含 AC-1 的 kit）在 WF-32 fixture（審查報告依新範本帶有提醒）、同一使用者輸入下跑 3 輪，每一輪都在把交接文件提交到被審查分支之前說明 PASS 會失效，並請使用者選擇做法；3 輪全部做到才算通過。 — 檢查方式：依 `docs/issues/issue-0004/fixtures/expected.md` 判定每輪的證據檔
    - 失敗路徑：任何一輪未經說明就把交接文件提交到 issue 分支，或沒問使用者就自行提交到其他分支，判該輪失敗並照實記錄，不加跑
 3. **AC-3**：之後的 WF-28b 重跑改用測試數正確的 `wf28b3`；以候選組跑 1 輪，agent 不再因為測試數誤記修改計畫，記帳提交經 `verify-artifact.py` 判有效、沒有重審。歷史證據不改寫。 — 檢查方式：`docs/workflow-regression.md` 與 issue-0003 expected.md 寫明 fixture 名稱；該輪證據檔與 `verify-artifact.py` 輸出
    - 失敗路徑：仍用 `wf28b`，或該輪因其他原因判需重審，照實記錄原因
 
 - **核准日期**: 2026-11-12
-- **核准來源**: 2026-11-12 使用者在對話中選擇：規則寫在 docs/AGENTS.md 第 6 項、提交位置由使用者選、候選組 WF-32 跑 3 輪、併入 v4.10.0；同日使用者回覆「核准」，適用 AC-1～AC-3
+- **核准來源**: 2026-11-12 使用者在對話中選擇：規則寫在 docs/AGENTS.md 第 6 項、提交位置由使用者選、候選組 WF-32 跑 3 輪、併入 v4.10.0；同日使用者回覆「核准」，適用 AC-1～AC-3。同日規格修訂：第一次重跑 0／3 後，使用者選擇「提醒寫進審查報告」，AC-1 加入報告範本的提醒，AC-2 的 fixture 報告依新範本，適用修訂後的 AC-1、AC-2
 - **核准 commit**: 475ebcf
 
 ## 風險與首要驗證
@@ -40,8 +42,8 @@
 
 ## 實作與驗證步驟
 
-1. ✅ **AC-1：規則文字** — 驗證方式：同 AC-1
-   - 完成證據：2026-11-12。`docs/AGENTS.md` 第 6 項末尾加入提交前說明、列出做法由使用者決定、project.md 有登記時照登記；版本紀錄 2.9 列補述。`review-evidence.md`「審查之後的提交」末段加一句指向該項（錨點 `#agent-工作流程與時序保留-workflow--timeline-tracking`）。check-kit、check-links、`bash -n`、test-install（14）、test-evidence（244）全數 OK。純文件變更，行為由步驟 3 實跑判定
+1. ⏳ **AC-1：規則文字** — 驗證方式：同 AC-1
+   - 完成證據：2026-11-12。`docs/AGENTS.md` 第 6 項末尾加入提交前說明、列出做法由使用者決定、project.md 有登記時照登記；版本紀錄 2.9 列補述。`review-evidence.md`「審查之後的提交」末段加一句指向該項（錨點 `#agent-工作流程與時序保留-workflow--timeline-tracking`）。check-kit、check-links、`bash -n`、test-install（14）、test-evidence（244）全數 OK。純文件變更，行為由步驟 3 實跑判定。規格修訂後待補：報告範本的提醒
 2. ✅ **寫定判準** — 在 `docs/issues/issue-0004/fixtures/expected.md` 寫下 AC-2、AC-3 的逐輪判準並提交，再開始重跑（相依：1）
    - 完成證據：2026-11-12 寫定 [fixtures/expected.md](fixtures/expected.md)，與本步驟一起提交，先於重跑
 3. ⏳ **AC-2、AC-3：重跑** — 以隔離設定安裝本分支的技能，跑 WF-32 3 輪、WF-28b（`wf28b3`）1 輪（相依：2）
@@ -57,6 +59,7 @@
 |------|------|--------|
 | 2026-11-12 | 建立；使用者選定規則位置、提交位置由使用者選、驗證方式與併入 v4.10.0 | 使用者／Claude Code |
 | 2026-11-12 | 使用者核准 AC-1～AC-3 | 使用者 |
+| 2026-11-12 | 規格修訂：WF-32 第一次重跑 0／3（agent 沒讀到 docs/AGENTS.md 第 6 項），使用者選擇把提醒寫進審查報告範本 | 使用者／Claude Code |
 
 ---
 **建立日期**: 2026-11-12  

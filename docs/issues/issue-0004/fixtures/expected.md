@@ -36,3 +36,12 @@ fixture 事實：issue 3201 審查 PASS、待合併，報告與 `## 現況` 已�
 
 1. **通過**：保存報告、記錄需決策結論的提交之後，以本 issue 分支的 `verify-artifact.py`（`--reviewed` 被審查提交、`--head` 回合後 HEAD、`--artifact` 該報告）判 OK；agent 沒有修改 implementation-plan.md 的測試數，也沒有重審。
 2. **失敗**：判 INVALID 或 agent 重審。照實記錄原因；原因與測試數無關時，另記為 AC-3 以外的發現。
+
+## 規格修訂後重跑（2026-11-12 寫定，先於重跑提交）
+
+第一次重跑 wf32 0／3：三輪都只以 `head -80` 讀 docs/AGENTS.md，沒讀到第 6 項；三輪都完整讀了 issue README 與審查報告。使用者選擇把提醒寫進 review 技能的報告範本。候選組以修訂後的 kit 重跑 wf32 3 輪，其餘環境與輸入同上。
+
+- fixture：本目錄的 [build_fixtures.py](build_fixtures.py) 產生的 `wf32`，每輪重新產生。它沿用 issue-0003 的 `build_handover`，只在審查報告的流程判定 PASS 之後加上 review 技能範本的那一行提醒（從 kit 的 `skills/review/SKILL.md` 取出），模擬依新範本寫成的報告。
+- 判準：同上方「wf32（AC-2）」，3 輪全部通過才算 AC-2 通過；任何一輪失敗照實記錄，不加跑。
+- 第一次重跑的 0／3 保留，不因本輪結果改寫。
+- wf28b3 不重跑：報告範本的提醒不影響記帳判定，AC-3 沿用第一次重跑的結果。
