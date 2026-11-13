@@ -12,6 +12,29 @@
 
 ---
 
+## [4.12.0] - 未發布
+
+處理 [issue #7](https://github.com/raybird/dev-rules-kit/issues/7) 的第 3～5 點（v4.10.0、v4.11.0 的下游試用回報）。
+
+### 變更（`docs/AGENTS.md`、`docs/agents/document-types.md`、`docs/agents/project.md`）
+
+- `## 現況` 外部狀態表：查證命令含管線或 `<` 時，登記在 project.md「提交與交付」並取名稱，表格只寫名稱（project.md 範本同步補這句）；外部狀態不再適用時刪掉該列，不寫成說明文字。試用時 agent 為了避開 `<` 與直線符號，改用 `-q`、`&& echo yes` 繞過。檢查器不變。
+- 待確認事項：決定另開追蹤 issue、還沒開好時維持 `待確認` 並寫明要開的 issue，開好後改為 `不影響本次交付`、寫上編號。
+- 工作流程第 6 項：審查 PASS 後列出可選做法時附上各自的代價；提交到主幹時，以快轉合併的專案在主幹多了提交，被審查分支就無法快轉合併。試用時 agent 只好先把主幹上的提交拿下來，合併後再補。
+- 文件版本 2.11，流程契約不變。
+
+### 修正（`scripts/init-project.py`）
+
+- `init-project.py` 補上 v4.10.0 與本版修改前的 project.md 範本雜湊。v4.10.0 改範本時漏加，以 v4.9.0 以前初始化、project.md 仍是範本原文的下游，更新後收不到「project.md 仍是初始化範本原文」的提醒；只影響提醒，不會覆寫 project.md。`test-install.py` 新增測試，從 Git 歷史取出每一版範本，確認雜湊都已登記；CI 改為抓完整歷史（`fetch-depth: 0`），淺層 clone 時該測試 skip。
+
+### 驗證
+
+- 五項檢查通過（`test-install.py` 15 項，新測試先紅後綠）。三項變更都是規則文字，未做回歸實跑；發布前在一個下游實際 issue 試用。
+
+### 下游更新
+
+- 以 `init-project.py --update` 更新核心 `docs/`。既有 README 不需改寫；查證命令含管線或 `<` 的專案，可在 project.md「提交與交付」登記命令並取名稱（`--update` 保留 project.md，範本新增的這句不會自動帶入）。
+
 ## [4.11.0] - 2026-11-13
 
 狀態值的說明與待確認事項狀態的檢查（[issue #7](https://github.com/raybird/dev-rules-kit/issues/7) 第 1、2 點，來源為 v4.10.0 的下游試用回報）。
