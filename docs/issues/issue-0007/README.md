@@ -16,7 +16,7 @@
 
 ## 現況
 
-**現行 review**: review-10af0b4.md
+**現行 review**: review-92c1f63.md
 
 | 外部狀態 | 查證命令 | 上次結果 | 查證日期 |
 |---|---|---|---|
@@ -124,6 +124,7 @@
 | 2026-11-13 | 使用者核准 AC-5～AC-7 | 使用者 |
 | 2026-11-13 | 第 3～5 點獨立審查 [review-10af0b4](review-10af0b4.md) PASS，沒有 MUST FIX 與 SHOULD FIX；NICE TO HAVE 3 項（1 項需決策）待使用者決定 | Claude Code |
 | 2026-11-13 | 規格修訂：使用者決定修 review-10af0b4 的 NICE TO HAVE 1～3 並覆審（TBD-3），AC-5 收窄為「管線或 `<`」，PASS 失效 | 使用者／Claude Code |
+| 2026-11-13 | 差異覆審 [review-92c1f63](review-92c1f63.md) PASS；SHOULD FIX 1 項（改 project.md 範本時漏加舊雜湊，v4.10.0 起已漏一個，需決策）待使用者決定 | Claude Code |
 
 ---
 **建立日期**: 2026-11-12  
