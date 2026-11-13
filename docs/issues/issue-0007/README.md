@@ -16,7 +16,7 @@
 
 ## 現況
 
-**現行 review**: review-a77b097.md
+**現行 review**: review-d49e8fc.md
 
 ## 涉及檔案
 
@@ -81,6 +81,7 @@
 | 2026-11-12 | 使用者核准 AC-1～AC-4 | 使用者 |
 | 2026-11-12 | 獨立審查 [review-a77b097](review-a77b097.md) PASS，沒有 MUST FIX 與 SHOULD FIX；NICE TO HAVE 5 項待使用者決定 | Claude Code |
 | 2026-11-13 | 使用者決定修 NICE TO HAVE 1～3 並覆審（TBD-1），PASS 失效 | 使用者／Claude Code |
+| 2026-11-13 | 差異覆審 [review-d49e8fc](review-d49e8fc.md) PASS，SHOULD FIX 2 項待使用者決定；報告沒有照抄範本的 PASS 提醒行 | Claude Code |
 
 ---
 **建立日期**: 2026-11-12  
