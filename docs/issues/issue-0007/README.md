@@ -65,6 +65,7 @@
    - 完成證據：2026-11-12。
      - AC-1：`docs/AGENTS.md` 標題改為「有特殊意義的狀態值」，表格前補一句說明自由描述的例子與「寫在開頭、後面可接括號說明」，文件版本 2.10；`docs/agents/verification.md` 的錨點同步。check-links OK；舊標題只剩 CHANGELOG、rule-verification-status 的歷史列與 issue 文件。
      - AC-2：`pending-scan.md` 偵測規則新增「待確認狀態不合法」，回報版面歸在建議整理。判準 [fixtures/expected.md](fixtures/expected.md) 與 fixture [build_fixtures.py](fixtures/build_fixtures.py) 先在 `8948ad9` 提交，候選組（kit `8948ad9`）以隔離設定實跑 2 輪：[r1](evidence/s2-wf34/wf34-r1.md)、[r2](evidence/s2-wf34/wf34-r2.md)。兩輪都在「建議整理」列出 3401，指出 TBD-1 的「已定案」不是三個值之一（r2 直接寫出偵測類型名稱）；3402 的粗體標準值與 3403 都沒有列出，兩輪都另外說明 3402 去掉粗體後合法；回合前後 HEAD 與工作樹雜湊相同；沒有權限拒絕。2／2 通過。
+     - 依 review-a77b097 修正後重跑（2026-11-13）：重跑範圍先寫進 expected.md 並在 `e19b10d` 提交，候選組以 kit `e19b10d` 重新安裝隔離設定，實跑 2 輪：[r1](evidence/s3-wf34/wf34-r1.md)、[r2](evidence/s3-wf34/wf34-r2.md)。兩輪都以「待確認狀態不合法」列出 3401，3402、3403 只說明為合法；前後 HEAD 與工作樹雜湊相同。r2 有一次讀檔的複合命令被權限拒絕，agent 改用其他方式讀完三份 README。2／2 通過。
 3. ⏳ **收尾** — CHANGELOG、rule-verification-status；送獨立審查（相依：2）
    - 完成證據：
 
