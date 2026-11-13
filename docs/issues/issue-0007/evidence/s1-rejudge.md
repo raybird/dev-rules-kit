@@ -1,4 +1,4 @@
-# AC-4 重判：main 與本分支的 verify-artifact.py 判定比較（2026-11-12；依 review-a77b097 修正後 2026-11-13 重跑）
+# AC-4 重判：main 與本分支的 verify-artifact.py 判定比較（2026-11-12；依 review-a77b097、review-d49e8fc 修正後 2026-11-13 重跑）
 
 每個案例先跑 main 版（`81368f7`，含 #5），再跑本分支版，比較 exit code 與輸出。下游試用的 repo 與 issue 目錄以 `<downstream>`、`issue-{下游}` 遮蔽。
 

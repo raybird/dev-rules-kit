@@ -1,0 +1,37 @@
+FFFF
+======================================================================
+FAIL: test_tbd_rows_without_trailing_pipe_reminded (__main__.BookkeepingTests.test_tbd_rows_without_trailing_pipe_reminded)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "~/Documents/RCodes/dev-rules-kit/scripts/test-evidence.py", line 826, in test_tbd_rows_without_trailing_pipe_reminded
+    self.assertIn('TBD-1', self.verify().stdout)
+AssertionError: 'TBD-1' not found in 'OK：被審查提交之後只有記帳變更，原 review 可依其真實判定沿用。變更：新增報告 docs/issues/issue-1/review-6c4944e.md、待確認事項\n'
+
+======================================================================
+FAIL: test_tbd_rows_without_trailing_pipe_reminded (__main__.CurrentStateTests.test_tbd_rows_without_trailing_pipe_reminded)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "~/Documents/RCodes/dev-rules-kit/scripts/test-evidence.py", line 826, in test_tbd_rows_without_trailing_pipe_reminded
+    self.assertIn('TBD-1', self.verify().stdout)
+AssertionError: 'TBD-1' not found in 'OK：被審查提交之後只有記帳變更，原 review 可依其真實判定沿用。變更：新增報告 docs/issues/issue-1/review-d027a22.md、待確認事項\n'
+
+======================================================================
+FAIL: test_tbd_rows_without_trailing_pipe_reminded (__main__.LegacyBookkeepingTests.test_tbd_rows_without_trailing_pipe_reminded)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "~/Documents/RCodes/dev-rules-kit/scripts/test-evidence.py", line 826, in test_tbd_rows_without_trailing_pipe_reminded
+    self.assertIn('TBD-1', self.verify().stdout)
+AssertionError: 'TBD-1' not found in ''
+
+======================================================================
+FAIL: test_tbd_rows_without_trailing_pipe_reminded (__main__.NoContractBookkeepingTests.test_tbd_rows_without_trailing_pipe_reminded)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "~/Documents/RCodes/dev-rules-kit/scripts/test-evidence.py", line 826, in test_tbd_rows_without_trailing_pipe_reminded
+    self.assertIn('TBD-1', self.verify().stdout)
+AssertionError: 'TBD-1' not found in ''
+
+----------------------------------------------------------------------
+Ran 4 tests in 0.312s
+
+FAILED (failures=4)

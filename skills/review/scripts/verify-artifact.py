@@ -416,9 +416,13 @@ def verify(repo, reviewed, head, artifact=None, issue=None):
 
 
 def split_row(line):
-    """以未跳脫的 `|` 切欄，去掉頭尾的空欄。"""
-    parts = [cell.strip() for cell in UNESCAPED_PIPE.split(line)]
-    return parts[1:-1] if len(parts) > 1 and not parts[0] and not parts[-1] else parts
+    """以未跳脫的 `|` 切欄；開頭與結尾的 `|` 各自可省略。"""
+    parts = [cell.strip() for cell in UNESCAPED_PIPE.split(line.strip())]
+    if parts and not parts[0]:
+        parts = parts[1:]
+    if parts and not parts[-1] and line.strip().endswith('|'):
+        parts = parts[:-1]
+    return parts
 
 
 def tbd_rows(text):

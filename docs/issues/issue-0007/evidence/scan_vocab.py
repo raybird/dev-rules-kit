@@ -21,6 +21,16 @@ def strip_marks(text):
     return text
 
 
+def split_row(line):
+    """與 verify-artifact.py 的 split_row 相同：以未跳脫的 `|` 切欄，開頭與結尾的 `|` 各自可省略。"""
+    parts = [cell.strip() for cell in re.split(r'(?<!\\)\|', line.strip())]
+    if parts and not parts[0]:
+        parts = parts[1:]
+    if parts and not parts[-1] and line.strip().endswith('|'):
+        parts = parts[:-1]
+    return parts
+
+
 seen, missing = set(), 0
 status, tbd, tbd_files, prefixes = collections.Counter(), collections.Counter(), collections.defaultdict(set), collections.Counter()
 kinds = set()
@@ -47,12 +57,12 @@ for line in open(sys.argv[1]):
     rows = [r.strip() for r in section.group(1).splitlines() if r.strip().startswith('|')] if section else []
     if len(rows) < 3:
         continue
-    head = [c.strip() for c in rows[0].strip('|').split('|')]
+    head = split_row(rows[0])
     if not head[0].startswith('編號') or '狀態' not in head:
         continue
     index = head.index('狀態')
     for row in rows[2:]:
-        cells = [c.strip() for c in row.strip('|').split('|')]
+        cells = split_row(row)
         if len(cells) <= index:
             continue
         raw = cells[index]

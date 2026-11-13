@@ -816,6 +816,15 @@ class BookkeepingTests(unittest.TestCase):
         self.commit('escaped pipe in item')
         self.assertNoReminder(self.verify())
 
+    def test_tbd_rows_without_trailing_pipe_reminded(self):
+        # review-d49e8fc SHOULD FIX 1：GFM 允許表格列不寫結尾的直線符號。
+        self.reviewed_with('| 編號 | 事項 | 狀態 | 影響 |\n|---|---|---|---|\n' + self.TBD_ROW,
+                           '| 編號 | 事項 | 狀態 | 影響\n|---|---|---|---\n| TBD-1 | 範例決策 | 待確認 | SCN-001')
+        self.add_report()
+        self.edit('| TBD-1 | 範例決策 | 待確認 | SCN-001', '| TBD-1 | 範例決策 | 已定案 | SCN-001')
+        self.commit('nonstandard status without trailing pipe')
+        self.assertIn('TBD-1', self.verify().stdout)
+
     def test_tbd_struck_or_bracketed_status_reminded(self):
         # review-a77b097 NICE TO HAVE 2：只去掉粗體、反引號、空白與 ✅ 這類圖示，刪除線與括號不去。
         for status in ('~~待確認~~ 已定案', '（待確認）已定案', '[已解決](x)'):
