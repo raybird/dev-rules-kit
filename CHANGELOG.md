@@ -12,7 +12,7 @@
 
 ---
 
-## [4.12.0] - 未發布
+## [4.12.0] - 2026-11-13
 
 處理 [issue #7](https://github.com/raybird/dev-rules-kit/issues/7) 的第 3～5 點（v4.10.0、v4.11.0 的下游試用回報）。
 

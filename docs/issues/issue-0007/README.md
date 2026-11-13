@@ -22,7 +22,7 @@
 |---|---|---|---|
 | 併入本機 main | git merge-base --is-ancestor issue-0007-remaining main | 第 1、2 點已併入（c83b2d4）；第 3～5 點已併入（merge commit 9622b40） | 2026-11-13 |
 | 下游試用 | 向試用專案的 session 詢問試用結果 | 第 1、2 點已試用（v4.11.0 已發布）；第 3～5 點已在一個下游實際 issue 以候選版 f4e8a77 試用並併入該專案主幹：PASS 後的可選做法有附代價並避開主幹提交；查證命令登記與追蹤空窗兩項未觸發 | 2026-11-13 |
-| 推送到 origin/main | git fetch origin 後執行 git merge-base --is-ancestor 9622b40 origin/main | 第 1、2 點已隨 v4.11.0 推送；第 3～5 點尚未推送，等下游試用後隨 v4.12.0 推送 | 2026-11-13 |
+| 推送到 origin/main | git fetch origin 後執行 git merge-base --is-ancestor 9622b40 origin/main | 第 1、2 點已隨 v4.11.0 推送；第 3～5 點隨 v4.12.0 推送 | 2026-11-13 |
 
 ## 涉及檔案
 
@@ -130,9 +130,10 @@
 | 2026-11-13 | 差異覆審 [review-5228791](review-5228791.md) PASS，沒有 MUST FIX 與 SHOULD FIX；NICE TO HAVE 2 項待使用者決定 | Claude Code |
 | 2026-11-13 | 使用者決定 NICE TO HAVE 1 合併後修；以 `--no-ff` 合併到本機 main（`9622b40`），在 main 修正 CHANGELOG 的版本範圍；未推送 | 使用者／Claude Code |
 | 2026-11-13 | 下游試用 v4.12.0 候選版完成：第 5 點實際觸發且照新寫法附代價；第 3、4 點未觸發。另回報兩項觀察（範本章節順序在審查前沒有檢查、依文件推論的外部服務行為被判 MUST FIX），待使用者決定是否另開 issue | Claude Code |
+| 2026-11-13 | 使用者決定發布 v4.12.0 並關閉 issue；試用回報的兩項觀察（章節順序、依文件推論的嚴重度）先不開 issue，再發生一次再處理 | 使用者／Claude Code |
 
 ---
 **建立日期**: 2026-11-12  
 **分級**: Small  
 **風險**: Medium  
-**狀態**: 已完成（第 3～5 點待下游試用後隨 v4.12.0 發布）
+**狀態**: 已完成
