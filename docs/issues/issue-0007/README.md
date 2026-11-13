@@ -21,7 +21,7 @@
 | 外部狀態 | 查證命令 | 上次結果 | 查證日期 |
 |---|---|---|---|
 | 併入本機 main | git merge-base --is-ancestor issue-0007-remaining main | 第 1、2 點已併入（c83b2d4）；第 3～5 點已併入（merge commit 9622b40） | 2026-11-13 |
-| 下游試用 | 向試用專案的 session 詢問試用結果 | 第 1、2 點已試用（v4.11.0 已發布）；第 3～5 點已請一個下游專案以候選版 f4e8a77（試用 worktree）在下一個實際 issue 試用，等待回覆 | 2026-11-13 |
+| 下游試用 | 向試用專案的 session 詢問試用結果 | 第 1、2 點已試用（v4.11.0 已發布）；第 3～5 點：試用專案已同意，但目前沒有開著的 issue，等它開下一個 issue 後以候選版 f4e8a77 的 docs/ 試用（技能沿用 v4.11.0，兩版之間 skills/ 沒有變動） | 2026-11-13 |
 | 推送到 origin/main | git fetch origin 後執行 git merge-base --is-ancestor 9622b40 origin/main | 第 1、2 點已隨 v4.11.0 推送；第 3～5 點尚未推送，等下游試用後隨 v4.12.0 推送 | 2026-11-13 |
 
 ## 涉及檔案
