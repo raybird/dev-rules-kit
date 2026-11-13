@@ -16,7 +16,7 @@
 
 ## 現況
 
-**現行 review**: review-d49e8fc.md
+**現行 review**: review-b30f339.md
 
 ## 涉及檔案
 
@@ -85,9 +85,10 @@
 | 2026-11-13 | 使用者決定修 NICE TO HAVE 1～3 並覆審（TBD-1），PASS 失效 | 使用者／Claude Code |
 | 2026-11-13 | 差異覆審 [review-d49e8fc](review-d49e8fc.md) PASS，SHOULD FIX 2 項待使用者決定；報告沒有照抄範本的 PASS 提醒行 | Claude Code |
 | 2026-11-13 | 使用者決定兩項 SHOULD FIX 都修並覆審（TBD-2），PASS 失效 | 使用者／Claude Code |
+| 2026-11-13 | 差異覆審 [review-b30f339](review-b30f339.md) PASS；SHOULD FIX 1 項（措辭寫成開頭直線符號也可省略，實作只支援結尾）待使用者決定 | Claude Code |
 
 ---
 **建立日期**: 2026-11-12  
 **分級**: Small  
 **風險**: Medium  
-**狀態**: 實作中
+**狀態**: 審查通過，待合併
