@@ -7,7 +7,7 @@
 1. `docs/AGENTS.md`「合法的中間狀態與終態」表只列了需要額外紀錄的三個 `**狀態**` 值。下游 agent 把它讀成只能用這三個值，issue 在審查 PASS、等待合併期間一直寫「待審查」。其他狀態值並沒有被禁止，是標題與說明寫得不清楚。
 2. 待確認事項的狀態寫成規定以外的值（試用時寫成「接受為殘餘風險」），沒有工具發現。懸置掃描只認 `待確認` 與 `不影響本次交付`，其他值兩類都不命中，會被默默略過。
 
-2026-11-12 以 [scan_vocab.py](evidence/scan_vocab.py) 唯讀統計 683 份不重複的下游 issue README；2026-11-13 依 review-a77b097、review-d49e8fc 改用與檢查器相同的去符號與切欄規則重跑，下游多 1 份共 684 份，以下為重跑的數字，結果 [s0-scan.txt](evidence/s0-scan.txt)。第一次統計的切欄沒有跳過跳脫的直線符號，當時算出規定以外 201 列 75 份）：
+2026-11-12 以 [scan_vocab.py](evidence/scan_vocab.py) 唯讀統計 683 份不重複的下游 issue README；2026-11-13 依 review-a77b097、review-d49e8fc 改用與檢查器相同的去符號與切欄規則重跑，下游多 1 份共 684 份，以下為重跑的數字，結果 [s0-scan.txt](evidence/s0-scan.txt)。第一次統計的切欄沒有跳過跳脫的直線符號，當時算出規定以外 201 列 75 份：
 
 - `**狀態**` 有 521 種寫法：375 份是三個特殊值以外的自由描述；以 `已完成` 開頭的 230 份多數在後面加括號說明（例如 `已完成（2026-10-12 併入 dev …）`）。
 - 待確認事項狀態欄共 1939 列：1695 列（345 份）以三個值之一開頭；47 列（19 份）加了粗體、反引號或 ✅ 等圖示，去掉後是三個值之一；197 列（72 份）是規定以外的值，最常見的是日期開頭、「已確認」「已定案」「已決定」。
@@ -17,6 +17,12 @@
 ## 現況
 
 **現行 review**: review-b30f339.md
+
+| 外部狀態 | 查證命令 | 上次結果 | 查證日期 |
+|---|---|---|---|
+| 併入本機 main | git merge-base --is-ancestor issue-0007-status-vocabulary main | 已併入（merge commit c83b2d4） | 2026-11-13 |
+| 下游試用 | 向試用專案的 session 詢問試用結果 | 尚未試用；行為變更，發布 v4.11.0 前要在一個下游實際 issue 用過 | 2026-11-13 |
+| 推送到 origin/main | git fetch origin 後執行 git merge-base --is-ancestor c83b2d4 origin/main | 尚未推送，等下游試用後隨 v4.11.0 推送 | 2026-11-13 |
 
 ## 涉及檔案
 
@@ -61,15 +67,15 @@
      - 實作：`main()` 印出判定之後，另以 `tbd_reminders()` 比對被審查提交與 HEAD 的待確認事項表格，依編號找出新增或內容改變、狀態不合法的列，在 stdout 多印一行提醒，引用狀態欄前 20 個字。判定、輸出到 stderr 的 INVALID 與 exit code 不變；提醒的計算有任何例外都略過。
      - 綠燈：[s1-green.txt](evidence/s1-green.txt)，284 項通過。
      - 依 [review-a77b097](review-a77b097.md) 修正（2026-11-13，TBD-1）：紅燈 [s3-red.txt](evidence/s3-red.txt)，事項欄含跳脫的直線符號時切欄錯位而誤報（4 項），刪除線、全形括號與連結開頭的狀態被當成合法（3 個子案例 × 4 類別）；實作後切欄跳過跳脫的直線符號，去符號只去粗體、反引號、空白與 Unicode 圖示（So 類）；綠燈 [s3-green.txt](evidence/s3-green.txt) 292 項通過。
-     - 依 [review-d49e8fc](review-d49e8fc.md) 修正（2026-11-13，TBD-2）：紅燈 [s4-red.txt](evidence/s4-red.txt)，表格列不寫結尾直線符號時整張表讀不到、沒有提醒（4 項）；實作後開頭與結尾的直線符號各自可省略；綠燈 [s4-green.txt](evidence/s4-green.txt) 296 項通過。統計腳本改用同一種切欄方式重跑。
+     - 依 [review-d49e8fc](review-d49e8fc.md) 修正（2026-11-13，TBD-2）：紅燈 [s4-red.txt](evidence/s4-red.txt)，表格列不寫結尾直線符號時整張表讀不到、沒有提醒（4 項）；實作後列結尾的直線符號可省略（列仍要以直線符號開頭）；綠燈 [s4-green.txt](evidence/s4-green.txt) 296 項通過。統計腳本改用同一種切欄方式重跑。
      - AC-4 重判：[s1-rejudge.md](evidence/s1-rejudge.md)（兩次修正後各重跑一次，結果與修正前相同）。issue #4 的 wf28b3、issue #3 的 wf31 與 v4.10.0 下游試用的 5 個記帳判定，main 版與本分支版的 exit code 都是 0、判定輸出相同，都沒有提醒。另外重判下游試用寫入「接受為殘餘風險」的那個記帳提交（之後已改正）：兩版都判 OK，本分支版多一行提醒指出該列，這是 #7 第 2 點的真實案例。
 2. ✅ **AC-1、AC-2：文件與懸置掃描** — 改狀態表與 pending-scan.md；寫定 fixture 與判準並提交後，實跑 2 輪（相依：1）
    - 完成證據：2026-11-12。
      - AC-1：`docs/AGENTS.md` 標題改為「有特殊意義的狀態值」，表格前補一句說明自由描述的例子與「寫在開頭、後面可接括號說明」，文件版本 2.10；`docs/agents/verification.md` 的錨點同步。check-links OK；舊標題只剩 CHANGELOG、rule-verification-status 的歷史列與 issue 文件。
      - AC-2：`pending-scan.md` 偵測規則新增「待確認狀態不合法」，回報版面歸在建議整理。判準 [fixtures/expected.md](fixtures/expected.md) 與 fixture [build_fixtures.py](fixtures/build_fixtures.py) 先在 `8948ad9` 提交，候選組（kit `8948ad9`）以隔離設定實跑 2 輪：[r1](evidence/s2-wf34/wf34-r1.md)、[r2](evidence/s2-wf34/wf34-r2.md)。兩輪都在「建議整理」列出 3401，指出 TBD-1 的「已定案」不是三個值之一（r2 直接寫出偵測類型名稱）；3402 的粗體標準值與 3403 都沒有列出，兩輪都另外說明 3402 去掉粗體後合法；回合前後 HEAD 與工作樹雜湊相同；沒有權限拒絕。2／2 通過。
      - 依 review-a77b097 修正後重跑（2026-11-13）：重跑範圍先寫進 expected.md 並在 `e19b10d` 提交，候選組以 kit `e19b10d` 重新安裝隔離設定，實跑 2 輪：[r1](evidence/s3-wf34/wf34-r1.md)、[r2](evidence/s3-wf34/wf34-r2.md)。兩輪都以「待確認狀態不合法」列出 3401，3402、3403 只說明為合法；前後 HEAD 與工作樹雜湊相同。r2 有一次讀檔的複合命令被權限拒絕，agent 改用其他方式讀完三份 README。2／2 通過。
-3. ⏳ **收尾** — CHANGELOG、rule-verification-status；送獨立審查（相依：2）
-   - 完成證據：
+3. ✅ **收尾** — CHANGELOG、rule-verification-status；送獨立審查（相依：2）
+   - 完成證據：2026-11-13 CHANGELOG 4.11.0、rule-verification-status 已更新。獨立審查 [review-a77b097](review-a77b097.md) PASS，依使用者決定修正 NICE TO HAVE 1～3 後，差異覆審 [review-d49e8fc](review-d49e8fc.md) PASS；再修正其 SHOULD FIX 2 項後，差異覆審 [review-b30f339](review-b30f339.md) PASS。該報告留下的 SHOULD FIX（措辭寫成列開頭的直線符號也可省略）與 NICE TO HAVE（多餘的括號）依使用者決定在合併後於 main 修正
 
 - **核准日期**: 2026-11-12
 - **核准來源**: 2026-11-12 使用者要求「開始處理 #7」（先做第 1、2 點），並選定：狀態表「改標題並補一句」、檢查方式「懸置掃描列出＋檢查器提醒」、加粗體或符號的標準值「算合法」；同日使用者對 AC-1～AC-4 回覆「核准」
@@ -86,9 +92,10 @@
 | 2026-11-13 | 差異覆審 [review-d49e8fc](review-d49e8fc.md) PASS，SHOULD FIX 2 項待使用者決定；報告沒有照抄範本的 PASS 提醒行 | Claude Code |
 | 2026-11-13 | 使用者決定兩項 SHOULD FIX 都修並覆審（TBD-2），PASS 失效 | 使用者／Claude Code |
 | 2026-11-13 | 差異覆審 [review-b30f339](review-b30f339.md) PASS；SHOULD FIX 1 項（措辭寫成開頭直線符號也可省略，實作只支援結尾）待使用者決定 | Claude Code |
+| 2026-11-13 | 使用者決定措辭在合併後修；以 `--no-ff` 合併到本機 main（`c83b2d4`），在 main 修正兩處文字；未推送，GitHub #7 維持開啟（第 3、4 點未處理）；標記已完成 | 使用者／Claude Code |
 
 ---
 **建立日期**: 2026-11-12  
 **分級**: Small  
 **風險**: Medium  
-**狀態**: 審查通過，待合併
+**狀態**: 已完成
