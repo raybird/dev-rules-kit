@@ -76,6 +76,10 @@
 
 第 3、5 點會改變 agent 的做法，依維護指引屬行為變更：發布 v4.12.0 前在一個下游實際 issue 試用。不另做回歸實跑，rule-verification-status 先標「僅靜態撰寫」，試用後依結果更新。
 
+- **核准日期**: 2026-11-13
+- **核准來源**: 2026-11-13 使用者要求「第5點也放進去」，並對 AC-5～AC-7 回覆「核准」
+- **核准 commit**: ab1e901
+
 ## 實作與驗證步驟
 
 1. ✅ **AC-3、AC-4：檢查器提醒** — 先寫紅燈案例，再實作；重判實跑與下游試用的記帳提交
@@ -94,8 +98,8 @@
 3. ✅ **收尾** — CHANGELOG、rule-verification-status；送獨立審查（相依：2）
    - 完成證據：2026-11-13 CHANGELOG 4.11.0、rule-verification-status 已更新。獨立審查 [review-a77b097](review-a77b097.md) PASS，依使用者決定修正 NICE TO HAVE 1～3 後，差異覆審 [review-d49e8fc](review-d49e8fc.md) PASS；再修正其 SHOULD FIX 2 項後，差異覆審 [review-b30f339](review-b30f339.md) PASS。該報告留下的 SHOULD FIX（措辭寫成列開頭的直線符號也可省略）與 NICE TO HAVE（多餘的括號）依使用者決定在合併後於 main 修正
 
-4. 📝 **AC-5～AC-7：文件** — 改 document-types.md 與 docs/AGENTS.md，文件版本 2.11；CHANGELOG 4.12.0、rule-verification-status；送獨立審查
-   - 完成證據：
+4. ⏳ **AC-5～AC-7：文件** — 改 document-types.md 與 docs/AGENTS.md，文件版本 2.11；CHANGELOG 4.12.0、rule-verification-status；送獨立審查
+   - 完成證據：2026-11-13 已修改 document-types.md「`## 現況`」的外部狀態表說明（AC-5）、docs/AGENTS.md 待確認事項（AC-6）與工作流程第 6 項（AC-7），文件版本 2.11；CHANGELOG 4.12.0（未發布）、rule-verification-status 新增三列「僅靜態撰寫」。五項檢查通過。待獨立審查
 
 - **核准日期**: 2026-11-12
 - **核准來源**: 2026-11-12 使用者要求「開始處理 #7」（先做第 1、2 點），並選定：狀態表「改標題並補一句」、檢查方式「懸置掃描列出＋檢查器提醒」、加粗體或符號的標準值「算合法」；同日使用者對 AC-1～AC-4 回覆「核准」
@@ -116,9 +120,10 @@
 | 2026-11-13 | 下游試用完成；使用者決定先在 main 補寫圖示範圍再發布，主幹補提交擋住快轉的回報記在 GitHub #7 | 使用者／Claude Code |
 | 2026-11-13 | 推送 main 並發布 v4.11.0；GitHub #7 維持開啟（第 3～5 點） | 使用者／Claude Code |
 | 2026-11-13 | 規格修訂：使用者決定第 3～5 點也在本 issue 處理，新增 AC-5～AC-7 | 使用者／Claude Code |
+| 2026-11-13 | 使用者核准 AC-5～AC-7 | 使用者 |
 
 ---
 **建立日期**: 2026-11-12  
 **分級**: Small  
 **風險**: Medium  
-**狀態**: 規劃中（第 3～5 點）
+**狀態**: 實作中（第 3～5 點）
