@@ -59,6 +59,7 @@
 | TBD-1 | review-a77b097 PASS 後的 NICE TO HAVE 5 項（含 1 項 `需決策`：去符號的範圍）要不要在分支上修 | 已解決：2026-11-13 使用者選「修 1、2、3 並覆審」；去符號收窄為粗體、反引號、空白與圖示，刪除線與括號不去；第 4、5 項不修（只影響提醒，第 4 項的措辭早於本 issue） | AC-2、AC-3 |
 | TBD-2 | review-d49e8fc 的 SHOULD FIX 2 項（表格列不寫結尾直線符號時讀不到整張表；README 與 CHANGELOG 的統計數字與重跑結果不符）要不要在分支上修 | 已解決：2026-11-13 使用者選「兩項都修並覆審」；統計腳本一併改用相同切欄方式（同報告 NICE TO HAVE 1）；pending-scan.md 規則文字不變，不重跑 WF-34 | AC-3 |
 | TBD-3 | review-10af0b4 的 NICE TO HAVE 3 項（含 1 項 `需決策`：AC-5 的「重導」範圍太寬）要不要在分支上修 | 已解決：2026-11-13 使用者選「三項都修並覆審」；AC-5 收窄為「管線或 `<`」，並查證跳脫的直線符號在現況表判 OK，但照原文複製執行會出錯，所以管線仍登記在 project.md；第 6 項的可選做法拆開並各附代價；project.md 範本補取名稱的說明 | AC-5、AC-7 |
+| TBD-4 | review-92c1f63 SHOULD FIX 1（`需決策`）：改 project.md 範本時沒把修改前的雜湊加進 init-project.py，v4.10.0 改範本時也漏了一個，要不要一起補 | 已解決：2026-11-13 使用者選「補兩個雜湊加測試並覆審」；test-install.py 新增從 Git 歷史檢查每一版範本雜湊的測試，並補 CHANGELOG 下游更新漏寫的 `<` | AC-5 |
 
 ## 第 3～5 點（2026-11-13 規格修訂）
 
@@ -100,7 +101,7 @@
    - 完成證據：2026-11-13 CHANGELOG 4.11.0、rule-verification-status 已更新。獨立審查 [review-a77b097](review-a77b097.md) PASS，依使用者決定修正 NICE TO HAVE 1～3 後，差異覆審 [review-d49e8fc](review-d49e8fc.md) PASS；再修正其 SHOULD FIX 2 項後，差異覆審 [review-b30f339](review-b30f339.md) PASS。該報告留下的 SHOULD FIX（措辭寫成列開頭的直線符號也可省略）與 NICE TO HAVE（多餘的括號）依使用者決定在合併後於 main 修正
 
 4. ⏳ **AC-5～AC-7：文件** — 改 document-types.md 與 docs/AGENTS.md，文件版本 2.11；CHANGELOG 4.12.0、rule-verification-status；送獨立審查
-   - 完成證據：2026-11-13 已修改 document-types.md「`## 現況`」的外部狀態表說明（AC-5）、docs/AGENTS.md 待確認事項（AC-6）與工作流程第 6 項（AC-7），文件版本 2.11；CHANGELOG 4.12.0（未發布）、rule-verification-status 新增三列「僅靜態撰寫」。五項檢查通過。獨立審查 [review-10af0b4](review-10af0b4.md) PASS；依 TBD-3 修正三處措辭並補 project.md 範本後，五項檢查通過，待差異覆審
+   - 完成證據：2026-11-13 已修改 document-types.md「`## 現況`」的外部狀態表說明（AC-5）、docs/AGENTS.md 待確認事項（AC-6）與工作流程第 6 項（AC-7），文件版本 2.11；CHANGELOG 4.12.0（未發布）、rule-verification-status 新增三列「僅靜態撰寫」。五項檢查通過。獨立審查 [review-10af0b4](review-10af0b4.md) PASS；依 TBD-3 修正三處措辭並補 project.md 範本後，差異覆審 [review-92c1f63](review-92c1f63.md) PASS；依 TBD-4 補兩個範本雜湊：新測試 `test_past_project_templates_registered` 先紅（列出 6bfca60、502e9ae 兩版範本的雜湊未登記）後綠，test-install 15 項通過，待差異覆審
 
 - **核准日期**: 2026-11-12
 - **核准來源**: 2026-11-12 使用者要求「開始處理 #7」（先做第 1、2 點），並選定：狀態表「改標題並補一句」、檢查方式「懸置掃描列出＋檢查器提醒」、加粗體或符號的標準值「算合法」；同日使用者對 AC-1～AC-4 回覆「核准」
@@ -125,6 +126,7 @@
 | 2026-11-13 | 第 3～5 點獨立審查 [review-10af0b4](review-10af0b4.md) PASS，沒有 MUST FIX 與 SHOULD FIX；NICE TO HAVE 3 項（1 項需決策）待使用者決定 | Claude Code |
 | 2026-11-13 | 規格修訂：使用者決定修 review-10af0b4 的 NICE TO HAVE 1～3 並覆審（TBD-3），AC-5 收窄為「管線或 `<`」，PASS 失效 | 使用者／Claude Code |
 | 2026-11-13 | 差異覆審 [review-92c1f63](review-92c1f63.md) PASS；SHOULD FIX 1 項（改 project.md 範本時漏加舊雜湊，v4.10.0 起已漏一個，需決策）待使用者決定 | Claude Code |
+| 2026-11-13 | 使用者決定補兩個範本雜湊並加測試、覆審（TBD-4），PASS 失效 | 使用者／Claude Code |
 
 ---
 **建立日期**: 2026-11-12  
