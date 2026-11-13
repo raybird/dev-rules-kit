@@ -22,7 +22,7 @@
 |---|---|---|---|
 | 併入本機 main | git merge-base --is-ancestor issue-0007-status-vocabulary main | 已併入（merge commit c83b2d4） | 2026-11-13 |
 | 下游試用 | 向試用專案的 session 詢問試用結果 | 一個下游專案以 f249d5a 跑完一個實際 issue：懸置掃描列出 4 列舊的不合法狀態、沒有誤報，合法寫法都放行；agent 依新說明改用自由描述的狀態；verify-artifact 判定 OK、沒有提醒（正確）。回報的圖示範圍不清，發布前改為列出例子 | 2026-11-13 |
-| 推送到 origin/main | git fetch origin 後執行 git merge-base --is-ancestor c83b2d4 origin/main | 尚未推送，等下游試用後隨 v4.11.0 推送 | 2026-11-13 |
+| 推送到 origin/main | git fetch origin 後執行 git merge-base --is-ancestor c83b2d4 origin/main | 已推送（exit 0），隨 v4.11.0 發布（tag 指向 175bc7d） | 2026-11-13 |
 
 ## 涉及檔案
 
@@ -94,6 +94,7 @@
 | 2026-11-13 | 差異覆審 [review-b30f339](review-b30f339.md) PASS；SHOULD FIX 1 項（措辭寫成開頭直線符號也可省略，實作只支援結尾）待使用者決定 | Claude Code |
 | 2026-11-13 | 使用者決定措辭在合併後修；以 `--no-ff` 合併到本機 main（`c83b2d4`），在 main 修正兩處文字；未推送，GitHub #7 維持開啟（第 3、4 點未處理）；標記已完成 | 使用者／Claude Code |
 | 2026-11-13 | 下游試用完成；使用者決定先在 main 補寫圖示範圍再發布，主幹補提交擋住快轉的回報記在 GitHub #7 | 使用者／Claude Code |
+| 2026-11-13 | 推送 main 並發布 v4.11.0；GitHub #7 維持開啟（第 3～5 點） | 使用者／Claude Code |
 
 ---
 **建立日期**: 2026-11-12  
