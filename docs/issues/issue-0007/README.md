@@ -20,9 +20,9 @@
 
 | 外部狀態 | 查證命令 | 上次結果 | 查證日期 |
 |---|---|---|---|
-| 併入本機 main | git merge-base --is-ancestor issue-0007-status-vocabulary main | 已併入（merge commit c83b2d4） | 2026-11-13 |
-| 下游試用 | 向試用專案的 session 詢問試用結果 | 一個下游專案以 f249d5a 跑完一個實際 issue：懸置掃描列出 4 列舊的不合法狀態、沒有誤報，合法寫法都放行；agent 依新說明改用自由描述的狀態；verify-artifact 判定 OK、沒有提醒（正確）。回報的圖示範圍不清，發布前改為列出例子 | 2026-11-13 |
-| 推送到 origin/main | git fetch origin 後執行 git merge-base --is-ancestor c83b2d4 origin/main | 已推送（exit 0），隨 v4.11.0 發布（tag 指向 175bc7d） | 2026-11-13 |
+| 併入本機 main | git merge-base --is-ancestor issue-0007-remaining main | 第 1、2 點已併入（c83b2d4）；第 3～5 點已併入（merge commit 9622b40） | 2026-11-13 |
+| 下游試用 | 向試用專案的 session 詢問試用結果 | 第 1、2 點已試用（v4.11.0 已發布）；第 3～5 點尚未試用，發布 v4.12.0 前要在一個下游實際 issue 用過 | 2026-11-13 |
+| 推送到 origin/main | git fetch origin 後執行 git merge-base --is-ancestor 9622b40 origin/main | 第 1、2 點已隨 v4.11.0 推送；第 3～5 點尚未推送，等下游試用後隨 v4.12.0 推送 | 2026-11-13 |
 
 ## 涉及檔案
 
@@ -100,8 +100,8 @@
 3. ✅ **收尾** — CHANGELOG、rule-verification-status；送獨立審查（相依：2）
    - 完成證據：2026-11-13 CHANGELOG 4.11.0、rule-verification-status 已更新。獨立審查 [review-a77b097](review-a77b097.md) PASS，依使用者決定修正 NICE TO HAVE 1～3 後，差異覆審 [review-d49e8fc](review-d49e8fc.md) PASS；再修正其 SHOULD FIX 2 項後，差異覆審 [review-b30f339](review-b30f339.md) PASS。該報告留下的 SHOULD FIX（措辭寫成列開頭的直線符號也可省略）與 NICE TO HAVE（多餘的括號）依使用者決定在合併後於 main 修正
 
-4. ⏳ **AC-5～AC-7：文件** — 改 document-types.md 與 docs/AGENTS.md，文件版本 2.11；CHANGELOG 4.12.0、rule-verification-status；送獨立審查
-   - 完成證據：2026-11-13 已修改 document-types.md「`## 現況`」的外部狀態表說明（AC-5）、docs/AGENTS.md 待確認事項（AC-6）與工作流程第 6 項（AC-7），文件版本 2.11；CHANGELOG 4.12.0（未發布）、rule-verification-status 新增三列「僅靜態撰寫」。五項檢查通過。獨立審查 [review-10af0b4](review-10af0b4.md) PASS；依 TBD-3 修正三處措辭並補 project.md 範本後，差異覆審 [review-92c1f63](review-92c1f63.md) PASS；依 TBD-4 補兩個範本雜湊：新測試 `test_past_project_templates_registered` 先紅（列出 6bfca60、502e9ae 兩版範本的雜湊未登記）後綠，test-install 15 項通過。CI 原本是淺層 clone，該測試在 CI 上看不到歷史，改為 `fetch-depth: 0`，淺層 clone 時明確 skip（以 `--depth 1` 的 clone 實測為 skipped=1）。待差異覆審
+4. ✅ **AC-5～AC-7：文件** — 改 document-types.md 與 docs/AGENTS.md，文件版本 2.11；CHANGELOG 4.12.0、rule-verification-status；送獨立審查
+   - 完成證據：2026-11-13 已修改 document-types.md「`## 現況`」的外部狀態表說明（AC-5）、docs/AGENTS.md 待確認事項（AC-6）與工作流程第 6 項（AC-7），文件版本 2.11；CHANGELOG 4.12.0（未發布）、rule-verification-status 新增三列「僅靜態撰寫」。五項檢查通過。獨立審查 [review-10af0b4](review-10af0b4.md) PASS；依 TBD-3 修正三處措辭並補 project.md 範本後，差異覆審 [review-92c1f63](review-92c1f63.md) PASS；依 TBD-4 補兩個範本雜湊：新測試 `test_past_project_templates_registered` 先紅（列出 6bfca60、502e9ae 兩版範本的雜湊未登記）後綠，test-install 15 項通過。CI 原本是淺層 clone，該測試在 CI 上看不到歷史，改為 `fetch-depth: 0`，淺層 clone 時明確 skip（以 `--depth 1` 的 clone 實測為 skipped=1）。差異覆審 [review-5228791](review-5228791.md) PASS；其 NICE TO HAVE 1（CHANGELOG 受影響版本範圍寫太寬）依使用者決定在合併後於 main 修正，NICE TO HAVE 2（沒有 git 執行檔時 ERROR 而非 skip）不修
 
 - **核准日期**: 2026-11-12
 - **核准來源**: 2026-11-12 使用者要求「開始處理 #7」（先做第 1、2 點），並選定：狀態表「改標題並補一句」、檢查方式「懸置掃描列出＋檢查器提醒」、加粗體或符號的標準值「算合法」；同日使用者對 AC-1～AC-4 回覆「核准」
@@ -128,9 +128,10 @@
 | 2026-11-13 | 差異覆審 [review-92c1f63](review-92c1f63.md) PASS；SHOULD FIX 1 項（改 project.md 範本時漏加舊雜湊，v4.10.0 起已漏一個，需決策）待使用者決定 | Claude Code |
 | 2026-11-13 | 使用者決定補兩個範本雜湊並加測試、覆審（TBD-4），PASS 失效 | 使用者／Claude Code |
 | 2026-11-13 | 差異覆審 [review-5228791](review-5228791.md) PASS，沒有 MUST FIX 與 SHOULD FIX；NICE TO HAVE 2 項待使用者決定 | Claude Code |
+| 2026-11-13 | 使用者決定 NICE TO HAVE 1 合併後修；以 `--no-ff` 合併到本機 main（`9622b40`），在 main 修正 CHANGELOG 的版本範圍；未推送 | 使用者／Claude Code |
 
 ---
 **建立日期**: 2026-11-12  
 **分級**: Small  
 **風險**: Medium  
-**狀態**: 審查通過，待合併（第 3～5 點）
+**狀態**: 已完成（第 3～5 點待下游試用後隨 v4.12.0 發布）

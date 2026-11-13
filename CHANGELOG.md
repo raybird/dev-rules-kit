@@ -25,7 +25,7 @@
 
 ### 修正（`scripts/init-project.py`）
 
-- `init-project.py` 補上 v4.10.0 與本版修改前的 project.md 範本雜湊。v4.10.0 改範本時漏加，以 v4.9.0 以前初始化、project.md 仍是範本原文的下游，更新後收不到「project.md 仍是初始化範本原文」的提醒；只影響提醒，不會覆寫 project.md。`test-install.py` 新增測試，從 Git 歷史取出每一版範本，確認雜湊都已登記；CI 改為抓完整歷史（`fetch-depth: 0`），淺層 clone 時該測試 skip。
+- `init-project.py` 補上 v4.10.0 與本版修改前的 project.md 範本雜湊。v4.10.0 改範本時漏加，以 v4.7.2～v4.9.0 初始化、project.md 仍是範本原文的下游，更新後收不到「project.md 仍是初始化範本原文」的提醒；只影響提醒，不會覆寫 project.md。`test-install.py` 新增測試，從 Git 歷史取出每一版範本，確認雜湊都已登記；CI 改為抓完整歷史（`fetch-depth: 0`），淺層 clone 時該測試 skip。
 
 ### 驗證
 
