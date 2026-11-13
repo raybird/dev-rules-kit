@@ -443,7 +443,7 @@ def tbd_rows(text):
 
 
 def tbd_status_valid(status):
-    """去掉開頭的粗體、反引號、空白與 ✅ 這類圖示後，以三個規定值之一開頭；刪除線、括號與連結不去。"""
+    """去掉開頭的粗體、反引號、空白與 emoji、圖形符號（Unicode So 類，例如 ✅ ⏳ ⚠️ ❌）後，以三個規定值之一開頭；刪除線、括號、箭頭與連結不去。"""
     stripped = status
     while stripped and (stripped[0] in ' \t*_`\ufe0f' or unicodedata.category(stripped[0]) == 'So'):
         stripped = stripped[1:]
