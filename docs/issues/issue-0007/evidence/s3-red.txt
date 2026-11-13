@@ -1,0 +1,141 @@
+..F..FFF....F..FFF....F..FFF....F..FFF..
+======================================================================
+FAIL: test_tbd_escaped_pipe_before_status_not_reminded (__main__.BookkeepingTests.test_tbd_escaped_pipe_before_status_not_reminded)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "~/Documents/RCodes/dev-rules-kit/scripts/test-evidence.py", line 817, in test_tbd_escaped_pipe_before_status_not_reminded
+    self.assertNoReminder(self.verify())
+  File "~/Documents/RCodes/dev-rules-kit/scripts/test-evidence.py", line 765, in assertNoReminder
+    self.assertNotIn('提醒', result.stdout + result.stderr)
+AssertionError: '提醒' unexpectedly found in 'OK：被審查提交之後只有記帳變更，原 review 可依其真實判定沿用。變更：新增報告 docs/issues/issue-1/review-5ae588d.md、待確認事項\n提醒（不影響本次判定）：待確認事項 TBD-1「b」 的狀態不是規定的值；狀態欄以 `待確認`、`已解決`、`不影響本次交付` 之一開頭，後面可接結論。\n'
+
+======================================================================
+FAIL: test_tbd_struck_or_bracketed_status_reminded (__main__.BookkeepingTests.test_tbd_struck_or_bracketed_status_reminded) (status='~~待確認~~ 已定案')
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "~/Documents/RCodes/dev-rules-kit/scripts/test-evidence.py", line 827, in test_tbd_struck_or_bracketed_status_reminded
+    self.assertIn('TBD-1', self.verify().stdout)
+AssertionError: 'TBD-1' not found in 'OK：被審查提交之後只有記帳變更，原 review 可依其真實判定沿用。變更：新增報告 docs/issues/issue-1/review-5ae588d.md、待確認事項\n'
+
+======================================================================
+FAIL: test_tbd_struck_or_bracketed_status_reminded (__main__.BookkeepingTests.test_tbd_struck_or_bracketed_status_reminded) (status='（待確認）已定案')
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "~/Documents/RCodes/dev-rules-kit/scripts/test-evidence.py", line 827, in test_tbd_struck_or_bracketed_status_reminded
+    self.assertIn('TBD-1', self.verify().stdout)
+AssertionError: 'TBD-1' not found in 'OK：被審查提交之後只有記帳變更，原 review 可依其真實判定沿用。變更：新增報告 docs/issues/issue-1/review-5ae588d.md、待確認事項\n'
+
+======================================================================
+FAIL: test_tbd_struck_or_bracketed_status_reminded (__main__.BookkeepingTests.test_tbd_struck_or_bracketed_status_reminded) (status='[已解決](x)')
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "~/Documents/RCodes/dev-rules-kit/scripts/test-evidence.py", line 827, in test_tbd_struck_or_bracketed_status_reminded
+    self.assertIn('TBD-1', self.verify().stdout)
+AssertionError: 'TBD-1' not found in 'OK：被審查提交之後只有記帳變更，原 review 可依其真實判定沿用。變更：新增報告 docs/issues/issue-1/review-5ae588d.md、待確認事項\n'
+
+======================================================================
+FAIL: test_tbd_escaped_pipe_before_status_not_reminded (__main__.CurrentStateTests.test_tbd_escaped_pipe_before_status_not_reminded)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "~/Documents/RCodes/dev-rules-kit/scripts/test-evidence.py", line 817, in test_tbd_escaped_pipe_before_status_not_reminded
+    self.assertNoReminder(self.verify())
+  File "~/Documents/RCodes/dev-rules-kit/scripts/test-evidence.py", line 765, in assertNoReminder
+    self.assertNotIn('提醒', result.stdout + result.stderr)
+AssertionError: '提醒' unexpectedly found in 'OK：被審查提交之後只有記帳變更，原 review 可依其真實判定沿用。變更：新增報告 docs/issues/issue-1/review-cf433b7.md、待確認事項\n提醒（不影響本次判定）：待確認事項 TBD-1「b」 的狀態不是規定的值；狀態欄以 `待確認`、`已解決`、`不影響本次交付` 之一開頭，後面可接結論。\n'
+
+======================================================================
+FAIL: test_tbd_struck_or_bracketed_status_reminded (__main__.CurrentStateTests.test_tbd_struck_or_bracketed_status_reminded) (status='~~待確認~~ 已定案')
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "~/Documents/RCodes/dev-rules-kit/scripts/test-evidence.py", line 827, in test_tbd_struck_or_bracketed_status_reminded
+    self.assertIn('TBD-1', self.verify().stdout)
+AssertionError: 'TBD-1' not found in 'OK：被審查提交之後只有記帳變更，原 review 可依其真實判定沿用。變更：新增報告 docs/issues/issue-1/review-cf433b7.md、待確認事項\n'
+
+======================================================================
+FAIL: test_tbd_struck_or_bracketed_status_reminded (__main__.CurrentStateTests.test_tbd_struck_or_bracketed_status_reminded) (status='（待確認）已定案')
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "~/Documents/RCodes/dev-rules-kit/scripts/test-evidence.py", line 827, in test_tbd_struck_or_bracketed_status_reminded
+    self.assertIn('TBD-1', self.verify().stdout)
+AssertionError: 'TBD-1' not found in 'OK：被審查提交之後只有記帳變更，原 review 可依其真實判定沿用。變更：新增報告 docs/issues/issue-1/review-cf433b7.md、待確認事項\n'
+
+======================================================================
+FAIL: test_tbd_struck_or_bracketed_status_reminded (__main__.CurrentStateTests.test_tbd_struck_or_bracketed_status_reminded) (status='[已解決](x)')
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "~/Documents/RCodes/dev-rules-kit/scripts/test-evidence.py", line 827, in test_tbd_struck_or_bracketed_status_reminded
+    self.assertIn('TBD-1', self.verify().stdout)
+AssertionError: 'TBD-1' not found in 'OK：被審查提交之後只有記帳變更，原 review 可依其真實判定沿用。變更：新增報告 docs/issues/issue-1/review-cf433b7.md、待確認事項\n'
+
+======================================================================
+FAIL: test_tbd_escaped_pipe_before_status_not_reminded (__main__.LegacyBookkeepingTests.test_tbd_escaped_pipe_before_status_not_reminded)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "~/Documents/RCodes/dev-rules-kit/scripts/test-evidence.py", line 817, in test_tbd_escaped_pipe_before_status_not_reminded
+    self.assertNoReminder(self.verify())
+  File "~/Documents/RCodes/dev-rules-kit/scripts/test-evidence.py", line 765, in assertNoReminder
+    self.assertNotIn('提醒', result.stdout + result.stderr)
+AssertionError: '提醒' unexpectedly found in '提醒（不影響本次判定）：待確認事項 TBD-1「b」 的狀態不是規定的值；狀態欄以 `待確認`、`已解決`、`不影響本次交付` 之一開頭，後面可接結論。\nINVALID：後續差異不只新增該報告；需重新審查（流程契約 2.3；只動記帳區段的放行需要流程契約 2.4 以上的 2.x）\n'
+
+======================================================================
+FAIL: test_tbd_struck_or_bracketed_status_reminded (__main__.LegacyBookkeepingTests.test_tbd_struck_or_bracketed_status_reminded) (status='~~待確認~~ 已定案')
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "~/Documents/RCodes/dev-rules-kit/scripts/test-evidence.py", line 827, in test_tbd_struck_or_bracketed_status_reminded
+    self.assertIn('TBD-1', self.verify().stdout)
+AssertionError: 'TBD-1' not found in ''
+
+======================================================================
+FAIL: test_tbd_struck_or_bracketed_status_reminded (__main__.LegacyBookkeepingTests.test_tbd_struck_or_bracketed_status_reminded) (status='（待確認）已定案')
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "~/Documents/RCodes/dev-rules-kit/scripts/test-evidence.py", line 827, in test_tbd_struck_or_bracketed_status_reminded
+    self.assertIn('TBD-1', self.verify().stdout)
+AssertionError: 'TBD-1' not found in ''
+
+======================================================================
+FAIL: test_tbd_struck_or_bracketed_status_reminded (__main__.LegacyBookkeepingTests.test_tbd_struck_or_bracketed_status_reminded) (status='[已解決](x)')
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "~/Documents/RCodes/dev-rules-kit/scripts/test-evidence.py", line 827, in test_tbd_struck_or_bracketed_status_reminded
+    self.assertIn('TBD-1', self.verify().stdout)
+AssertionError: 'TBD-1' not found in ''
+
+======================================================================
+FAIL: test_tbd_escaped_pipe_before_status_not_reminded (__main__.NoContractBookkeepingTests.test_tbd_escaped_pipe_before_status_not_reminded)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "~/Documents/RCodes/dev-rules-kit/scripts/test-evidence.py", line 817, in test_tbd_escaped_pipe_before_status_not_reminded
+    self.assertNoReminder(self.verify())
+  File "~/Documents/RCodes/dev-rules-kit/scripts/test-evidence.py", line 765, in assertNoReminder
+    self.assertNotIn('提醒', result.stdout + result.stderr)
+AssertionError: '提醒' unexpectedly found in '提醒（不影響本次判定）：待確認事項 TBD-1「b」 的狀態不是規定的值；狀態欄以 `待確認`、`已解決`、`不影響本次交付` 之一開頭，後面可接結論。\nINVALID：後續差異不只新增該報告；需重新審查（讀不到流程契約；只動記帳區段的放行需要流程契約 2.4 以上的 2.x）\n'
+
+======================================================================
+FAIL: test_tbd_struck_or_bracketed_status_reminded (__main__.NoContractBookkeepingTests.test_tbd_struck_or_bracketed_status_reminded) (status='~~待確認~~ 已定案')
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "~/Documents/RCodes/dev-rules-kit/scripts/test-evidence.py", line 827, in test_tbd_struck_or_bracketed_status_reminded
+    self.assertIn('TBD-1', self.verify().stdout)
+AssertionError: 'TBD-1' not found in ''
+
+======================================================================
+FAIL: test_tbd_struck_or_bracketed_status_reminded (__main__.NoContractBookkeepingTests.test_tbd_struck_or_bracketed_status_reminded) (status='（待確認）已定案')
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "~/Documents/RCodes/dev-rules-kit/scripts/test-evidence.py", line 827, in test_tbd_struck_or_bracketed_status_reminded
+    self.assertIn('TBD-1', self.verify().stdout)
+AssertionError: 'TBD-1' not found in ''
+
+======================================================================
+FAIL: test_tbd_struck_or_bracketed_status_reminded (__main__.NoContractBookkeepingTests.test_tbd_struck_or_bracketed_status_reminded) (status='[已解決](x)')
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "~/Documents/RCodes/dev-rules-kit/scripts/test-evidence.py", line 827, in test_tbd_struck_or_bracketed_status_reminded
+    self.assertIn('TBD-1', self.verify().stdout)
+AssertionError: 'TBD-1' not found in ''
+
+----------------------------------------------------------------------
+Ran 32 tests in 2.596s
+
+FAILED (failures=16)

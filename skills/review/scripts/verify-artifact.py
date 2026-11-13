@@ -10,12 +10,15 @@
 未在同一行關閉的註解、處理指令、宣告與 CDATA 到結束字串為止整段凍結（任何章節都追蹤），
 含凍結內容的段落整段凍結（表格逐列判定）。
 不模擬 CommonMark 的 code span 與 HTML 區塊，寧可多凍結，避免藏住或偽造凍結章節。
+
+判定之後另印提醒（不影響判定與 exit code）：待確認事項新增或修改的列，狀態不是規定的三個值之一。
 """
 import argparse
 from pathlib import PurePosixPath
 import re
 import subprocess
 import sys
+import unicodedata
 
 BOOKKEEPING_SECTIONS = ('Timeline', '待確認事項', 'Gate 豁免紀錄')
 BOOKKEEPING_FIELDS = ('狀態', '核准 commit')
@@ -42,6 +45,8 @@ SHA = re.compile(r'^`?([0-9a-fA-F]{7,40})`?$')
 ADDABLE_SECTIONS = ('待確認事項', 'Gate 豁免紀錄')
 CURRENT_STATE = '現況'
 CURRENT_REVIEW = '現行 review'
+TBD_STATUSES = ('待確認', '已解決', '不影響本次交付')
+UNESCAPED_PIPE = re.compile(r'(?<!\\)\|')
 
 
 class Invalid(ValueError):
@@ -410,6 +415,56 @@ def verify(repo, reviewed, head, artifact=None, issue=None):
     return bookkeeping(git, reviewed, head, artifact, target, version)
 
 
+def split_row(line):
+    """以未跳脫的 `|` 切欄；開頭與結尾的 `|` 各自可省略。"""
+    parts = [cell.strip() for cell in UNESCAPED_PIPE.split(line.strip())]
+    if parts and not parts[0]:
+        parts = parts[1:]
+    if parts and not parts[-1] and line.strip().endswith('|'):
+        parts = parts[:-1]
+    return parts
+
+
+def tbd_rows(text):
+    """待確認事項表格的列：{編號: (整列, 狀態)}；表頭沒有「編號」與「狀態」欄時視為沒有列。"""
+    section = re.search(r'^## 待確認事項[ \t]*$(.*?)(?=^## |\Z)', text, re.M | re.S)
+    lines = [line.strip() for line in section.group(1).splitlines() if line.strip().startswith('|')] if section else []
+    if len(lines) < 2:
+        return {}
+    head = split_row(lines[0])
+    if not head or not head[0].startswith('編號') or '狀態' not in head:
+        return {}
+    index, rows = head.index('狀態'), {}
+    for line in lines[2:]:
+        row = split_row(line)
+        if len(row) > index and row[0]:
+            rows[row[0]] = (line, row[index])
+    return rows
+
+
+def tbd_status_valid(status):
+    """去掉開頭的粗體、反引號、空白與 ✅ 這類圖示後，以三個規定值之一開頭；刪除線、括號與連結不去。"""
+    stripped = status
+    while stripped and (stripped[0] in ' \t*_`\ufe0f' or unicodedata.category(stripped[0]) == 'So'):
+        stripped = stripped[1:]
+    return stripped.startswith(TBD_STATUSES)
+
+
+def tbd_reminders(repo, reviewed, head, artifact, issue):
+    """被審查提交之後新增或修改、狀態不合法的待確認事項列；任何錯誤都不回報，不影響判定。"""
+    try:
+        git = make_git(make_git(repo)('rev-parse', '--show-toplevel').stdout.strip())
+        readme = f'{issue_dir(artifact or issue)}/README.md'
+        def rows(ref):
+            shown = git('show', f'{ref}:{readme}', check=False)
+            return tbd_rows(shown.stdout) if shown.returncode == 0 else {}
+        before, after = rows(reviewed), rows(head)
+        return [f'{key}「{status[:20]}{"…" if len(status) > 20 else ""}」' for key, (line, status) in after.items()
+                if before.get(key, (None,))[0] != line and not tbd_status_valid(status)]
+    except Exception:
+        return []
+
+
 def main():
     parser = argparse.ArgumentParser(description=__doc__)
     parser.add_argument('--repo', default='.')
@@ -418,12 +473,17 @@ def main():
     parser.add_argument('--artifact', help='本機報告的 repo 相對路徑')
     parser.add_argument('--issue', help='報告保存在平台時，指定 docs/issues/issue-{ID}')
     args = parser.parse_args()
+    code = 0
     try:
         print(verify(args.repo, args.reviewed, args.head, args.artifact, args.issue))
     except (ValueError, subprocess.CalledProcessError) as error:
         print(f'INVALID：{error}', file=sys.stderr)
-        return 1
-    return 0
+        code = 1
+    reminders = tbd_reminders(args.repo, args.reviewed, args.head, args.artifact, args.issue)
+    if reminders:
+        print(f'提醒（不影響本次判定）：待確認事項 {"、".join(reminders)} 的狀態不是規定的值；'
+              f'狀態欄以 {"、".join(f"`{value}`" for value in TBD_STATUSES)} 之一開頭，後面可接結論。')
+    return code
 
 
 if __name__ == '__main__':
