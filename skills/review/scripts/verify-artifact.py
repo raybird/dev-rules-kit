@@ -18,6 +18,7 @@ from pathlib import PurePosixPath
 import re
 import subprocess
 import sys
+import unicodedata
 
 BOOKKEEPING_SECTIONS = ('Timeline', '待確認事項', 'Gate 豁免紀錄')
 BOOKKEEPING_FIELDS = ('狀態', '核准 commit')
@@ -45,6 +46,7 @@ ADDABLE_SECTIONS = ('待確認事項', 'Gate 豁免紀錄')
 CURRENT_STATE = '現況'
 CURRENT_REVIEW = '現行 review'
 TBD_STATUSES = ('待確認', '已解決', '不影響本次交付')
+UNESCAPED_PIPE = re.compile(r'(?<!\\)\|')
 
 
 class Invalid(ValueError):
@@ -413,27 +415,33 @@ def verify(repo, reviewed, head, artifact=None, issue=None):
     return bookkeeping(git, reviewed, head, artifact, target, version)
 
 
+def split_row(line):
+    """以未跳脫的 `|` 切欄，去掉頭尾的空欄。"""
+    parts = [cell.strip() for cell in UNESCAPED_PIPE.split(line)]
+    return parts[1:-1] if len(parts) > 1 and not parts[0] and not parts[-1] else parts
+
+
 def tbd_rows(text):
     """待確認事項表格的列：{編號: (整列, 狀態)}；表頭沒有「編號」與「狀態」欄時視為沒有列。"""
     section = re.search(r'^## 待確認事項[ \t]*$(.*?)(?=^## |\Z)', text, re.M | re.S)
     lines = [line.strip() for line in section.group(1).splitlines() if line.strip().startswith('|')] if section else []
     if len(lines) < 2:
         return {}
-    head = [cell.strip() for cell in lines[0].strip('|').split('|')]
+    head = split_row(lines[0])
     if not head or not head[0].startswith('編號') or '狀態' not in head:
         return {}
     index, rows = head.index('狀態'), {}
     for line in lines[2:]:
-        row = [cell.strip() for cell in line.strip('|').split('|')]
+        row = split_row(line)
         if len(row) > index and row[0]:
             rows[row[0]] = (line, row[index])
     return rows
 
 
 def tbd_status_valid(status):
-    """去掉開頭的粗體、反引號與 ✅ 這類符號後，以三個規定值之一開頭。"""
+    """去掉開頭的粗體、反引號、空白與 ✅ 這類圖示後，以三個規定值之一開頭；刪除線、括號與連結不去。"""
     stripped = status
-    while stripped and not stripped[0].isalnum():
+    while stripped and (stripped[0] in ' \t*_`\ufe0f' or unicodedata.category(stripped[0]) == 'So'):
         stripped = stripped[1:]
     return stripped.startswith(TBD_STATUSES)
 

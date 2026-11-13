@@ -7,6 +7,7 @@ import collections
 import hashlib
 import re
 import sys
+import unicodedata
 from pathlib import Path
 
 SPECIAL = ('等待外部驗收窗', '不修復', '已完成')
@@ -14,7 +15,8 @@ TBD = ('待確認', '已解決', '不影響本次交付')
 
 
 def strip_marks(text):
-    while text and not text[0].isalnum():
+    """與 verify-artifact.py 的 tbd_status_valid 相同：去掉開頭的粗體、反引號、空白與 ✅ 這類圖示。"""
+    while text and (text[0] in ' \t*_`\ufe0f' or unicodedata.category(text[0]) == 'So'):
         text = text[1:]
     return text
 
@@ -57,7 +59,7 @@ for line in open(sys.argv[1]):
         if raw.startswith(TBD):
             kind = 'A 以規定值開頭'
         elif strip_marks(raw).startswith(TBD):
-            kind = 'B 去掉粗體、反引號或符號後以規定值開頭'
+            kind = 'B 去掉粗體、反引號、空白或圖示後以規定值開頭'
         else:
             kind = 'C 規定以外'
             prefixes[re.split(r'[（(：:\s]', strip_marks(raw), maxsplit=1)[0][:4] or '（空白或符號）'] += 1

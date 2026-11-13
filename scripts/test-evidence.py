@@ -809,6 +809,23 @@ class BookkeepingTests(unittest.TestCase):
         self.assertIn('INVALID', result.stderr)
         self.assertIn('TBD-1', result.stdout)
 
+    def test_tbd_escaped_pipe_before_status_not_reminded(self):
+        # review-a77b097 NICE TO HAVE 1：跳脫的直線符號不切欄。
+        self.add_report()
+        self.edit(self.TBD_ROW, '| TBD-1 | 範例 a \\| b | 已解決：照建議 | SCN-001 |')
+        self.commit('escaped pipe in item')
+        self.assertNoReminder(self.verify())
+
+    def test_tbd_struck_or_bracketed_status_reminded(self):
+        # review-a77b097 NICE TO HAVE 2：只去掉粗體、反引號、空白與 ✅ 這類圖示，刪除線與括號不去。
+        for status in ('~~待確認~~ 已定案', '（待確認）已定案', '[已解決](x)'):
+            with self.subTest(status=status):
+                self.git('reset', '-q', '--hard', self.reviewed)
+                self.add_report()
+                self.edit(self.TBD_ROW, f'| TBD-1 | 範例決策 | {status} | SCN-001 |')
+                self.commit('struck status')
+                self.assertIn('TBD-1', self.verify().stdout)
+
     def test_tbd_table_without_status_column_not_reminded(self):
         self.reviewed_with('| 編號 | 事項 | 狀態 | 影響 |\n|---|---|---|---|\n' + self.TBD_ROW,
                            '| 編號 | 事項 | 結論 | 影響 |\n|---|---|---|---|\n' + self.TBD_ROW)
