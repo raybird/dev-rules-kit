@@ -43,8 +43,10 @@ class InstallTests(unittest.TestCase):
         spec.loader.exec_module(module)
         log = subprocess.run(['git', '-C', str(ROOT), 'log', '--format=%H', '--', 'docs/agents/project.md'],
                              capture_output=True, text=True)
-        if log.returncode or not log.stdout.strip():
-            self.skipTest('讀不到 kit 的 Git 歷史')
+        shallow = subprocess.run(['git', '-C', str(ROOT), 'rev-parse', '--is-shallow-repository'],
+                                 capture_output=True, text=True).stdout.strip()
+        if log.returncode or not log.stdout.strip() or shallow != 'false':
+            self.skipTest('讀不到 kit 的完整 Git 歷史（淺層 clone 需 fetch-depth: 0）')
         current = hashlib.sha256((ROOT / 'docs/agents/project.md').read_bytes()).hexdigest()
         missing = []
         for sha in log.stdout.split():
