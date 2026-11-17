@@ -187,6 +187,26 @@ class InstallTests(unittest.TestCase):
         self.assertEqual(len(review), 1, result.stdout)
         self.assertFalse(review[0].is_symlink())
         self.assertEqual((review[0] / 'SKILL.md').read_text(), 'symlink 後面改過的')
+        # 技能內的檔案是 symlink：備份要留下改過的內容，不是連結
+        outside = self.base / 'my-create-pr.md'
+        outside.write_text('連結指向的改過內容')
+        (skills / 'create-pr/SKILL.md').unlink()
+        (skills / 'create-pr/SKILL.md').symlink_to(outside)
+        result = self.install('claude')
+        self.assertEqual(result.returncode, 0, result.stdout + result.stderr)
+        pr = list(backups.glob('create-pr.bak-*'))
+        self.assertEqual(len(pr), 1, result.stdout)
+        self.assertFalse((pr[0] / 'SKILL.md').is_symlink())
+        self.assertEqual((pr[0] / 'SKILL.md').read_text(), '連結指向的改過內容')
+        # 指向不存在目標的 symlink：備份失敗時在覆蓋前中止，不留下不完整的備份
+        (skills / 'git-squash/SKILL.md').write_text('改過的')
+        (skills / 'git-squash/broken').symlink_to(self.base / 'missing')
+        result = self.install('claude')
+        self.assertNotEqual(result.returncode, 0)
+        self.assertIn('尚未覆蓋', result.stderr)
+        self.assertEqual(list(backups.glob('git-squash.bak-*')), [])
+        self.assertEqual((skills / 'git-squash/SKILL.md').read_text(), '改過的')
+        (skills / 'git-squash/broken').unlink()
         task = list(backups.glob('execute-task.bak-*'))
         self.assertEqual(len(task), 1, result.stdout)
         self.assertEqual((task[0] / 'references' / ref.name).read_text(), '改過的範本')
@@ -242,7 +262,8 @@ class InstallTests(unittest.TestCase):
         result = self.get('--list', '--version', 'v9.0.0')
         self.assertEqual(result.returncode, 0, result.stdout + result.stderr)
         self.assertEqual(self.tree(data), before_data)
-        # install.sh 失敗時版本目錄已下載完整，但 current 不切換、平台目錄不動
+        # install.sh 失敗時版本目錄已下載完整，但 current 不切換。這個 install.sh 一開始就失敗，
+        # 所以平台目錄也不動；install.sh 中途失敗時已覆蓋的技能不會還原。
         result = self.get('--version', 'v9.3.0')
         self.assertNotEqual(result.returncode, 0)
         self.assertEqual(self.tree(self.platform_root / '.claude'), before_platform)
@@ -334,6 +355,25 @@ class InstallTests(unittest.TestCase):
         self.assertIn('會備份 review（本地修改：SKILL.md）', result.stdout)
         self.assertEqual(self.tree(self.platform_root), before)
         self.assertEqual((self.platform_root / '.claude/skills/review/SKILL.md').read_text(), '使用者改的')
+
+    def test_get_version_compare_without_sort_v(self):
+        # 審查 484924d：版本比較不依賴 sort -V；v10.0.0 接受、v4.99.99 拒絕。
+        bin_dir = self.base / 'bin-no-sort'
+        bin_dir.mkdir()
+        for folder in ('/usr/local/bin', '/usr/bin', '/bin'):
+            for tool in Path(folder).iterdir() if Path(folder).is_dir() else ():
+                link = bin_dir / tool.name
+                if tool.name != 'sort' and not link.exists() and os.access(tool, os.X_OK):
+                    link.symlink_to(tool)
+        (self.platform_root / '.claude').mkdir(parents=True)
+        self.make_release('v10.0.0')
+        self.make_release('v4.99.99')
+        self.env['PATH'] = str(bin_dir)
+        result = self.get('--dry-run', '--version', 'v10.0.0')
+        self.assertEqual(result.returncode, 0, result.stdout + result.stderr)
+        result = self.get('--dry-run', '--version', 'v4.99.99')
+        self.assertNotEqual(result.returncode, 0)
+        self.assertIn('早於 v5.0.0', result.stderr)
 
     def test_get_check_and_latest_unreachable(self):
         # issue #9 SCN-005：--check 唯讀；取不到最新 release 時照實說明，其餘照常列出。

@@ -178,7 +178,10 @@ install_skills() {
     else
       # -L 複製連結指向的內容：技能目錄或檔案是 symlink 時，之後的覆蓋會寫穿連結
       mkdir -p "$backup"
-      cp -RL "$target/$name/." "$backup/"
+      if ! cp -RL "$target/$name/." "$backup/"; then
+        rm -rf "$backup"
+        die "備份 $name 失敗（例如指向不存在目標的 symlink），尚未覆蓋任何技能；處理後重跑"
+      fi
       echo "  備份：$name（本地修改：$detail）-> ${backup/#$HOME/\~}"
     fi
   done <<< "$states"

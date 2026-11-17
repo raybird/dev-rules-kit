@@ -32,8 +32,15 @@ latest_version() {
 
 valid_version() { [[ "$1" =~ ^v[0-9]+\.[0-9]+\.[0-9]+$ ]]; }
 
+# 純 bash 逐段比較，不依賴 sort -V（BusyBox 等環境沒有）；呼叫前已通過 valid_version
 supported_version() {
-  [ "$(printf '%s\n%s\n' "$MIN_VERSION" "$1" | sort -V | head -n 1)" = "$MIN_VERSION" ]
+  local want have i
+  IFS=. read -r -a have <<< "${1#v}"
+  IFS=. read -r -a want <<< "${MIN_VERSION#v}"
+  for i in 0 1 2; do
+    if (( 10#${have[i]} > 10#${want[i]} )); then return 0; fi
+    if (( 10#${have[i]} < 10#${want[i]} )); then return 1; fi
+  done
 }
 
 current_version() {

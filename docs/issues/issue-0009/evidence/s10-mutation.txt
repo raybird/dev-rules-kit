@@ -1,0 +1,6 @@
+# 2026-11-17 突變測試：備份改回 cp -a 後跑 test_backup_edge_cases，預期失敗
+（已套用突變：備份指令改為 cp -a；斷言失敗於備份的 SKILL.md 仍是 symlink）
+AssertionError: True is not false
+FAILED (failures=1)
+=== 還原後
+OK
