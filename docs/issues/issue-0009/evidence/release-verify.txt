@@ -1,0 +1,34 @@
+# 2026-11-17 發布後以正式指令在暫存 HOME 驗證（HOME 以 $TMPHOME 表示）
+=== curl -fsSL https://raw.githubusercontent.com/raybird/dev-rules-kit/main/scripts/get.sh | bash
+已下載 v5.0.0：~/.local/share/dev-rules-kit/v5.0.0/
+偵測到已安裝的平台：codex claude
+codex
+  技能：11 個技能 -> ~/.codex/skills/
+claude
+  技能：11 個技能 -> ~/.claude/skills/
+未安裝規則檔（rules/）。需要時加上 --with-rules，腳本會先備份既有檔案。
+驗證：Codex 輸入 /skills 或以 $ 提及技能；其他平台輸入 /，應出現 decompose、create-commit、new-issue、dev-cycle 等技能。
+專案初始化：執行 python3 scripts/init-project.py /path/to/project，部署核心技能需要的 docs 規範。
+current -> v5.0.0
+專案初始化或更新：python3 ~/.local/share/dev-rules-kit/current/scripts/init-project.py /path/to/project [--update]
+exit=0
+=== readlink current
+v5.0.0
+=== 與 v5.0.0 tag 的技能比對（diff -rq，沒有輸出代表相同）
+.claude diff-exit=done
+.codex diff-exit=done
+=== init-project.py（current 路徑）
+提醒：project.md 仍是初始化範本原文，常青文件觸發、驗證命令與地雷登記尚無專案內容。
+=== 改過 review 後重跑同一行（更新）
+沿用已下載的 v5.0.0：~/.local/share/dev-rules-kit/v5.0.0/
+  備份：review（本地修改：SKILL.md）-> $TMPHOME/.claude/skill-backups/review.bak-20261117-124502
+未安裝規則檔（rules/）。需要時加上 --with-rules，腳本會先備份既有檔案。
+current -> v5.0.0
+專案初始化或更新：python3 ~/.local/share/dev-rules-kit/current/scripts/init-project.py /path/to/project [--update]
+exit=0
+=== --check
+目前版本：v5.0.0
+最新 release：v5.0.0
+  全部與本 kit 相同
+  全部與本 kit 相同
+exit=0

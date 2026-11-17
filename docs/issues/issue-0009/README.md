@@ -20,7 +20,10 @@
 |---|---|---|---|
 | GitHub #9 | gh issue view 9 --json state -q .state | CLOSED | 2026-11-17 |
 | 併入本機 main | git merge-base --is-ancestor issue-0009-get-sh main | 已併入（merge commit 4e04176） | 2026-11-17 |
-| 推送到 origin/main | git fetch origin 後執行 git merge-base --is-ancestor 4e04176 origin/main | 隨 v5.0.0 推送 | 2026-11-17 |
+| 推送到 origin/main | git fetch origin 後執行 git merge-base --is-ancestor 4e04176 origin/main | 已推送（含 tag v5.0.0） | 2026-11-17 |
+| GitHub release | gh release view --repo raybird/dev-rules-kit --json tagName -q .tagName | v5.0.0（latest） | 2026-11-17 |
+
+**發布後驗證**（2026-11-17，[release-verify](evidence/release-verify.txt)）：在暫存 HOME 以正式的 `curl … get.sh \| bash` 安裝，取得 v5.0.0、`current` 指向 v5.0.0，codex 與 claude 的技能與 tag 相同，`init-project.py` 以 current 路徑初始化成功；改過 review 後重跑同一行，先備份再覆蓋；`--check` 顯示最新 release v5.0.0、全部相同。本機五個平台以 install.sh 更新，沒有需要備份的技能，`--check` exit 0。
 
 **發布前下游試用**（2026-11-17）：一個下游專案的 session 以候選版 `9a0b081` 依 INSTALL.md 跑更新（clone 方式、暫存 HOME、模擬改過 review 技能），四步都達成完成判準：dry-run 列出會備份 review，備份是改過的內容，覆蓋後 11 個技能與 kit 相同，專案 `--check` OK，真實平台目錄沒有變動。回報的四項已在 S16 修正；下載安裝方式要等 v5.0.0 tag，發布後在暫存 HOME 另跑。試用另建議 init-project 的 dry-run 在沒有變更時明講，不在本 issue 範圍。
 
