@@ -156,6 +156,13 @@ copy_skill() {
     echo "    [dry-run] 複製 $src -> $dest/（略過 __pycache__ 與 .pyc）"
     return
   fi
+  # 先把清單寫進暫存檔：直接用 process substitution 時 find 失敗不會中止，會只複製一半
+  local list
+  list="$(mktemp)"
+  if ! find "$src" -mindepth 1 \( -name __pycache__ -o -name '*.pyc' \) -prune -o -print0 > "$list"; then
+    rm -f "$list"
+    die "讀不到 $src 的檔案清單，${dest/#$HOME/\~}/ 尚未更新（同一平台排在前面的技能已更新）；確認 kit 目錄可讀後重跑"
+  fi
   mkdir -p "$dest"
   while IFS= read -r -d '' path; do
     rel="${path#"$src"}"
@@ -164,7 +171,8 @@ copy_skill() {
     else
       cp "$path" "$dest/$rel"
     fi
-  done < <(find "$src" -mindepth 1 \( -name __pycache__ -o -name '*.pyc' \) -prune -o \( -type d -o -type f \) -print0)
+  done < "$list"
+  rm -f "$list"
 }
 
 # 每個 kit 技能一行：名稱<TAB>狀態<TAB>說明（狀態見 scripts/skill_state.py）

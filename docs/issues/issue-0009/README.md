@@ -22,7 +22,7 @@
 
 **發布前下游試用**（2026-11-17）：一個下游專案的 session 以候選版 `9a0b081` 依 INSTALL.md 跑更新（clone 方式、暫存 HOME、模擬改過 review 技能），四步都達成完成判準：dry-run 列出會備份 review，備份是改過的內容，覆蓋後 11 個技能與 kit 相同，專案 `--check` OK，真實平台目錄沒有變動。回報的四項已在 S16 修正；下載安裝方式要等 v5.0.0 tag，發布後在暫存 HOME 另跑。試用另建議 init-project 的 dry-run 在沒有變更時明講，不在本 issue 範圍。
 
-**現行 review**: [review-6a3a533](review-6a3a533.md)（PASS，Reviewed HEAD `6a3a533`；S16 提交後失效，待第六輪）
+**現行 review**: [review-6a3a533](review-6a3a533.md)（PASS，Reviewed HEAD `6a3a533`；S16 提交後失效）；第六輪 [review-cf36828](review-cf36828.md) RETURN，S18 修正後待第七輪
 
 ## 快速導覽
 
@@ -194,6 +194,7 @@ Feature: 不需 clone 即可安裝與更新 kit
 | 2026-11-17 | 第四輪審查 PASS（`f7c84c2`），SHOULD FIX 1（S12 的訊息在第一個平台就失敗時誤導）；使用者選「修正後重審」，S14 修正完成，待第五輪審查 | 使用者／Claude Code |
 | 2026-11-17 | 第五輪審查 PASS（`6a3a533`），沒有 MUST FIX 與 SHOULD FIX；implementation-plan 的 S15 狀態依 PASS 規則不在分支上回填，以本列與現況為準 | Claude Code |
 | 2026-11-17 | 發布前下游試用完成，回報 2 個問題與 3 個建議；使用者勾選四項在發布前修，S16 修正完成，待第六輪審查 | 使用者／Claude Code |
+| 2026-11-17 | 第六輪審查 RETURN（S16 的 copy_skill 寫穿 symlink 子目錄而不備份）；S18 改為判斷時跟進連結並先備份，待第七輪審查 | Claude Code |
 
 ---
 **建立日期**: 2026-11-17  

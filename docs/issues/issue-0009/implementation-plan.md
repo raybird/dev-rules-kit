@@ -59,7 +59,9 @@ get.sh [--version vX.Y.Z] [--dry-run] [--check] [install.sh 的平台與選項�
 | S14 | install.sh 記下已裝完的平台，備份失敗時只在有完成的平台時印「已安裝完成：…」；案例補第一個平台與唯一平台就失敗的情況 | S13 | SCN-003、007 | 新案例先紅後綠；五項檢查通過 | ✅ 2026-11-17 [s14-red](evidence/s14-red.txt) 失敗於訊息沒有列出已完成的平台；[s14-green](evidence/s14-green.txt) 27 個案例通過；五項檢查通過 |
 | S15 | 第五輪獨立審查（工具呼叫上限 30 次） | S14 | SCN-001～010 | PASS，或已依使用者決定處理 | ✅ 2026-11-17 [review-6a3a533](review-6a3a533.md) PASS，沒有 MUST FIX 與 SHOULD FIX |
 | S16 | 依發布前下游試用（2026-11-17，候選版 `9a0b081`）修正，使用者勾選四項：`install.sh --check` 每個平台印總結、有不同時 exit 1；複製技能略過 `__pycache__` 與 `.pyc`；INSTALL.md 第 2 步寫明 clone 的版本來源；備份位置印完整路徑。試用建議 c（init-project 的 dry-run 沒有變更時的訊息）不在本 issue 範圍 | S15、下游試用 | SCN-003、005、009 | 新案例先紅後綠；五項檢查通過 | ✅ 2026-11-17 [s16-red](evidence/s16-red.txt) 三個案例失敗（`--check` 有差異仍 exit 0、`__pycache__` 被複製、備份行不是完整路徑）；[s16-green](evidence/s16-green.txt) 28 個案例通過；以本 clone 實裝到暫存 HOME，`review/scripts/` 只有 `verify-artifact.py`；五項檢查通過 |
-| S17 | 第六輪獨立審查（工具呼叫上限 30 次） | S16 | SCN-001～010 | PASS，或已依使用者決定處理 | ⏳ |
+| S17 | 第六輪獨立審查（工具呼叫上限 30 次） | S16 | SCN-001～010 | PASS，或已依使用者決定處理 | 🔄 2026-11-17 [review-cf36828](review-cf36828.md) RETURN：MUST FIX 1（S16 的 copy_skill 會寫穿技能內 symlink 子目錄，改過的檔案沒備份就被覆蓋；舊版 `cp -r` 在此中止），NICE TO HAVE 2，修正見 S18 |
+| S18 | 判斷時跟進技能內指向目錄的 symlink（審查建議 (b)，與技能內檔案是 symlink 時一致：先備份再寫穿），同一實體目錄只走一次；copy_skill 先把 find 的清單寫進暫存檔，find 失敗時中止；來源技能內的 symlink 照樣複製（NICE 2）。S10 對第二輪 NICE 3 的「安裝時會中止」前提因此不再需要 | S17 | SCN-003、007 | 新案例先紅後綠；五項檢查通過 | ✅ 2026-11-17 [s18-red](evidence/s18-red.txt)：symlink 子目錄裡改過的檔案沒列入備份、kit 目錄不可讀時仍 exit 0；[s18-green](evidence/s18-green.txt) 30 個案例通過；另在暫存 HOME 建循環連結，`--check` 正常結束；五項檢查通過 |
+| S19 | 第七輪獨立審查（工具呼叫上限 30 次） | S18 | SCN-001～010 | PASS，或已依使用者決定處理 | ⏳ |
 
 ## 測試策略
 

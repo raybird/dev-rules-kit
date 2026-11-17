@@ -256,6 +256,33 @@ class InstallTests(unittest.TestCase):
         self.assertFalse((target / 'stray.pyc').exists())
         self.assertEqual(self.install('claude', '--check').returncode, 0)
 
+    def test_symlinked_subdir_backed_up(self):
+        # 審查 cf36828：技能內的子目錄是 symlink、裡面的檔案被改過時，先備份再覆蓋。
+        self.assertEqual(self.install('claude').returncode, 0)
+        skills = self.platform_root / '.claude/skills'
+        outside = self.base / 'my-review-scripts'
+        shutil.move(str(skills / 'review/scripts'), outside)
+        (skills / 'review/scripts').symlink_to(outside, target_is_directory=True)
+        (outside / 'verify-artifact.py').write_text('使用者改過的腳本')
+        dry = self.install('claude', '--dry-run')
+        self.assertIn('會備份 review（本地修改：scripts/verify-artifact.py）', dry.stdout)
+        result = self.install('claude')
+        self.assertEqual(result.returncode, 0, result.stdout + result.stderr)
+        backups = list((self.platform_root / '.claude/skill-backups').glob('review.bak-*'))
+        self.assertEqual(len(backups), 1, result.stdout)
+        self.assertEqual((backups[0] / 'scripts/verify-artifact.py').read_text(), '使用者改過的腳本')
+
+    def test_copy_failure_aborts(self):
+        # 審查 cf36828 NICE 1：讀不到 kit 的技能目錄時中止，不回報安裝成功。
+        locked = self.repo / 'skills/review/scripts'
+        locked.chmod(0)
+        try:
+            result = self.install('claude')
+        finally:
+            locked.chmod(0o755)
+        self.assertNotEqual(result.returncode, 0, result.stdout)
+        self.assertNotIn('技能：11 個技能', result.stdout)
+
     def test_previous_kit_version_overwritten_without_backup(self):
         # issue #9 SCN-002：內容屬於某一版 kit（列在歷代雜湊清單）就直接覆蓋，不備份。
         import hashlib

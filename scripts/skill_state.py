@@ -11,6 +11,7 @@
       狀態：new（未安裝）、same（與本 kit 相同）、kit（某一版 kit）、modified（本地修改）
 """
 import hashlib
+import os
 from pathlib import Path
 import re
 import sys
@@ -41,10 +42,25 @@ def changelog_version(root):
 
 
 def tree_files(root):
-    """回傳 {相對路徑: sha256}，略過 __pycache__ 與 .pyc。"""
+    """回傳 {相對路徑: sha256}，略過 __pycache__ 與 .pyc。
+
+    跟進指向目錄的 symlink：install.sh 覆蓋時會寫穿連結，裡面改過的檔案要先判斷、備份。
+    同一個實體目錄只走一次，避免循環連結；指向不存在目標的連結不是檔案，略過。
+    """
     root = Path(root)
-    return {p.relative_to(root).as_posix(): digest(p) for p in sorted(root.rglob('*'))
-            if p.is_file() and not skipped(p.relative_to(root).as_posix())}
+    files, seen = {}, set()
+    for folder, dirs, names in os.walk(root, followlinks=True):
+        real = os.path.realpath(folder)
+        if real in seen:
+            dirs[:] = []
+            continue
+        seen.add(real)
+        for name in names:
+            path = Path(folder) / name
+            rel = path.relative_to(root).as_posix()
+            if path.is_file() and not skipped(rel):
+                files[rel] = digest(path)
+    return dict(sorted(files.items()))
 
 
 def skill_files(skills_root):
