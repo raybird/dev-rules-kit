@@ -45,22 +45,26 @@ def tree_files(root):
     """回傳 {相對路徑: sha256}，略過 __pycache__ 與 .pyc。
 
     跟進指向目錄的 symlink：install.sh 覆蓋時會寫穿連結，裡面改過的檔案要先判斷、備份。
-    同一個實體目錄只走一次，避免循環連結；指向不存在目標的連結不是檔案，略過。
+    只在連結指回自己的祖先時停下（循環）；兄弟路徑指向同一實體目錄時兩邊都走，
+    因為覆蓋時兩條路徑都會寫入。指向不存在目標的連結不是檔案，略過。
     """
     root = Path(root)
-    files, seen = {}, set()
-    for folder, dirs, names in os.walk(root, followlinks=True):
-        real = os.path.realpath(folder)
-        if real in seen:
-            dirs[:] = []
-            continue
-        seen.add(real)
-        for name in names:
-            path = Path(folder) / name
+    files = {}
+
+    def walk(folder, ancestors):
+        for path in sorted(folder.iterdir()):
             rel = path.relative_to(root).as_posix()
-            if path.is_file() and not skipped(rel):
+            if skipped(rel):
+                continue
+            if path.is_dir():
+                real = os.path.realpath(path)
+                if real not in ancestors:
+                    walk(path, ancestors | {real})
+            elif path.is_file():
                 files[rel] = digest(path)
-    return dict(sorted(files.items()))
+
+    walk(root, {os.path.realpath(root)})
+    return files
 
 
 def skill_files(skills_root):

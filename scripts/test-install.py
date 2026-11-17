@@ -283,6 +283,59 @@ class InstallTests(unittest.TestCase):
         self.assertNotEqual(result.returncode, 0, result.stdout)
         self.assertNotIn('技能：11 個技能', result.stdout)
 
+    def test_sibling_links_to_same_dir_still_checked(self):
+        # 審查 f5116ce：兄弟路徑指向同一實體目錄時照樣判斷，改過的檔案要備份。
+        for case in ('link-to-sibling', 'two-links'):
+            with self.subTest(case=case):
+                root = self.platform_root / case
+                env = dict(self.env, INSTALL_TEST_ROOT=str(root))
+                run = lambda *a: subprocess.run(['bash', str(self.repo / 'scripts/install.sh'), *a],
+                                                env=env, capture_output=True, text=True)
+                (root / '.claude').mkdir(parents=True)
+                self.assertEqual(run('claude').returncode, 0)
+                review = root / '.claude/skills/review'
+                if case == 'link-to-sibling':
+                    (review / 'aaa').symlink_to('scripts', target_is_directory=True)
+                    edited = review / 'scripts/verify-artifact.py'
+                else:
+                    outside = self.base / f'{case}-scripts'
+                    shutil.move(str(review / 'scripts'), outside)
+                    (review / 'scripts').symlink_to(outside, target_is_directory=True)
+                    (review / 'a-notes').symlink_to(outside, target_is_directory=True)
+                    edited = outside / 'verify-artifact.py'
+                edited.write_text('使用者改過的腳本')
+                result = run('claude')
+                self.assertEqual(result.returncode, 0, result.stdout + result.stderr)
+                backups = list((root / '.claude/skill-backups').glob('review.bak-*'))
+                self.assertEqual(len(backups), 1, result.stdout)
+                self.assertEqual((backups[0] / 'scripts/verify-artifact.py').read_text(), '使用者改過的腳本')
+
+    def test_copy_follows_linked_dir_in_kit_and_cleans_list(self):
+        # 審查 f5116ce NICE 1、2：kit 內指向目錄的 symlink 複製其內容；cp 失敗時不殘留清單暫存檔。
+        extra = self.base / 'shared-refs'
+        extra.mkdir()
+        (extra / 'note.md').write_text('共用內容')
+        (self.repo / 'skills/review/shared').symlink_to(extra, target_is_directory=True)
+        tmp = self.base / 'tmpdir'
+        tmp.mkdir()
+        env = dict(self.env, TMPDIR=str(tmp))
+        run = lambda *a: subprocess.run(['bash', str(self.repo / 'scripts/install.sh'), *a],
+                                        env=env, capture_output=True, text=True)
+        result = run('claude')
+        self.assertEqual(result.returncode, 0, result.stdout + result.stderr)
+        self.assertEqual((self.platform_root / '.claude/skills/review/shared/note.md').read_text(), '共用內容')
+        (self.repo / 'skills/review/shared').unlink()
+        blocker = self.platform_root / '.claude/skills/create-pr'
+        (blocker / 'SKILL.md').unlink()
+        blocker.chmod(0o555)
+        try:
+            result = run('claude')
+        finally:
+            blocker.chmod(0o755)
+        self.assertNotEqual(result.returncode, 0)
+        self.assertIn('無法複製', result.stderr)
+        self.assertEqual(list(tmp.iterdir()), [])
+
     def test_previous_kit_version_overwritten_without_backup(self):
         # issue #9 SCN-002：內容屬於某一版 kit（列在歷代雜湊清單）就直接覆蓋，不備份。
         import hashlib

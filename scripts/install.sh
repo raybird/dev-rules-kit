@@ -159,17 +159,18 @@ copy_skill() {
   # 先把清單寫進暫存檔：直接用 process substitution 時 find 失敗不會中止，會只複製一半
   local list
   list="$(mktemp)"
-  if ! find "$src" -mindepth 1 \( -name __pycache__ -o -name '*.pyc' \) -prune -o -print0 > "$list"; then
+  # -L 跟進 kit 內指向目錄的 symlink，複製其內容
+  if ! find -L "$src" -mindepth 1 \( -name __pycache__ -o -name '*.pyc' \) -prune -o -print0 > "$list"; then
     rm -f "$list"
-    die "讀不到 $src 的檔案清單，${dest/#$HOME/\~}/ 尚未更新（同一平台排在前面的技能已更新）；確認 kit 目錄可讀後重跑"
+    die "讀不到 $src 的檔案清單，${dest/#$HOME/\~}/ 尚未更新；${DONE_PLATFORMS:+已安裝完成：$DONE_PLATFORMS。}確認 kit 目錄可讀後重跑"
   fi
   mkdir -p "$dest"
   while IFS= read -r -d '' path; do
     rel="${path#"$src"}"
     if [ -d "$path" ]; then
-      mkdir -p "$dest/$rel"
+      mkdir -p "$dest/$rel" || { rm -f "$list"; die "無法建立 $dest/$rel"; }
     else
-      cp "$path" "$dest/$rel"
+      cp "$path" "$dest/$rel" || { rm -f "$list"; die "無法複製到 $dest/$rel"; }
     fi
   done < "$list"
   rm -f "$list"
