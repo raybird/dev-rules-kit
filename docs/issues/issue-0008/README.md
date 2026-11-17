@@ -23,6 +23,7 @@
 | 外部狀態 | 查證命令 | 上次結果 | 查證日期 |
 |---|---|---|---|
 | GitHub #8 | gh issue view 8 --json state -q .state | OPEN | 2026-11-17 |
+| 下游試用 | 向試用專案的 session 詢問試用結果 | 已請一個下游專案的 session 以候選版 151871c 試用（更新核心文件並用在一個實際 issue），等待回覆 | 2026-11-17 |
 
 ## 快速導覽
 
@@ -157,9 +158,10 @@ Feature: 下游 repo 只保存流程契約，範本隨技能安裝
 | 2026-11-17 | 獨立審查 [review-ee77c12](review-ee77c12.md) PASS，沒有 MUST FIX；SHOULD FIX 2 項待使用者決定（TBD-4） | Claude Code |
 | 2026-11-17 | 使用者決定 SHOULD FIX 兩項都修並差異覆審（TBD-4），PASS 失效 | 使用者／Claude Code |
 | 2026-11-17 | 差異覆審 [review-151871c](review-151871c.md) PASS，沒有 MUST FIX、SHOULD FIX 與 NICE TO HAVE；下一步依 TBD-3 下游試用 | Claude Code |
+| 2026-11-17 | 依 TBD-3 請一個下游專案的 session 以候選版 151871c 試用 | 使用者／Claude Code |
 
 ---
 **建立日期**: 2026-11-17  
 **分級**: Medium — 部署腳本、測試、範本搬移與兩份規範多檔修改，邏輯直接，不需 Phase／Task 拆解  
 **風險**: Low\
-**狀態**: 審查通過，待下游試用
+**狀態**: 審查通過，下游試用中
