@@ -37,7 +37,7 @@
 - **紅燈**（[s1-red.txt](evidence/s1-red.txt)，2026-11-17，只改測試、`init-project.py` 未改）：16 個測試中 2 個失敗。`test_init_check_dry_run_and_repeat`：初始化後 `docs/_templates/` 仍存在。`test_update_from_baseline_with_templates`：以列有 `docs/_templates/` 條目的舊基線升級時，舊程式把三份舊檔判為「落後本 kit」並用 kit 的範本覆蓋。
 - **綠燈**（[s1-green.txt](evidence/s1-green.txt)，2026-11-17）：部署清單移除 `_templates` 後 16 個測試全部通過；新案例確認 dry-run 前後檔案樹與基線不變、`--update` 後三份舊檔內容不變、基線不再列出 `docs/_templates/`、`--check` OK。既有的衝突不部分寫入、symlink、hardlink、dry-run 案例照常通過。
 - **真實基線**：把一個下游專案的 `docs/` 複製到 scratchpad，以本分支執行 `--update --dry-run`、`--update`、`--check`（2026-11-17）：dry-run 未寫入；更新 5 份核心並保留 project.md；`--check` OK；`docs/_templates/` 三份檔案的 sha256 與更新前相同；基線的 `_templates` 條目由 3 筆變 0 筆。
-- **精煉**：依 code-simplify 檢查一次，`init-project.py` 改為直接列出 `docs/agents`，不保留只剩一個元素的迴圈；沒有其他可改善處。
+- **精煉**：依 code-simplify 檢查一次本次變更（實作時已直接列出 `docs/agents`，沒有保留只剩一個元素的迴圈），沒有可改善處，no-op。
 
 ### S2～S4 證據
 
