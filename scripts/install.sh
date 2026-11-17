@@ -180,7 +180,7 @@ install_skills() {
       mkdir -p "$backup"
       if ! cp -RL "$target/$name/." "$backup/"; then
         rm -rf "$backup"
-        die "備份 $name 失敗（例如指向不存在目標的 symlink），${target/#$HOME/\~}/ 尚未覆蓋任何技能；前面列出的平台已安裝完成。處理後重跑"
+        die "備份 $name 失敗（例如指向不存在目標的 symlink），${target/#$HOME/\~}/ 尚未覆蓋任何技能；${DONE_PLATFORMS:+已安裝完成：$DONE_PLATFORMS。}處理後重跑"
       fi
       echo "  備份：$name（本地修改：$detail）-> ${backup/#$HOME/\~}"
     fi
@@ -253,12 +253,14 @@ fi
 
 [ "$DRY_RUN" = 1 ] && echo "（dry-run 模式，不會實際寫入）" && echo
 
+DONE_PLATFORMS=""   # 備份失敗中止時，告知哪些平台已經裝完
 for platform in "${SELECTED[@]}"; do
   IFS='|' read -r rules_target skills_target <<< "$(targets_for "$platform")"
   echo "$platform"
   [ "$WITH_RULES" = 1 ] && install_rules "$platform" "$rules_target"
   install_skills "$skills_target"
   retire_legacy_workflows "$platform"
+  DONE_PLATFORMS="${DONE_PLATFORMS:+$DONE_PLATFORMS、}$platform"
   echo
 done
 

@@ -55,7 +55,9 @@ get.sh [--version vX.Y.Z] [--dry-run] [--check] [install.sh 的平台與選項�
 | S10 | 依第二輪審查修正：CHANGELOG 與測試註解改為 install.sh 失敗只保證 `current` 不切換；版本比較改為純 bash（NICE 1）；備份失敗時刪除不完整的備份並在覆蓋前中止（NICE 2）；補技能內 symlink 檔與壞連結的案例（NICE 4）。NICE 3（技能內子目錄是 symlink 時 `--check` 判為 kit 版本）在 BASE 就是如此，安裝時會中止、不遺失資料，不改 | S9 | SCN-003、004、007 | 新案例先紅後綠；`cp -RL` 經突變確認有案例守住；五項檢查通過 | ✅ 2026-11-17 [s10-red](evidence/s10-red.txt)：沒有 `sort` 時 v10.0.0 被拒、備份失敗只印 cp 原始錯誤；[s10-green](evidence/s10-green.txt) 26 個案例通過；[s10-mutation](evidence/s10-mutation.txt) 改回 `cp -a` 時案例失敗；五項檢查通過 |
 | S11 | 第三輪獨立審查（工具呼叫上限 30 次） | S10 | SCN-001～010 | PASS，或已依使用者決定處理 | ✅ 2026-11-17 [review-ccb5abd](review-ccb5abd.md) PASS；SHOULD FIX 1（多平台時備份失敗訊息說「尚未覆蓋任何技能」不精確）。使用者選「修正後重審」，見 S12 |
 | S12 | 備份失敗訊息改為指出該平台的技能目錄尚未覆蓋、前面列出的平台已安裝完成；補兩個平台的案例。NICE TO HAVE（dry-run 預告不到壞連結）不改：正式執行會在覆蓋前中止 | S11 | SCN-003、007 | 新案例先紅後綠；五項檢查通過 | ✅ 2026-11-17 [s12-red](evidence/s12-red.txt) 失敗於訊息沒有指出平台；[s12-green](evidence/s12-green.txt) 27 個案例通過；五項檢查通過 |
-| S13 | 第四輪獨立審查（工具呼叫上限 30 次） | S12 | SCN-001～010 | PASS，或已依使用者決定處理 | ⏳ |
+| S13 | 第四輪獨立審查（工具呼叫上限 30 次） | S12 | SCN-001～010 | PASS，或已依使用者決定處理 | ✅ 2026-11-17 [review-f7c84c2](review-f7c84c2.md) PASS；SHOULD FIX 1：S12 的訊息在第一個或唯一的平台就失敗時，仍說「前面列出的平台已安裝完成」。使用者選「修正後重審」，見 S14 |
+| S14 | install.sh 記下已裝完的平台，備份失敗時只在有完成的平台時印「已安裝完成：…」；案例補第一個平台與唯一平台就失敗的情況 | S13 | SCN-003、007 | 新案例先紅後綠；五項檢查通過 | ✅ 2026-11-17 [s14-red](evidence/s14-red.txt) 失敗於訊息沒有列出已完成的平台；[s14-green](evidence/s14-green.txt) 27 個案例通過；五項檢查通過 |
+| S15 | 第五輪獨立審查（工具呼叫上限 30 次） | S14 | SCN-001～010 | PASS，或已依使用者決定處理 | ⏳ |
 
 ## 測試策略
 

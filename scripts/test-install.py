@@ -230,10 +230,17 @@ class InstallTests(unittest.TestCase):
         result = self.install('codex', 'claude')
         self.assertNotEqual(result.returncode, 0)
         self.assertIn('~/.claude/skills/ 尚未覆蓋任何技能', result.stderr)
-        self.assertIn('已安裝完成', result.stderr)
+        self.assertIn('已安裝完成：codex。', result.stderr)
         self.assertEqual((self.platform_root / '.codex/skills/create-commit/SKILL.md').read_bytes(),
                          source.read_bytes())
         self.assertNotEqual((skills / 'create-commit/SKILL.md').read_bytes(), source.read_bytes())
+        # 審查 f7c84c2：第一個平台就失敗時，不說有平台已安裝完成
+        for args in (('claude',), ('claude', 'codex')):
+            with self.subTest(args=args):
+                result = self.install(*args)
+                self.assertNotEqual(result.returncode, 0)
+                self.assertIn('~/.claude/skills/ 尚未覆蓋任何技能', result.stderr)
+                self.assertNotIn('已安裝完成', result.stderr)
 
     def test_previous_kit_version_overwritten_without_backup(self):
         # issue #9 SCN-002：內容屬於某一版 kit（列在歷代雜湊清單）就直接覆蓋，不備份。
