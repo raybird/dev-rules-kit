@@ -340,8 +340,8 @@
 
 | 規則 | 狀態 | 驗證來源 |
 |---|---|---|
-| `init-project.py` 不再部署 `docs/_templates/`，舊基線的條目不再比對、檔案不刪除 | 本地測試驗證 | `test-install.py` 的 `test_update_from_baseline_with_templates` 與 `test_init_check_dry_run_and_repeat` 先紅後綠（issue #8 S1）；紅燈時舊程式用 kit 的範本覆蓋下游的舊檔 |
-| 新建常青文件時參考 execute-task 技能 `references/` 的範本 | 僅靜態撰寫 | 發布前下游試用時觀察；新建常青文件的情況可能不會觸發 |
+| `init-project.py` 不再部署 `docs/_templates/`，舊基線的條目不再比對、檔案不刪除 | 本地測試驗證；下游套用（經通知） | `test-install.py` 的 `test_update_from_baseline_with_templates` 與 `test_init_check_dry_run_and_repeat` 先紅後綠（issue #8 S1）；紅燈時舊程式用 kit 的範本覆蓋下游的舊檔。2026-11-17 一個下游專案以候選版 `151871c` 更新：2 份核心更新、`docs/_templates/` 雜湊不變並移出基線、`--check` OK |
+| 新建常青文件時用 project.md 登記的專案範本，沒有登記時參考 execute-task 技能 `references/` 的範本 | 僅靜態撰寫 | 優先順序依 2026-11-17 下游試用回報補上：該專案 project.md 登記了自己的範本，原 pointer 沒寫哪個優先。是否照做待下游實際 issue 觀察 |
 | 「常見文件類型範例」改為一般範例，專案常用的組合登記在 project.md | 僅靜態撰寫 | 2026-11-17 唯讀檢查本機 7 個下游，都沒有改過核心檔，原本的矛盾尚未觸發。核心檔已沒有【應客製】節，v2.8.0「三層模型」的應客製層目前沒有實例 |
 
 ## v4.12.0 — 查證命令登記、追蹤空窗與 PASS 後提交的代價（2026-11-13）

@@ -19,7 +19,7 @@
 ### 變更（`scripts/init-project.py`、`skills/execute-task/`）
 
 - `docs/_templates/` 的三份常青文件範本（architecture、domain、changelog）搬到 `skills/execute-task/references/`，內容不變，隨技能安裝。`init-project.py` 只部署 `docs/AGENTS.md` 與 `docs/agents/`；舊部署基線的 `docs/_templates/` 條目不再比對，下次寫入基線時移除，檔案本身不刪除。原本沒有任何技能引用這些範本，卻每個下游 repo 都放一份並追蹤雜湊。
-- execute-task 回寫步驟與 `docs/AGENTS.md`「常青文件更新責任」寫明：新建常青文件時，可參考 execute-task 技能 `references/` 的範本。
+- execute-task 回寫步驟與 `docs/AGENTS.md`「常青文件更新責任」寫明：新建常青文件時用 project.md 登記的專案範本，沒有登記時可參考 execute-task 技能 `references/` 的範本。
 
 ### 變更（`docs/AGENTS.md`、`docs/agents/document-types.md`）
 
@@ -30,6 +30,7 @@
 ### 驗證
 
 - 五項檢查通過；`test-install.py` 新增從含 `docs/_templates/` 的舊基線升級的案例，與初始化不再部署範本的斷言，都先紅後綠。紅燈時舊程式會用 kit 的範本覆蓋下游的舊檔。
+- 發布前下游試用（2026-11-17）：一個下游專案以候選版 `151871c` 更新核心，`--update` 更新 2 份核心、`docs/_templates/` 三份檔案的雜湊不變並移出基線、`--check` OK。試用回報兩處說明不足並已修正：該專案在 project.md 登記了自己的範本（另放一處，並寫明 `_templates/` 要與基線一致），新 pointer 沒有寫優先順序；`docs/AGENTS.md` 修訂紀錄沒寫已部署的舊檔怎麼處理。
 
 ### 下游更新
 
