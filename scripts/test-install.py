@@ -162,7 +162,7 @@ class InstallTests(unittest.TestCase):
         self.assertEqual(len(backups), 1, result.stdout)
         self.assertEqual((backups[0] / 'SKILL.md').read_text(), '使用者自己改的內容')
         self.assertEqual((backups[0] / 'notes.md').read_text(), '使用者加的檔案')
-        self.assertIn(str(backups[0].relative_to(self.platform_root)), result.stdout)
+        self.assertIn(str(backups[0]), result.stdout)
         self.assertEqual(target.read_bytes(), (self.repo / 'skills/create-commit/SKILL.md').read_bytes())
         self.assertEqual(len(list((self.platform_root / '.claude/skill-backups').iterdir())), 1)
         again = self.install('claude')
@@ -241,6 +241,20 @@ class InstallTests(unittest.TestCase):
                 self.assertNotEqual(result.returncode, 0)
                 self.assertIn('~/.claude/skills/ 尚未覆蓋任何技能', result.stderr)
                 self.assertNotIn('已安裝完成', result.stderr)
+
+    def test_install_skips_python_cache(self):
+        # 下游試用 2026-11-17：clone 的 kit 有 __pycache__ 時不複製，與下載安裝的檔案相同。
+        cache = self.repo / 'skills/review/scripts/__pycache__'
+        cache.mkdir(exist_ok=True)
+        (cache / 'verify-artifact.cpython-312.pyc').write_bytes(b'cache')
+        (self.repo / 'skills/review/scripts/stray.pyc').write_bytes(b'cache')
+        result = self.install('claude')
+        self.assertEqual(result.returncode, 0, result.stdout + result.stderr)
+        target = self.platform_root / '.claude/skills/review/scripts'
+        self.assertTrue((target / 'verify-artifact.py').is_file())
+        self.assertFalse((target / '__pycache__').exists())
+        self.assertFalse((target / 'stray.pyc').exists())
+        self.assertEqual(self.install('claude', '--check').returncode, 0)
 
     def test_previous_kit_version_overwritten_without_backup(self):
         # issue #9 SCN-002：內容屬於某一版 kit（列在歷代雜湊清單）就直接覆蓋，不備份。
@@ -415,11 +429,18 @@ class InstallTests(unittest.TestCase):
         (self.platform_root / '.claude/skills/review/SKILL.md').write_text('使用者改的')
         before = self.tree(self.platform_root)
         result = self.get('--check', 'claude')
-        self.assertEqual(result.returncode, 0, result.stdout + result.stderr)
+        # 下游試用 2026-11-17：有技能與本 kit 不同時印總結並 exit 1
+        self.assertEqual(result.returncode, 1, result.stdout + result.stderr)
         self.assertIn('目前版本：v9.0.0', result.stdout)
         self.assertIn('review：本地修改（SKILL.md）', result.stdout)
         self.assertIn('new-issue：與本 kit 相同', result.stdout)
+        self.assertIn('1 個技能與本 kit 不同', result.stdout)
         self.assertEqual(self.tree(self.platform_root), before)
+        (self.platform_root / '.claude/skills/review/SKILL.md').write_bytes(
+            (self.repo / 'skills/review/SKILL.md').read_bytes())
+        result = self.get('--check', 'claude')
+        self.assertEqual(result.returncode, 0, result.stdout + result.stderr)
+        self.assertIn('全部與本 kit 相同', result.stdout)
 
     def test_windsurf_not_supported(self):
         windsurf = self.platform_root / '.codeium/windsurf'

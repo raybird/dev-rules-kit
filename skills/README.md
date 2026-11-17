@@ -55,7 +55,7 @@ bash scripts/install.sh claude
 
 不 clone 也可以用 `scripts/get.sh` 下載 release 後執行同一支腳本，見 [快速開始](../README.md#手動安裝)。
 
-腳本更新本 kit 技能資料夾內的同名檔案，保留其他檔案與個人技能；不會移除上游已刪除的舊檔。同名技能的內容不屬於任何一版 kit（依 `scripts/skill-hashes.txt`）時，先把整個技能目錄備份到 `<平台設定目錄>/skill-backups/<技能>.bak-<時間>/` 再覆蓋；`--dry-run` 會列出哪些技能要備份，`--check` 唯讀列出每個技能是哪一版 kit 或本地修改。舊版安裝器若已產生 `<name>/<name>/SKILL.md`，更新後請檢查並手動移除確認無客製內容的巢狀副本。
+腳本更新本 kit 技能資料夾內的同名檔案，保留其他檔案與個人技能；不會移除上游已刪除的舊檔。同名技能的內容不屬於任何一版 kit（依 `scripts/skill-hashes.txt`）時，先把整個技能目錄備份到 `<平台設定目錄>/skill-backups/<技能>.bak-<時間>/` 再覆蓋；`--dry-run` 會列出哪些技能要備份，`--check` 唯讀列出每個技能是哪一版 kit 或本地修改，有不同時 exit 1。舊版安裝器若已產生 `<name>/<name>/SKILL.md`，更新後請檢查並手動移除確認無客製內容的巢狀副本。
 
 `review` 內含 `scripts/verify-artifact.py`，安裝時整個技能目錄一起複製；只複製 SKILL.md 會缺少審查後提交的有效性檢查器。
 

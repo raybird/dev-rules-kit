@@ -342,8 +342,9 @@
 |---|---|---|
 | `get.sh` 只安裝 v5.0.0 以後的版本；下載、解壓、安裝成功後才切換 `current`；下載或解壓失敗時不留半套；`--dry-run`、`--list`、`--check` 不寫入 | 本地測試驗證 | `test-install.py` 的 `test_get_failure_leaves_no_partial_state` 先紅後綠（issue #9 S1、S8，含舊版拒絕、install.sh 失敗與壓縮檔缺 install.sh；後兩者經突變確認），`test_get_install_update_and_init`、`test_get_dry_run_writes_nothing`、`test_get_check_and_latest_unreachable` 以本機壓縮檔與 `file://` 來源驗證；`test_get_version_compare_without_sort_v` 在沒有 `sort` 的 PATH 先紅後綠（S10）。2026-11-17 以真實 GitHub 在暫存 HOME 跑 `--check` 與 `--dry-run`：取得最新 release `v4.13.0`，暫存 HOME 沒有寫入；同日 latest 仍是 v4.13.0 時，get.sh 拒絕安裝且沒有寫入 |
 | `install.sh` 依歷代雜湊清單判斷同名技能，不屬於任何一版的先備份到技能目錄外再覆蓋 | 本地測試驗證 | `test_modified_skill_backed_up_before_overwrite` 先紅後綠（issue #9 S1）、`test_backup_edge_cases`（symlink 技能目錄、缺 SKILL.md、同秒重跑）先紅後綠（S8），技能內 symlink 檔經突變確認、備份失敗在覆蓋前中止先紅後綠（S10）、`test_previous_kit_version_overwritten_without_backup`；另以 v4.9.0 實際安裝後升級，舊版技能辨識為 kit 版本、改過的技能被備份 |
+| `install.sh --check` 有技能與本 kit 不同時 exit 1；複製技能略過 `__pycache__` 與 `.pyc` | 本地測試驗證 | 2026-11-17 下游試用回報（--check 有差異仍 exit 0、clone 安裝帶進 `__pycache__`）；`test_get_check_and_latest_unreachable` 與 `test_install_skips_python_cache` 先紅後綠（issue #9 S16） |
 | `check-kit.py` 要求目前技能檔都列在 `skill-hashes.txt` 且標為最新版 | 本地測試驗證 | `test_skill_hashes_must_cover_current_files`、`test_skill_hashes_cover_released_versions` 先紅後綠（issue #9 S2） |
-| INSTALL.md 第 2 步改看 `install.sh --dry-run` 列出的備份，不再查 Git 歷史 | 僅靜態撰寫 | 尚未在新 session 依新版 INSTALL.md 實跑 |
+| INSTALL.md 第 2 步改看 `install.sh --dry-run` 列出的備份，不再查 Git 歷史 | 已實跑驗證 | 2026-11-17 一個下游專案的 session 以候選版 `9a0b081` 依 INSTALL.md 跑更新（clone 方式、暫存 HOME、模擬改過一個技能）：dry-run 列出「會備份 review」、正式執行後備份是改過的內容、覆蓋後與 kit 相同；回報 clone 的版本來源沒寫清楚，已補上。下載安裝方式需 v5.0.0 tag，發布後另跑 |
 
 ## v4.13.0 — 常青文件範本隨技能安裝、【應客製】改為範例（2026-11-17）
 
