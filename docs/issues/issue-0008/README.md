@@ -18,6 +18,8 @@
 
 ## 現況
 
+**現行 review**: review-ee77c12.md
+
 | 外部狀態 | 查證命令 | 上次結果 | 查證日期 |
 |---|---|---|---|
 | GitHub #8 | gh issue view 8 --json state -q .state | OPEN | 2026-11-17 |
@@ -143,6 +145,7 @@ Feature: 下游 repo 只保存流程契約，範本隨技能安裝
 | TBD-1 | SCN-006：execute-task SKILL.md 的回寫步驟要不要也指向 references/ 的範本 | 已解決：2026-11-17 使用者選「要，兩處都寫」；docs/AGENTS.md 是下游文件，不知道技能安裝在哪裡，技能本身知道自己的目錄 | SCN-006、S2 |
 | TBD-2 | 版本號 | 已解決：2026-11-17 使用者選 Minor（v4.13.0）；沒有技能或規則依賴 `docs/_templates/`，舊檔留在下游不會壞 | S4 |
 | TBD-3 | 發布前的下游試用 | 已解決：2026-11-17 使用者選「試用後再發布」；視為改變 agent 行為，先在一個下游專案實際跑 `--update` 並在一個實際 issue 使用，新建常青文件沒有觸發時照實記為未觸發 | 發布 |
+| TBD-4 | [review-ee77c12](review-ee77c12.md) PASS，SHOULD FIX 2 項要不要在分支上修：CHANGELOG 4.13.0「下游更新」第二點的「換回上一版 kit 的原文」只在基線剛好是 v4.12.0 時可行，應改為換成本版原文；docs/usage.md 第 13 行的「範本」指的是 `docs/_templates/`，已不正確。修正會讓 PASS 失效、需要重審 | 待確認 | SCN-005、發布 |
 
 ## Timeline
 
@@ -151,9 +154,10 @@ Feature: 下游 repo 只保存流程契約，範本隨技能安裝
 | 2026-11-17 | 建立 GitHub #8 與本 issue；使用者逐題確認範圍，SCN-001～005 核准 | 使用者／Claude Code |
 | 2026-11-17 | 使用者逐題確認 TBD-1～3：SCN-006 核准、版本 v4.13.0、發布前下游試用；規劃文件直接提交到 main（`c0c7e9f`） | 使用者／Claude Code |
 | 2026-11-17 | S1～S4 完成，待獨立審查 | Claude Code |
+| 2026-11-17 | 獨立審查 [review-ee77c12](review-ee77c12.md) PASS，沒有 MUST FIX；SHOULD FIX 2 項待使用者決定（TBD-4） | Claude Code |
 
 ---
 **建立日期**: 2026-11-17  
 **分級**: Medium — 部署腳本、測試、範本搬移與兩份規範多檔修改，邏輯直接，不需 Phase／Task 拆解  
 **風險**: Low\
-**狀態**: 實作完成，待審查
+**狀態**: 審查通過，待決定 SHOULD FIX
