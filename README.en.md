@@ -29,7 +29,16 @@ The agent will follow [INSTALL.md](INSTALL.md) to fetch the kit, install skills,
 
 ### Manual Installation
 
-Prerequisites: `git`, `bash`, and `python3`:
+Pick either method; both install the same skills.
+
+**Download (no clone)**: requires `curl`, `tar`, `bash`, and `python3`. Downloads the latest release into `~/.local/share/dev-rules-kit/<version>/`; `current` points to the active version.
+
+```bash
+curl -fsSL https://raw.githubusercontent.com/raybird/dev-rules-kit/main/scripts/get.sh | bash       # Install skills into detected platforms
+python3 ~/.local/share/dev-rules-kit/current/scripts/init-project.py /path/to/project  # Initialize project documents
+```
+
+**Clone**: requires `git`, `bash`, and `python3`.
 
 ```bash
 git clone https://github.com/raybird/dev-rules-kit.git ~/Tools/dev-rules-kit
@@ -37,7 +46,7 @@ bash ~/Tools/dev-rules-kit/scripts/install.sh                          # Install
 python3 ~/Tools/dev-rules-kit/scripts/init-project.py /path/to/project  # Initialize project documents
 ```
 
-Both commands support `--dry-run` to inspect actions beforehand. Optional general behavior rules can be installed as described in [rules/README.md](rules/README.md).
+Every command supports `--dry-run` (for the download method: `… | bash -s -- --dry-run`; `--version vX.Y.Z` pins a version). If you modified a same-named skill on a platform, the installer backs up the whole skill to `<platform config dir>/skill-backups/` before overwriting it and prints the location. Optional general behavior rules can be installed as described in [rules/README.md](rules/README.md).
 
 ## Daily Workflow
 
@@ -65,11 +74,16 @@ Each skill can also be executed individually. For full workflows and detailed sk
 
 ## Updates
 
-Simply tell your agent: `"Please update dev-rules-kit according to INSTALL.md"`. It will pull the latest version, update skills and project documents, and summarize highlights from [CHANGELOG.md](CHANGELOG.md).
+Simply tell your agent: `"Please update dev-rules-kit according to INSTALL.md"`. It will fetch the latest version, update skills and project documents, and summarize highlights from [CHANGELOG.md](CHANGELOG.md).
 
-For manual updates:
+For manual updates, follow your installation method:
 
 ```bash
+# Download: rerun the same line; add -s -- --check to only show the current version, latest release, and per-platform skills
+curl -fsSL https://raw.githubusercontent.com/raybird/dev-rules-kit/main/scripts/get.sh | bash
+python3 ~/.local/share/dev-rules-kit/current/scripts/init-project.py /path/to/project --update
+
+# Clone
 git -C ~/Tools/dev-rules-kit pull
 bash ~/Tools/dev-rules-kit/scripts/install.sh
 python3 ~/Tools/dev-rules-kit/scripts/init-project.py /path/to/project --update

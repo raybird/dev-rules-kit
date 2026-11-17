@@ -1,0 +1,15 @@
+# 2026-11-17 以真實 GitHub 在暫存 HOME 執行（HOME 以 $TMPHOME 表示）
+=== get.sh --check
+目前版本：尚未以 get.sh 安裝
+最新 release：v4.13.0
+exit=0
+=== get.sh --dry-run claude（最新版）
+exit=0
+（dry-run：會下載 v4.13.0 到 ~/.local/share/dev-rules-kit/v4.13.0/；目前版本：尚未以 get.sh 安裝）
+（dry-run 模式，不會實際寫入）
+
+claude
+…（共 32 行）
+=== 執行後暫存 HOME 的檔案樹
+$TMPHOME
+$TMPHOME/.claude

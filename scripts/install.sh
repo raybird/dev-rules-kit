@@ -12,6 +12,10 @@
 #   bash scripts/install.sh --with-rules       # 另外安裝規則檔（會先備份既有檔案）
 #   bash scripts/install.sh --dry-run          # 只列出會做什麼，不實際複製
 #   bash scripts/install.sh --list             # 列出平台與對應路徑
+#   bash scripts/install.sh --check            # 唯讀列出各平台每個技能是哪一版 kit 或本地修改
+#
+# 同名技能的內容不屬於任何一版 kit（依 scripts/skill-hashes.txt 判斷）時，
+# 先把整個技能目錄備份到 <平台設定目錄>/skill-backups/ 再覆蓋。
 #
 set -euo pipefail
 
@@ -23,6 +27,7 @@ WITH_RULES=0
 RULES_LANG=zh
 DRY_RUN=0
 LIST_ONLY=0
+CHECK_ONLY=0
 SELECTED=()
 
 # 各平台的偵測目錄：存在才視為已安裝該平台
@@ -82,6 +87,7 @@ while [ $# -gt 0 ]; do
     --rules-lang) shift; RULES_LANG="${1:-}" ;;
     --dry-run)    DRY_RUN=1 ;;
     --list)       LIST_ONLY=1 ;;
+    --check)      CHECK_ONLY=1 ;;
     -h|--help)    sed -n '2,20p' "${BASH_SOURCE[0]}" | sed 's/^# \{0,1\}//'; exit 0 ;;
     -*)           die "未知選項 $1（用 --help 看用法）" ;;
     *)            is_known_platform "$1" || die "未知平台 $1（可用：${ALL_PLATFORMS[*]}）"
@@ -143,13 +149,34 @@ install_rules() {
   echo "  規則：${RULES_SRC#$REPO_ROOT/} -> ${target/#$HOME/\~}"
 }
 
+# 每個 kit 技能一行：名稱<TAB>狀態<TAB>說明（狀態見 scripts/skill_state.py）
+skill_states() {
+  python3 "$REPO_ROOT/scripts/skill_state.py" classify "$REPO_ROOT" "$1" \
+    || die "無法判斷 $1 的技能版本（需要 python3）"
+}
+
 install_skills() {
   local target="$1"
   if [ "$target" = "-" ]; then
     return
   fi
+  local states stamp name state detail backup
+  states="$(skill_states "$target")"
+  stamp="$(date +%Y%m%d-%H%M%S)"
+  # 本地修改的技能先整個備份到技能目錄之外，放在技能目錄內會被當成第二個同名技能載入
+  while IFS=$'\t' read -r name state detail; do
+    [ "$state" = modified ] || continue
+    backup="$(dirname "$target")/skill-backups/$name.bak-$stamp"
+    if [ "$DRY_RUN" = 1 ]; then
+      echo "    [dry-run] 會備份 $name（本地修改：$detail）-> ${backup/#$HOME/\~}"
+    else
+      mkdir -p "$(dirname "$backup")"
+      cp -a "$target/$name" "$backup"
+      echo "  備份：$name（本地修改：$detail）-> ${backup/#$HOME/\~}"
+    fi
+  done <<< "$states"
   run mkdir -p "$target"
-  local count=0 d name
+  local count=0 d
   for d in "$REPO_ROOT"/skills/*/; do
     [ -f "$d/SKILL.md" ] || continue
     name="$(basename "$d")"
@@ -158,6 +185,26 @@ install_skills() {
     count=$((count + 1))
   done
   echo "  技能：$count 個技能 -> ${target/#$HOME/\~}/"
+}
+
+check_skills() {
+  local target="$1" states name state detail
+  if [ "$target" = "-" ]; then
+    return
+  fi
+  if [ ! -d "$target" ]; then
+    echo "  技能目錄 ${target/#$HOME/\~}/ 不存在，尚未安裝"
+    return
+  fi
+  states="$(skill_states "$target")"
+  while IFS=$'\t' read -r name state detail; do
+    case "$state" in
+      new)      echo "  $name：未安裝" ;;
+      same)     echo "  $name：與本 kit 相同（$detail）" ;;
+      kit)      echo "  $name：kit $detail，與本 kit 不同" ;;
+      modified) echo "  $name：本地修改（$detail）" ;;
+    esac
+  done <<< "$states"
 }
 
 # 把舊版以 workflow 形式安裝的同名檔改名備份：現有技能，加上已移除的 fix-webview-conflict。
@@ -183,6 +230,16 @@ for d in "$REPO_ROOT"/skills/*/; do
   [ -f "$d/SKILL.md" ] || continue
   KIT_WORKFLOW_NAMES+=("$(basename "$d")")
 done
+
+if [ "$CHECK_ONLY" = 1 ]; then
+  for platform in "${SELECTED[@]}"; do
+    IFS='|' read -r rules_target skills_target <<< "$(targets_for "$platform")"
+    echo "$platform"
+    check_skills "$skills_target"
+    echo
+  done
+  exit 0
+fi
 
 [ "$DRY_RUN" = 1 ] && echo "（dry-run 模式，不會實際寫入）" && echo
 

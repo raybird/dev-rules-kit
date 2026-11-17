@@ -9,29 +9,26 @@
 - 有 `--dry-run` 的指令先跑 dry-run；手動複製或編輯檔案前先列出要動的檔案。把會新增、更新或覆蓋的內容告訴使用者，確認後才正式執行。
 - 腳本回報衝突或停止時，照實回報給使用者並停在該步；由使用者決定後續，保留腳本的保護機制。
 - 每一步達到完成判準才進下一步。
-- 以下 `<kit>` 代表 kit 的本機路徑，`<project>` 代表要初始化的專案根目錄。需要 `git`、`bash`、`python3`。
+- 以下 `<kit>` 代表 kit 的本機路徑，`<project>` 代表要初始化的專案根目錄。下載安裝需要 `curl`、`tar`、`bash`、`python3`；clone 需要 `git`、`bash`、`python3`。
 
-## 1. 取得 kit
+## 1. 選擇安裝方式
 
-- 使用者已指出 kit 位置，或 `~/Tools/dev-rules-kit` 已存在：在該處執行 `git pull --ff-only`。
-- 其他情況：`git clone https://github.com/raybird/dev-rules-kit.git ~/Tools/dev-rules-kit`。
+兩種方式裝出來的技能相同，依序判斷：
 
-完成判準：`python3 <kit>/scripts/check-kit.py` 輸出 `OK`，並記下 `git -C <kit> describe --tags --dirty` 的版本（結尾 `-dirty` 代表 kit 有未提交的修改，回報時一併說明）。
+- 使用者指定了方式或 kit 位置：照使用者的。
+- `~/.local/share/dev-rules-kit/current` 已存在：**下載安裝**，`<kit>` 是該路徑。
+- `~/Tools/dev-rules-kit` 已存在：**clone**，在該處執行 `git pull --ff-only`。
+- 都沒有：說明兩種方式，問使用者選哪一種。下載安裝不需 clone，重跑同一行指令就是更新；clone 適合要看 Git 歷史或維護 kit 的人。clone 時執行 `git clone https://github.com/raybird/dev-rules-kit.git ~/Tools/dev-rules-kit`。
+
+完成判準：已決定方式。clone 時 `python3 <kit>/scripts/check-kit.py` 輸出 `OK`，並記下 `git -C <kit> describe --tags --dirty` 的版本（結尾 `-dirty` 代表 kit 有未提交的修改，回報時一併說明）。下載安裝的 kit 在第 2 步下載。
 
 ## 2. 安裝技能
 
-1. 執行 `bash <kit>/scripts/install.sh --dry-run`，告訴使用者偵測到哪些平台。沒偵測到時，用 `--list` 查路徑，問使用者要裝哪個平台後改用 `install.sh <平台>`。
-2. 對每個目標平台，列出技能目錄中已存在、且與 `<kit>/skills/` 同名的資料夾，逐一判斷它的 `SKILL.md` 是否來自 kit：
+1. 先跑 dry-run：下載安裝用 `curl -fsSL https://raw.githubusercontent.com/raybird/dev-rules-kit/main/scripts/get.sh | bash -s -- --dry-run`，clone 用 `bash <kit>/scripts/install.sh --dry-run`。告訴使用者會裝哪一版（下載安裝的第一行）與偵測到哪些平台。沒偵測到時，用 `bash <kit>/scripts/install.sh --list`（下載安裝尚未有 `<kit>` 時改看 `<kit>/skills/README.md` 的安裝表格）查路徑，問使用者要裝哪個平台，之後兩種方式都在參數加上平台名稱。
+2. dry-run 輸出中的「會備份 <技能>（本地修改：…）」是平台上被改過、內容不屬於任何一版 kit 的同名技能，列給使用者確認。正式執行時腳本會把整個技能目錄備份到技能目錄之外（`<平台設定目錄>/skill-backups/`）再覆蓋；使用者不想覆蓋某個技能時停在本步，由使用者決定。
+3. 使用者確認後去掉 `--dry-run` 執行：下載安裝為 `curl -fsSL https://raw.githubusercontent.com/raybird/dev-rules-kit/main/scripts/get.sh | bash`（完成後 `<kit>` 是 `~/.local/share/dev-rules-kit/current`），clone 為 `bash <kit>/scripts/install.sh`。
 
-   ```bash
-   git -C <kit> rev-list --all --objects -- skills/<name>/SKILL.md \
-     | grep -q "^$(git hash-object <平台技能目錄>/<name>/SKILL.md)" && echo kit 版本 || echo 非 kit 版本
-   ```
-
-   「非 kit 版本」是使用者自己的同名技能：先把整個資料夾複製到技能目錄**之外**（例如平台設定目錄下的 `<name>.bak-<日期>`；放在技能目錄內會被當成第二個同名技能載入），再繼續。
-3. 使用者確認後執行 `bash <kit>/scripts/install.sh`（或指定平台）。
-
-完成判準：每個目標平台的每個技能都與 kit 相同，`diff -rq <kit>/skills/<name> <平台技能目錄>/<name>` 沒有輸出。安裝只新增與覆蓋檔案、不刪除舊檔，若只剩「Only in <平台技能目錄>」的多餘檔案，列給使用者決定是否刪除。
+完成判準：每個目標平台的每個技能都與 kit 相同，`diff -rq <kit>/skills/<name> <平台技能目錄>/<name>` 沒有輸出；輸出中的每個「備份：」位置都已記下。安裝只新增與覆蓋檔案、不刪除舊檔，若只剩「Only in <平台技能目錄>」的多餘檔案，列給使用者決定是否刪除。
 
 ## 3. 初始化或更新專案文件
 
@@ -60,8 +57,8 @@
 
 用一段簡短回報列出：
 
-- kit 路徑與版本（`git describe --tags --dirty`）；更新時列出新舊版本之間 `<kit>/CHANGELOG.md` 的重點，Major 版本特別標出。
-- 已安裝技能的平台，以及備份過的同名技能位置。
+- 安裝方式、kit 路徑與版本（clone 用 `git describe --tags --dirty`，下載安裝用 `readlink ~/.local/share/dev-rules-kit/current`）；更新時列出新舊版本之間 `<kit>/CHANGELOG.md` 的重點，Major 版本特別標出。
+- 已安裝技能的平台，以及安裝輸出列出的技能備份位置。
 - 專案初始化或更新的結果與異動檔案，或略過的原因。
 - 規則檔的處理結果。
 - 尚未完成、需要使用者決定的事項。

@@ -47,6 +47,7 @@
 - `scripts/install.sh` - 覆蓋前依雜湊清單判斷並備份；`--check` 列出各平台技能的版本
 - `scripts/skill-hashes.txt` - 新增：各技能檔歷代版本的 sha256 與所屬版本
 - `scripts/build-skill-hashes.py` - 新增：從 Git 歷史產生雜湊清單
+- `scripts/skill_state.py` - 新增：判斷平台技能屬於哪一版 kit 或本地修改，install.sh 與 check-kit 共用
 - `scripts/check-kit.py` - 驗證目前每個技能檔的雜湊都在清單裡
 - `.gitattributes` - 新增：`docs/issues/` 等維護紀錄不進壓縮檔
 
@@ -56,7 +57,7 @@
 
 ### 文件
 
-- `README.md`、`INSTALL.md`、`docs/usage.md`、`CHANGELOG.md`；`skills/README.md`、`rules/README.md` 只檢查有無需要跟著改的引用
+- `README.md`、`README.en.md`、`INSTALL.md`、`docs/usage.md`、`skills/README.md`、`CHANGELOG.md`、`docs/rule-verification-status.md`；`rules/README.md` 檢查後不需要改
 
 ## Gherkin 驗收劇本
 
@@ -139,7 +140,7 @@ Feature: 不需 clone 即可安裝與更新 kit
 
 ## Gherkin 核准紀錄
 - **核准 commit**: 待提交
-- **核准來源**: 使用者於 2026-11-17 對話要求「讓安裝方式可以參照一般 github 常用的開源工具一樣，不需要 clone 就能安裝或更新版本」，並逐題確認：存放位置選「~/.local/share 依版本分目錄」（SCN-001、002）；下載來源選「release tag 的原始碼壓縮檔」，含 releases/latest 轉址與 `.gitattributes` 排除維護紀錄（SCN-001、008）；保護機制選「kit 附歷代檔案雜湊清單」（SCN-003、006）；發現修改時選「自動備份後覆蓋」（SCN-003）；選「要，get.sh --check」（SCN-005）。SCN-004 的 `--version`、`--dry-run` 出自同日採用的方案說明。同日 TBD-1 選「要，保護放在 install.sh」（SCN-007）；TBD-2 選「兩種並列」（SCN-009）
+- **核准來源**: 使用者於 2026-11-17 對話要求「讓安裝方式可以參照一般 github 常用的開源工具一樣，不需要 clone 就能安裝或更新版本」，並逐題確認：存放位置選「~/.local/share 依版本分目錄」（SCN-001、002）；下載來源選「release tag 的原始碼壓縮檔」，含 releases/latest 轉址與 `.gitattributes` 排除維護紀錄（SCN-001、008）；保護機制選「kit 附歷代檔案雜湊清單」（SCN-003、006）；發現修改時選「自動備份後覆蓋」（SCN-003）；選「要，get.sh --check」（SCN-005）。SCN-004 的 `--version`、`--dry-run` 出自同日採用的方案說明。同日 TBD-1 選「要，保護放在 install.sh」（SCN-007）；TBD-2 選「兩種並列」（SCN-009）；TBD-4 回覆「好這樣改」（SCN-010）
 
 | Scenario | 核准日期 | 狀態 |
 |----------|---------|------|
@@ -152,7 +153,7 @@ Feature: 不需 clone 即可安裝與更新 kit
 | SCN-007 | 2026-11-17 | 已核准 |
 | SCN-008 | 2026-11-17 | 已核准 |
 | SCN-009 | 2026-11-17 | 已核准 |
-| SCN-010 | - | 待核准 |
+| SCN-010 | 2026-11-17 | 已核准 |
 
 ## 重構步驟概要
 
@@ -172,7 +173,7 @@ Feature: 不需 clone 即可安裝與更新 kit
 |------|------|------|------|
 | TBD-1 | SCN-007：clone 用戶直接執行 install.sh 時，也用雜湊清單判斷並備份 | 已解決：2026-11-17 使用者選「要，保護放在 install.sh」；兩種安裝方式共用同一段邏輯 | SCN-007、S3 |
 | TBD-2 | SCN-009：安裝文件以 get.sh 為主或兩種並列 | 已解決：2026-11-17 使用者選「兩種並列」 | SCN-009、S6 |
-| TBD-4 | SCN-010：install.sh 已內建備份（TBD-1），INSTALL.md 第 2 步的 `git rev-list` 人工判斷改為看 `install.sh --dry-run` 列出的備份。建議改：兩種安裝方式都適用，不再需要 Git 歷史 | 待確認 | SCN-010、S6 |
+| TBD-4 | SCN-010：install.sh 已內建備份（TBD-1），INSTALL.md 第 2 步的 `git rev-list` 人工判斷改為看 `install.sh --dry-run` 列出的備份 | 已解決：2026-11-17 使用者回覆「好這樣改」 | SCN-010、S6 |
 | TBD-3 | 版本號 | 已解決：2026-11-17 使用者選 Major（v5.0.0）；安裝方式與 install.sh 的覆蓋行為都改變 | 發布 |
 
 ## Timeline
@@ -180,10 +181,12 @@ Feature: 不需 clone 即可安裝與更新 kit
 | 日期 | 異動 | 負責人 |
 |------|------|--------|
 | 2026-11-17 | 建立 GitHub #9 與本 issue；使用者逐題確認設計，SCN-001～006、008 核准 | 使用者／Claude Code |
-| 2026-11-17 | 使用者逐題確認 TBD-1～3：SCN-007、009 核准，文件兩種方式並列，版本 v5.0.0；SCN-010 待核准（TBD-4）；規劃文件提交到 main | 使用者／Claude Code |
+| 2026-11-17 | 使用者逐題確認 TBD-1～3：SCN-007、009 核准，文件兩種方式並列，版本 v5.0.0；SCN-010 待核准（TBD-4）；規劃文件提交到 main（`85cc332`） | 使用者／Claude Code |
+| 2026-11-17 | 使用者核准 SCN-010（TBD-4），開始實作 | 使用者／Claude Code |
+| 2026-11-17 | S1～S6 完成，五項檢查通過；待送審（S7） | Claude Code |
 
 ---
 **建立日期**: 2026-11-17  
 **分級**: Medium — 新增安裝腳本與雜湊清單，修改 install.sh、check-kit、測試與安裝文件；不需 Phase／Task 拆解  
 **風險**: High\
-**狀態**: 規劃中
+**狀態**: 實作中

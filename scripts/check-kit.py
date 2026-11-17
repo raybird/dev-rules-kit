@@ -1,8 +1,11 @@
 #!/usr/bin/env python3
-"""檢查 kit 自身的一致性：skill frontmatter、流程契約相容性、雙語規則章節數、install.sh 安裝路徑"""
+"""檢查 kit 自身的一致性：skill frontmatter、流程契約相容性、雙語規則章節數、install.sh 安裝路徑、技能歷代雜湊清單"""
 import os
 import re
 import sys
+
+sys.path.insert(0, os.path.dirname(os.path.abspath(__file__)))
+import skill_state  # noqa: E402
 
 
 def find_skills(project_root):
@@ -159,14 +162,28 @@ def check_install_paths(project_root):
     return errors
 
 
+def check_skill_hashes(project_root):
+    """目前每個技能檔都要列在 scripts/skill-hashes.txt，且最晚版本是 CHANGELOG 最新版。
+
+    沒有 Git 歷史的安裝（get.sh 下載的壓縮檔）靠這份清單分辨舊版 kit 與使用者改過的技能；
+    漏列時 install.sh 會把 kit 自己的檔案當成本地修改而多做備份（issue #9）。
+    """
+    problems = skill_state.missing_hashes(project_root)
+    if problems:
+        return [f"scripts/skill-hashes.txt 沒有列入目前的技能檔或版本過舊：{', '.join(problems)}；"
+                "執行 python3 scripts/build-skill-hashes.py 重新產生"]
+    return []
+
+
 if __name__ == '__main__':
     project_root = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
     errors = (check_skill_names(project_root)
               + check_agents_md_declarations(project_root)
               + check_rules_parity(project_root)
-              + check_install_paths(project_root))
+              + check_install_paths(project_root)
+              + check_skill_hashes(project_root))
     if errors:
         for e in errors:
             print(f"FAIL: {e}")
         sys.exit(1)
-    print("OK: skill frontmatter 完整且 name 一致，skill 的最低流程契約相容，雙語規則章節數一致，install.sh 安裝路徑與 README 一致。")
+    print("OK: skill frontmatter 完整且 name 一致，skill 的最低流程契約相容，雙語規則章節數一致，install.sh 安裝路徑與 README 一致，技能歷代雜湊清單涵蓋目前版本。")

@@ -1,0 +1,40 @@
+test_check_reports_outdated_core_separately (__main__.InstallTests.test_check_reports_outdated_core_separately) ... ok
+test_codex_auto_detect_and_rules (__main__.InstallTests.test_codex_auto_detect_and_rules) ... ok
+test_get_failure_leaves_no_partial_state (__main__.InstallTests.test_get_failure_leaves_no_partial_state) ... FAIL
+test_init_check_dry_run_and_repeat (__main__.InstallTests.test_init_check_dry_run_and_repeat) ... ok
+test_init_conflict_has_no_partial_writes (__main__.InstallTests.test_init_conflict_has_no_partial_writes) ... ok
+test_init_rejects_symlink_and_file_parent (__main__.InstallTests.test_init_rejects_symlink_and_file_parent) ... ok
+test_install_and_upgrade_all_platforms (__main__.InstallTests.test_install_and_upgrade_all_platforms) ... ok
+test_install_dry_run_and_invalid_platform (__main__.InstallTests.test_install_dry_run_and_invalid_platform) ... ok
+test_modified_skill_backed_up_before_overwrite (__main__.InstallTests.test_modified_skill_backed_up_before_overwrite) ... FAIL
+test_past_project_templates_registered (__main__.InstallTests.test_past_project_templates_registered) ... ok
+test_previous_kit_version_overwritten_without_backup (__main__.InstallTests.test_previous_kit_version_overwritten_without_backup) ... ok
+test_retire_legacy_workflows (__main__.InstallTests.test_retire_legacy_workflows) ... ok
+test_rules_backup (__main__.InstallTests.test_rules_backup) ... ok
+test_update_from_baseline_with_templates (__main__.InstallTests.test_update_from_baseline_with_templates) ... ok
+test_update_preserves_project_customization (__main__.InstallTests.test_update_preserves_project_customization) ... ok
+test_update_rejects_edited_core_without_partial_writes (__main__.InstallTests.test_update_rejects_edited_core_without_partial_writes) ... ok
+test_update_rejects_hardlinks_without_partial_writes (__main__.InstallTests.test_update_rejects_hardlinks_without_partial_writes) ... ok
+test_update_rejects_manifest_symlink (__main__.InstallTests.test_update_rejects_manifest_symlink) ... ok
+test_windsurf_not_supported (__main__.InstallTests.test_windsurf_not_supported) ... ok
+
+======================================================================
+FAIL: test_get_failure_leaves_no_partial_state (__main__.InstallTests.test_get_failure_leaves_no_partial_state)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "scripts/test-install.py", line 183, in test_get_failure_leaves_no_partial_state
+    self.assertEqual(self.get('--version', 'v9.0.0').returncode, 0)
+AssertionError: 127 != 0
+
+======================================================================
+FAIL: test_modified_skill_backed_up_before_overwrite (__main__.InstallTests.test_modified_skill_backed_up_before_overwrite)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "scripts/test-install.py", line 145, in test_modified_skill_backed_up_before_overwrite
+    self.assertIn('會備份 create-commit（本地修改：SKILL.md）', dry.stdout)
+AssertionError: '會備份 create-commit（本地修改：SKILL.md）' not found in '（dry-run 模式，不會實際寫入）\n\nclaude\n    [dry-run] mkdir -p /tmp/dev-rules-test-e8ecvbgs/platform settings/.claude/skills\n    [dry-run] mkdir -p /tmp/dev-rules-test-e8ecvbgs/platform settings/.claude/skills/code-simplify\n    [dry-run] cp -r /tmp/dev-rules-test-e8ecvbgs/kit/skills/code-simplify/. /tmp/dev-rules-test-e8ecvbgs/platform settings/.claude/skills/code-simplify/\n    [dry-run] mkdir -p /tmp/dev-rules-test-e8ecvbgs/platform settings/.claude/skills/create-commit\n    [dry-run] cp -r /tmp/dev-rules-test-e8ecvbgs/kit/skills/create-commit/. /tmp/dev-rules-test-e8ecvbgs/platform settings/.claude/skills/create-commit/\n    [dry-run] mkdir -p /tmp/dev-rules-test-e8ecvbgs/platform settings/.claude/skills/create-pr\n    [dry-run] cp -r /tmp/dev-rules-test-e8ecvbgs/kit/skills/create-pr/. /tmp/dev-rules-test-e8ecvbgs/platform settings/.claude/skills/create-pr/\n    [dry-run] mkdir -p /tmp/dev-rules-test-e8ecvbgs/platform settings/.claude/skills/decompose\n    [dry-run] cp -r /tmp/dev-rules-test-e8ecvbgs/kit/skills/decompose/. /tmp/dev-rules-test-e8ecvbgs/platform settings/.claude/skills/decompose/\n    [dry-run] mkdir -p /tmp/dev-rules-test-e8ecvbgs/platform settings/.claude/skills/dev-cycle\n    [dry-run] cp -r /tmp/dev-rules-test-e8ecvbgs/kit/skills/dev-cycle/. /tmp/dev-rules-test-e8ecvbgs/platform settings/.claude/skills/dev-cycle/\n    [dry-run] mkdir -p /tmp/dev-rules-test-e8ecvbgs/platform settings/.claude/skills/execute-task\n    [dry-run] cp -r /tmp/dev-rules-test-e8ecvbgs/kit/skills/execute-task/. /tmp/dev-rules-test-e8ecvbgs/platform settings/.claude/skills/execute-task/\n    [dry-run] mkdir -p /tmp/dev-rules-test-e8ecvbgs/platform settings/.claude/skills/git-squash\n    [dry-run] cp -r /tmp/dev-rules-test-e8ecvbgs/kit/skills/git-squash/. /tmp/dev-rules-test-e8ecvbgs/platform settings/.claude/skills/git-squash/\n    [dry-run] mkdir -p /tmp/dev-rules-test-e8ecvbgs/platform settings/.claude/skills/new-issue\n    [dry-run] cp -r /tmp/dev-rules-test-e8ecvbgs/kit/skills/new-issue/. /tmp/dev-rules-test-e8ecvbgs/platform settings/.claude/skills/new-issue/\n    [dry-run] mkdir -p /tmp/dev-rules-test-e8ecvbgs/platform settings/.claude/skills/project-worktrees\n    [dry-run] cp -r /tmp/dev-rules-test-e8ecvbgs/kit/skills/project-worktrees/. /tmp/dev-rules-test-e8ecvbgs/platform settings/.claude/skills/project-worktrees/\n    [dry-run] mkdir -p /tmp/dev-rules-test-e8ecvbgs/platform settings/.claude/skills/review\n    [dry-run] cp -r /tmp/dev-rules-test-e8ecvbgs/kit/skills/review/. /tmp/dev-rules-test-e8ecvbgs/platform settings/.claude/skills/review/\n    [dry-run] mkdir -p /tmp/dev-rules-test-e8ecvbgs/platform settings/.claude/skills/writing-rules\n    [dry-run] cp -r /tmp/dev-rules-test-e8ecvbgs/kit/skills/writing-rules/. /tmp/dev-rules-test-e8ecvbgs/platform settings/.claude/skills/writing-rules/\n  技能：11 個技能 -> ~/.claude/skills/\n\n未安裝規則檔（rules/）。需要時加上 --with-rules，腳本會先備份既有檔案。\n驗證：Codex 輸入 /skills 或以 $ 提及技能；其他平台輸入 /，應出現 decompose、create-commit、new-issue、dev-cycle 等技能。\n專案初始化：執行 python3 scripts/init-project.py /path/to/project，部署核心技能需要的 docs 規範。\n'
+
+----------------------------------------------------------------------
+Ran 19 tests in 3.553s
+
+FAILED (failures=2)

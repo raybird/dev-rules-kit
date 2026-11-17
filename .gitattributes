@@ -1,0 +1,2 @@
+# release 壓縮檔（get.sh 下載的 archive/refs/tags/*.tar.gz）不含 issue 維護紀錄（issue #9）
+docs/issues/ export-ignore

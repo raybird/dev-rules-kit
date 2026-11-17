@@ -336,6 +336,15 @@
 | project.md 範本提示登記合併判定與推送、部署、平台狀態的查證命令 | 僅靜態撰寫 | WF-29b：沒有登記時兩組都自行找到 `tools/deployed.py`；登記的效果沒有可觀察差異 |
 | 流程契約 2.4 以下的專案維持現行記帳判定，技能最低契約不變 | 僅靜態撰寫 | `test-evidence.py` 的 2.4 案例；沒有以 2.4 docs 配新技能的 agent 實跑 |
 
+## v5.0.0 — 不需 clone 的安裝與技能備份（2026-11-17）
+
+| 規則 | 狀態 | 驗證來源 |
+|---|---|---|
+| `get.sh` 下載、解壓、安裝成功後才切換 `current`；失敗時不留半套；`--dry-run`、`--check` 不寫入 | 本地測試驗證 | `test-install.py` 的 `test_get_failure_leaves_no_partial_state` 先紅後綠（issue #9 S1），`test_get_install_update_and_init`、`test_get_dry_run_writes_nothing`、`test_get_check_and_latest_unreachable` 以本機壓縮檔與 `file://` 來源驗證。2026-11-17 以真實 GitHub 在暫存 HOME 跑 `--check` 與 `--dry-run`：取得最新 release `v4.13.0`，暫存 HOME 沒有寫入 |
+| `install.sh` 依歷代雜湊清單判斷同名技能，不屬於任何一版的先備份到技能目錄外再覆蓋 | 本地測試驗證 | `test_modified_skill_backed_up_before_overwrite` 先紅後綠（issue #9 S1）、`test_previous_kit_version_overwritten_without_backup`；另以 v4.9.0 實際安裝後升級，舊版技能辨識為 kit 版本、改過的技能被備份 |
+| `check-kit.py` 要求目前技能檔都列在 `skill-hashes.txt` 且標為最新版 | 本地測試驗證 | `test_skill_hashes_must_cover_current_files`、`test_skill_hashes_cover_released_versions` 先紅後綠（issue #9 S2） |
+| INSTALL.md 第 2 步改看 `install.sh --dry-run` 列出的備份，不再查 Git 歷史 | 僅靜態撰寫 | 尚未在新 session 依新版 INSTALL.md 實跑 |
+
 ## v4.13.0 — 常青文件範本隨技能安裝、【應客製】改為範例（2026-11-17）
 
 | 規則 | 狀態 | 驗證來源 |
