@@ -30,7 +30,7 @@
 | S2 | `git mv` 三份範本到 `skills/execute-task/references/`；改 `docs/AGENTS.md`（部署說明、常青文件段落、文件版本 2.12、修訂紀錄）與 `document-types.md` 第 106 行；改 execute-task SKILL.md 回寫步驟。依 writing-rules | SCN-003、006 已核准 | SCN-003、006 | `git diff -M` 顯示三份為 100% 相似的改名；`grep -rn "_templates"` 只剩 CHANGELOG 與 `docs/issues/` 下的歷史文件；check-links OK | ✅ 2026-11-17；見「S2～S4 證據」 |
 | S3 | 改 `document-types.md`「常見文件類型範例」的 NOTE。依 writing-rules | SCN-004 已核准；與 S1、S2 無相依 | SCN-004 | 該節沒有「應客製」；`git diff` 中 `docs/agents/project.md` 沒有變動 | ✅ 2026-11-17；見「S2～S4 證據」 |
 | S4 | CHANGELOG v4.13.0 條目（下游更新：舊檔可手動刪除、刪除前先查專案自己文件的引用）；檢查 README.md、docs/usage.md、INSTALL.md、skills/README.md、rule-verification-status 有無需要跟著改的引用；跑根目錄五項檢查 | S1～S3 | SCN-005 | 五項檢查通過；CHANGELOG 條目涵蓋 SCN-005 兩點 | ✅ 2026-11-17；見「S2～S4 證據」 |
-| S5 | 送獨立審查（工具呼叫上限 30 次） | S4 | SCN-001～006 | PASS，或已依使用者決定處理 | ⏳ |
+| S5 | 送獨立審查（工具呼叫上限 30 次） | S4 | SCN-001～006 | PASS，或已依使用者決定處理 | ⏳ [review-ee77c12](review-ee77c12.md) PASS，SHOULD FIX 2 項依 TBD-4 修正（CHANGELOG 4.13.0 下游更新第二點、docs/usage.md 第 13 行），待差異覆審 |
 
 ### S1 證據
 
