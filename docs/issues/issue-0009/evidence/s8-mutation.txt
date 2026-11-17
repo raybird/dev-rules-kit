@@ -1,0 +1,13 @@
+# 2026-11-17 突變測試：改壞 get.sh 後跑 test_get_failure_leaves_no_partial_state，預期失敗
+=== 突變 1：install.sh 之前就切換 current
+AssertionError: 'v9.3.0' != 'v9.0.0'
+FAILED (failures=1)
+=== 突變 2：不檢查壓縮檔裡有 install.sh
+0
+AssertionError: Lists differ: ['cur[22692 chars]L.md', 'v9.2.0', 'v9.2.0/CHANGELOG.md', 'v9.2.[22618 chars].md'] != ['cur[22692 chars]L.md']
+AssertionError: Lists differ: ['cur[22692 chars]L.md', 'v9.2.0', 'v9.2.0/CHANGELOG.md', 'v9.2.[22618 chars].md'] != ['cur[22692 chars]L.md']
+AssertionError: Lists differ: ['cur[22692 chars]L.md', 'v9.2.0', 'v9.2.0/CHANGELOG.md', 'v9.2.[22618 chars].md'] != ['cur[22692 chars]L.md']
+AssertionError: Lists differ: ['cur[22692 chars]L.md', 'v9.2.0', 'v9.2.0/CHANGELOG.md', 'v9.2.[22618 chars].md'] != ['cur[22692 chars]L.md']
+FAILED (failures=4)
+=== 還原後
+OK

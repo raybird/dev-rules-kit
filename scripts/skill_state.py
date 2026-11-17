@@ -61,7 +61,8 @@ def load_hashes(root):
     for line in path.read_text(encoding='utf-8').splitlines():
         if not line.strip() or line.startswith('#'):
             continue
-        sha, rel, first, last = line.split()
+        sha, rest = line.split(None, 1)
+        rel, first, last = rest.rsplit(None, 2)
         known[(sha, rel)] = (first, last)
     return known
 
@@ -82,7 +83,7 @@ def classify(kit_root, target_root):
     rows = []
     for skill in sorted({rel.split('/', 1)[0] for rel in kit}):
         folder = target_root / skill
-        if not (folder / 'SKILL.md').is_file():
+        if not folder.is_dir():
             rows.append((skill, 'new', ''))
             continue
         installed = {f'{skill}/{rel}': sha for rel, sha in tree_files(folder).items()}

@@ -24,9 +24,9 @@
 
 ## 2. 安裝技能
 
-1. 先跑 dry-run：下載安裝用 `curl -fsSL https://raw.githubusercontent.com/raybird/dev-rules-kit/main/scripts/get.sh | bash -s -- --dry-run`，clone 用 `bash <kit>/scripts/install.sh --dry-run`。告訴使用者會裝哪一版（下載安裝的第一行）與偵測到哪些平台。沒偵測到時，用 `bash <kit>/scripts/install.sh --list`（下載安裝尚未有 `<kit>` 時改看 `<kit>/skills/README.md` 的安裝表格）查路徑，問使用者要裝哪個平台，之後兩種方式都在參數加上平台名稱。
+1. 先跑 dry-run：下載安裝用 `curl -fsSL https://raw.githubusercontent.com/raybird/dev-rules-kit/main/scripts/get.sh | bash -s -- --dry-run`，clone 用 `bash <kit>/scripts/install.sh --dry-run`。告訴使用者會裝哪一版（下載安裝的第一行）與偵測到哪些平台。沒偵測到時查各平台路徑：下載安裝用 `curl -fsSL https://raw.githubusercontent.com/raybird/dev-rules-kit/main/scripts/get.sh | bash -s -- --list`，clone 用 `bash <kit>/scripts/install.sh --list`；問使用者要裝哪個平台，之後兩種方式都在參數加上平台名稱。
 2. dry-run 輸出中的「會備份 <技能>（本地修改：…）」是平台上被改過、內容不屬於任何一版 kit 的同名技能，列給使用者確認。正式執行時腳本會把整個技能目錄備份到技能目錄之外（`<平台設定目錄>/skill-backups/`）再覆蓋；使用者不想覆蓋某個技能時停在本步，由使用者決定。
-3. 使用者確認後去掉 `--dry-run` 執行：下載安裝為 `curl -fsSL https://raw.githubusercontent.com/raybird/dev-rules-kit/main/scripts/get.sh | bash`（完成後 `<kit>` 是 `~/.local/share/dev-rules-kit/current`），clone 為 `bash <kit>/scripts/install.sh`。
+3. 使用者確認後去掉 `--dry-run` 執行：下載安裝為 `curl -fsSL https://raw.githubusercontent.com/raybird/dev-rules-kit/main/scripts/get.sh | bash -s -- --version <dry-run 第一行的版本>`，帶上版本，免得兩次之間有新 release 而裝到使用者沒確認過的版本（完成後 `<kit>` 是 `~/.local/share/dev-rules-kit/current`），clone 為 `bash <kit>/scripts/install.sh`。
 
 完成判準：每個目標平台的每個技能都與 kit 相同，`diff -rq <kit>/skills/<name> <平台技能目錄>/<name>` 沒有輸出；輸出中的每個「備份：」位置都已記下。安裝只新增與覆蓋檔案、不刪除舊檔，若只剩「Only in <平台技能目錄>」的多餘檔案，列給使用者決定是否刪除。
 

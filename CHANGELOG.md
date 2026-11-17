@@ -18,13 +18,13 @@
 
 ### 新增（`scripts/get.sh`、`scripts/skill-hashes.txt`、`scripts/build-skill-hashes.py`、`scripts/skill_state.py`、`.gitattributes`）
 
-- `curl -fsSL https://raw.githubusercontent.com/raybird/dev-rules-kit/main/scripts/get.sh | bash`：下載 release 的原始碼壓縮檔，解壓到 `~/.local/share/dev-rules-kit/<版本>/`，執行該版的 `install.sh`，成功後才把 `current` 指向該版；重跑同一行就是更新。`--version vX.Y.Z` 指定版本，`--dry-run` 只列出會做什麼、不寫入，`--check` 唯讀列出目前版本、最新 release 與各平台技能狀態。最新版取自 `releases/latest` 的轉址，不用 GitHub API。下載或解壓失敗時只清掉暫存目錄，`current` 與平台目錄不動。
+- `curl -fsSL https://raw.githubusercontent.com/raybird/dev-rules-kit/main/scripts/get.sh | bash`：下載 release 的原始碼壓縮檔，解壓到 `~/.local/share/dev-rules-kit/<版本>/`，執行該版的 `install.sh`，成功後才把 `current` 指向該版；重跑同一行就是更新。`--version vX.Y.Z` 指定版本，`--dry-run` 只列出會做什麼、不寫入，`--check` 唯讀列出目前版本、最新 release 與各平台技能狀態。最新版取自 `releases/latest` 的轉址，不用 GitHub API。只安裝 v5.0.0 以後的版本：更早的 install.sh 不會備份改過的技能，要裝舊版請用 clone。下載、解壓或安裝失敗時，`current` 與平台目錄不動；`--list` 與 `--dry-run` 一樣只在暫存目錄執行。
 - `scripts/skill-hashes.txt`：每個技能檔歷代版本的 sha256，由 `build-skill-hashes.py` 從所有 `v*` tag 與工作區產生；`check-kit.py` 檢查目前每個技能檔都列在清單、且標為 CHANGELOG 最新版。沒有 Git 歷史的安裝靠它分辨「舊版 kit」與「使用者改過」。
 - `.gitattributes`：release 壓縮檔不含 `docs/issues/`。壓縮檔裡的 `check-links.py` 與 `test-evidence.py` 會因此失敗，兩者是維護者用的檢查。
 
 ### 變更（`scripts/install.sh`、`INSTALL.md`）
 
-- `install.sh` 覆蓋前依雜湊清單判斷每個同名技能：與本 kit 相同或屬於某一版 kit 的直接覆蓋；有任何檔案不屬於任何一版時，先把整個技能目錄備份到 `<平台設定目錄>/skill-backups/<技能>.bak-<時間>/`（技能目錄之外），再覆蓋，並印出位置。`--dry-run` 列出會備份的技能，新增 `--check` 唯讀列出每個技能是哪一版 kit 或本地修改。原本一律覆蓋，被改過的技能沒有保護。clone 與下載安裝走同一段邏輯。
+- `install.sh` 覆蓋前依雜湊清單判斷每個同名技能：與本 kit 相同或屬於某一版 kit 的直接覆蓋；有任何檔案不屬於任何一版時，先把整個技能目錄備份到 `<平台設定目錄>/skill-backups/<技能>.bak-<時間>/`（技能目錄之外；技能目錄是 symlink 時複製連結指向的內容，同一秒重跑時另取名稱），再覆蓋，並印出位置。同名資料夾缺 `SKILL.md` 時也照樣判斷。`--dry-run` 列出會備份的技能，新增 `--check` 唯讀列出每個技能是哪一版 kit 或本地修改。原本一律覆蓋，被改過的技能沒有保護。clone 與下載安裝走同一段邏輯。
 - INSTALL.md 第 1 步並列下載安裝與 clone；第 2 步不再以 `git rev-list` 人工判斷同名技能，改看 `--dry-run` 列出的備份。README、README.en、docs/usage.md、skills/README.md 同步並列兩種方式。
 
 ### 下游更新

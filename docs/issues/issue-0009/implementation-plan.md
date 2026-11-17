@@ -29,7 +29,7 @@ get.sh [--version vX.Y.Z] [--dry-run] [--check] [install.sh 的平台與選項�
 
 ### 雜湊清單與 install.sh
 
-- `scripts/skill-hashes.txt`：每行 `sha256  技能/相對路徑  版本`。版本取包含該內容的最早 tag；只出現在工作區的內容，記為 CHANGELOG 最上面那個版本（發布前 CHANGELOG 條目已先寫好，tag 打在同一個提交上）。
+- `scripts/skill-hashes.txt`：每行 `sha256  技能/相對路徑  最早版本  最晚版本`，版本取包含該內容的最早與最晚 tag；只出現在工作區的內容，記為 CHANGELOG 最上面那個版本（發布前 CHANGELOG 條目已先寫好，tag 打在同一個提交上）。`--check` 以各檔範圍的交集顯示版本，內容回到更早的版本時範圍只是近似，只影響顯示。
 - `scripts/build-skill-hashes.py`：從 Git 歷史的每個 `v*` tag 與工作區產生清單。
 - `check-kit.py`：工作區每個技能檔的 sha256 都要在清單裡，缺少時列出檔案並失敗。
 - `install.sh` 覆蓋前逐一比對目標技能：與 kit 相同的跳過；每個已存在的檔案都在清單裡就直接覆蓋；有任何檔案不在清單裡，先把整個技能目錄複製到 `<平台設定目錄>/skill-backups/<技能>.bak-<時間>/`（技能目錄之外，避免被當成第二個同名技能載入），再覆蓋。目標多出、kit 沒有的檔案照舊保留。
@@ -49,7 +49,9 @@ get.sh [--version vX.Y.Z] [--dry-run] [--check] [install.sh 的平台與選項�
 | S4 | 新增 get.sh（版本解析、下載解壓、切換 `current`、`--dry-run`、`--check`），test-install 以本機壓縮檔與 `file://` 來源覆蓋 SCN-001、002、004、005 | S3 | SCN-001、002、004、005 | 案例先紅後綠；dry-run 前後資料目錄與平台目錄的檔案樹相同；`releases/latest` 轉址另以實際 GitHub 手動確認一次並記錄輸出 | ✅ 2026-11-17 [s3-s4-green](evidence/s3-s4-green.txt)；[s4-github](evidence/s4-github.txt) 以真實 GitHub 在暫存 HOME 跑 `--check`、`--dry-run`：最新 release `v4.13.0`，暫存 HOME 沒有寫入。限制：SCN-001、002、004、005 的三個案例是寫好 get.sh 之後才補上，沒有紅燈；get.sh 不存在時的紅燈只由 S1 的失敗案例取得 |
 | S5 | `.gitattributes`；以 `git archive` 產生壓縮檔，解壓後跑 check-kit、check-links、`bash -n`、install.sh（暫存 HOME）與 init-project.py | S2～S4 | SCN-008 | 壓縮檔不含 `docs/issues/`；解壓後的 kit 通過 check-kit、`bash -n`，install.sh 與 init-project.py 成功 | ✅ 2026-11-17 [s5-archive](evidence/s5-archive.txt)：272K、不含 `docs/issues/`；check-kit、`bash -n`、install.sh、init-project.py 通過。check-links 因維護文件連到 issue 紀錄而失敗（59 個連結），已在本節說明並寫入 CHANGELOG |
 | S6 | README、INSTALL.md、docs/usage.md 並列 get.sh 與 clone；INSTALL.md 第 2 步依 SCN-010；CHANGELOG（v5.0.0）、rule-verification-status；跑根目錄五項檢查 | S1～S5 | SCN-009、010 | 三份文件的安裝與更新指令一致；五項檢查通過 | ✅ 2026-11-17 [s6-checks](evidence/s6-checks.txt) 五項檢查通過；README、README.en、INSTALL.md、docs/usage.md、skills/README.md 並列兩種方式，INSTALL.md 第 2 步不再出現 `git rev-list`；CHANGELOG [5.0.0]、rule-verification-status v5.0.0；清單以 v5.0.0 重產 |
-| S7 | 送獨立審查（工具呼叫上限 30 次） | S6 | SCN-001～010 | PASS，或已依使用者決定處理 | ⏳ |
+| S7 | 送獨立審查（工具呼叫上限 30 次） | S6 | SCN-001～010 | PASS，或已依使用者決定處理 | 🔄 2026-11-17 第一輪 [review-55f6f97](review-55f6f97.md) RETURN：MUST FIX 2、SHOULD FIX 3、NICE TO HAVE 7，修正見 S8 |
+| S8 | 依第一輪審查修正：get.sh 拒絕 v5.0.0 以前的版本（使用者 2026-11-17 選「拒絕舊版」）；備份複製 symlink 指向的內容；缺 SKILL.md 的同名資料夾照樣判斷；同秒備份另取名稱；`--list` 不切換 `current`；主流程包成 `main`；`--version=` 空值報錯；雜湊清單路徑可含空白；INSTALL.md 第 2 步的 `--list` 與帶版本正式執行；計畫的清單格式 | S7 第一輪 | SCN-001、003、004、007 | 新案例先紅後綠；install.sh 失敗與壓縮檔缺 install.sh 的案例經突變確認有效；五項檢查通過 | ✅ 2026-11-17 [s8-red](evidence/s8-red.txt)：`test_backup_edge_cases` 失敗於 symlink 備份只是連結，`--version v4.13.0`、`--version=` 未被拒絕（`--list` 子案例受前一筆裝進的 v4.13.0 連帶失敗）；[s8-green](evidence/s8-green.txt) 25 個案例通過；[s8-mutation](evidence/s8-mutation.txt) 兩個突變都被抓到；[s8-github](evidence/s8-github.txt) 真實 GitHub 上 latest 仍是 v4.13.0，get.sh 拒絕且暫存 HOME 沒有寫入；五項檢查通過。NICE TO HAVE 第 7 項中 `describe()` 的範圍近似只影響顯示，記在本檔設計段落、不改 |
+| S9 | 第二輪獨立審查（工具呼叫上限 30 次） | S8 | SCN-001～010 | PASS，或已依使用者決定處理 | ⏳ |
 
 ## 測試策略
 

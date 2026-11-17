@@ -340,8 +340,8 @@
 
 | 規則 | 狀態 | 驗證來源 |
 |---|---|---|
-| `get.sh` 下載、解壓、安裝成功後才切換 `current`；失敗時不留半套；`--dry-run`、`--check` 不寫入 | 本地測試驗證 | `test-install.py` 的 `test_get_failure_leaves_no_partial_state` 先紅後綠（issue #9 S1），`test_get_install_update_and_init`、`test_get_dry_run_writes_nothing`、`test_get_check_and_latest_unreachable` 以本機壓縮檔與 `file://` 來源驗證。2026-11-17 以真實 GitHub 在暫存 HOME 跑 `--check` 與 `--dry-run`：取得最新 release `v4.13.0`，暫存 HOME 沒有寫入 |
-| `install.sh` 依歷代雜湊清單判斷同名技能，不屬於任何一版的先備份到技能目錄外再覆蓋 | 本地測試驗證 | `test_modified_skill_backed_up_before_overwrite` 先紅後綠（issue #9 S1）、`test_previous_kit_version_overwritten_without_backup`；另以 v4.9.0 實際安裝後升級，舊版技能辨識為 kit 版本、改過的技能被備份 |
+| `get.sh` 只安裝 v5.0.0 以後的版本；下載、解壓、安裝成功後才切換 `current`；失敗時不留半套；`--dry-run`、`--list`、`--check` 不寫入 | 本地測試驗證 | `test-install.py` 的 `test_get_failure_leaves_no_partial_state` 先紅後綠（issue #9 S1、S8，含舊版拒絕、install.sh 失敗與壓縮檔缺 install.sh；後兩者經突變確認），`test_get_install_update_and_init`、`test_get_dry_run_writes_nothing`、`test_get_check_and_latest_unreachable` 以本機壓縮檔與 `file://` 來源驗證。2026-11-17 以真實 GitHub 在暫存 HOME 跑 `--check` 與 `--dry-run`：取得最新 release `v4.13.0`，暫存 HOME 沒有寫入；同日 latest 仍是 v4.13.0 時，get.sh 拒絕安裝且沒有寫入 |
+| `install.sh` 依歷代雜湊清單判斷同名技能，不屬於任何一版的先備份到技能目錄外再覆蓋 | 本地測試驗證 | `test_modified_skill_backed_up_before_overwrite` 先紅後綠（issue #9 S1）、`test_backup_edge_cases`（symlink 技能目錄、缺 SKILL.md、同秒重跑）先紅後綠（S8）、`test_previous_kit_version_overwritten_without_backup`；另以 v4.9.0 實際安裝後升級，舊版技能辨識為 kit 版本、改過的技能被備份 |
 | `check-kit.py` 要求目前技能檔都列在 `skill-hashes.txt` 且標為最新版 | 本地測試驗證 | `test_skill_hashes_must_cover_current_files`、`test_skill_hashes_cover_released_versions` 先紅後綠（issue #9 S2） |
 | INSTALL.md 第 2 步改看 `install.sh --dry-run` 列出的備份，不再查 Git 歷史 | 僅靜態撰寫 | 尚未在新 session 依新版 INSTALL.md 實跑 |
 

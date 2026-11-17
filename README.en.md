@@ -46,7 +46,7 @@ bash ~/Tools/dev-rules-kit/scripts/install.sh                          # Install
 python3 ~/Tools/dev-rules-kit/scripts/init-project.py /path/to/project  # Initialize project documents
 ```
 
-Every command supports `--dry-run` (for the download method: `… | bash -s -- --dry-run`; `--version vX.Y.Z` pins a version). If you modified a same-named skill on a platform, the installer backs up the whole skill to `<platform config dir>/skill-backups/` before overwriting it and prints the location. Optional general behavior rules can be installed as described in [rules/README.md](rules/README.md).
+Every command supports `--dry-run` (for the download method: `… | bash -s -- --dry-run`; `--version vX.Y.Z` pins a version, v5.0.0 or later). If you modified a same-named skill on a platform, the installer backs up the whole skill to `<platform config dir>/skill-backups/` before overwriting it and prints the location. Optional general behavior rules can be installed as described in [rules/README.md](rules/README.md).
 
 ## Daily Workflow
 

@@ -164,14 +164,21 @@ install_skills() {
   states="$(skill_states "$target")"
   stamp="$(date +%Y%m%d-%H%M%S)"
   # 本地修改的技能先整個備份到技能目錄之外，放在技能目錄內會被當成第二個同名技能載入
+  local n
   while IFS=$'\t' read -r name state detail; do
     [ "$state" = modified ] || continue
     backup="$(dirname "$target")/skill-backups/$name.bak-$stamp"
+    n=1
+    while [ -e "$backup" ]; do   # 同一秒重跑時另取名稱，不複製進既有的備份
+      n=$((n + 1))
+      backup="$(dirname "$target")/skill-backups/$name.bak-$stamp-$n"
+    done
     if [ "$DRY_RUN" = 1 ]; then
       echo "    [dry-run] 會備份 $name（本地修改：$detail）-> ${backup/#$HOME/\~}"
     else
-      mkdir -p "$(dirname "$backup")"
-      cp -a "$target/$name" "$backup"
+      # -L 複製連結指向的內容：技能目錄或檔案是 symlink 時，之後的覆蓋會寫穿連結
+      mkdir -p "$backup"
+      cp -RL "$target/$name/." "$backup/"
       echo "  備份：$name（本地修改：$detail）-> ${backup/#$HOME/\~}"
     fi
   done <<< "$states"

@@ -43,14 +43,23 @@ class InstallTests(unittest.TestCase):
         return subprocess.run(['bash', str(self.repo / 'scripts/get.sh'), *args],
                               env=env, capture_output=True, text=True)
 
-    def make_release(self, version, broken=False):
+    def make_release(self, version, broken=False, install_sh=None):
+        # install_sh：None 用原本的 install.sh；'' 表示壓縮檔缺少 install.sh；其他字串取代其內容
         archive = self.base / 'remote/archive/refs/tags' / f'{version}.tar.gz'
         archive.parent.mkdir(parents=True, exist_ok=True)
         if broken:
             archive.write_bytes(b'not a tarball')
             return archive
+        script = 'scripts/install.sh'
+
+        def replace(info):
+            return None if install_sh == '' and info.name.endswith('/' + script) else info
         with tarfile.open(archive, 'w:gz') as tar:
-            tar.add(self.repo, arcname=f'dev-rules-kit-{version.lstrip("v")}')
+            tar.add(self.repo, arcname=f'dev-rules-kit-{version.lstrip("v")}', filter=replace)
+            if install_sh:
+                path = self.base / 'install-override.sh'
+                path.write_text(install_sh)
+                tar.add(path, arcname=f'dev-rules-kit-{version.lstrip("v")}/{script}')
         return archive
 
     def tree(self, root):
@@ -160,6 +169,36 @@ class InstallTests(unittest.TestCase):
         self.assertEqual(again.returncode, 0)
         self.assertEqual(len(list((self.platform_root / '.claude/skill-backups').iterdir())), 1)
 
+    def test_backup_edge_cases(self):
+        # 審查 55f6f97：symlink 技能目錄、缺 SKILL.md 的同名資料夾、同一秒重跑都要留下完整備份。
+        self.assertEqual(self.install('claude').returncode, 0)
+        skills = self.platform_root / '.claude/skills'
+        backups = self.platform_root / '.claude/skill-backups'
+        real = self.base / 'my-review'
+        shutil.move(str(skills / 'review'), real)
+        (skills / 'review').symlink_to(real, target_is_directory=True)
+        (real / 'SKILL.md').write_text('symlink 後面改過的')
+        (skills / 'execute-task/SKILL.md').unlink()
+        ref = next((skills / 'execute-task/references').iterdir())
+        ref.write_text('改過的範本')
+        result = self.install('claude')
+        self.assertEqual(result.returncode, 0, result.stdout + result.stderr)
+        review = list(backups.glob('review.bak-*'))
+        self.assertEqual(len(review), 1, result.stdout)
+        self.assertFalse(review[0].is_symlink())
+        self.assertEqual((review[0] / 'SKILL.md').read_text(), 'symlink 後面改過的')
+        task = list(backups.glob('execute-task.bak-*'))
+        self.assertEqual(len(task), 1, result.stdout)
+        self.assertEqual((task[0] / 'references' / ref.name).read_text(), '改過的範本')
+        for n in range(3):
+            (skills / 'create-commit/SKILL.md').write_text(f'第 {n} 次改')
+            self.assertEqual(self.install('claude').returncode, 0)
+        commit = sorted(backups.glob('create-commit.bak-*'))
+        self.assertEqual(sorted((c / 'SKILL.md').read_text() for c in commit),
+                         [f'第 {n} 次改' for n in range(3)])
+        for c in commit:
+            self.assertFalse((c / 'create-commit').exists())
+
     def test_previous_kit_version_overwritten_without_backup(self):
         # issue #9 SCN-002：內容屬於某一版 kit（列在歷代雜湊清單）就直接覆蓋，不備份。
         import hashlib
@@ -186,13 +225,28 @@ class InstallTests(unittest.TestCase):
         before_data = self.tree(data)
         self.assertEqual(os.readlink(data / 'current'), 'v9.0.0')
         self.make_release('v9.1.0', broken=True)
-        for args in (('--version', 'v9.9.9'), ('--version', 'v9.1.0')):
+        self.make_release('v9.2.0', install_sh='')
+        self.make_release('v9.3.0', install_sh='#!/usr/bin/env bash\nexit 1\n')
+        self.make_release('v4.13.0')
+        for args in (('--version', 'v9.9.9'), ('--version', 'v9.1.0'), ('--version', 'v9.2.0'),
+                     ('--version', 'v4.13.0'), ('--version=',)):
             with self.subTest(args=args):
                 result = self.get(*args)
                 self.assertNotEqual(result.returncode, 0)
                 self.assertEqual(self.tree(self.platform_root / '.claude'), before_platform)
                 self.assertEqual(self.tree(data), before_data)
                 self.assertEqual(os.readlink(data / 'current'), 'v9.0.0')
+                if args[-1] == 'v4.13.0':
+                    self.assertIn('clone', result.stderr)
+        # --list 不安裝，也不下載到資料目錄、不切換 current
+        result = self.get('--list', '--version', 'v9.0.0')
+        self.assertEqual(result.returncode, 0, result.stdout + result.stderr)
+        self.assertEqual(self.tree(data), before_data)
+        # install.sh 失敗時版本目錄已下載完整，但 current 不切換、平台目錄不動
+        result = self.get('--version', 'v9.3.0')
+        self.assertNotEqual(result.returncode, 0)
+        self.assertEqual(self.tree(self.platform_root / '.claude'), before_platform)
+        self.assertEqual(os.readlink(data / 'current'), 'v9.0.0')
 
     def state_module(self, root):
         import importlib.util

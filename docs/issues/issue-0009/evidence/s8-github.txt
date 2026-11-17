@@ -1,0 +1,10 @@
+# 2026-11-17 以真實 GitHub 在暫存 HOME 執行（HOME 以 $TMPHOME 表示）
+=== get.sh --dry-run（不指定版本，latest 為 v4.13.0）
+錯誤：v4.13.0 早於 v5.0.0，get.sh 只安裝 v5.0.0 以後的版本（舊版不會備份改過的技能）；舊版請用 clone 安裝
+exit=1
+=== get.sh --version v4.13.0
+錯誤：v4.13.0 早於 v5.0.0，get.sh 只安裝 v5.0.0 以後的版本（舊版不會備份改過的技能）；舊版請用 clone 安裝
+exit=1
+=== 執行後暫存 HOME 的檔案樹
+$TMPHOME
+$TMPHOME/.claude

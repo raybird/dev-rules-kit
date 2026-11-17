@@ -44,7 +44,7 @@ bash ~/Tools/dev-rules-kit/scripts/install.sh                          # 安裝�
 python3 ~/Tools/dev-rules-kit/scripts/init-project.py /path/to/project  # 初始化專案文件
 ```
 
-每個指令都可以先加 `--dry-run` 看會做什麼（下載安裝寫成 `… | bash -s -- --dry-run`，`--version vX.Y.Z` 指定版本）。平台上的同名技能被你改過時，安裝會先把整個技能備份到 `<平台設定目錄>/skill-backups/` 再覆蓋，並印出備份位置。通用行為規則是選用的，安裝方式見 [rules/README.md](rules/README.md#安裝方式)。
+每個指令都可以先加 `--dry-run` 看會做什麼（下載安裝寫成 `… | bash -s -- --dry-run`，`--version vX.Y.Z` 指定 v5.0.0 以後的版本）。平台上的同名技能被你改過時，安裝會先把整個技能備份到 `<平台設定目錄>/skill-backups/` 再覆蓋，並印出備份位置。通用行為規則是選用的，安裝方式見 [rules/README.md](rules/README.md#安裝方式)。
 
 ## 日常怎麼用
 
