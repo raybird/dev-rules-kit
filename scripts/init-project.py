@@ -53,9 +53,9 @@ def main():
         parser.error('專案根目錄必須已存在')
     if args.update and args.check:
         parser.error('--update 與 --check 請分開執行')
+    # 常青文件範本隨 execute-task 技能安裝（issue #8）；舊基線的 docs/_templates/ 條目不再比對，檔案留在原處。
     files = [Path('docs/AGENTS.md')]
-    for folder in ('agents', '_templates'):
-        files.extend(p.relative_to(root) for p in sorted((root / 'docs' / folder).glob('*.md')))
+    files.extend(p.relative_to(root) for p in sorted((root / 'docs/agents').glob('*.md')))
     if not safe_path(project, MANIFEST):
         print(f'衝突：{MANIFEST} 不是安全的一般檔案路徑；未寫入任何文件。')
         return 1

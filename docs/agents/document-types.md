@@ -103,7 +103,7 @@ src/
 +  write new content
 ```
 
-順序與互動類的圖沿用 `docs/_templates/` 既有的 Mermaid，本節不另立形式。
+順序與互動類的圖用 Mermaid（例如 `sequenceDiagram`），本節不另立形式。
 
 issue 文件的圖一律以純文字或 Mermaid 呈現，維持可被 `git diff` 讀出差異、可被 agent 直接讀取。驗收標準維持 Gherkin 或輕量驗收條件的文字形式——它是可執行契約，形式的單一真相來源在 `docs/AGENTS.md`。
 
@@ -112,7 +112,7 @@ issue 文件的圖一律以純文字或 Mermaid 呈現，維持可被 `git diff`
 ## 常見文件類型範例
 
 > [!NOTE]
-> 本節屬【應客製】：下方組合為範例，請替換成專案實際出現過的議題類型與文件組合。
+> 下方組合是範例；專案實際常用的議題類型與文件組合，登記在 project.md「本地 gate 與案例」。
 
 以下是既有 issue 或使用者明確要求專項文件時的可能組合，不代表 `new-issue` 的初始必要集合；初建文件仍以分級規範為準。
 

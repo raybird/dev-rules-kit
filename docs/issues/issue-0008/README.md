@@ -18,9 +18,12 @@
 
 ## 現況
 
+**現行 review**: review-ae6c231.md
+
 | 外部狀態 | 查證命令 | 上次結果 | 查證日期 |
 |---|---|---|---|
 | GitHub #8 | gh issue view 8 --json state -q .state | OPEN | 2026-11-17 |
+| 下游試用 | 向試用專案的 session 詢問試用結果 | 已完成：候選版 151871c 與 ae6c231 各更新一次核心，舊範本雜湊不變並移出基線、--check OK；一個實際 issue 以候選版跑完規劃，document-types.md 的範例說明清楚，新建常青文件未觸發 | 2026-11-17 |
 
 ## 快速導覽
 
@@ -86,7 +89,7 @@ Feature: 下游 repo 只保存流程契約，範本隨技能安裝
     Given 本 issue 的分支
     When 檢視 skills/execute-task/references/ 與 docs/AGENTS.md「常青文件更新責任」
     Then references/ 裡有三份範本，內容與搬移前的 docs/_templates/ 相同
-    And docs/AGENTS.md「常青文件更新責任」有一句：新建常青文件時，可參考 execute-task 技能 references/ 的範本
+    And docs/AGENTS.md「常青文件更新責任」有一句：新建常青文件時，用 project.md 登記的專案範本；沒有登記時，可參考 execute-task 技能 references/ 的範本
     And kit 內除了 CHANGELOG 與 issue 歷史文件，沒有文件再引用 docs/_templates/
 
   @SCN-004
@@ -108,12 +111,12 @@ Feature: 下游 repo 只保存流程契約，範本隨技能安裝
   Scenario: execute-task 回寫常青文件時指向範本
     Given 本 issue 的分支
     When 檢視 skills/execute-task/SKILL.md 的回寫步驟
-    Then 步驟寫明新建常青文件時，可參考本技能 references/ 的範本
+    Then 步驟寫明新建常青文件時，用 project.md 登記的專案範本；沒有登記時，可參考本技能 references/ 的範本
 ```
 
 ## Gherkin 核准紀錄
-- **核准 commit**: 待提交
-- **核准來源**: 使用者於 2026-11-17 對話逐題確認的答案：「`docs/_templates/` 的去處」選「搬進 execute-task 技能」（SCN-001～003）、「readme-templates.md」選「留在 repo，不納入本 issue」（不在範圍）、「【應客製】」選「改成範例，指向 project.md」（SCN-004）、「已部署舊檔」選「CHANGELOG 說明可以手動刪除」（SCN-002 的「保持原樣」、SCN-005），並回覆「好，開 issue 處理這兩點」。SCN-006：同日逐題確認 TBD-1 選「要，兩處都寫」
+- **核准 commit**: 65beeeb
+- **核准來源**: 使用者於 2026-11-17 對話逐題確認的答案：「`docs/_templates/` 的去處」選「搬進 execute-task 技能」（SCN-001～003）、「readme-templates.md」選「留在 repo，不納入本 issue」（不在範圍）、「【應客製】」選「改成範例，指向 project.md」（SCN-004）、「已部署舊檔」選「CHANGELOG 說明可以手動刪除」（SCN-002 的「保持原樣」、SCN-005），並回覆「好，開 issue 處理這兩點」。SCN-006：同日逐題確認 TBD-1 選「要，兩處都寫」。2026-11-17 規格修訂：SCN-003、006 依下游試用回報補上 project.md 範本優先（TBD-5 使用者選「加條件，兩處都改」），修訂後的規格由 65beeeb 承載；原核准 c0c7e9f
 
 | Scenario | 核准日期 | 狀態 |
 |----------|---------|------|
@@ -143,16 +146,30 @@ Feature: 下游 repo 只保存流程契約，範本隨技能安裝
 | TBD-1 | SCN-006：execute-task SKILL.md 的回寫步驟要不要也指向 references/ 的範本 | 已解決：2026-11-17 使用者選「要，兩處都寫」；docs/AGENTS.md 是下游文件，不知道技能安裝在哪裡，技能本身知道自己的目錄 | SCN-006、S2 |
 | TBD-2 | 版本號 | 已解決：2026-11-17 使用者選 Minor（v4.13.0）；沒有技能或規則依賴 `docs/_templates/`，舊檔留在下游不會壞 | S4 |
 | TBD-3 | 發布前的下游試用 | 已解決：2026-11-17 使用者選「試用後再發布」；視為改變 agent 行為，先在一個下游專案實際跑 `--update` 並在一個實際 issue 使用，新建常青文件沒有觸發時照實記為未觸發 | 發布 |
+| TBD-4 | [review-ee77c12](review-ee77c12.md) PASS，SHOULD FIX 2 項要不要在分支上修：CHANGELOG 4.13.0「下游更新」第二點的「換回上一版 kit 的原文」只在基線剛好是 v4.12.0 時可行，應改為換成本版原文；docs/usage.md 第 13 行的「範本」指的是 `docs/_templates/`，已不正確。修正會讓 PASS 失效、需要重審 | 已解決：2026-11-17 使用者選「兩項都修並差異覆審」；CHANGELOG 改為換成本版 kit 的原文，usage.md 刪掉「範本」 | SCN-005、發布 |
+| TBD-5 | 下游試用回報 4 點：project.md 寫到 `_templates/` 的句子 `--update` 不會改、也沒有提示；該專案在 project.md 登記了自己的範本，新 pointer 沒寫優先順序；document-types.md 的新 NOTE 清楚；docs/AGENTS.md 2.12 修訂紀錄沒寫已部署舊檔的處理 | 已解決：2026-11-17 使用者決定：pointer 加上 project.md 範本優先（兩處都改，SCN-003、006 規格修訂）；2.12 修訂紀錄補已部署舊檔的處理與檢查 project.md 的提醒；`--check` 不加提示，靠版本說明；實際 issue 的試用等該 issue 至少跑完規劃 | SCN-003、006、發布 |
+| TBD-6 | [review-65beeeb](review-65beeeb.md) RETURN：MUST FIX 規格修訂後核准 commit 未更新；SHOULD FIX rule-verification-status 狀態欄混入證據類型；NICE TO HAVE（`需決策`）「刪除前先檢查 project.md」碰不到不刪舊檔的專案 | 已解決：2026-11-17 MUST FIX、SHOULD FIX 照建議修正；NICE TO HAVE 使用者選「改成『更新後檢查』」，docs/AGENTS.md 2.12 修訂紀錄與 CHANGELOG 下游更新同步改寫 | SCN-003、005、006 |
+| TBD-7 | [review-ae6c231](review-ae6c231.md) PASS 附 NICE TO HAVE（`需決策`）：SCN-005 字面寫「刪除前先檢查」，CHANGELOG 依 TBD-6 改為「更新後檢查」，語意成立但字面不同；可改 CHANGELOG 為「更新後、刪除前都先檢查」，或修訂 SCN-005 重新核准，兩者都讓 PASS 失效 | 不影響本次交付：2026-11-17 使用者選「不改，沿用 PASS」。追蹤：無；更新後一律檢查已涵蓋刪除前檢查，SCN-005 的結果在語意上成立（review-ae6c231），措辭是 TBD-6 的決定 | SCN-005 |
 
 ## Timeline
 
 | 日期 | 異動 | 負責人 |
 |------|------|--------|
 | 2026-11-17 | 建立 GitHub #8 與本 issue；使用者逐題確認範圍，SCN-001～005 核准 | 使用者／Claude Code |
-| 2026-11-17 | 使用者逐題確認 TBD-1～3：SCN-006 核准、版本 v4.13.0、發布前下游試用；規劃文件直接提交到 main | 使用者／Claude Code |
+| 2026-11-17 | 使用者逐題確認 TBD-1～3：SCN-006 核准、版本 v4.13.0、發布前下游試用；規劃文件直接提交到 main（`c0c7e9f`） | 使用者／Claude Code |
+| 2026-11-17 | S1～S4 完成，待獨立審查 | Claude Code |
+| 2026-11-17 | 獨立審查 [review-ee77c12](review-ee77c12.md) PASS，沒有 MUST FIX；SHOULD FIX 2 項待使用者決定（TBD-4） | Claude Code |
+| 2026-11-17 | 使用者決定 SHOULD FIX 兩項都修並差異覆審（TBD-4），PASS 失效 | 使用者／Claude Code |
+| 2026-11-17 | 差異覆審 [review-151871c](review-151871c.md) PASS，沒有 MUST FIX、SHOULD FIX 與 NICE TO HAVE；下一步依 TBD-3 下游試用 | Claude Code |
+| 2026-11-17 | 依 TBD-3 請一個下游專案的 session 以候選版 151871c 試用 | 使用者／Claude Code |
+| 2026-11-17 | 下游試用更新核心完成並回報 4 點；使用者決定修正其中 2 點（TBD-5），SCN-003、006 規格修訂，PASS 失效 | 使用者／Claude Code |
+| 2026-11-17 | 差異覆審 [review-65beeeb](review-65beeeb.md) RETURN TO execute-task（MUST FIX 1、SHOULD FIX 1、NICE TO HAVE 1）；使用者決定全部修正（TBD-6） | 使用者／Claude Code |
+| 2026-11-17 | 差異覆審 [review-ae6c231](review-ae6c231.md) PASS，沒有 MUST FIX 與 SHOULD FIX；NICE TO HAVE 1 項待使用者決定（TBD-7） | Claude Code |
+| 2026-11-17 | 使用者決定 NICE TO HAVE 不改、沿用 PASS（TBD-7）；通知下游以候選版 ae6c231 重跑更新後開始實際 issue 試用 | 使用者／Claude Code |
+| 2026-11-17 | 下游試用完成：ae6c231 重跑更新只更新 docs/AGENTS.md、--check OK；實際 issue 跑完規劃，範例說明清楚，新建常青文件未觸發，沒有回報 kit 問題 | Claude Code |
 
 ---
 **建立日期**: 2026-11-17  
 **分級**: Medium — 部署腳本、測試、範本搬移與兩份規範多檔修改，邏輯直接，不需 Phase／Task 拆解  
 **風險**: Low\
-**狀態**: 規劃中
+**狀態**: 審查通過，下游試用完成，待合併
