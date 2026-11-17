@@ -219,6 +219,22 @@ class InstallTests(unittest.TestCase):
         for c in commit:
             self.assertFalse((c / 'create-commit').exists())
 
+    def test_backup_failure_message_names_platform(self):
+        # 審查 ccb5abd：多平台安裝時，後面的平台備份失敗，訊息只說該平台尚未覆蓋。
+        self.assertEqual(self.install('codex', 'claude').returncode, 0)
+        skills = self.platform_root / '.claude/skills'
+        (skills / 'git-squash/SKILL.md').write_text('改過的')
+        (skills / 'git-squash/broken').symlink_to(self.base / 'missing')
+        source = self.repo / 'skills/create-commit/SKILL.md'
+        source.write_text(source.read_text() + '\n新版內容\n')
+        result = self.install('codex', 'claude')
+        self.assertNotEqual(result.returncode, 0)
+        self.assertIn('~/.claude/skills/ 尚未覆蓋任何技能', result.stderr)
+        self.assertIn('已安裝完成', result.stderr)
+        self.assertEqual((self.platform_root / '.codex/skills/create-commit/SKILL.md').read_bytes(),
+                         source.read_bytes())
+        self.assertNotEqual((skills / 'create-commit/SKILL.md').read_bytes(), source.read_bytes())
+
     def test_previous_kit_version_overwritten_without_backup(self):
         # issue #9 SCN-002：內容屬於某一版 kit（列在歷代雜湊清單）就直接覆蓋，不備份。
         import hashlib

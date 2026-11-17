@@ -186,6 +186,7 @@ Feature: 不需 clone 即可安裝與更新 kit
 | 2026-11-17 | S1～S6 完成，五項檢查通過；待送審（S7） | Claude Code |
 | 2026-11-17 | 第一輪審查 RETURN（MUST FIX 2）；使用者決定 get.sh 拒絕 v5.0.0 以前的版本；S8 修正完成，待第二輪審查 | 使用者／Claude Code |
 | 2026-11-17 | 第二輪審查 PASS（`484924d`），SHOULD FIX 1；使用者選「修正後重審」，S10 修正完成，待第三輪審查 | 使用者／Claude Code |
+| 2026-11-17 | 第三輪審查 PASS（`ccb5abd`），SHOULD FIX 1；使用者選「修正後重審」，S12 修正完成，待第四輪審查 | 使用者／Claude Code |
 
 ---
 **建立日期**: 2026-11-17  

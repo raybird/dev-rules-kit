@@ -180,7 +180,7 @@ install_skills() {
       mkdir -p "$backup"
       if ! cp -RL "$target/$name/." "$backup/"; then
         rm -rf "$backup"
-        die "備份 $name 失敗（例如指向不存在目標的 symlink），尚未覆蓋任何技能；處理後重跑"
+        die "備份 $name 失敗（例如指向不存在目標的 symlink），${target/#$HOME/\~}/ 尚未覆蓋任何技能；前面列出的平台已安裝完成。處理後重跑"
       fi
       echo "  備份：$name（本地修改：$detail）-> ${backup/#$HOME/\~}"
     fi
