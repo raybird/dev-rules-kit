@@ -27,6 +27,11 @@
 - `install.sh` 覆蓋前依雜湊清單判斷每個同名技能：與本 kit 相同或屬於某一版 kit 的直接覆蓋；有任何檔案不屬於任何一版時，先把整個技能目錄備份到 `<平台設定目錄>/skill-backups/<技能>.bak-<時間>/`（技能目錄之外；技能目錄、其中的子目錄或檔案是 symlink 時，跟進連結判斷並複製連結指向的內容，同一秒重跑時另取名稱；備份失敗時在覆蓋前中止），再覆蓋，並印出位置。同名資料夾缺 `SKILL.md` 時也照樣判斷。`--dry-run` 列出會備份的技能，備份位置印完整路徑。新增 `--check` 唯讀列出每個技能是哪一版 kit 或本地修改，每個平台最後印總結，有技能與本 kit 不同時 exit 1（`get.sh --check` 相同）。複製技能時略過 `__pycache__` 與 `.pyc`，clone 與下載安裝裝出來的檔案相同；讀不到 kit 的技能目錄時中止。原本一律覆蓋，被改過的技能沒有保護。clone 與下載安裝走同一段邏輯。
 - INSTALL.md 第 1 步並列下載安裝與 clone；第 2 步不再以 `git rev-list` 人工判斷同名技能，改看 `--dry-run` 列出的備份。README、README.en、docs/usage.md、skills/README.md 同步並列兩種方式。
 
+### 驗證
+
+- 五項檢查通過；`test-install.py` 由 16 個案例增為 32 個，涵蓋 get.sh 的安裝、更新、dry-run、`--check`、中途失敗、舊版拒絕，以及備份的 symlink、缺 SKILL.md、同秒重跑、兄弟路徑指向同一處等邊界，關鍵案例先紅後綠或經突變確認。獨立審查八輪，最後一輪 PASS。
+- 發布前下游試用（2026-11-17）：一個下游專案的 session 以候選版 `9a0b081` 依 INSTALL.md 跑更新（clone 方式、暫存 HOME、模擬改過一個技能）：dry-run 列出會備份的技能，備份是改過的內容，覆蓋後與 kit 相同。試用回報的 `--check` exit code、`__pycache__` 被複製、clone 版本來源與備份路徑寫法已修正。下載安裝方式在發布後以正式指令驗證。
+
 ### 下游更新
 
 - 已用 clone 安裝的照舊 `git pull` 後執行 `install.sh`；想改用下載安裝時直接執行上面那行，之後 `init-project.py` 的路徑改為 `~/.local/share/dev-rules-kit/current/scripts/init-project.py`。clone 不必刪，但兩種方式只用一種更新，免得平台技能在兩個版本間切換。

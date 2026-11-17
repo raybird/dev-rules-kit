@@ -18,7 +18,9 @@
 
 | 外部狀態 | 查證命令 | 上次結果 | 查證日期 |
 |---|---|---|---|
-| GitHub #9 | gh issue view 9 --json state -q .state | OPEN | 2026-11-17 |
+| GitHub #9 | gh issue view 9 --json state -q .state | CLOSED | 2026-11-17 |
+| 併入本機 main | git merge-base --is-ancestor issue-0009-get-sh main | 已併入（merge commit 4e04176） | 2026-11-17 |
+| 推送到 origin/main | git fetch origin 後執行 git merge-base --is-ancestor 4e04176 origin/main | 隨 v5.0.0 推送 | 2026-11-17 |
 
 **發布前下游試用**（2026-11-17）：一個下游專案的 session 以候選版 `9a0b081` 依 INSTALL.md 跑更新（clone 方式、暫存 HOME、模擬改過 review 技能），四步都達成完成判準：dry-run 列出會備份 review，備份是改過的內容，覆蓋後 11 個技能與 kit 相同，專案 `--check` OK，真實平台目錄沒有變動。回報的四項已在 S16 修正；下載安裝方式要等 v5.0.0 tag，發布後在暫存 HOME 另跑。試用另建議 init-project 的 dry-run 在沒有變更時明講，不在本 issue 範圍。
 
@@ -197,9 +199,10 @@ Feature: 不需 clone 即可安裝與更新 kit
 | 2026-11-17 | 第六輪審查 RETURN（S16 的 copy_skill 寫穿 symlink 子目錄而不備份）；S18 改為判斷時跟進連結並先備份，待第七輪審查 | Claude Code |
 | 2026-11-17 | 第七輪審查 RETURN（S18 的全域去重讓兄弟路徑漏判）；S20 改為只防祖先循環，待第八輪審查 | Claude Code |
 | 2026-11-17 | 第八輪審查 PASS（`3857cae`），沒有 MUST FIX 與 SHOULD FIX。NICE TO HAVE 2 項不改：不可讀目錄的錯誤訊息仍寫「需要 python3」（安裝在覆蓋前中止，只是原因寫錯）；技能內連結指向 `/` 或家目錄時會掃描整棵目錄樹（已知限制）。implementation-plan 的 S21 狀態依 PASS 規則以本列為準 | Claude Code |
+| 2026-11-17 | 使用者決定發布並更新全域：以 `--no-ff` 合併到本機 main（`4e04176`），在 main 補 CHANGELOG 驗證段與發布紀錄，發布 v5.0.0 並關閉 GitHub #9 | 使用者／Claude Code |
 
 ---
 **建立日期**: 2026-11-17  
 **分級**: Medium — 新增安裝腳本與雜湊清單，修改 install.sh、check-kit、測試與安裝文件；不需 Phase／Task 拆解  
 **風險**: High\
-**狀態**: 實作中
+**狀態**: 已完成
