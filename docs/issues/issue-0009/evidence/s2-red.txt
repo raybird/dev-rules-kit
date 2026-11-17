@@ -1,0 +1,53 @@
+test_skill_hashes_must_cover_current_files (__main__.InstallTests.test_skill_hashes_must_cover_current_files) ... FAIL
+test_skill_hashes_cover_released_versions (__main__.InstallTests.test_skill_hashes_cover_released_versions) ... FAIL
+
+======================================================================
+FAIL: test_skill_hashes_must_cover_current_files (__main__.InstallTests.test_skill_hashes_must_cover_current_files)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "scripts/test-install.py", line 207, in test_skill_hashes_must_cover_current_files
+    self.assertEqual(module.missing_hashes(self.repo), [])
+AssertionError: Lists differ: ['code-simplify/SKILL.md', 'create-commit/[440 chars].md'] != []
+
+First list contains 16 additional elements.
+First extra element 0:
+'code-simplify/SKILL.md'
+
++ []
+- ['code-simplify/SKILL.md',
+-  'create-commit/SKILL.md',
+-  'create-pr/SKILL.md',
+-  'decompose/SKILL.md',
+-  'dev-cycle/SKILL.md',
+-  'dev-cycle/references/pending-scan.md',
+-  'execute-task/SKILL.md',
+-  'execute-task/references/architecture-template.md',
+-  'execute-task/references/changelog-template.md',
+-  'execute-task/references/domain-template.md',
+-  'git-squash/SKILL.md',
+-  'new-issue/SKILL.md',
+-  'project-worktrees/SKILL.md',
+-  'review/SKILL.md',
+-  'review/scripts/verify-artifact.py',
+-  'writing-rules/SKILL.md']
+
+======================================================================
+FAIL: test_skill_hashes_cover_released_versions (__main__.InstallTests.test_skill_hashes_cover_released_versions)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "scripts/test-install.py", line 236, in test_skill_hashes_cover_released_versions
+    self.assertEqual(missing, [])
+AssertionError: Lists differ: ['v1.0.0:code-simplify/SKILL.md', 'v1.0.0:[18959 chars].md'] != []
+
+First list contains 603 additional elements.
+First extra element 0:
+'v1.0.0:code-simplify/SKILL.md'
+
+Diff is 20820 characters long. Set self.maxDiff to None to see it.
+
+----------------------------------------------------------------------
+Ran 2 tests in 1.118s
+
+FAILED (failures=2)
+--- check-kit（清單只剩表頭）
+FAIL: scripts/skill-hashes.txt 沒有列入目前的技能檔或版本過舊：code-simplify/SKILL.md, create-commit/SKILL.md, create-pr/SKILL.md, decompose/SKILL.md, dev-cycle/SKILL.md, dev-c

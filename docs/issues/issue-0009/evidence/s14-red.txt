@@ -1,0 +1,14 @@
+test_backup_failure_message_names_platform (__main__.InstallTests.test_backup_failure_message_names_platform) ... FAIL
+
+======================================================================
+FAIL: test_backup_failure_message_names_platform (__main__.InstallTests.test_backup_failure_message_names_platform)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "scripts/test-install.py", line 233, in test_backup_failure_message_names_platform
+    self.assertIn('已安裝完成：codex。', result.stderr)
+AssertionError: '已安裝完成：codex。' not found in "cp: cannot stat '/tmp/dev-rules-test-hkhaley7/platform settings/.claude/skills/git-squash/./broken': No such file or directory\n錯誤：備份 git-squash 失敗（例如指向不存在目標的 symlink），~/.claude/skills/ 尚未覆蓋任何技能；前面列出的平台已安裝完成。處理後重跑\n"
+
+----------------------------------------------------------------------
+Ran 1 test in 0.383s
+
+FAILED (failures=1)

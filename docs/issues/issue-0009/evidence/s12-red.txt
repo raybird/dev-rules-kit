@@ -1,0 +1,14 @@
+test_backup_failure_message_names_platform (__main__.InstallTests.test_backup_failure_message_names_platform) ... FAIL
+
+======================================================================
+FAIL: test_backup_failure_message_names_platform (__main__.InstallTests.test_backup_failure_message_names_platform)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "scripts/test-install.py", line 232, in test_backup_failure_message_names_platform
+    self.assertIn('~/.claude/skills/ 尚未覆蓋任何技能', result.stderr)
+AssertionError: '~/.claude/skills/ 尚未覆蓋任何技能' not found in "cp: cannot stat '/tmp/dev-rules-test-91csixi5/platform settings/.claude/skills/git-squash/./broken': No such file or directory\n錯誤：備份 git-squash 失敗（例如指向不存在目標的 symlink），尚未覆蓋任何技能；處理後重跑\n"
+
+----------------------------------------------------------------------
+Ran 1 test in 0.448s
+
+FAILED (failures=1)

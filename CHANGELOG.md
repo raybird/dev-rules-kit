@@ -12,6 +12,26 @@
 
 ---
 
+## [5.0.0] - 2026-11-17
+
+不需 clone 即可安裝與更新 kit；`install.sh` 覆蓋前先保護被改過的技能（[issue #9](https://github.com/raybird/dev-rules-kit/issues/9)）。
+
+### 新增（`scripts/get.sh`、`scripts/skill-hashes.txt`、`scripts/build-skill-hashes.py`、`scripts/skill_state.py`、`.gitattributes`）
+
+- `curl -fsSL https://raw.githubusercontent.com/raybird/dev-rules-kit/main/scripts/get.sh | bash`：下載 release 的原始碼壓縮檔，解壓到 `~/.local/share/dev-rules-kit/<版本>/`，執行該版的 `install.sh`，成功後才把 `current` 指向該版；重跑同一行就是更新。`--version vX.Y.Z` 指定版本，`--dry-run` 只列出會做什麼、不寫入，`--check` 唯讀列出目前版本、最新 release 與各平台技能狀態。最新版取自 `releases/latest` 的轉址，不用 GitHub API。只安裝 v5.0.0 以後的版本：更早的 install.sh 不會備份改過的技能，要裝舊版請用 clone。下載或解壓失敗時，`current` 與平台目錄不動；install.sh 失敗時 `current` 不切換，但中途失敗前已覆蓋的技能不會還原；`--list` 與 `--dry-run` 一樣只在暫存目錄執行。
+- `scripts/skill-hashes.txt`：每個技能檔歷代版本的 sha256，由 `build-skill-hashes.py` 從所有 `v*` tag 與工作區產生；`check-kit.py` 檢查目前每個技能檔都列在清單、且標為 CHANGELOG 最新版。沒有 Git 歷史的安裝靠它分辨「舊版 kit」與「使用者改過」。
+- `.gitattributes`：release 壓縮檔不含 `docs/issues/`。壓縮檔裡的 `check-links.py` 與 `test-evidence.py` 會因此失敗，兩者是維護者用的檢查。
+
+### 變更（`scripts/install.sh`、`INSTALL.md`）
+
+- `install.sh` 覆蓋前依雜湊清單判斷每個同名技能：與本 kit 相同或屬於某一版 kit 的直接覆蓋；有任何檔案不屬於任何一版時，先把整個技能目錄備份到 `<平台設定目錄>/skill-backups/<技能>.bak-<時間>/`（技能目錄之外；技能目錄、其中的子目錄或檔案是 symlink 時，跟進連結判斷並複製連結指向的內容，同一秒重跑時另取名稱；備份失敗時在覆蓋前中止），再覆蓋，並印出位置。同名資料夾缺 `SKILL.md` 時也照樣判斷。`--dry-run` 列出會備份的技能，備份位置印完整路徑。新增 `--check` 唯讀列出每個技能是哪一版 kit 或本地修改，每個平台最後印總結，有技能與本 kit 不同時 exit 1（`get.sh --check` 相同）。複製技能時略過 `__pycache__` 與 `.pyc`，clone 與下載安裝裝出來的檔案相同；讀不到 kit 的技能目錄時中止。原本一律覆蓋，被改過的技能沒有保護。clone 與下載安裝走同一段邏輯。
+- INSTALL.md 第 1 步並列下載安裝與 clone；第 2 步不再以 `git rev-list` 人工判斷同名技能，改看 `--dry-run` 列出的備份。README、README.en、docs/usage.md、skills/README.md 同步並列兩種方式。
+
+### 下游更新
+
+- 已用 clone 安裝的照舊 `git pull` 後執行 `install.sh`；想改用下載安裝時直接執行上面那行，之後 `init-project.py` 的路徑改為 `~/.local/share/dev-rules-kit/current/scripts/init-project.py`。clone 不必刪，但兩種方式只用一種更新，免得平台技能在兩個版本間切換。
+- 平台上被改過的同名技能，第一次以本版安裝時會備份到 `<平台設定目錄>/skill-backups/`，需要的內容從那裡取回。專案內的 `docs/` 不受影響。
+
 ## [4.13.0] - 2026-11-17
 
 下游 repo 不再部署常青文件範本，document-types 的【應客製】改為範例（[issue #8](https://github.com/raybird/dev-rules-kit/issues/8)）。

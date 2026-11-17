@@ -1,0 +1,6 @@
+# 2026-11-17 突變測試：cp 失敗分支不刪清單暫存檔，預期 test_copy_follows_linked_dir_in_kit_and_cleans_list 失敗
+（已套用突變：cp 失敗分支拿掉 rm -f "$list"）
+AssertionError: Lists differ: [PosixPath('$TMP/tmpdir/tmp.u9p8XknEa6')] != []
+FAILED (failures=1)
+=== 還原後
+OK

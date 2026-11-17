@@ -4,7 +4,7 @@
 
 ## 初始化與更新
 
-先安裝[技能](../skills/README.md#安裝方式)，需要時再裝[規則](../rules/README.md#安裝方式)，然後從 kit 根目錄執行（也可以請 agent 照 [INSTALL.md](../INSTALL.md) 代勞）：
+先安裝[技能](../skills/README.md#安裝方式)，需要時再裝[規則](../rules/README.md#安裝方式)，然後從 kit 根目錄執行（clone 的目錄，或下載安裝的 `~/.local/share/dev-rules-kit/current`；也可以請 agent 照 [INSTALL.md](../INSTALL.md) 代勞）：
 
 ```bash
 python3 scripts/init-project.py /path/to/project

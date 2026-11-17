@@ -1,0 +1,57 @@
+test_backup_edge_cases (__main__.InstallTests.test_backup_edge_cases) ... ok
+test_backup_failure_message_names_platform (__main__.InstallTests.test_backup_failure_message_names_platform) ... ok
+test_check_reports_outdated_core_separately (__main__.InstallTests.test_check_reports_outdated_core_separately) ... ok
+test_codex_auto_detect_and_rules (__main__.InstallTests.test_codex_auto_detect_and_rules) ... ok
+test_copy_failure_aborts (__main__.InstallTests.test_copy_failure_aborts) ... FAIL
+test_get_check_and_latest_unreachable (__main__.InstallTests.test_get_check_and_latest_unreachable) ... ok
+test_get_dry_run_writes_nothing (__main__.InstallTests.test_get_dry_run_writes_nothing) ... ok
+test_get_failure_leaves_no_partial_state (__main__.InstallTests.test_get_failure_leaves_no_partial_state) ... ok
+test_get_install_update_and_init (__main__.InstallTests.test_get_install_update_and_init) ... ok
+test_get_version_compare_without_sort_v (__main__.InstallTests.test_get_version_compare_without_sort_v) ... ok
+test_init_check_dry_run_and_repeat (__main__.InstallTests.test_init_check_dry_run_and_repeat) ... ok
+test_init_conflict_has_no_partial_writes (__main__.InstallTests.test_init_conflict_has_no_partial_writes) ... ok
+test_init_rejects_symlink_and_file_parent (__main__.InstallTests.test_init_rejects_symlink_and_file_parent) ... ok
+test_install_and_upgrade_all_platforms (__main__.InstallTests.test_install_and_upgrade_all_platforms) ... ok
+test_install_dry_run_and_invalid_platform (__main__.InstallTests.test_install_dry_run_and_invalid_platform) ... ok
+test_install_skips_python_cache (__main__.InstallTests.test_install_skips_python_cache) ... ok
+test_modified_skill_backed_up_before_overwrite (__main__.InstallTests.test_modified_skill_backed_up_before_overwrite) ... ok
+test_past_project_templates_registered (__main__.InstallTests.test_past_project_templates_registered) ... ok
+test_previous_kit_version_overwritten_without_backup (__main__.InstallTests.test_previous_kit_version_overwritten_without_backup) ... ok
+test_retire_legacy_workflows (__main__.InstallTests.test_retire_legacy_workflows) ... ok
+test_rules_backup (__main__.InstallTests.test_rules_backup) ... ok
+test_skill_hashes_cover_released_versions (__main__.InstallTests.test_skill_hashes_cover_released_versions) ... ok
+test_skill_hashes_must_cover_current_files (__main__.InstallTests.test_skill_hashes_must_cover_current_files) ... ok
+test_symlinked_subdir_backed_up (__main__.InstallTests.test_symlinked_subdir_backed_up) ... FAIL
+test_update_from_baseline_with_templates (__main__.InstallTests.test_update_from_baseline_with_templates) ... ok
+test_update_preserves_project_customization (__main__.InstallTests.test_update_preserves_project_customization) ... ok
+test_update_rejects_edited_core_without_partial_writes (__main__.InstallTests.test_update_rejects_edited_core_without_partial_writes) ... ok
+test_update_rejects_hardlinks_without_partial_writes (__main__.InstallTests.test_update_rejects_hardlinks_without_partial_writes) ... ok
+test_update_rejects_manifest_symlink (__main__.InstallTests.test_update_rejects_manifest_symlink) ... ok
+test_windsurf_not_supported (__main__.InstallTests.test_windsurf_not_supported) ... ok
+
+======================================================================
+FAIL: test_copy_failure_aborts (__main__.InstallTests.test_copy_failure_aborts)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "scripts/test-install.py", line 283, in test_copy_failure_aborts
+    self.assertNotEqual(result.returncode, 0, result.stdout)
+AssertionError: 0 == 0 : claude
+  技能：11 個技能 -> ~/.claude/skills/
+
+未安裝規則檔（rules/）。需要時加上 --with-rules，腳本會先備份既有檔案。
+驗證：Codex 輸入 /skills 或以 $ 提及技能；其他平台輸入 /，應出現 decompose、create-commit、new-issue、dev-cycle 等技能。
+專案初始化：執行 python3 scripts/init-project.py /path/to/project，部署核心技能需要的 docs 規範。
+
+
+======================================================================
+FAIL: test_symlinked_subdir_backed_up (__main__.InstallTests.test_symlinked_subdir_backed_up)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "scripts/test-install.py", line 268, in test_symlinked_subdir_backed_up
+    self.assertIn('會備份 review（本地修改：scripts/verify-artifact.py）', dry.stdout)
+AssertionError: '會備份 review（本地修改：scripts/verify-artifact.py）' not found in '（dry-run 模式，不會實際寫入）\n\nclaude\n    [dry-run] mkdir -p /tmp/dev-rules-test-xs9yd3dj/platform settings/.claude/skills\n    [dry-run] 複製 /tmp/dev-rules-test-xs9yd3dj/kit/skills/code-simplify/ -> /tmp/dev-rules-test-xs9yd3dj/platform settings/.claude/skills/code-simplify/（略過 __pycache__ 與 .pyc）\n    [dry-run] 複製 /tmp/dev-rules-test-xs9yd3dj/kit/skills/create-commit/ -> /tmp/dev-rules-test-xs9yd3dj/platform settings/.claude/skills/create-commit/（略過 __pycache__ 與 .pyc）\n    [dry-run] 複製 /tmp/dev-rules-test-xs9yd3dj/kit/skills/create-pr/ -> /tmp/dev-rules-test-xs9yd3dj/platform settings/.claude/skills/create-pr/（略過 __pycache__ 與 .pyc）\n    [dry-run] 複製 /tmp/dev-rules-test-xs9yd3dj/kit/skills/decompose/ -> /tmp/dev-rules-test-xs9yd3dj/platform settings/.claude/skills/decompose/（略過 __pycache__ 與 .pyc）\n    [dry-run] 複製 /tmp/dev-rules-test-xs9yd3dj/kit/skills/dev-cycle/ -> /tmp/dev-rules-test-xs9yd3dj/platform settings/.claude/skills/dev-cycle/（略過 __pycache__ 與 .pyc）\n    [dry-run] 複製 /tmp/dev-rules-test-xs9yd3dj/kit/skills/execute-task/ -> /tmp/dev-rules-test-xs9yd3dj/platform settings/.claude/skills/execute-task/（略過 __pycache__ 與 .pyc）\n    [dry-run] 複製 /tmp/dev-rules-test-xs9yd3dj/kit/skills/git-squash/ -> /tmp/dev-rules-test-xs9yd3dj/platform settings/.claude/skills/git-squash/（略過 __pycache__ 與 .pyc）\n    [dry-run] 複製 /tmp/dev-rules-test-xs9yd3dj/kit/skills/new-issue/ -> /tmp/dev-rules-test-xs9yd3dj/platform settings/.claude/skills/new-issue/（略過 __pycache__ 與 .pyc）\n    [dry-run] 複製 /tmp/dev-rules-test-xs9yd3dj/kit/skills/project-worktrees/ -> /tmp/dev-rules-test-xs9yd3dj/platform settings/.claude/skills/project-worktrees/（略過 __pycache__ 與 .pyc）\n    [dry-run] 複製 /tmp/dev-rules-test-xs9yd3dj/kit/skills/review/ -> /tmp/dev-rules-test-xs9yd3dj/platform settings/.claude/skills/review/（略過 __pycache__ 與 .pyc）\n    [dry-run] 複製 /tmp/dev-rules-test-xs9yd3dj/kit/skills/writing-rules/ -> /tmp/dev-rules-test-xs9yd3dj/platform settings/.claude/skills/writing-rules/（略過 __pycache__ 與 .pyc）\n  技能：11 個技能 -> ~/.claude/skills/\n\n未安裝規則檔（rules/）。需要時加上 --with-rules，腳本會先備份既有檔案。\n驗證：Codex 輸入 /skills 或以 $ 提及技能；其他平台輸入 /，應出現 decompose、create-commit、new-issue、dev-cycle 等技能。\n專案初始化：執行 python3 scripts/init-project.py /path/to/project，部署核心技能需要的 docs 規範。\n'
+
+----------------------------------------------------------------------
+Ran 30 tests in 11.886s
+
+FAILED (failures=2)

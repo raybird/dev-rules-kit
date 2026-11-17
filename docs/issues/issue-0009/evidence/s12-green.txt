@@ -1,0 +1,32 @@
+test_backup_edge_cases (__main__.InstallTests.test_backup_edge_cases) ... ok
+test_backup_failure_message_names_platform (__main__.InstallTests.test_backup_failure_message_names_platform) ... ok
+test_check_reports_outdated_core_separately (__main__.InstallTests.test_check_reports_outdated_core_separately) ... ok
+test_codex_auto_detect_and_rules (__main__.InstallTests.test_codex_auto_detect_and_rules) ... ok
+test_get_check_and_latest_unreachable (__main__.InstallTests.test_get_check_and_latest_unreachable) ... ok
+test_get_dry_run_writes_nothing (__main__.InstallTests.test_get_dry_run_writes_nothing) ... ok
+test_get_failure_leaves_no_partial_state (__main__.InstallTests.test_get_failure_leaves_no_partial_state) ... ok
+test_get_install_update_and_init (__main__.InstallTests.test_get_install_update_and_init) ... ok
+test_get_version_compare_without_sort_v (__main__.InstallTests.test_get_version_compare_without_sort_v) ... ok
+test_init_check_dry_run_and_repeat (__main__.InstallTests.test_init_check_dry_run_and_repeat) ... ok
+test_init_conflict_has_no_partial_writes (__main__.InstallTests.test_init_conflict_has_no_partial_writes) ... ok
+test_init_rejects_symlink_and_file_parent (__main__.InstallTests.test_init_rejects_symlink_and_file_parent) ... ok
+test_install_and_upgrade_all_platforms (__main__.InstallTests.test_install_and_upgrade_all_platforms) ... ok
+test_install_dry_run_and_invalid_platform (__main__.InstallTests.test_install_dry_run_and_invalid_platform) ... ok
+test_modified_skill_backed_up_before_overwrite (__main__.InstallTests.test_modified_skill_backed_up_before_overwrite) ... ok
+test_past_project_templates_registered (__main__.InstallTests.test_past_project_templates_registered) ... ok
+test_previous_kit_version_overwritten_without_backup (__main__.InstallTests.test_previous_kit_version_overwritten_without_backup) ... ok
+test_retire_legacy_workflows (__main__.InstallTests.test_retire_legacy_workflows) ... ok
+test_rules_backup (__main__.InstallTests.test_rules_backup) ... ok
+test_skill_hashes_cover_released_versions (__main__.InstallTests.test_skill_hashes_cover_released_versions) ... ok
+test_skill_hashes_must_cover_current_files (__main__.InstallTests.test_skill_hashes_must_cover_current_files) ... ok
+test_update_from_baseline_with_templates (__main__.InstallTests.test_update_from_baseline_with_templates) ... ok
+test_update_preserves_project_customization (__main__.InstallTests.test_update_preserves_project_customization) ... ok
+test_update_rejects_edited_core_without_partial_writes (__main__.InstallTests.test_update_rejects_edited_core_without_partial_writes) ... ok
+test_update_rejects_hardlinks_without_partial_writes (__main__.InstallTests.test_update_rejects_hardlinks_without_partial_writes) ... ok
+test_update_rejects_manifest_symlink (__main__.InstallTests.test_update_rejects_manifest_symlink) ... ok
+test_windsurf_not_supported (__main__.InstallTests.test_windsurf_not_supported) ... ok
+
+----------------------------------------------------------------------
+Ran 27 tests in 11.227s
+
+OK

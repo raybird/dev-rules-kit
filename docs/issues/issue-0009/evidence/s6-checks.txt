@@ -1,0 +1,21 @@
+# 2026-11-17 根目錄五項檢查（S6 完成後）
+=== python3 scripts/check-kit.py
+OK: skill frontmatter 完整且 name 一致，skill 的最低流程契約相容，雙語規則章節數一致，install.sh 安裝路徑與 README 一致，技能歷代雜湊清單涵蓋目前版本。
+exit=0
+=== python3 scripts/check-links.py
+OK: 所有 Markdown 相對連結皆有效。
+exit=0
+=== bash -n scripts/install.sh
+exit=0
+=== bash -n scripts/get.sh
+exit=0
+=== python3 scripts/test-install.py
+Ran 24 tests in 9.422s
+
+OK
+exit=0
+=== python3 scripts/test-evidence.py
+Ran 296 tests in 52.986s
+
+OK
+exit=0

@@ -27,7 +27,16 @@ agent 會照 [INSTALL.md](INSTALL.md) 取得 kit、安裝技能、初始化專�
 
 ### 手動安裝
 
-需要 `git`、`bash`、`python3`：
+兩種方式擇一，裝出來的技能相同。
+
+**下載安裝（不需 clone）**：需要 `curl`、`tar`、`bash`、`python3`。下載最新 release 到 `~/.local/share/dev-rules-kit/<版本>/`，`current` 指向目前版本。
+
+```bash
+curl -fsSL https://raw.githubusercontent.com/raybird/dev-rules-kit/main/scripts/get.sh | bash       # 安裝技能到偵測到的平台
+python3 ~/.local/share/dev-rules-kit/current/scripts/init-project.py /path/to/project  # 初始化專案文件
+```
+
+**clone**：需要 `git`、`bash`、`python3`。
 
 ```bash
 git clone https://github.com/raybird/dev-rules-kit.git ~/Tools/dev-rules-kit
@@ -35,7 +44,7 @@ bash ~/Tools/dev-rules-kit/scripts/install.sh                          # 安裝�
 python3 ~/Tools/dev-rules-kit/scripts/init-project.py /path/to/project  # 初始化專案文件
 ```
 
-兩個指令都可以先加 `--dry-run` 看會做什麼。通用行為規則是選用的，安裝方式見 [rules/README.md](rules/README.md#安裝方式)。
+每個指令都可以先加 `--dry-run` 看會做什麼（下載安裝寫成 `… | bash -s -- --dry-run`，`--version vX.Y.Z` 指定 v5.0.0 以後的版本）。平台上的同名技能被你改過時，安裝會先把整個技能備份到 `<平台設定目錄>/skill-backups/` 再覆蓋，並印出備份位置。通用行為規則是選用的，安裝方式見 [rules/README.md](rules/README.md#安裝方式)。
 
 ## 日常怎麼用
 
@@ -63,15 +72,20 @@ new-issue → decompose（Large 才需要）
 
 ## 更新
 
-對 agent 說「請依照 INSTALL.md 更新 dev-rules-kit」即可；它會拉新版、更新技能與專案文件，並整理 [CHANGELOG](CHANGELOG.md) 的重點。手動更新：
+對 agent 說「請依照 INSTALL.md 更新 dev-rules-kit」即可；它會取得新版、更新技能與專案文件，並整理 [CHANGELOG](CHANGELOG.md) 的重點。手動更新依安裝方式：
 
 ```bash
+# 下載安裝：重跑同一行；加 -s -- --check 只查目前版本、最新版與各平台技能
+curl -fsSL https://raw.githubusercontent.com/raybird/dev-rules-kit/main/scripts/get.sh | bash
+python3 ~/.local/share/dev-rules-kit/current/scripts/init-project.py /path/to/project --update
+
+# clone
 git -C ~/Tools/dev-rules-kit pull
 bash ~/Tools/dev-rules-kit/scripts/install.sh
 python3 ~/Tools/dev-rules-kit/scripts/init-project.py /path/to/project --update
 ```
 
-更新只覆蓋沒被你改過的核心文件；有本地修改時整批停止並列出衝突，不會部分寫入。已複製到專案或全域的規則檔不在自動更新範圍，Major 版本請先看 CHANGELOG。
+技能被你改過時先備份再覆蓋（見上方手動安裝）。專案文件只覆蓋沒被你改過的核心；有本地修改時整批停止並列出衝突，不會部分寫入。已複製到專案或全域的規則檔不在自動更新範圍，Major 版本請先看 CHANGELOG。
 
 ## 深入了解
 

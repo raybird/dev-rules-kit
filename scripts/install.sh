@@ -12,6 +12,10 @@
 #   bash scripts/install.sh --with-rules       # 另外安裝規則檔（會先備份既有檔案）
 #   bash scripts/install.sh --dry-run          # 只列出會做什麼，不實際複製
 #   bash scripts/install.sh --list             # 列出平台與對應路徑
+#   bash scripts/install.sh --check            # 唯讀列出各平台每個技能是哪一版 kit 或本地修改；有不同時 exit 1
+#
+# 同名技能的內容不屬於任何一版 kit（依 scripts/skill-hashes.txt 判斷）時，
+# 先把整個技能目錄備份到 <平台設定目錄>/skill-backups/ 再覆蓋。
 #
 set -euo pipefail
 
@@ -23,6 +27,7 @@ WITH_RULES=0
 RULES_LANG=zh
 DRY_RUN=0
 LIST_ONLY=0
+CHECK_ONLY=0
 SELECTED=()
 
 # 各平台的偵測目錄：存在才視為已安裝該平台
@@ -82,6 +87,7 @@ while [ $# -gt 0 ]; do
     --rules-lang) shift; RULES_LANG="${1:-}" ;;
     --dry-run)    DRY_RUN=1 ;;
     --list)       LIST_ONLY=1 ;;
+    --check)      CHECK_ONLY=1 ;;
     -h|--help)    sed -n '2,20p' "${BASH_SOURCE[0]}" | sed 's/^# \{0,1\}//'; exit 0 ;;
     -*)           die "未知選項 $1（用 --help 看用法）" ;;
     *)            is_known_platform "$1" || die "未知平台 $1（可用：${ALL_PLATFORMS[*]}）"
@@ -143,21 +149,107 @@ install_rules() {
   echo "  規則：${RULES_SRC#$REPO_ROOT/} -> ${target/#$HOME/\~}"
 }
 
+# 複製一個技能，略過 __pycache__ 與 .pyc：clone 的 kit 跑過腳本會留下快取，下載的壓縮檔沒有
+copy_skill() {
+  local src="$1" dest="$2" path rel
+  if [ "$DRY_RUN" = 1 ]; then
+    echo "    [dry-run] 複製 $src -> $dest/（略過 __pycache__ 與 .pyc）"
+    return
+  fi
+  # 先把清單寫進暫存檔：直接用 process substitution 時 find 失敗不會中止，會只複製一半
+  local list
+  list="$(mktemp)"
+  # -L 跟進 kit 內指向目錄的 symlink，複製其內容
+  if ! find -L "$src" -mindepth 1 \( -name __pycache__ -o -name '*.pyc' \) -prune -o -print0 > "$list"; then
+    rm -f "$list"
+    die "讀不到 $src 的檔案清單，${dest/#$HOME/\~}/ 尚未更新；${DONE_PLATFORMS:+已安裝完成：$DONE_PLATFORMS。}確認 kit 目錄可讀後重跑"
+  fi
+  mkdir -p "$dest"
+  while IFS= read -r -d '' path; do
+    rel="${path#"$src"}"
+    if [ -d "$path" ]; then
+      mkdir -p "$dest/$rel" || { rm -f "$list"; die "無法建立 $dest/$rel"; }
+    else
+      cp "$path" "$dest/$rel" || { rm -f "$list"; die "無法複製到 $dest/$rel"; }
+    fi
+  done < "$list"
+  rm -f "$list"
+}
+
+# 每個 kit 技能一行：名稱<TAB>狀態<TAB>說明（狀態見 scripts/skill_state.py）
+skill_states() {
+  python3 "$REPO_ROOT/scripts/skill_state.py" classify "$REPO_ROOT" "$1" \
+    || die "無法判斷 $1 的技能版本（需要 python3）"
+}
+
 install_skills() {
   local target="$1"
   if [ "$target" = "-" ]; then
     return
   fi
+  local states stamp name state detail backup
+  states="$(skill_states "$target")"
+  stamp="$(date +%Y%m%d-%H%M%S)"
+  # 本地修改的技能先整個備份到技能目錄之外，放在技能目錄內會被當成第二個同名技能載入
+  local n
+  while IFS=$'\t' read -r name state detail; do
+    [ "$state" = modified ] || continue
+    backup="$(dirname "$target")/skill-backups/$name.bak-$stamp"
+    n=1
+    while [ -e "$backup" ]; do   # 同一秒重跑時另取名稱，不複製進既有的備份
+      n=$((n + 1))
+      backup="$(dirname "$target")/skill-backups/$name.bak-$stamp-$n"
+    done
+    if [ "$DRY_RUN" = 1 ]; then
+      echo "    [dry-run] 會備份 $name（本地修改：$detail）-> $backup"
+    else
+      # -L 複製連結指向的內容：技能目錄或檔案是 symlink 時，之後的覆蓋會寫穿連結
+      mkdir -p "$backup"
+      if ! cp -RL "$target/$name/." "$backup/"; then
+        rm -rf "$backup"
+        die "備份 $name 失敗（例如指向不存在目標的 symlink），${target/#$HOME/\~}/ 尚未覆蓋任何技能；${DONE_PLATFORMS:+已安裝完成：$DONE_PLATFORMS。}處理後重跑"
+      fi
+      echo "  備份：$name（本地修改：$detail）-> $backup"
+    fi
+  done <<< "$states"
   run mkdir -p "$target"
-  local count=0 d name
+  local count=0 d
   for d in "$REPO_ROOT"/skills/*/; do
     [ -f "$d/SKILL.md" ] || continue
     name="$(basename "$d")"
-    run mkdir -p "$target/$name"
-    run cp -r "$d." "$target/$name/"
+    copy_skill "$d" "$target/$name"
     count=$((count + 1))
   done
   echo "  技能：$count 個技能 -> ${target/#$HOME/\~}/"
+}
+
+# 列出每個技能的狀態，與本 kit 不同的數目累加到 CHECK_DIFF
+check_skills() {
+  local target="$1" states name state detail diff=0
+  if [ "$target" = "-" ]; then
+    return
+  fi
+  if [ ! -d "$target" ]; then
+    echo "  技能目錄 ${target/#$HOME/\~}/ 不存在，尚未安裝"
+    CHECK_DIFF=$((CHECK_DIFF + 1))
+    return
+  fi
+  states="$(skill_states "$target")"
+  while IFS=$'\t' read -r name state detail; do
+    case "$state" in
+      new)      echo "  $name：未安裝" ;;
+      same)     echo "  $name：與本 kit 相同（$detail）" ;;
+      kit)      echo "  $name：kit $detail，與本 kit 不同" ;;
+      modified) echo "  $name：本地修改（$detail）" ;;
+    esac
+    [ "$state" = same ] || diff=$((diff + 1))
+  done <<< "$states"
+  if [ "$diff" -gt 0 ]; then
+    echo "  共 $diff 個技能與本 kit 不同"
+  else
+    echo "  全部與本 kit 相同"
+  fi
+  CHECK_DIFF=$((CHECK_DIFF + diff))
 }
 
 # 把舊版以 workflow 形式安裝的同名檔改名備份：現有技能，加上已移除的 fix-webview-conflict。
@@ -184,14 +276,29 @@ for d in "$REPO_ROOT"/skills/*/; do
   KIT_WORKFLOW_NAMES+=("$(basename "$d")")
 done
 
+if [ "$CHECK_ONLY" = 1 ]; then
+  CHECK_DIFF=0
+  for platform in "${SELECTED[@]}"; do
+    IFS='|' read -r rules_target skills_target <<< "$(targets_for "$platform")"
+    echo "$platform"
+    check_skills "$skills_target"
+    echo
+  done
+  # 有技能與本 kit 不同時 exit 1，與 init-project.py --check 一致
+  if [ "$CHECK_DIFF" = 0 ]; then exit 0; fi
+  exit 1
+fi
+
 [ "$DRY_RUN" = 1 ] && echo "（dry-run 模式，不會實際寫入）" && echo
 
+DONE_PLATFORMS=""   # 備份失敗中止時，告知哪些平台已經裝完
 for platform in "${SELECTED[@]}"; do
   IFS='|' read -r rules_target skills_target <<< "$(targets_for "$platform")"
   echo "$platform"
   [ "$WITH_RULES" = 1 ] && install_rules "$platform" "$rules_target"
   install_skills "$skills_target"
   retire_legacy_workflows "$platform"
+  DONE_PLATFORMS="${DONE_PLATFORMS:+$DONE_PLATFORMS、}$platform"
   echo
 done
 

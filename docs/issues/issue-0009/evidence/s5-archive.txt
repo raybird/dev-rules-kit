@@ -1,0 +1,20 @@
+# 2026-11-17 以工作區 tree 產生 git archive 驗證（暫存目錄以 $TMP 表示）
+壓縮檔大小：272K；docs/issues 檔案數：0
+=== check-kit
+OK: skill frontmatter 完整且 name 一致，skill 的最低流程契約相容，雙語規則章節數一致，install.sh 安裝路徑與 README 一致，技能歷代雜湊清單涵蓋目前版本。
+exit=0
+=== check-links
+（59 個連結失敗，目標都在 docs/issues/ 之下；來源為 docs/workflow-regression.md、docs/rule-verification-status.md、docs/workflow-results/*.md）
+exit=1
+=== bash -n
+exit=0
+=== install.sh claude（暫存 HOME）
+  技能：11 個技能 -> ~/.claude/skills/
+未安裝規則檔（rules/）。需要時加上 --with-rules，腳本會先備份既有檔案。
+驗證：Codex 輸入 /skills 或以 $ 提及技能；其他平台輸入 /，應出現 decompose、create-commit、new-issue、dev-cycle 等技能。
+專案初始化：執行 python3 scripts/init-project.py /path/to/project，部署核心技能需要的 docs 規範。
+exit=0
+=== init-project.py
+OK：部署／更新 8 份文件，已建立 project.md 範本。
+提醒：project.md 仍是初始化範本原文，常青文件觸發、驗證命令與地雷登記尚無專案內容。
+exit=0

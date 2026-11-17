@@ -6,6 +6,7 @@ import json
 import os
 import shutil
 import subprocess
+import tarfile
 import tempfile
 import unittest
 
@@ -20,6 +21,7 @@ class InstallTests(unittest.TestCase):
         self.repo = self.base / 'kit'
         for name in ('scripts', 'skills', 'rules', 'docs'):
             shutil.copytree(ROOT / name, self.repo / name)
+        shutil.copy2(ROOT / 'CHANGELOG.md', self.repo / 'CHANGELOG.md')
         # 僅替換平台根路徑變數；保留安裝程式本身的參數解析與複製行為。
         script = self.repo / 'scripts/install.sh'
         script.write_text(script.read_text().replace('$HOME', '$INSTALL_TEST_ROOT'))
@@ -31,6 +33,37 @@ class InstallTests(unittest.TestCase):
     def install(self, *args):
         return subprocess.run(['bash', str(self.repo / 'scripts/install.sh'), *args],
                               env=self.env, capture_output=True, text=True)
+
+    def get(self, *args):
+        # get.sh 以 file:// 讀本機的假 release，不連網；HOME 指向暫存平台根目錄。
+        env = dict(self.env, HOME=str(self.platform_root),
+                   DEV_RULES_KIT_REPO_URL=(self.base / 'remote').as_uri())
+        env.pop('XDG_DATA_HOME', None)
+        env.pop('DEV_RULES_KIT_HOME', None)
+        return subprocess.run(['bash', str(self.repo / 'scripts/get.sh'), *args],
+                              env=env, capture_output=True, text=True)
+
+    def make_release(self, version, broken=False, install_sh=None):
+        # install_sh：None 用原本的 install.sh；'' 表示壓縮檔缺少 install.sh；其他字串取代其內容
+        archive = self.base / 'remote/archive/refs/tags' / f'{version}.tar.gz'
+        archive.parent.mkdir(parents=True, exist_ok=True)
+        if broken:
+            archive.write_bytes(b'not a tarball')
+            return archive
+        script = 'scripts/install.sh'
+
+        def replace(info):
+            return None if install_sh == '' and info.name.endswith('/' + script) else info
+        with tarfile.open(archive, 'w:gz') as tar:
+            tar.add(self.repo, arcname=f'dev-rules-kit-{version.lstrip("v")}', filter=replace)
+            if install_sh:
+                path = self.base / 'install-override.sh'
+                path.write_text(install_sh)
+                tar.add(path, arcname=f'dev-rules-kit-{version.lstrip("v")}/{script}')
+        return archive
+
+    def tree(self, root):
+        return sorted(str(p.relative_to(root)) for p in root.rglob('*')) if root.exists() else []
 
     def init(self, *args):
         return subprocess.run(['python3', str(self.repo / 'scripts/init-project.py'),
@@ -109,6 +142,385 @@ class InstallTests(unittest.TestCase):
             self.assertEqual(backups[0].read_text(), '舊版工作流程')
             self.assertEqual((path / 'personal.md').read_text(), 'personal workflow')
         self.assertFalse(removed.exists())
+
+    def test_modified_skill_backed_up_before_overwrite(self):
+        # issue #9 SCN-003、007：不屬於任何一版 kit 的技能先整個備份到技能目錄外，再覆蓋。
+        self.assertEqual(self.install('claude').returncode, 0)
+        skills = self.platform_root / '.claude/skills'
+        target = skills / 'create-commit/SKILL.md'
+        target.write_text('使用者自己改的內容')
+        (skills / 'create-commit/notes.md').write_text('使用者加的檔案')
+        dry = self.install('claude', '--dry-run')
+        self.assertEqual(dry.returncode, 0, dry.stdout + dry.stderr)
+        self.assertIn('會備份 create-commit（本地修改：SKILL.md）', dry.stdout)
+        self.assertNotIn('會備份 new-issue', dry.stdout)
+        self.assertFalse((self.platform_root / '.claude/skill-backups').exists())
+        self.assertEqual(target.read_text(), '使用者自己改的內容')
+        result = self.install('claude')
+        self.assertEqual(result.returncode, 0, result.stdout + result.stderr)
+        backups = list((self.platform_root / '.claude/skill-backups').glob('create-commit.bak-*'))
+        self.assertEqual(len(backups), 1, result.stdout)
+        self.assertEqual((backups[0] / 'SKILL.md').read_text(), '使用者自己改的內容')
+        self.assertEqual((backups[0] / 'notes.md').read_text(), '使用者加的檔案')
+        self.assertIn(str(backups[0]), result.stdout)
+        self.assertEqual(target.read_bytes(), (self.repo / 'skills/create-commit/SKILL.md').read_bytes())
+        self.assertEqual(len(list((self.platform_root / '.claude/skill-backups').iterdir())), 1)
+        again = self.install('claude')
+        self.assertEqual(again.returncode, 0)
+        self.assertEqual(len(list((self.platform_root / '.claude/skill-backups').iterdir())), 1)
+
+    def test_backup_edge_cases(self):
+        # 審查 55f6f97：symlink 技能目錄、缺 SKILL.md 的同名資料夾、同一秒重跑都要留下完整備份。
+        self.assertEqual(self.install('claude').returncode, 0)
+        skills = self.platform_root / '.claude/skills'
+        backups = self.platform_root / '.claude/skill-backups'
+        real = self.base / 'my-review'
+        shutil.move(str(skills / 'review'), real)
+        (skills / 'review').symlink_to(real, target_is_directory=True)
+        (real / 'SKILL.md').write_text('symlink 後面改過的')
+        (skills / 'execute-task/SKILL.md').unlink()
+        ref = next((skills / 'execute-task/references').iterdir())
+        ref.write_text('改過的範本')
+        result = self.install('claude')
+        self.assertEqual(result.returncode, 0, result.stdout + result.stderr)
+        review = list(backups.glob('review.bak-*'))
+        self.assertEqual(len(review), 1, result.stdout)
+        self.assertFalse(review[0].is_symlink())
+        self.assertEqual((review[0] / 'SKILL.md').read_text(), 'symlink 後面改過的')
+        # 技能內的檔案是 symlink：備份要留下改過的內容，不是連結
+        outside = self.base / 'my-create-pr.md'
+        outside.write_text('連結指向的改過內容')
+        (skills / 'create-pr/SKILL.md').unlink()
+        (skills / 'create-pr/SKILL.md').symlink_to(outside)
+        result = self.install('claude')
+        self.assertEqual(result.returncode, 0, result.stdout + result.stderr)
+        pr = list(backups.glob('create-pr.bak-*'))
+        self.assertEqual(len(pr), 1, result.stdout)
+        self.assertFalse((pr[0] / 'SKILL.md').is_symlink())
+        self.assertEqual((pr[0] / 'SKILL.md').read_text(), '連結指向的改過內容')
+        # 指向不存在目標的 symlink：備份失敗時在覆蓋前中止，不留下不完整的備份
+        (skills / 'git-squash/SKILL.md').write_text('改過的')
+        (skills / 'git-squash/broken').symlink_to(self.base / 'missing')
+        result = self.install('claude')
+        self.assertNotEqual(result.returncode, 0)
+        self.assertIn('尚未覆蓋', result.stderr)
+        self.assertEqual(list(backups.glob('git-squash.bak-*')), [])
+        self.assertEqual((skills / 'git-squash/SKILL.md').read_text(), '改過的')
+        (skills / 'git-squash/broken').unlink()
+        task = list(backups.glob('execute-task.bak-*'))
+        self.assertEqual(len(task), 1, result.stdout)
+        self.assertEqual((task[0] / 'references' / ref.name).read_text(), '改過的範本')
+        for n in range(3):
+            (skills / 'create-commit/SKILL.md').write_text(f'第 {n} 次改')
+            self.assertEqual(self.install('claude').returncode, 0)
+        commit = sorted(backups.glob('create-commit.bak-*'))
+        self.assertEqual(sorted((c / 'SKILL.md').read_text() for c in commit),
+                         [f'第 {n} 次改' for n in range(3)])
+        for c in commit:
+            self.assertFalse((c / 'create-commit').exists())
+
+    def test_backup_failure_message_names_platform(self):
+        # 審查 ccb5abd：多平台安裝時，後面的平台備份失敗，訊息只說該平台尚未覆蓋。
+        self.assertEqual(self.install('codex', 'claude').returncode, 0)
+        skills = self.platform_root / '.claude/skills'
+        (skills / 'git-squash/SKILL.md').write_text('改過的')
+        (skills / 'git-squash/broken').symlink_to(self.base / 'missing')
+        source = self.repo / 'skills/create-commit/SKILL.md'
+        source.write_text(source.read_text() + '\n新版內容\n')
+        result = self.install('codex', 'claude')
+        self.assertNotEqual(result.returncode, 0)
+        self.assertIn('~/.claude/skills/ 尚未覆蓋任何技能', result.stderr)
+        self.assertIn('已安裝完成：codex。', result.stderr)
+        self.assertEqual((self.platform_root / '.codex/skills/create-commit/SKILL.md').read_bytes(),
+                         source.read_bytes())
+        self.assertNotEqual((skills / 'create-commit/SKILL.md').read_bytes(), source.read_bytes())
+        # 審查 f7c84c2：第一個平台就失敗時，不說有平台已安裝完成
+        for args in (('claude',), ('claude', 'codex')):
+            with self.subTest(args=args):
+                result = self.install(*args)
+                self.assertNotEqual(result.returncode, 0)
+                self.assertIn('~/.claude/skills/ 尚未覆蓋任何技能', result.stderr)
+                self.assertNotIn('已安裝完成', result.stderr)
+
+    def test_install_skips_python_cache(self):
+        # 下游試用 2026-11-17：clone 的 kit 有 __pycache__ 時不複製，與下載安裝的檔案相同。
+        cache = self.repo / 'skills/review/scripts/__pycache__'
+        cache.mkdir(exist_ok=True)
+        (cache / 'verify-artifact.cpython-312.pyc').write_bytes(b'cache')
+        (self.repo / 'skills/review/scripts/stray.pyc').write_bytes(b'cache')
+        result = self.install('claude')
+        self.assertEqual(result.returncode, 0, result.stdout + result.stderr)
+        target = self.platform_root / '.claude/skills/review/scripts'
+        self.assertTrue((target / 'verify-artifact.py').is_file())
+        self.assertFalse((target / '__pycache__').exists())
+        self.assertFalse((target / 'stray.pyc').exists())
+        self.assertEqual(self.install('claude', '--check').returncode, 0)
+
+    def test_symlinked_subdir_backed_up(self):
+        # 審查 cf36828：技能內的子目錄是 symlink、裡面的檔案被改過時，先備份再覆蓋。
+        self.assertEqual(self.install('claude').returncode, 0)
+        skills = self.platform_root / '.claude/skills'
+        outside = self.base / 'my-review-scripts'
+        shutil.move(str(skills / 'review/scripts'), outside)
+        (skills / 'review/scripts').symlink_to(outside, target_is_directory=True)
+        (outside / 'verify-artifact.py').write_text('使用者改過的腳本')
+        dry = self.install('claude', '--dry-run')
+        self.assertIn('會備份 review（本地修改：scripts/verify-artifact.py）', dry.stdout)
+        result = self.install('claude')
+        self.assertEqual(result.returncode, 0, result.stdout + result.stderr)
+        backups = list((self.platform_root / '.claude/skill-backups').glob('review.bak-*'))
+        self.assertEqual(len(backups), 1, result.stdout)
+        self.assertEqual((backups[0] / 'scripts/verify-artifact.py').read_text(), '使用者改過的腳本')
+
+    def test_copy_failure_aborts(self):
+        # 審查 cf36828 NICE 1：讀不到 kit 的技能目錄時中止，不回報安裝成功。
+        locked = self.repo / 'skills/review/scripts'
+        locked.chmod(0)
+        try:
+            result = self.install('claude')
+        finally:
+            locked.chmod(0o755)
+        self.assertNotEqual(result.returncode, 0, result.stdout)
+        self.assertNotIn('技能：11 個技能', result.stdout)
+
+    def test_sibling_links_to_same_dir_still_checked(self):
+        # 審查 f5116ce：兄弟路徑指向同一實體目錄時照樣判斷，改過的檔案要備份。
+        for case in ('link-to-sibling', 'two-links'):
+            with self.subTest(case=case):
+                root = self.platform_root / case
+                env = dict(self.env, INSTALL_TEST_ROOT=str(root))
+                run = lambda *a: subprocess.run(['bash', str(self.repo / 'scripts/install.sh'), *a],
+                                                env=env, capture_output=True, text=True)
+                (root / '.claude').mkdir(parents=True)
+                self.assertEqual(run('claude').returncode, 0)
+                review = root / '.claude/skills/review'
+                if case == 'link-to-sibling':
+                    (review / 'aaa').symlink_to('scripts', target_is_directory=True)
+                    edited = review / 'scripts/verify-artifact.py'
+                else:
+                    outside = self.base / f'{case}-scripts'
+                    shutil.move(str(review / 'scripts'), outside)
+                    (review / 'scripts').symlink_to(outside, target_is_directory=True)
+                    (review / 'a-notes').symlink_to(outside, target_is_directory=True)
+                    edited = outside / 'verify-artifact.py'
+                edited.write_text('使用者改過的腳本')
+                result = run('claude')
+                self.assertEqual(result.returncode, 0, result.stdout + result.stderr)
+                backups = list((root / '.claude/skill-backups').glob('review.bak-*'))
+                self.assertEqual(len(backups), 1, result.stdout)
+                self.assertEqual((backups[0] / 'scripts/verify-artifact.py').read_text(), '使用者改過的腳本')
+
+    def test_copy_follows_linked_dir_in_kit_and_cleans_list(self):
+        # 審查 f5116ce NICE 1、2：kit 內指向目錄的 symlink 複製其內容；cp 失敗時不殘留清單暫存檔。
+        extra = self.base / 'shared-refs'
+        extra.mkdir()
+        (extra / 'note.md').write_text('共用內容')
+        (self.repo / 'skills/review/shared').symlink_to(extra, target_is_directory=True)
+        tmp = self.base / 'tmpdir'
+        tmp.mkdir()
+        env = dict(self.env, TMPDIR=str(tmp))
+        run = lambda *a: subprocess.run(['bash', str(self.repo / 'scripts/install.sh'), *a],
+                                        env=env, capture_output=True, text=True)
+        result = run('claude')
+        self.assertEqual(result.returncode, 0, result.stdout + result.stderr)
+        self.assertEqual((self.platform_root / '.claude/skills/review/shared/note.md').read_text(), '共用內容')
+        (self.repo / 'skills/review/shared').unlink()
+        blocker = self.platform_root / '.claude/skills/create-pr'
+        (blocker / 'SKILL.md').unlink()
+        blocker.chmod(0o555)
+        try:
+            result = run('claude')
+        finally:
+            blocker.chmod(0o755)
+        self.assertNotEqual(result.returncode, 0)
+        self.assertIn('無法複製', result.stderr)
+        self.assertEqual(list(tmp.iterdir()), [])
+
+    def test_previous_kit_version_overwritten_without_backup(self):
+        # issue #9 SCN-002：內容屬於某一版 kit（列在歷代雜湊清單）就直接覆蓋，不備份。
+        import hashlib
+        old = '舊版 kit 的 create-commit\n'
+        digest = hashlib.sha256(old.encode()).hexdigest()
+        hashes = self.repo / 'scripts/skill-hashes.txt'
+        with hashes.open('a') as f:
+            f.write(f'{digest}  create-commit/SKILL.md  v4.0.0  v4.0.0\n')
+        target = self.platform_root / '.claude/skills/create-commit/SKILL.md'
+        target.parent.mkdir(parents=True)
+        target.write_text(old)
+        result = self.install('claude')
+        self.assertEqual(result.returncode, 0, result.stdout + result.stderr)
+        self.assertEqual(target.read_bytes(), (self.repo / 'skills/create-commit/SKILL.md').read_bytes())
+        self.assertFalse((self.platform_root / '.claude/skill-backups').exists())
+
+    def test_get_failure_leaves_no_partial_state(self):
+        # issue #9 風險：下載或解壓失敗時，平台目錄、current 與資料目錄都不留半套。
+        (self.platform_root / '.claude').mkdir(parents=True)
+        data = self.platform_root / '.local/share/dev-rules-kit'
+        self.make_release('v9.0.0')
+        self.assertEqual(self.get('--version', 'v9.0.0').returncode, 0)
+        before_platform = self.tree(self.platform_root / '.claude')
+        before_data = self.tree(data)
+        self.assertEqual(os.readlink(data / 'current'), 'v9.0.0')
+        self.make_release('v9.1.0', broken=True)
+        self.make_release('v9.2.0', install_sh='')
+        self.make_release('v9.3.0', install_sh='#!/usr/bin/env bash\nexit 1\n')
+        self.make_release('v4.13.0')
+        for args in (('--version', 'v9.9.9'), ('--version', 'v9.1.0'), ('--version', 'v9.2.0'),
+                     ('--version', 'v4.13.0'), ('--version=',)):
+            with self.subTest(args=args):
+                result = self.get(*args)
+                self.assertNotEqual(result.returncode, 0)
+                self.assertEqual(self.tree(self.platform_root / '.claude'), before_platform)
+                self.assertEqual(self.tree(data), before_data)
+                self.assertEqual(os.readlink(data / 'current'), 'v9.0.0')
+                if args[-1] == 'v4.13.0':
+                    self.assertIn('clone', result.stderr)
+        # --list 不安裝，也不下載到資料目錄、不切換 current
+        result = self.get('--list', '--version', 'v9.0.0')
+        self.assertEqual(result.returncode, 0, result.stdout + result.stderr)
+        self.assertEqual(self.tree(data), before_data)
+        # install.sh 失敗時版本目錄已下載完整，但 current 不切換。這個 install.sh 一開始就失敗，
+        # 所以平台目錄也不動；install.sh 中途失敗時已覆蓋的技能不會還原。
+        result = self.get('--version', 'v9.3.0')
+        self.assertNotEqual(result.returncode, 0)
+        self.assertEqual(self.tree(self.platform_root / '.claude'), before_platform)
+        self.assertEqual(os.readlink(data / 'current'), 'v9.0.0')
+
+    def state_module(self, root):
+        import importlib.util
+        spec = importlib.util.spec_from_file_location('skill_state', root / 'scripts/skill_state.py')
+        module = importlib.util.module_from_spec(spec)
+        spec.loader.exec_module(module)
+        return module
+
+    def test_skill_hashes_must_cover_current_files(self):
+        # issue #9 SCN-006：改了技能檔卻沒重產雜湊清單時，check-kit 用的判斷要指出該檔。
+        module = self.state_module(self.repo)
+        self.assertEqual(module.missing_hashes(self.repo), [])
+        source = self.repo / 'skills/create-commit/SKILL.md'
+        source.write_text(source.read_text() + '\n新版內容\n')
+        self.assertEqual(module.missing_hashes(self.repo), ['create-commit/SKILL.md'])
+        changelog = self.repo / 'CHANGELOG.md'
+        source.write_bytes((ROOT / 'skills/create-commit/SKILL.md').read_bytes())
+        changelog.write_text(changelog.read_text().replace('---\n', '---\n\n## [99.0.0] - 2099-01-01\n', 1))
+        self.assertIn('create-commit/SKILL.md', module.missing_hashes(self.repo))
+
+    def test_skill_hashes_cover_released_versions(self):
+        # issue #9 SCN-006：每個 v* tag 的技能檔都要在歷代雜湊清單裡，否則舊版會被當成本地修改。
+        module = self.state_module(ROOT)
+        shallow = subprocess.run(['git', '-C', str(ROOT), 'rev-parse', '--is-shallow-repository'],
+                                 capture_output=True, text=True).stdout.strip()
+        tags = subprocess.run(['git', '-C', str(ROOT), 'tag', '-l', 'v*'], capture_output=True, text=True)
+        if shallow != 'false' or tags.returncode or not tags.stdout.split():
+            self.skipTest('讀不到 kit 的完整 Git 歷史與 tag（淺層 clone 需 fetch-depth: 0）')
+        known = module.load_hashes(ROOT)
+        missing = []
+        for tag in tags.stdout.split():
+            listing = subprocess.run(['git', '-C', str(ROOT), 'ls-tree', '-r', '--name-only', tag, '--', 'skills'],
+                                     capture_output=True, text=True).stdout.split()
+            for path in listing:
+                rel = path.split('/', 1)[1]
+                if '/' not in rel or module.skipped(rel):
+                    continue
+                blob = subprocess.run(['git', '-C', str(ROOT), 'show', f'{tag}:{path}'], capture_output=True).stdout
+                if (hashlib.sha256(blob).hexdigest(), rel) not in known:
+                    missing.append(f'{tag}:{rel}')
+        self.assertEqual(missing, [])
+
+    def test_get_install_update_and_init(self):
+        # issue #9 SCN-001、002：get.sh 安裝、重跑更新，init-project.py 用 current 路徑。
+        (self.platform_root / '.claude').mkdir(parents=True)
+        data = self.platform_root / '.local/share/dev-rules-kit'
+        skills = self.platform_root / '.claude/skills'
+        self.make_release('v9.0.0')
+        result = self.get('--version', 'v9.0.0')
+        self.assertEqual(result.returncode, 0, result.stdout + result.stderr)
+        self.assertTrue((data / 'v9.0.0/scripts/install.sh').is_file())
+        self.assertEqual(os.readlink(data / 'current'), 'v9.0.0')
+        for path in (self.repo / 'skills').rglob('*'):
+            if path.is_file() and path.parent != self.repo / 'skills' and '__pycache__' not in path.parts:
+                rel = path.relative_to(self.repo / 'skills')
+                self.assertEqual((skills / rel).read_bytes(), path.read_bytes(), str(rel))
+        init = subprocess.run(['python3', str(data / 'current/scripts/init-project.py'), str(self.project)],
+                              capture_output=True, text=True)
+        self.assertEqual(init.returncode, 0, init.stdout + init.stderr)
+        source = self.repo / 'skills/create-commit/SKILL.md'
+        source.write_text(source.read_text() + '\n新版內容\n')
+        self.make_release('v9.1.0')
+        result = self.get('--version', 'v9.1.0')
+        self.assertEqual(result.returncode, 0, result.stdout + result.stderr)
+        self.assertEqual((skills / 'create-commit/SKILL.md').read_bytes(), source.read_bytes())
+        self.assertFalse((self.platform_root / '.claude/skill-backups').exists(), result.stdout)
+        self.assertEqual(os.readlink(data / 'current'), 'v9.1.0')
+        self.assertTrue((data / 'v9.0.0/scripts/install.sh').is_file())
+
+    def test_get_dry_run_writes_nothing(self):
+        # issue #9 SCN-004：dry-run 不寫入資料目錄與平台目錄，並列出會備份的技能。
+        (self.platform_root / '.claude').mkdir(parents=True)
+        self.make_release('v9.0.0')
+        before = self.tree(self.platform_root)
+        result = self.get('--dry-run', '--version', 'v9.0.0')
+        self.assertEqual(result.returncode, 0, result.stdout + result.stderr)
+        self.assertIn('v9.0.0', result.stdout)
+        self.assertEqual(self.tree(self.platform_root), before)
+        self.assertEqual(self.get('--version', 'v9.0.0').returncode, 0)
+        (self.platform_root / '.claude/skills/review/SKILL.md').write_text('使用者改的')
+        self.make_release('v9.1.0')
+        before = self.tree(self.platform_root)
+        result = self.get('--dry-run', '--version', 'v9.1.0')
+        self.assertEqual(result.returncode, 0, result.stdout + result.stderr)
+        self.assertIn('會備份 review（本地修改：SKILL.md）', result.stdout)
+        self.assertEqual(self.tree(self.platform_root), before)
+        self.assertEqual((self.platform_root / '.claude/skills/review/SKILL.md').read_text(), '使用者改的')
+
+    def test_get_version_compare_without_sort_v(self):
+        # 審查 484924d：版本比較不依賴 sort -V；v10.0.0 接受、v4.99.99 拒絕。
+        bin_dir = self.base / 'bin-no-sort'
+        bin_dir.mkdir()
+        for folder in ('/usr/local/bin', '/usr/bin', '/bin'):
+            for tool in Path(folder).iterdir() if Path(folder).is_dir() else ():
+                link = bin_dir / tool.name
+                if tool.name != 'sort' and not link.exists() and os.access(tool, os.X_OK):
+                    link.symlink_to(tool)
+        (self.platform_root / '.claude').mkdir(parents=True)
+        self.make_release('v10.0.0')
+        self.make_release('v4.99.99')
+        self.env['PATH'] = str(bin_dir)
+        result = self.get('--dry-run', '--version', 'v10.0.0')
+        self.assertEqual(result.returncode, 0, result.stdout + result.stderr)
+        result = self.get('--dry-run', '--version', 'v4.99.99')
+        self.assertNotEqual(result.returncode, 0)
+        self.assertIn('早於 v5.0.0', result.stderr)
+
+    def test_get_check_and_latest_unreachable(self):
+        # issue #9 SCN-005：--check 唯讀；取不到最新 release 時照實說明，其餘照常列出。
+        (self.platform_root / '.claude').mkdir(parents=True)
+        result = self.get('--check')
+        self.assertEqual(result.returncode, 0, result.stdout + result.stderr)
+        self.assertIn('尚未以 get.sh 安裝', result.stdout)
+        self.assertIn('取不到', result.stdout)
+        before = self.tree(self.platform_root)
+        result = self.get()
+        self.assertNotEqual(result.returncode, 0)
+        self.assertIn('取不到最新版本', result.stderr)
+        self.assertEqual(self.tree(self.platform_root), before)
+        self.make_release('v9.0.0')
+        self.assertEqual(self.get('--version', 'v9.0.0').returncode, 0)
+        (self.platform_root / '.claude/skills/review/SKILL.md').write_text('使用者改的')
+        before = self.tree(self.platform_root)
+        result = self.get('--check', 'claude')
+        # 下游試用 2026-11-17：有技能與本 kit 不同時印總結並 exit 1
+        self.assertEqual(result.returncode, 1, result.stdout + result.stderr)
+        self.assertIn('目前版本：v9.0.0', result.stdout)
+        self.assertIn('review：本地修改（SKILL.md）', result.stdout)
+        self.assertIn('new-issue：與本 kit 相同', result.stdout)
+        self.assertIn('1 個技能與本 kit 不同', result.stdout)
+        self.assertEqual(self.tree(self.platform_root), before)
+        (self.platform_root / '.claude/skills/review/SKILL.md').write_bytes(
+            (self.repo / 'skills/review/SKILL.md').read_bytes())
+        result = self.get('--check', 'claude')
+        self.assertEqual(result.returncode, 0, result.stdout + result.stderr)
+        self.assertIn('全部與本 kit 相同', result.stdout)
 
     def test_windsurf_not_supported(self):
         windsurf = self.platform_root / '.codeium/windsurf'
