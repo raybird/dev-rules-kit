@@ -139,7 +139,7 @@ Feature: 不需 clone 即可安裝與更新 kit
 ```
 
 ## Gherkin 核准紀錄
-- **核准 commit**: 待提交
+- **核准 commit**: a57e109
 - **核准來源**: 使用者於 2026-11-17 對話要求「讓安裝方式可以參照一般 github 常用的開源工具一樣，不需要 clone 就能安裝或更新版本」，並逐題確認：存放位置選「~/.local/share 依版本分目錄」（SCN-001、002）；下載來源選「release tag 的原始碼壓縮檔」，含 releases/latest 轉址與 `.gitattributes` 排除維護紀錄（SCN-001、008）；保護機制選「kit 附歷代檔案雜湊清單」（SCN-003、006）；發現修改時選「自動備份後覆蓋」（SCN-003）；選「要，get.sh --check」（SCN-005）。SCN-004 的 `--version`、`--dry-run` 出自同日採用的方案說明。同日 TBD-1 選「要，保護放在 install.sh」（SCN-007）；TBD-2 選「兩種並列」（SCN-009）；TBD-4 回覆「好這樣改」（SCN-010）
 
 | Scenario | 核准日期 | 狀態 |
