@@ -12,6 +12,30 @@
 
 ---
 
+## [4.13.0] - 2026-11-17
+
+下游 repo 不再部署常青文件範本，document-types 的【應客製】改為範例（[issue #8](https://github.com/raybird/dev-rules-kit/issues/8)）。
+
+### 變更（`scripts/init-project.py`、`skills/execute-task/`）
+
+- `docs/_templates/` 的三份常青文件範本（architecture、domain、changelog）搬到 `skills/execute-task/references/`，內容不變，隨技能安裝。`init-project.py` 只部署 `docs/AGENTS.md` 與 `docs/agents/`；舊部署基線的 `docs/_templates/` 條目不再比對，下次寫入基線時移除，檔案本身不刪除。原本沒有任何技能引用這些範本，卻每個下游 repo 都放一份並追蹤雜湊。
+- execute-task 回寫步驟與 `docs/AGENTS.md`「常青文件更新責任」寫明：新建常青文件時，可參考 execute-task 技能 `references/` 的範本。
+
+### 變更（`docs/AGENTS.md`、`docs/agents/document-types.md`）
+
+- 「常見文件類型範例」拿掉【應客製】，改為一般範例，專案常用的組合登記在 project.md「本地 gate 與案例」。原本要求下游改寫這份核心檔，改了之後 `--update` 會判為衝突並整批停止，與「專案內容集中於 project.md」矛盾。project.md 範本不變。
+- 「邊界與方案的視覺形式」不再引用 `docs/_templates/`，直接寫明順序與互動類的圖用 Mermaid。
+- 文件版本 2.12，流程契約不變。
+
+### 驗證
+
+- 五項檢查通過；`test-install.py` 新增從含 `docs/_templates/` 的舊基線升級的案例，與初始化不再部署範本的斷言，都先紅後綠。紅燈時舊程式會用 kit 的範本覆蓋下游的舊檔。
+
+### 下游更新
+
+- 以 `init-project.py --update` 更新核心 `docs/`，技能照平常的安裝方式更新。更新後 `docs/_templates/` 仍留在原處、不再追蹤，可以手動刪除；刪除前先檢查專案自己的文件（例如目錄樹說明、project.md）有沒有引用 `docs/_templates/`。
+- 曾依【應客製】改寫 document-types.md「常見文件類型範例」的專案，`--update` 會判為衝突：把改寫的內容移到 project.md「本地 gate 與案例」，再把該檔換回上一版 kit 的原文後更新。
+
 ## [4.12.0] - 2026-11-13
 
 處理 [issue #7](https://github.com/raybird/dev-rules-kit/issues/7) 的第 3～5 點（v4.10.0、v4.11.0 的下游試用回報）。

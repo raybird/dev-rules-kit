@@ -1,6 +1,8 @@
 #!/usr/bin/env python3
 """在暫存副本測試安裝與初始化，不存取真實平台設定。"""
 from pathlib import Path
+import hashlib
+import json
 import os
 import shutil
 import subprocess
@@ -36,7 +38,6 @@ class InstallTests(unittest.TestCase):
 
     def test_past_project_templates_registered(self):
         # issue #7 review-92c1f63：改 project.md 範本時漏加舊雜湊，下游收不到「仍是範本原文」提醒。
-        import hashlib
         import importlib.util
         spec = importlib.util.spec_from_file_location('init_project', ROOT / 'scripts/init-project.py')
         module = importlib.util.module_from_spec(spec)
@@ -155,11 +156,13 @@ class InstallTests(unittest.TestCase):
         expected = ['docs/AGENTS.md', 'docs/agents/document-types.md',
                     'docs/agents/readme-templates.md', 'docs/agents/issue-checklist.md',
                     'docs/agents/acceptance.md', 'docs/agents/verification.md',
-                    'docs/agents/review-evidence.md', 'docs/agents/project.md',
-                    'docs/_templates/architecture-template.md',
-                    'docs/_templates/domain-template.md', 'docs/_templates/changelog-template.md']
+                    'docs/agents/review-evidence.md', 'docs/agents/project.md']
         for rel in expected:
             self.assertEqual((self.project / rel).read_bytes(), (self.repo / rel).read_bytes())
+        # issue #8：常青文件範本隨 execute-task 技能安裝，不再部署到下游 repo。
+        self.assertFalse((self.project / 'docs/_templates').exists())
+        manifest = json.loads((self.project / 'docs/.dev-rules-kit.json').read_text())
+        self.assertEqual(sorted(manifest['files']), sorted(r for r in expected if r != 'docs/agents/project.md'))
         stamp = (self.project / 'docs/AGENTS.md').stat().st_mtime_ns
         self.assertEqual(self.init().returncode, 0)
         self.assertEqual((self.project / 'docs/AGENTS.md').stat().st_mtime_ns, stamp)
@@ -203,6 +206,34 @@ class InstallTests(unittest.TestCase):
         result = self.init('--check')
         self.assertEqual(result.returncode, 0)
         self.assertNotIn('project.md 仍是初始化範本原文', result.stdout)
+
+    def test_update_from_baseline_with_templates(self):
+        # issue #8：v4.12.0 以前的部署基線列有 docs/_templates/，舊檔留在原處、不再追蹤。
+        self.assertEqual(self.init().returncode, 0)
+        manifest = self.project / 'docs/.dev-rules-kit.json'
+        data = json.loads(manifest.read_text())
+        old = {}
+        for name in ('architecture-template.md', 'domain-template.md', 'changelog-template.md'):
+            rel = f'docs/_templates/{name}'
+            target = self.project / rel
+            target.parent.mkdir(parents=True, exist_ok=True)
+            target.write_text(f'# v4.12.0 部署的 {name}\n')
+            old[rel] = target.read_bytes()
+            data['files'][rel] = hashlib.sha256(old[rel]).hexdigest()
+        manifest.write_text(json.dumps(data, ensure_ascii=False, indent=2, sort_keys=True) + '\n')
+        before = manifest.read_bytes()
+        def tree():
+            return sorted(str(p.relative_to(self.project)) for p in self.project.rglob('*'))
+        listing = tree()
+        self.assertEqual(self.init('--update', '--dry-run').returncode, 0)
+        self.assertEqual(tree(), listing)
+        self.assertEqual(manifest.read_bytes(), before)
+        self.assertEqual(self.init('--update').returncode, 0)
+        for rel, content in old.items():
+            self.assertEqual((self.project / rel).read_bytes(), content)
+        files = json.loads(manifest.read_text())['files']
+        self.assertEqual([rel for rel in files if rel.startswith('docs/_templates/')], [])
+        self.assertEqual(self.init('--check').returncode, 0)
 
     def test_check_reports_outdated_core_separately(self):
         self.assertEqual(self.init().returncode, 0)
