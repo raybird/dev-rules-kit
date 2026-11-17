@@ -149,7 +149,7 @@ Feature: 下游 repo 只保存流程契約，範本隨技能安裝
 | TBD-4 | [review-ee77c12](review-ee77c12.md) PASS，SHOULD FIX 2 項要不要在分支上修：CHANGELOG 4.13.0「下游更新」第二點的「換回上一版 kit 的原文」只在基線剛好是 v4.12.0 時可行，應改為換成本版原文；docs/usage.md 第 13 行的「範本」指的是 `docs/_templates/`，已不正確。修正會讓 PASS 失效、需要重審 | 已解決：2026-11-17 使用者選「兩項都修並差異覆審」；CHANGELOG 改為換成本版 kit 的原文，usage.md 刪掉「範本」 | SCN-005、發布 |
 | TBD-5 | 下游試用回報 4 點：project.md 寫到 `_templates/` 的句子 `--update` 不會改、也沒有提示；該專案在 project.md 登記了自己的範本，新 pointer 沒寫優先順序；document-types.md 的新 NOTE 清楚；docs/AGENTS.md 2.12 修訂紀錄沒寫已部署舊檔的處理 | 已解決：2026-11-17 使用者決定：pointer 加上 project.md 範本優先（兩處都改，SCN-003、006 規格修訂）；2.12 修訂紀錄補已部署舊檔的處理與檢查 project.md 的提醒；`--check` 不加提示，靠版本說明；實際 issue 的試用等該 issue 至少跑完規劃 | SCN-003、006、發布 |
 | TBD-6 | [review-65beeeb](review-65beeeb.md) RETURN：MUST FIX 規格修訂後核准 commit 未更新；SHOULD FIX rule-verification-status 狀態欄混入證據類型；NICE TO HAVE（`需決策`）「刪除前先檢查 project.md」碰不到不刪舊檔的專案 | 已解決：2026-11-17 MUST FIX、SHOULD FIX 照建議修正；NICE TO HAVE 使用者選「改成『更新後檢查』」，docs/AGENTS.md 2.12 修訂紀錄與 CHANGELOG 下游更新同步改寫 | SCN-003、005、006 |
-| TBD-7 | [review-ae6c231](review-ae6c231.md) PASS 附 NICE TO HAVE（`需決策`）：SCN-005 字面寫「刪除前先檢查」，CHANGELOG 依 TBD-6 改為「更新後檢查」，語意成立但字面不同；可改 CHANGELOG 為「更新後、刪除前都先檢查」，或修訂 SCN-005 重新核准，兩者都讓 PASS 失效 | 待確認 | SCN-005 |
+| TBD-7 | [review-ae6c231](review-ae6c231.md) PASS 附 NICE TO HAVE（`需決策`）：SCN-005 字面寫「刪除前先檢查」，CHANGELOG 依 TBD-6 改為「更新後檢查」，語意成立但字面不同；可改 CHANGELOG 為「更新後、刪除前都先檢查」，或修訂 SCN-005 重新核准，兩者都讓 PASS 失效 | 不影響本次交付：2026-11-17 使用者選「不改，沿用 PASS」。追蹤：無；更新後一律檢查已涵蓋刪除前檢查，SCN-005 的結果在語意上成立（review-ae6c231），措辭是 TBD-6 的決定 | SCN-005 |
 
 ## Timeline
 
@@ -165,6 +165,7 @@ Feature: 下游 repo 只保存流程契約，範本隨技能安裝
 | 2026-11-17 | 下游試用更新核心完成並回報 4 點；使用者決定修正其中 2 點（TBD-5），SCN-003、006 規格修訂，PASS 失效 | 使用者／Claude Code |
 | 2026-11-17 | 差異覆審 [review-65beeeb](review-65beeeb.md) RETURN TO execute-task（MUST FIX 1、SHOULD FIX 1、NICE TO HAVE 1）；使用者決定全部修正（TBD-6） | 使用者／Claude Code |
 | 2026-11-17 | 差異覆審 [review-ae6c231](review-ae6c231.md) PASS，沒有 MUST FIX 與 SHOULD FIX；NICE TO HAVE 1 項待使用者決定（TBD-7） | Claude Code |
+| 2026-11-17 | 使用者決定 NICE TO HAVE 不改、沿用 PASS（TBD-7）；通知下游以候選版 ae6c231 重跑更新後開始實際 issue 試用 | 使用者／Claude Code |
 
 ---
 **建立日期**: 2026-11-17  
