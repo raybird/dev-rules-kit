@@ -18,7 +18,7 @@
 
 ## 現況
 
-**現行 review**: review-151871c.md
+**現行 review**: review-65beeeb.md
 
 | 外部狀態 | 查證命令 | 上次結果 | 查證日期 |
 |---|---|---|---|
@@ -115,8 +115,8 @@ Feature: 下游 repo 只保存流程契約，範本隨技能安裝
 ```
 
 ## Gherkin 核准紀錄
-- **核准 commit**: c0c7e9f
-- **核准來源**: 使用者於 2026-11-17 對話逐題確認的答案：「`docs/_templates/` 的去處」選「搬進 execute-task 技能」（SCN-001～003）、「readme-templates.md」選「留在 repo，不納入本 issue」（不在範圍）、「【應客製】」選「改成範例，指向 project.md」（SCN-004）、「已部署舊檔」選「CHANGELOG 說明可以手動刪除」（SCN-002 的「保持原樣」、SCN-005），並回覆「好，開 issue 處理這兩點」。SCN-006：同日逐題確認 TBD-1 選「要，兩處都寫」。2026-11-17 規格修訂：SCN-003、006 依下游試用回報補上 project.md 範本優先（TBD-5 使用者選「加條件，兩處都改」）
+- **核准 commit**: 65beeeb
+- **核准來源**: 使用者於 2026-11-17 對話逐題確認的答案：「`docs/_templates/` 的去處」選「搬進 execute-task 技能」（SCN-001～003）、「readme-templates.md」選「留在 repo，不納入本 issue」（不在範圍）、「【應客製】」選「改成範例，指向 project.md」（SCN-004）、「已部署舊檔」選「CHANGELOG 說明可以手動刪除」（SCN-002 的「保持原樣」、SCN-005），並回覆「好，開 issue 處理這兩點」。SCN-006：同日逐題確認 TBD-1 選「要，兩處都寫」。2026-11-17 規格修訂：SCN-003、006 依下游試用回報補上 project.md 範本優先（TBD-5 使用者選「加條件，兩處都改」），修訂後的規格由 65beeeb 承載；原核准 c0c7e9f
 
 | Scenario | 核准日期 | 狀態 |
 |----------|---------|------|
@@ -148,6 +148,7 @@ Feature: 下游 repo 只保存流程契約，範本隨技能安裝
 | TBD-3 | 發布前的下游試用 | 已解決：2026-11-17 使用者選「試用後再發布」；視為改變 agent 行為，先在一個下游專案實際跑 `--update` 並在一個實際 issue 使用，新建常青文件沒有觸發時照實記為未觸發 | 發布 |
 | TBD-4 | [review-ee77c12](review-ee77c12.md) PASS，SHOULD FIX 2 項要不要在分支上修：CHANGELOG 4.13.0「下游更新」第二點的「換回上一版 kit 的原文」只在基線剛好是 v4.12.0 時可行，應改為換成本版原文；docs/usage.md 第 13 行的「範本」指的是 `docs/_templates/`，已不正確。修正會讓 PASS 失效、需要重審 | 已解決：2026-11-17 使用者選「兩項都修並差異覆審」；CHANGELOG 改為換成本版 kit 的原文，usage.md 刪掉「範本」 | SCN-005、發布 |
 | TBD-5 | 下游試用回報 4 點：project.md 寫到 `_templates/` 的句子 `--update` 不會改、也沒有提示；該專案在 project.md 登記了自己的範本，新 pointer 沒寫優先順序；document-types.md 的新 NOTE 清楚；docs/AGENTS.md 2.12 修訂紀錄沒寫已部署舊檔的處理 | 已解決：2026-11-17 使用者決定：pointer 加上 project.md 範本優先（兩處都改，SCN-003、006 規格修訂）；2.12 修訂紀錄補已部署舊檔的處理與檢查 project.md 的提醒；`--check` 不加提示，靠版本說明；實際 issue 的試用等該 issue 至少跑完規劃 | SCN-003、006、發布 |
+| TBD-6 | [review-65beeeb](review-65beeeb.md) RETURN：MUST FIX 規格修訂後核准 commit 未更新；SHOULD FIX rule-verification-status 狀態欄混入證據類型；NICE TO HAVE（`需決策`）「刪除前先檢查 project.md」碰不到不刪舊檔的專案 | 已解決：2026-11-17 MUST FIX、SHOULD FIX 照建議修正；NICE TO HAVE 使用者選「改成『更新後檢查』」，docs/AGENTS.md 2.12 修訂紀錄與 CHANGELOG 下游更新同步改寫 | SCN-003、005、006 |
 
 ## Timeline
 
@@ -161,9 +162,10 @@ Feature: 下游 repo 只保存流程契約，範本隨技能安裝
 | 2026-11-17 | 差異覆審 [review-151871c](review-151871c.md) PASS，沒有 MUST FIX、SHOULD FIX 與 NICE TO HAVE；下一步依 TBD-3 下游試用 | Claude Code |
 | 2026-11-17 | 依 TBD-3 請一個下游專案的 session 以候選版 151871c 試用 | 使用者／Claude Code |
 | 2026-11-17 | 下游試用更新核心完成並回報 4 點；使用者決定修正其中 2 點（TBD-5），SCN-003、006 規格修訂，PASS 失效 | 使用者／Claude Code |
+| 2026-11-17 | 差異覆審 [review-65beeeb](review-65beeeb.md) RETURN TO execute-task（MUST FIX 1、SHOULD FIX 1、NICE TO HAVE 1）；使用者決定全部修正（TBD-6） | 使用者／Claude Code |
 
 ---
 **建立日期**: 2026-11-17  
 **分級**: Medium — 部署腳本、測試、範本搬移與兩份規範多檔修改，邏輯直接，不需 Phase／Task 拆解  
 **風險**: Low\
-**狀態**: 依試用回報修正，待差異覆審
+**狀態**: 依覆審修正，待差異覆審

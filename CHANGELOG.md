@@ -34,7 +34,7 @@
 
 ### 下游更新
 
-- 以 `init-project.py --update` 更新核心 `docs/`，技能照平常的安裝方式更新。更新後 `docs/_templates/` 仍留在原處、不再追蹤，可以手動刪除；刪除前先檢查專案自己的文件（例如目錄樹說明、project.md）有沒有引用 `docs/_templates/`。
+- 以 `init-project.py --update` 更新核心 `docs/`，技能照平常的安裝方式更新。更新後 `docs/_templates/` 仍留在原處、不再追蹤，可以手動刪除。不論刪不刪，更新後都檢查專案自己的文件（例如目錄樹說明、project.md）有沒有寫到 `docs/_templates/`，例如要求它與基線一致，這類說明已不成立。
 - 曾依【應客製】改寫 document-types.md「常見文件類型範例」的專案，`--update` 會判為衝突：把改寫的內容移到 project.md「本地 gate 與案例」，再把 document-types.md 換成本版 kit 的原文後執行 `--update`（換回舊版原文只在部署基線剛好是那一版時可行）。
 
 ## [4.12.0] - 2026-11-13
