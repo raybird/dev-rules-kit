@@ -22,7 +22,9 @@
 
 | 外部狀態 | 查證命令 | 上次結果 | 查證日期 |
 |---|---|---|---|
-| GitHub #8 | gh issue view 8 --json state -q .state | OPEN | 2026-11-17 |
+| GitHub #8 | gh issue view 8 --json state -q .state | CLOSED | 2026-11-17 |
+| 併入本機 main | git merge-base --is-ancestor issue-0008-deploy-templates main | 已併入（merge commit ac50587） | 2026-11-17 |
+| 推送到 origin/main | git fetch origin 後執行 git merge-base --is-ancestor ac50587 origin/main | 隨 v4.13.0 推送 | 2026-11-17 |
 | 下游試用 | 向試用專案的 session 詢問試用結果 | 已完成：候選版 151871c 與 ae6c231 各更新一次核心，舊範本雜湊不變並移出基線、--check OK；一個實際 issue 以候選版跑完規劃，document-types.md 的範例說明清楚，新建常青文件未觸發 | 2026-11-17 |
 
 ## 快速導覽
@@ -167,9 +169,10 @@ Feature: 下游 repo 只保存流程契約，範本隨技能安裝
 | 2026-11-17 | 差異覆審 [review-ae6c231](review-ae6c231.md) PASS，沒有 MUST FIX 與 SHOULD FIX；NICE TO HAVE 1 項待使用者決定（TBD-7） | Claude Code |
 | 2026-11-17 | 使用者決定 NICE TO HAVE 不改、沿用 PASS（TBD-7）；通知下游以候選版 ae6c231 重跑更新後開始實際 issue 試用 | 使用者／Claude Code |
 | 2026-11-17 | 下游試用完成：ae6c231 重跑更新只更新 docs/AGENTS.md、--check OK；實際 issue 跑完規劃，範例說明清楚，新建常青文件未觸發，沒有回報 kit 問題 | Claude Code |
+| 2026-11-17 | 使用者決定合併並發布：以 `--no-ff` 合併到本機 main（`ac50587`），在 main 補 CHANGELOG 與驗證狀態表的試用結果，發布 v4.13.0 並關閉 GitHub #8 | 使用者／Claude Code |
 
 ---
 **建立日期**: 2026-11-17  
 **分級**: Medium — 部署腳本、測試、範本搬移與兩份規範多檔修改，邏輯直接，不需 Phase／Task 拆解  
 **風險**: Low\
-**狀態**: 審查通過，下游試用完成，待合併
+**狀態**: 已完成
