@@ -181,6 +181,7 @@ d5616ba953601f9f68f71aaea86bba0ea7966b1aa39201030e672c4d3672fde8  review/SKILL.m
 36b10197dc744c7785c737cf15f8eeb77c2e763fe24539d965abc7473e38c4f8  review/SKILL.md  v4.3.0  v4.4.1
 313a84be89f583f362f85a0628fab03a585789186d6e1cfd309b0e7f7b9efc47  review/SKILL.md  v4.5.0  v4.8.1
 fbdcdfe222564f6101ce749a639ccab08dac59c2daaba0b0e9f251e7fd938384  review/SKILL.md  v4.9.0  v4.9.0
+c49543d1d9867f92ebab4c3ae50cebdfc549a33439bf56b6053b6a222c90d57b  review/SKILL.md  v5.1.0  v5.1.0
 e9038d5e115ae6fa8887e81cf7957840a79b0cdb9617a48565cbb16442de7bf3  review/SKILL.md  v5.1.0  v5.1.0
 2d1075d6853c8f2fe11ed03e88cce1c916e427c676283658685b1d952ee4c612  review/scripts/verify-artifact.py  v4.0.0  v4.8.1
 445f851492ab011f3ff388ff08fd0d881b259d02ee1ff2b57be4a58c0d40fa95  review/scripts/verify-artifact.py  v4.10.0  v4.10.0

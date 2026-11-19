@@ -1,0 +1,39 @@
+$ python3 docs/issues/issue-0010/fixtures/build_fixtures.py <kit> <scratchpad>/fx
+wf36: H1 775859c HEAD 0378aac tests exit=0 OK
+wf36b: H1 775859c HEAD b5437e3 tests exit=0 OK
+wf36c: H1 775859c HEAD 66e50ad tests exit=0 OK
+
+## wf36（H2）
+$ python3 -m unittest -v
+test_overdue (test_due.DueTest.test_overdue) ... ok
+test_render_shows_due (test_due.DueTest.test_render_shows_due) ... ok
+test_render_marks_done (test_todo.RenderTest.test_render_marks_done) ... ok
+Ran 3 tests in 0.000s
+OK
+$ overdue(到期 2026-11-01、2026-12-01 各一筆, "2026-11-19")
+[1, 2]
+原 H1 是 HEAD 祖先：是；merge-base main HEAD = e88e386（main 首個提交 e88e386）
+
+## wf36b（H2）
+$ python3 -m unittest -v
+test_overdue (test_due.DueTest.test_overdue) ... ok
+test_render_shows_due (test_due.DueTest.test_render_shows_due) ... ok
+test_render_without_due (test_due.DueTest.test_render_without_due) ... ok
+test_render_marks_done (test_todo.RenderTest.test_render_marks_done) ... ok
+Ran 4 tests in 0.000s
+OK
+$ overdue(到期 2026-11-01、2026-12-01 各一筆, "2026-11-19")
+[1]
+原 H1 是 HEAD 祖先：是；merge-base main HEAD = e88e386（main 首個提交 e88e386）
+
+## wf36c（H2）
+$ python3 -m unittest -v
+test_overdue (test_due.DueTest.test_overdue) ... ok
+test_render_shows_due (test_due.DueTest.test_render_shows_due) ... ok
+test_render_without_due (test_due.DueTest.test_render_without_due) ... ok
+test_render_marks_done (test_todo.RenderTest.test_render_marks_done) ... ok
+Ran 4 tests in 0.000s
+OK
+$ overdue(到期 2026-11-01、2026-12-01 各一筆, "2026-11-19")
+[1]
+原 H1 是 HEAD 祖先：否；merge-base main HEAD = 71c48e2（main 首個提交 e88e386）
