@@ -131,6 +131,12 @@ Feature: 修正之後以增量覆審取得完整範圍的審查證據
 | TBD-2 | [review-40f9475](review-40f9475.md) 的 9 項建議怎麼處理 | 已解決：2026-11-19 使用者照建議決定。修正：SHOULD FIX 1～3（3 一併修「需決策」列的同一缺口）、NICE TO HAVE 1、2、4、5、6；不修：NICE TO HAVE 3（根目錄 README 的流程圖本來就省略需決策分支）。SHOULD FIX 1 改了規則語意，重跑 WF-36 影響組與對照組各 1 輪 | SCN-001～004 |
 | TBD-3 | [review-09b22fb](review-09b22fb.md) 的 4 項建議怎麼處理 | 已解決：2026-11-19 使用者照建議決定，SHOULD FIX 1、2 與 NICE TO HAVE 1、2 都修正。只改文字、不改規則語意，不重跑 WF | 無 |
 
+## Gate 豁免紀錄
+
+| 日期 | 豁免項目 | 使用者原話 | 殘餘風險 |
+|---|---|---|---|
+| 2026-11-19 | 計畫 S7 與 AGENTS.md「改變 agent 行為的版本先在下游實際 issue 用過再發布」：不做下游試用，直接發布 v5.2.0 | 「先不試用，直接發布」 | 增量覆審與 PASS 附建議只在隔離 fixture 實跑（WF-36、WF-37），以及在本 issue 自身的兩次增量覆審用過；下游 docs 仍是流程契約 2.5 時的行為（TBD-1）、連續回合、外部審查之後的修正都沒有實跑 |
+
 ## Timeline
 
 | 日期 | 異動 | 負責人 |
@@ -142,9 +148,10 @@ Feature: 修正之後以增量覆審取得完整範圍的審查證據
 | 2026-11-19 | 增量覆審 [review-09b22fb](review-09b22fb.md) PASS（上一份 review-40f9475，增量 `40f9475..09b22fb`），沒有 MUST FIX；SHOULD FIX 2 項、NICE TO HAVE 2 項待使用者決定 | Claude Code |
 | 2026-11-19 | 使用者照建議決定（TBD-3），修正與結論同一提交 | 使用者 |
 | 2026-11-19 | 增量覆審 [review-186e0c6](review-186e0c6.md) PASS（上一份 review-09b22fb，增量 `09b22fb..186e0c6`），沒有任何建議 | Claude Code |
+| 2026-11-19 | 使用者豁免 S7 下游試用，直接發布 | 使用者 |
 
 ---
 **建立日期**: 2026-11-19  
 **分級**: Medium — 修改 review-evidence.md、review 與 dev-cycle 技能與相關文件，不改檢查器；不需 Phase／Task 拆解  
 **風險**: Medium\
-**狀態**: 審查通過，待下游試用
+**狀態**: 審查通過，準備合併發布
