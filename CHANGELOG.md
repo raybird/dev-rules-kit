@@ -12,6 +12,32 @@
 
 ---
 
+## [5.2.0] - 未發布
+
+修正之後以增量覆審取得完整範圍的審查證據；PASS 附建議時一次問完（[issue #10](https://github.com/raybird/dev-rules-kit/issues/10)）。
+
+### 新增（`docs/agents/review-evidence.md`、`skills/review/`）
+
+- review-evidence.md「增量覆審」：被審查提交 H1 之後的修正需要重新審查時，H1 有一份記完整交付範圍的報告、H1 是新 HEAD 的祖先且沒有改寫歷史、merge-base 不變，就做增量覆審。修正來源不限（審查的退回或建議、使用者決定、外部 reviewer 的要求）。報告照完整範圍記 Reviewed BASE／HEAD／patch-id，另記上一份報告、增量範圍、重新查核的項目與沿用的結論；變動影響到未改動的程式或上一份報告的結論時，在整個新 HEAD 找出並重新查核。條件不成立就完整審查並寫原因；只把上一個 HEAD 記為 Reviewed BASE 的報告屬於局部審查。原本只寫「重新審查」，下游各自整輪重審、只看變動，或串接多份報告，串接的寫法在 v5.1.0 的 create-pr 會判範圍失效。
+- review 技能送審時一併傳入上一份報告，報告範本加「增量覆審」欄位與重新查核／沿用的查核項。
+
+### 變更（`skills/dev-cycle/`、`docs/AGENTS.md`、`docs/usage.md`）
+
+- dev-cycle 狀態表新增一列：有效 PASS 附 SHOULD FIX／NICE TO HAVE、README 尚無對應結論時，在同一則訊息列出所有建議，每項附建議答案，選項為修正、記入待確認、不修；project.md 登記固定做法時照登記。沒有選修正時依「審查之後的提交」判定 PASS 是否沿用；選了修正的一起修完，結論與修正放在同一個提交再送審。「需決策」列選了修正時也一樣，避免只提交結論後下一次偵測直接進 create-pr。同一份報告兼有需決策項目時合併在同一則訊息。原本 PASS 後直接進 create-pr。
+- docs/AGENTS.md 文件版本 2.14，流程契約 2.5 → 2.6。review、dev-cycle 的最低需求不變：流程契約 2.5 以下的專案沒有「增量覆審」，照舊完整審查。
+
+### 驗證
+
+- 五項檢查通過。
+- WF-36（隔離設定、Claude Code）：影響組（修正讓 `due_of` 改回傳 MM/DD，未改動的 `overdue` 因此誤判、測試仍全過）2／2 把 `overdue` 列為重新查核並判 RETURN；rebase 組 2／2 寫明不採增量的原因、改用新的 merge-base 完整審查；對照組（修正只加測試）第一次 0／2，原因是 fixture 的 H1 測試不符 SCN-002、reviewer 正確推翻上一份報告的結論，修正 fixture 後重跑 2／2 寫明沿用並判 PASS。依審查建議放寬重新查核的範圍後重跑：影響組 1／1；對照組第一輪因 fixture 沒有依 project.md 更新根目錄 README 而失敗，補 fixture 後 1／1。
+- WF-37：PASS 附 3 項建議 2／2 在同一則訊息列出並附建議答案，未改檔、未開 PR；PASS 沒有建議的對照組 2／2 不提問直接進 create-pr。
+- 未實跑：選了修正之後的增量送審（連續回合）、project.md 登記固定做法、外部審查之後的修正、下游 docs 仍是流程契約 2.5 時的行為。
+
+### 下游更新
+
+- 技能照平常的安裝方式更新；核心 `docs/` 以 `init-project.py --update` 更新到 2.14 後才會做增量覆審，之前照舊完整審查。
+- 已用「串接多份報告」寫增量的專案，之後的覆審報告改記完整範圍的 Reviewed BASE。
+
 ## [5.1.0] - 2026-11-19
 
 dev-cycle 完成實作後先獨立審查，通過或豁免後才建立 PR；review 可以單獨審查他人的提交。

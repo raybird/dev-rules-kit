@@ -7,14 +7,14 @@ description: 由獨立 reviewer 審查變更或不修復決策，核對驗收、
 
 ## 輸入與範圍
 
-專案有 `docs/agents/` 時讀 agents/project.md、acceptance.md、verification.md、review-evidence.md。由協調者傳入固定 BASE／HEAD；獨立呼叫依 review-evidence.md 取得範圍。相容 COMMIT_COUNT，但局部審查不自動代表整個 PR。需求不足時標明推斷來源，不能補造核准。
+專案有 `docs/agents/` 時讀 agents/project.md、acceptance.md、verification.md、review-evidence.md。由協調者傳入固定 BASE／HEAD；獨立呼叫依 review-evidence.md 取得範圍。被審查提交之後的修正要重新審查時，依 review-evidence.md「增量覆審」判斷能否增量（流程契約 2.5 以下完整審查）。相容 COMMIT_COUNT，但局部審查不自動代表整個 PR。需求不足時標明推斷來源，不能補造核准。
 
 單獨審查他人提交時，以指定 Git 物件讀取 diff；單一普通提交與其父提交比對，根提交與空樹比對，merge 提交須確認比較基準。回報發現與證據後結束。沒有對應 issue 時，依可取得的需求與測試審查，免建流程文件或修改作者分支；未指定報告存放處則直接回覆發現與限制，不產生 dev-cycle 的 PASS。
 
 ## 審查
 
 1. 取得固定範圍的完整 diff、異動清單、核准規格與測試證據。產生檔可簡述來源；lockfile 涉依賴或供應鏈變更時仍查核，不能一律排除。
-2. 派給宿主獨立 subagent／task，傳入同一組範圍、規格與證據；使用者明確要求時改用 Superpowers requesting-code-review。原實作者不兼任獨立 reviewer；能力缺漏或豁免依 review-evidence.md 回報。
+2. 派給宿主獨立 subagent／task，傳入同一組範圍、規格與證據，增量覆審時一併傳入上一份報告；使用者明確要求時改用 Superpowers requesting-code-review。原實作者不兼任獨立 reviewer；能力缺漏或豁免依 review-evidence.md 回報。
 3. 核對規格修訂與核准來源（核准 commit 為 `待提交` 時，acceptance.md 有推導命令就依它推導核准基線，沒有則依該檔判定缺少核准基線）、完整驗收覆蓋、正確性、相關安全／權限／依賴失敗面、架構邊界與測試真偽。以 code-simplify 的標準檢查整份 diff 中跨 Task 的重複邏輯與過度設計。依風險提出具體邊界案例，各重要失敗面都有覆蓋結論，無固定數量。
 4. 區分 MUST FIX 與改善建議，需要使用者決策才能處理的發現依 review-evidence.md 加註 `需決策`，交由協調者確認；重複邏輯已分歧而造成行為不一致或正確性風險時列 MUST FIX，其餘重複與過度設計列改善建議。依 verification.md 將證據持久力、限制揭露與假綠燈分開判定。待確認事項維持原狀態，覆核其交付影響；豁免只適用紀錄明列項目。
 5. 依 review-evidence.md 保存完整報告，並檢查被審查版本與 artifact 有效性。流程契約 2.4 起，報告記有核准基線且 README 仍為 `待提交` 時，保存報告的同一個提交把 `**核准 commit**` 改成該 SHA；流程契約 2.5 起，同一個提交也把 `## 現況` 的 `**現行 review**` 指向這份報告（沒有 `## 現況` 時依該檔建立）。被審查提交之後的提交（保存報告、記錄使用者決策、回填核准 commit、更新現況）依「審查之後的提交」（流程契約 2.3 以下為「本機 artifact 提交後的有效性」）判定：執行本 skill 目錄下的 `scripts/verify-artifact.py --repo <專案> --reviewed <SHA> --head <SHA> --artifact <repo-relative 報告路徑>`，報告保存在平台時以 `--issue docs/issues/issue-<ID>` 取代 `--artifact`。結果有效才沿用原 PASS，並把它回報的變更區段寫進 PR 證據；指令為唯讀，成功只代表版本有效，審查結論仍須讀報告。
@@ -32,6 +32,7 @@ description: 由獨立 reviewer 審查變更或不修復決策，核對驗收、
 - 獨立 reviewer：...
 - Review artifact：...
 - 核准基線：...（核准 commit 為 `待提交` 時必填：推導出的 SHA，或「缺少」與原因；其他情況省略）
+- 增量覆審：上一份報告與增量範圍 `H1..HEAD`；曾經審查過，但完整審查（條件不成立、找不到或不適用上一份報告）時寫原因；第一次審查時省略
 
 ## 問題與風險
 - MUST FIX／SHOULD FIX／NICE TO HAVE：具體位置、影響與建議；需決策者加註 `需決策` 與待決問題；無則寫無
@@ -40,6 +41,7 @@ description: 由獨立 reviewer 審查變更或不修復決策，核對驗收、
 - 驗收與證據：編號、證據位置及結論
 - 相關失敗面：輸入／狀態、預期、現有覆蓋與判定
 - 需求、架構、安全、品質（含跨 Task 重複與過度設計）：結論；不適用則寫理由
+- 增量覆審時：重新查核的項目與理由、沿用的結論
 - 豁免、待確認與限制：有則揭露
 
 ## 流程判定

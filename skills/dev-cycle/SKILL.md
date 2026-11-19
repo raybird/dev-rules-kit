@@ -40,7 +40,8 @@ description: 查詢 issue 進度或依既有授權自動推進需求、實作、
 | 所有條件已核准，但仍有未完成且無可執行的 Task | 回報具體相依阻塞，不把它當成已完成 |
 | 任務全部完成但交付變更尚未提交 | 依 create-commit 準備並提交已授權的交付內容 |
 | 完整交付範圍缺少有效的持久化審查報告，且獨立審查未獲明確豁免 | review |
-| 有效 review 有 `需決策` 發現，README 待確認事項尚無對應結論 | 依 acceptance.md「逐題確認」取得決策並記入待確認事項；規格變更依規格修訂處理，需修正者回 execute-task，接受未修的 MUST FIX 記入 Gate 豁免紀錄；記錄提交後，原判定為 PASS 且依 review-evidence.md「審查之後的提交」（流程契約 2.3 以下為「本機 artifact 提交後的有效性」）判定有效時沿用 PASS；其他情況依新範圍重新 review |
+| 有效 review 有 `需決策` 發現，README 待確認事項尚無對應結論 | 依 acceptance.md「逐題確認」取得決策並記入待確認事項；規格變更依規格修訂處理，需修正者回 execute-task，結論與修正放在同一個提交，接受未修的 MUST FIX 記入 Gate 豁免紀錄；記錄提交後，原判定為 PASS 且依 review-evidence.md「審查之後的提交」（流程契約 2.3 以下為「本機 artifact 提交後的有效性」）判定有效時沿用 PASS；其他情況依新範圍重新 review；同一份 PASS 報告另有建議時，併入下一列的同一則訊息 |
+| 有效 PASS 附 SHOULD FIX／NICE TO HAVE，README 尚無對應結論 | 依 acceptance.md「逐題確認」把所有建議列在同一則訊息，每項附建議答案，選項為修正、記入待確認、不修；project.md 登記固定做法時照登記並說明。結論記入待確認事項；沒有選修正時，依 review-evidence.md「審查之後的提交」判定有效即沿用 PASS；選了修正的一起修完，結論與修正放在同一個提交，再送審新範圍 |
 | 有效 review 為 RETURN TO execute-task | 修正問題、更新證據與提交，再審查新範圍 |
 | 完整交付範圍有有效 PASS 或明確審查豁免，且 PR 尚未建立或待同步（範圍、Proof、審查證據） | create-pr，建立或更新後依 review-evidence.md 重新核對目標與 source HEAD |
 | 審查已通過或明確豁免，且 open PR（project.md 登記不開 PR 時為已推送的分支）與交付證據一致 | 等待合併，回報後結束本次調用 |
@@ -52,7 +53,7 @@ description: 查詢 issue 進度或依既有授權自動推進需求、實作、
 ## 推進與完成條件
 
 1. 回報目前階段與下一步；已授權的計畫由協調者自動選 Task 並傳入完整輸入。
-2. execute-task 在內部完成 code-simplify 與驗證，協調者再依 create-commit 規範提交。交付範圍依 review-evidence.md 固定 BASE／HEAD；PR 尚未建立時，目標分支依使用者指定或 project.md。所有 Task、必要驗證與交付提交齊備後，自動呼叫 review 審查整個範圍。
+2. execute-task 在內部完成 code-simplify 與驗證，協調者再依 create-commit 規範提交。交付範圍依 review-evidence.md 固定 BASE／HEAD；PR 尚未建立時，目標分支依使用者指定或 project.md。所有 Task、必要驗證與交付提交齊備後，自動呼叫 review 審查整個範圍；修正之後的審查由 review 依 review-evidence.md「增量覆審」判斷能否增量。
 3. 保存獨立審查報告，依狀態表處理退回與決策。有效 PASS 或明確豁免後，依既有授權建立／更新 PR。遇到新需求決策時依 acceptance.md「逐題確認」提問並等待回答，權限限制或真實阻塞時停止；不重問已回答的 Task 選擇與核准。
 4. 有實質狀態變化才重新偵測。等待窗口、等待合併、等待必要回答或同一阻塞未變時回報並結束，不忙迴圈、不自行合併 PR。
 5. 真實 merge 且沒有未豁免的待觀察項目後標記已完成，記實際 merge 日期；不修復保留原狀態與決策日期；其他核准結案記實際依據。文件收尾不得被描述成程式測試或 merge。
