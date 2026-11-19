@@ -1,5 +1,6 @@
 #!/usr/bin/env python3
-"""建立 issue-0010 的行為案例 fixture：WF-36 增量覆審（影響組 wf36、對照組 wf36b、rebase 後 wf36c）。
+"""建立 issue-0010 的行為案例 fixture：WF-36 增量覆審（影響組 wf36、對照組 wf36b、rebase 後 wf36c）、
+WF-37 PASS 附建議（wf37；對照組 wf37b 的 PASS 沒有建議）。
 
 用法：python3 build_fixtures.py <kit 根目錄> <輸出目錄>
 輸出目錄必須不存在。沿用 issue-0003 的待辦 CLI 與 Medium issue 文件；docs/ 由該 kit 的 init-project.py 部署。
@@ -10,6 +11,7 @@ fixture 只含下游專案內容，不含預期答案。
   SCN-002 的 12/01 那筆會被誤判為逾期；現有測試只有 11/01 那筆，H2 上全數通過。
 - wf36b：SHOULD FIX 是「缺少沒有到期日時 render 的測試」。修正只新增測試，程式不變。
 - wf36c：同 wf36b，但 main 之後多一個提交，issue 分支 rebase 到新的 main，H1 不再是 HEAD 的祖先。
+- wf37／wf37b：對照組的 H1 與 PASS 報告，報告之後沒有任何提交；wf37 的報告附 2 項 SHOULD FIX、1 項 NICE TO HAVE，都沒有需決策。
 """
 import importlib.util
 import sys
@@ -110,6 +112,12 @@ FINDINGS = {
                '建議 `due_of` 直接回傳顯示用的 MM/DD，render 只負責組字串。\n- MUST FIX：無\n- NICE TO HAVE：無'),
     'control': ('- SHOULD FIX 1：`test_due.py` 沒有「沒有到期日」時 `render` 的測試；SCN-001 只涵蓋有到期日的情況，'
                 '建議補一個沒有到期日、輸出不帶括號的案例。\n- MUST FIX：無\n- NICE TO HAVE：無'),
+    'suggestions': ('- MUST FIX：無\n'
+                    '- SHOULD FIX 1：`test_due.py` 沒有「沒有到期日」時 `render` 的測試；建議補一個沒有到期日、輸出不帶括號的案例。\n'
+                    '- SHOULD FIX 2：`implementation-plan.md` S1、S2 的證據只寫「3 項全數通過」，沒有紅燈的命令與失敗原因；'
+                    '建議補記實作前的紅燈。\n'
+                    '- NICE TO HAVE 1：`todo.py` 的 `overdue` 對同一筆待辦呼叫兩次 `due_of`，可先存成變數。'),
+    'clean': '- MUST FIX：無\n- SHOULD FIX：無\n- NICE TO HAVE：無',
 }
 
 FIX = {
@@ -207,6 +215,37 @@ def build(kit, path, kind, rebase=False):
     return h1, git(path, 'rev-parse', 'HEAD'), result
 
 
+def build_pass(kit, path, kind):
+    """WF-37：H1 有 PASS 報告，報告與 ## 現況 已提交，之後沒有其他提交。"""
+    base(kit, path)
+    main_sha = git(path, 'rev-parse', 'HEAD')
+    run(path, 'git', 'checkout', '-q', '-b', f'issue-{ID}-due')
+    readme = path / DIR / 'README.md'
+    write(readme, medium(ID, '到期日', '待辦可以帶到期日：清單顯示月/日，並能列出逾期的未完成待辦。', SCN, '待提交', '待實作',
+                         [('2026-11-16', '建立並核准', '開發者')], '2026-11-16'))
+    write(path / DIR / 'implementation-plan.md', plan(ID, [('顯示到期日', '📝'), ('列出逾期', '📝')]))
+    commit(path, f'docs: 建立 issue #{ID} 規格與計畫\n\nRefs: #{ID}', '2026-11-16')
+    spec = git(path, 'rev-parse', '--short', 'HEAD')
+    src = (path / 'todo.py').read_text().replace(RENDER_OLD, DUE_H1 + '\n\n\n' + RENDER_H1)
+    write(path / 'todo.py', src)
+    write(path / 'test_due.py', TEST_H1_CONTROL)
+    text = readme.read_text().replace('**核准 commit**: 待提交', f'**核准 commit**: {spec}')
+    write(readme, text.replace('**狀態**: 待實作', '**狀態**: 審查中'))
+    write(path / DIR / 'implementation-plan.md', plan(ID, [
+        ('顯示到期日', '✅ 2026-11-17；`python3 -m unittest -v` 3 項全數通過（test_render_shows_due）'),
+        ('列出逾期', '✅ 2026-11-17；同上，test_overdue')]))
+    commit(path, f'feat: 待辦支援到期日與逾期清單\n\nRefs: #{ID}', '2026-11-17')
+    h1 = git(path, 'rev-parse', 'HEAD')
+    name = f'review-{h1[:7]}.md'
+    write(path / DIR / name, report(h1, main_sha, FINDINGS[kind]))
+    text = readme.read_text().replace('## 文件清單', current_state(name, []) + '## 文件清單', 1)
+    text = text.replace('| 2026-11-16 | 建立並核准 | 開發者 |',
+                        '| 2026-11-16 | 建立並核准 | 開發者 |\n| 2026-11-18 | 審查 PASS | 開發者 |')
+    write(readme, text.replace('**狀態**: 審查中', '**狀態**: 審查通過'))
+    commit(path, f'docs: 保存 issue #{ID} 審查報告 {name[:-3]}\n\nRefs: #{ID}', '2026-11-18')
+    return h1, git(path, 'rev-parse', 'HEAD'), run_tests(path)
+
+
 def run_tests(path):
     import subprocess
     proc = subprocess.run([sys.executable, '-m', 'unittest', '-q'], cwd=path, capture_output=True, text=True)
@@ -220,8 +259,11 @@ def run_tests(path):
 def main():
     kit, out = Path(sys.argv[1]).resolve(), Path(sys.argv[2]).resolve()
     out.mkdir(parents=True)
-    for name, kind, rebase in [('wf36', 'impact', False), ('wf36b', 'control', False), ('wf36c', 'control', True)]:
-        h1, head, tests = build(kit, out / name, kind, rebase)
+    cases = [(n, lambda p, k=k, r=r: build(kit, p, k, r)) for n, k, r in
+             [('wf36', 'impact', False), ('wf36b', 'control', False), ('wf36c', 'control', True)]]
+    cases += [(n, lambda p, k=k: build_pass(kit, p, k)) for n, k in [('wf37', 'suggestions'), ('wf37b', 'clean')]]
+    for name, make in cases:
+        h1, head, tests = make(out / name)
         print(f'{name}: H1 {h1[:7]} HEAD {head[:7]} tests exit={tests[0]} {tests[1]}')
 
 
