@@ -1,13 +1,15 @@
 ---
 name: review
-description: 由獨立 reviewer 審查變更或不修復決策，核對驗收、測試、風險與架構並持久化報告；PR 審查或指定 diff review 時使用。
+description: 由獨立 reviewer 審查變更或不修復決策，核對驗收、測試、風險與架構並持久化報告；dev-cycle 完成實作、審查他人的提交、分支或 PR 時使用。
 ---
 
 > 本 skill 需要 `docs/AGENTS.md` **流程契約 2.1**；相容性依該檔「核心層齊備性檢查」。
 
 ## 輸入與範圍
 
-讀 agents/project.md、acceptance.md、verification.md、review-evidence.md。由協調者傳入固定 BASE／HEAD；獨立呼叫依 review-evidence.md 取得範圍。相容 COMMIT_COUNT，但局部審查不自動代表整個 PR。需求不足時標明推斷來源，不能補造核准。
+在 kit 專案讀 agents/project.md、acceptance.md、verification.md、review-evidence.md。由協調者傳入固定 BASE／HEAD；獨立呼叫依 review-evidence.md 取得範圍。相容 COMMIT_COUNT，但局部審查不自動代表整個 PR。需求不足時標明推斷來源，不能補造核准。
+
+單獨審查他人提交時，以指定 Git 物件讀取 diff；單一普通提交與其父提交比對，根提交與空樹比對，merge 提交須確認比較基準。回報發現與證據後結束。沒有對應 issue 時，依可取得的需求與測試審查，免建流程文件或修改作者分支；未指定報告存放處則直接回覆發現與限制，不產生 dev-cycle 的 PASS。
 
 ## 審查
 
@@ -23,7 +25,7 @@ description: 由獨立 reviewer 審查變更或不修復決策，核對驗收、
 
 ```markdown
 # 審查報告
-- 範圍：完整 PR／局部 diff／決策審查
+- 範圍：完整交付範圍（含開 PR 前）／局部 diff／決策審查
 - Reviewed BASE SHA：...
 - Reviewed HEAD SHA：...
 - Reviewed patch-id：...（無程式 diff 的決策審查可記不適用與理由）

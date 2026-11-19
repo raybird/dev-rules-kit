@@ -34,9 +34,10 @@ python3 scripts/init-project.py /path/to/project --check
 ```text
 new-issue → decompose（Large，在原計畫細化）
           → execute-task（包含 code-simplify 與驗證）
-          → create-commit → create-pr → review
-                                          ├─ 需決策 → 協調者逐題確認，再依決策修正或記錄
-                                          └─ RETURN → 回到 execute-task 修正，再提交、更新 PR 並重新 review
+          → create-commit（還有 Task 時回到 execute-task）
+          → 全部 Task 完成後 review
+              ├─ 退回 → 修正、驗證、提交，再審查
+              └─ 通過 → create-pr → 等待合併
 ```
 
 dev-cycle 自動選下一個已核准、相依滿足的 Task；分批核准或重新核准不阻塞無相依的已核准項目。Large 新核准的 Scenario 會先補拆，再實作。PR 前現存驗收須全部已核准或逐項豁免。
@@ -59,7 +60,7 @@ issue 101 到哪了
 
 ## PR 與 review
 
-協調者把同一組固定 BASE／HEAD 傳給 PR 與 review，避免 commit 數量推算不同範圍。`/review 5` 仍可審查最近五個 commit，但若未覆蓋完整 PR，只算局部審查。
+dev-cycle 先固定 BASE／HEAD 交給獨立 reviewer；建立或更新 PR 時引用報告並核對交付版本。單獨審查別人的提交可用 `/review <SHA>`，也可指定 BASE..HEAD 或既有 PR。`/review 5` 仍可審查最近五個 commit，但若未覆蓋完整 PR，只算局部審查。
 
 PR 的 Proof of Test 採逐驗收編號表格，連到固定版本規格與命令／輸出證據。多個條件可共用證據；被測內容、環境與時效一致時沿用，發生相關變動才重跑。未執行項與豁免照實揭露。
 

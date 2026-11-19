@@ -10,7 +10,7 @@ Supports **Codex**, **Claude Code**, **OpenCode**, **Antigravity**, and **Cursor
 
 - **Clarify Requirements Upfront**: High-level prompts are transformed into structured, approvable acceptance criteria. The agent only asks questions that impact the outcome—batching independent questions together, isolating major trade-offs, and providing recommended options so you can simply reply "use recommendations" to proceed.
 - **Evidence-Based Completion**: Behavior changes require failing tests first, followed by implementations that turn them green. Tasks cannot be marked done without genuine test execution outputs.
-- **Independent Code Review**: Pull requests are reviewed by an independent reviewer role without implementation bias, generating archived review reports. If independent review capability is unavailable in the environment, it honestly reports limitations rather than faking compliance.
+- **Independent Code Review**: An independent reviewer checks the complete change and records the findings before the agent opens a pull request. If independent review capability is unavailable in the environment, it honestly reports limitations rather than faking compliance.
 - **Cross-Session Continuity**: Development state and verification evidence are recorded in issue documents and Git history. Simply say "continue issue 101" in a new session to resume exactly where you left off.
 - **Lightweight for Quick Tasks**: Everyday trivial changes bypass the heavy process. Full workflows are only enforced for tracked issues. If you are in a rush, explicit workflow exemptions are respected and documented.
 - **Preserve Project Customizations**: Project-specific configurations reside in `docs/agents/project.md` and are never overwritten during kit updates.
@@ -66,8 +66,9 @@ Start a new agent session after installation and drive the process naturally:
 ```text
 new-issue → decompose (Large issues only)
           → execute-task (Test, implement, refine)
-          → create-commit → create-pr → review
-                                          └─ On rejection: return to execute-task and re-review
+          → create-commit → review the complete change
+                                          ├─ On rejection: fix, verify, commit and re-review
+                                          └─ On approval: create-pr and wait for merge
 ```
 
 Each skill can also be executed individually. For full workflows and detailed skill descriptions, see the [Usage Guide](docs/usage.md).

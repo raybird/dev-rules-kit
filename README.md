@@ -8,7 +8,7 @@
 
 - **需求先講清楚**：一句話的需求會被整理成可核准的驗收條件；agent 只問會影響結果的問題，彼此獨立的短題一次問完、需要取捨的單獨問，各題附建議答案，回「照建議」就能往下走；你已經說清楚的不會重問。
 - **「做完了」要有證據**：行為變更先有失敗的測試、再修到通過，沒有真實測試輸出不能標成完成。
-- **獨立審查**：由沒參與實作的 reviewer 審 PR，報告存檔，沒有獨立 reviewer 能力時如實回報，不假裝通過。
+- **獨立審查**：由沒參與實作的 reviewer 在建立 PR 前審查完整交付內容，報告存檔，沒有獨立 reviewer 能力時如實回報，不假裝通過。
 - **跨 session 接續**：進度記在 issue 文件與 Git，下次說「繼續 issue 101」就從停下的地方往下做。
 - **小事不走流程**：一般修改直接做，只有需要追蹤的 issue 才走完整流程；趕時間可以明說豁免，agent 會照做並留下紀錄。
 - **更新不蓋掉客製**：專案自己的設定放在 `docs/agents/project.md`，更新 kit 時保留。
@@ -64,8 +64,10 @@ python3 ~/Tools/dev-rules-kit/scripts/init-project.py /path/to/project  # 初始
 ```text
 new-issue → decompose（Large 才需要）
           → execute-task（測試、實作、精煉）
-          → create-commit → create-pr → review
-                                          └─ 退回時回到 execute-task 修正後重審
+          → create-commit（還有 Task 時回到 execute-task）
+          → 全部 Task 完成後 review
+              ├─ 退回 → 修正、驗證、提交，再審查
+              └─ 通過 → create-pr → 等待合併
 ```
 
 每個技能都能單獨使用。完整示範與各技能說明見 [使用指南](docs/usage.md)。

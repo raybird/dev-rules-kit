@@ -4,7 +4,7 @@
 
 ## 固定交付範圍
 
-協調者取得 PR 的目標分支與 source HEAD，解析成固定 SHA，計算 `git merge-base` 得到 BASE，記錄 TARGET、BASE、HEAD。審查 diff、Proof of Test 與 patch-id 都針對同一個 `BASE..HEAD`。本地 HEAD 與 PR source HEAD 不同時，先指出差異，不能拿本地審查代表遠端 PR。
+開 PR 前，協調者依使用者指定或 project.md 確認目標分支，以已提交的交付分支 HEAD 為 source HEAD。已有 PR 時讀取平台目標與 source HEAD；準備更新 PR 時，以已提交且預計推送的版本為待審 HEAD，更新後核對平台版本。將目標與待審版本解析成固定 SHA，計算 `git merge-base` 得到 BASE，記錄 TARGET、BASE、HEAD。審查 diff、Proof of Test 與 patch-id 都針對同一個 `BASE..HEAD`。本地 HEAD 與 PR source HEAD 不同時，先指出差異，不能拿本地審查代表遠端 PR。
 
 獨立呼叫時優先讀使用者指定範圍，其次現有 PR 與 project.md；無法辨認 base 才詢問。`review N` 相容舊用法，以 HEAD~N 作 BASE 並明列這是局部審查；只有確認範圍覆蓋完整 PR 才能作為閉環通過證據。工作區有未提交交付內容時先提交或完成隔離，避免把舊 HEAD 的證據套到新內容。
 
@@ -25,7 +25,7 @@ git diff "${base_sha}" "${head_sha}" | git patch-id --stable
 
 獨立 reviewer 必須不是原實作者；可使用宿主隔離 subagent／task，或專案的外部 reviewer。只有自我重讀時回報能力阻塞，不冒充獨立審查；使用者明確豁免時依 AGENTS.md 留痕。
 
-報告優先保存於 PR review／MR discussion 等平台。純本機流程保存為 `docs/issues/issue-{ID}/review-{被審查 HEAD 前 7 碼}.md`。必備欄位：
+開 PR 前將報告保存於下列 issue 路徑。已有 PR 時優先保存於 PR review／MR discussion 等平台。純本機流程保存為 `docs/issues/issue-{ID}/review-{被審查 HEAD 前 7 碼}.md`。必備欄位：
 
 - Reviewed BASE SHA、Reviewed HEAD SHA、Reviewed patch-id。
 - 獨立 reviewer 識別、審查範圍與風險、證據及發現。

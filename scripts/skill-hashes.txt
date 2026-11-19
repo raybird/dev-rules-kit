@@ -31,6 +31,7 @@ cfab2d5dd53cbdf27054e72b212b9d8934af1b81604c5b533f533d38afc163d8  create-pr/SKIL
 53f2178baba49ceba4799b44a7a23c356c6d0d9a76813514ec3db33fa87b0a02  create-pr/SKILL.md  v2.9.0  v2.9.0
 2d7aba070a548251c7270efd59be56eaea375174f63e4115fdf4a85b2f022e01  create-pr/SKILL.md  v4.0.0  v4.2.0
 6b7bd3ebb88db165a282083a94d95623f4d475fc830e7cf73d19ee7b4608169f  create-pr/SKILL.md  v4.3.0  v5.0.0
+d4adeb286c6787b97d81cafcaab68fec47fbbf6e878f3d369271256e21177306  create-pr/SKILL.md  v5.0.0  v5.0.0
 5b6576a53eec0eb03890e39c90965583cabc8ea806f63b596031e615939ca42c  decompose/SKILL.md  v1.0.0  v1.1.0
 b02d55e2b23650971a46b2c0fbbd6329eb9b118bf6090fb2bd55963a81c26b58  decompose/SKILL.md  v1.2.0  v1.2.0
 26da23a9f98e62b6bcaea801b07e9d8d0036658db53e214929932125a04c4c95  decompose/SKILL.md  v1.3.0  v1.3.0
@@ -85,6 +86,7 @@ d84c28c890043184eece40d6a74ad151e310daa88a43f848fd4babf274513ca8  dev-cycle/SKIL
 2599682abed7ab5474056327f5c2c2461b367d6a3aaff179a4349372da3d8041  dev-cycle/SKILL.md  v4.6.0  v4.6.1
 98914e5297332fe21231250242fc483e8930f6fd5575c4b5cde1e0d9e3ecfc7e  dev-cycle/SKILL.md  v4.7.0  v4.8.1
 f32747ef6fb4723a55021ee9be6bef2f09ffbb5ecc5c1c70e30b32f8eee3347b  dev-cycle/SKILL.md  v4.9.0  v4.9.0
+f77512baa2fbb7ede0ad3c348382f6c83952758f4999bec23d49489f9046034f  dev-cycle/SKILL.md  v5.0.0  v5.0.0
 fb92d2ebe9316e266d7b246fb3b1882f77b54663a21bcde61e4d1ad0af75759a  dev-cycle/references/pending-scan.md  v4.10.0  v4.10.0
 f1a03accca42595a00b89a2d258d3af4b8336d76327b978b9f52167542f1d29d  dev-cycle/references/pending-scan.md  v4.11.0  v5.0.0
 64b1fc3f37c5e72c6da14ae737a45c42d51224f6efdbbccbe21243bd51b09cb6  dev-cycle/references/pending-scan.md  v4.7.0  v4.7.0
@@ -179,6 +181,7 @@ d5616ba953601f9f68f71aaea86bba0ea7966b1aa39201030e672c4d3672fde8  review/SKILL.m
 36b10197dc744c7785c737cf15f8eeb77c2e763fe24539d965abc7473e38c4f8  review/SKILL.md  v4.3.0  v4.4.1
 313a84be89f583f362f85a0628fab03a585789186d6e1cfd309b0e7f7b9efc47  review/SKILL.md  v4.5.0  v4.8.1
 fbdcdfe222564f6101ce749a639ccab08dac59c2daaba0b0e9f251e7fd938384  review/SKILL.md  v4.9.0  v4.9.0
+b28a5887eab3f579c9ea215973470de30681ec7fa30eec61a747fd5bc24eb69e  review/SKILL.md  v5.0.0  v5.0.0
 2d1075d6853c8f2fe11ed03e88cce1c916e427c676283658685b1d952ee4c612  review/scripts/verify-artifact.py  v4.0.0  v4.8.1
 445f851492ab011f3ff388ff08fd0d881b259d02ee1ff2b57be4a58c0d40fa95  review/scripts/verify-artifact.py  v4.10.0  v4.10.0
 7b6ef4e24b234c1bba92b20480379ceaec0556d2e0a24163983eca239a24f21c  review/scripts/verify-artifact.py  v4.11.0  v5.0.0
