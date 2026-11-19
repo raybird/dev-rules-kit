@@ -18,12 +18,12 @@
 
 ### 新增（`docs/agents/review-evidence.md`、`skills/review/`）
 
-- review-evidence.md「增量覆審」：被審查提交 H1 之後的修正需要重新審查時，H1 有有效報告、H1 是新 HEAD 的祖先且沒有改寫歷史、merge-base 不變，就做增量覆審。修正來源不限（審查的退回或建議、使用者決定、外部 reviewer 的要求）。報告照完整範圍記 Reviewed BASE／HEAD／patch-id，另記上一份報告、增量範圍、重新查核的項目與沿用的結論；變動影響到上一份報告查過的內容時，在整個新 HEAD 找出並重新查核。條件不成立就完整審查並寫原因；只把上一個 HEAD 記為 Reviewed BASE 的報告屬於局部審查。原本只寫「重新審查」，下游各自整輪重審、只看變動，或串接多份報告，串接的寫法在 v5.1.0 的 create-pr 會判範圍失效。
+- review-evidence.md「增量覆審」：被審查提交 H1 之後的修正需要重新審查時，H1 有一份記完整交付範圍的報告、H1 是新 HEAD 的祖先且沒有改寫歷史、merge-base 不變，就做增量覆審。修正來源不限（審查的退回或建議、使用者決定、外部 reviewer 的要求）。報告照完整範圍記 Reviewed BASE／HEAD／patch-id，另記上一份報告、增量範圍、重新查核的項目與沿用的結論；變動影響到未改動的程式或上一份報告的結論時，在整個新 HEAD 找出並重新查核。條件不成立就完整審查並寫原因；只把上一個 HEAD 記為 Reviewed BASE 的報告屬於局部審查。原本只寫「重新審查」，下游各自整輪重審、只看變動，或串接多份報告，串接的寫法在 v5.1.0 的 create-pr 會判範圍失效。
 - review 技能送審時一併傳入上一份報告，報告範本加「增量覆審」欄位與重新查核／沿用的查核項。
 
 ### 變更（`skills/dev-cycle/`、`docs/AGENTS.md`、`docs/usage.md`）
 
-- dev-cycle 狀態表新增一列：有效 PASS 附 SHOULD FIX／NICE TO HAVE、README 尚無對應結論時，在同一則訊息列出所有建議，每項附建議答案，選項為修正、記入待確認、不修；project.md 登記固定做法時照登記。沒有選修正時 PASS 沿用，選了修正的一起修完再送審。同一份報告兼有需決策項目時合併在同一則訊息。原本 PASS 後直接進 create-pr。
+- dev-cycle 狀態表新增一列：有效 PASS 附 SHOULD FIX／NICE TO HAVE、README 尚無對應結論時，在同一則訊息列出所有建議，每項附建議答案，選項為修正、記入待確認、不修；project.md 登記固定做法時照登記。沒有選修正時依「審查之後的提交」判定 PASS 是否沿用；選了修正的一起修完，結論與修正放在同一個提交再送審。「需決策」列選了修正時也一樣，避免只提交結論後下一次偵測直接進 create-pr。同一份報告兼有需決策項目時合併在同一則訊息。原本 PASS 後直接進 create-pr。
 - docs/AGENTS.md 文件版本 2.14，流程契約 2.5 → 2.6。review、dev-cycle 的最低需求不變：流程契約 2.5 以下的專案沒有「增量覆審」，照舊完整審查。
 
 ### 驗證
