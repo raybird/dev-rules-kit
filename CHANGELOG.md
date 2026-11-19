@@ -12,6 +12,34 @@
 
 ---
 
+## [5.1.0] - 2026-11-19
+
+dev-cycle 完成實作後先獨立審查，通過或豁免後才建立 PR；review 可以單獨審查他人的提交。
+
+### 變更（`skills/dev-cycle/`、`skills/review/`、`skills/create-pr/`）
+
+- dev-cycle 狀態表與推進步驟改為：所有 Task、必要驗證與交付提交齊備後，自動呼叫 review 審查完整交付範圍；有效 PASS 或明確豁免後才建立或更新 PR。原本先開 PR 再審查。PR 尚未建立時，目標分支依使用者指定或 project.md。審查豁免時揭露「未獨立審查」後照常處理 PR。project.md 登記不開 PR 時，等待合併的條件以已推送的分支代替 open PR。
+- create-pr 由 dev-cycle 呼叫時，把完整範圍的審查報告或豁免列入 PR 證據，核對實際目標的 merge-base 與 Reviewed BASE、Reviewed HEAD 到待交付 HEAD；範圍失效時回到 review。
+- review 可單獨審查指定的提交、分支或 PR：單一普通提交與父提交比對，根提交與空樹比對，merge 提交先確認比較基準；沒有對應 issue 時不建流程文件、不改作者分支，未指定報告存放處就直接回覆發現與限制，不產生 dev-cycle 的 PASS。報告範本的範圍改為「完整交付範圍」。
+
+### 變更（`docs/AGENTS.md`、`docs/agents/review-evidence.md`）
+
+- review-evidence.md「固定交付範圍」補明開 PR 前如何決定目標與待審 HEAD；不開 PR 的專案推送後以遠端分支 HEAD 核對待審 HEAD，並重新取得目標分支確認 merge-base 未變。開 PR 前的報告保存在 `docs/issues/issue-{ID}/`，已有 PR 時優先保存在平台。
+- 待確認事項的非阻塞未知改為在審查時交由 reviewer 評估，並於 PR 揭露。
+- 文件版本 2.13，流程契約不變。
+
+### 驗證
+
+- 五項檢查通過。
+- WF-34 主路徑部分實跑：拋棄式專案在獨立 Codex session 執行 dev-cycle，協調者在開 PR 前自動派出獨立 reviewer，報告提交後 `verify-artifact.py` 確認 PASS 有效，再產生 PR 說明。無遠端，平台建 PR 與版本核對未執行。WF-35 實跑：單獨審查一個普通提交，指出兩處行為改變，指定提交與工作樹維持原狀。
+- 發布前下游試用（2026-11-19）：一個下游專案以候選版 `fd4174d` 跑完一個實際 issue 的實作與審查。所有步驟提交後協調者自動派出獨立 reviewer 審查完整範圍並 PASS；依 SHOULD FIX 補測試後重審再 PASS。兩份報告都存在 issue 目錄、同一提交更新 `**現行 review**`，之後每次 `verify-artifact.py` 判定都 OK。該專案不開 PR，以推送後的遠端分支與 merge-base 核對。試用回報的兩處說明不足已在 `60d752e` 補上：不開 PR 的專案如何核對、報告範本範圍的用詞。另外三點（SHOULD FIX 修正前要不要先問、增量審查能否沿用上一份報告、外部審查修正後 PASS 失效）是既有規則的成本，另行追蹤。
+- 未驗證：審查退回後修正再審、審查豁免、更新平台上已有的 PR、下游文件仍是 2.12 時搭配本版技能。
+
+### 下游更新
+
+- 技能照平常的安裝方式更新；核心 `docs/` 以 `init-project.py --update` 更新。文件還沒更新前，本版 dev-cycle 也會依使用者指定或 project.md 決定開 PR 前的目標分支。
+- 進行中的 issue 已經開了 PR、還沒審查時，照常審查，報告優先保存在平台。
+
 ## [5.0.0] - 2026-11-17
 
 不需 clone 即可安裝與更新 kit；`install.sh` 覆蓋前先保護被改過的技能（[issue #9](https://github.com/raybird/dev-rules-kit/issues/9)）。
