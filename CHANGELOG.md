@@ -12,7 +12,7 @@
 
 ---
 
-## [5.2.0] - 未發布
+## [5.2.0] - 2026-11-19
 
 修正之後以增量覆審取得完整範圍的審查證據；PASS 附建議時一次問完（[issue #10](https://github.com/raybird/dev-rules-kit/issues/10)）。
 
@@ -31,6 +31,7 @@
 - 五項檢查通過。
 - WF-36（隔離設定、Claude Code）：影響組（修正讓 `due_of` 改回傳 MM/DD，未改動的 `overdue` 因此誤判、測試仍全過）2／2 把 `overdue` 列為重新查核並判 RETURN；rebase 組 2／2 寫明不採增量的原因、改用新的 merge-base 完整審查；對照組（修正只加測試）第一次 0／2，原因是 fixture 的 H1 測試不符 SCN-002、reviewer 正確推翻上一份報告的結論，修正 fixture 後重跑 2／2 寫明沿用並判 PASS。依審查建議放寬重新查核的範圍後重跑：影響組 1／1；對照組第一輪因 fixture 沒有依 project.md 更新根目錄 README 而失敗，補 fixture 後 1／1。
 - WF-37：PASS 附 3 項建議 2／2 在同一則訊息列出並附建議答案，未改檔、未開 PR；PASS 沒有建議的對照組 2／2 不提問直接進 create-pr。
+- 未經下游試用：使用者 2026-11-19 豁免發布前的下游試用（issue #10 Gate 豁免紀錄）。增量覆審只在隔離 fixture 與本 issue 自身的兩次覆審（review-09b22fb、review-186e0c6）用過。
 - 未實跑：選了修正之後的增量送審（連續回合）、project.md 登記固定做法、外部審查之後的修正、下游 docs 仍是流程契約 2.5 時的行為。
 
 ### 下游更新

@@ -22,7 +22,7 @@
 
 | 外部狀態 | 查證命令 | 上次結果 | 查證日期 |
 |---|---|---|---|
-| GitHub #10 | gh issue view 10 --repo raybird/dev-rules-kit --json state -q .state | OPEN | 2026-11-19 |
+| GitHub #10 | gh issue view 10 --repo raybird/dev-rules-kit --json state -q .state | CLOSED | 2026-11-19 |
 
 ## 快速導覽
 
@@ -149,9 +149,10 @@ Feature: 修正之後以增量覆審取得完整範圍的審查證據
 | 2026-11-19 | 使用者照建議決定（TBD-3），修正與結論同一提交 | 使用者 |
 | 2026-11-19 | 增量覆審 [review-186e0c6](review-186e0c6.md) PASS（上一份 review-09b22fb，增量 `09b22fb..186e0c6`），沒有任何建議 | Claude Code |
 | 2026-11-19 | 使用者豁免 S7 下游試用，直接發布 | 使用者 |
+| 2026-11-19 | `--no-ff` 併入 main（99d59d7），發布 v5.2.0，關閉 GitHub #10 | Claude Code |
 
 ---
 **建立日期**: 2026-11-19  
 **分級**: Medium — 修改 review-evidence.md、review 與 dev-cycle 技能與相關文件，不改檢查器；不需 Phase／Task 拆解  
 **風險**: Medium\
-**狀態**: 審查通過，準備合併發布
+**狀態**: 已完成
