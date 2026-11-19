@@ -22,6 +22,7 @@
 - wf36：修正讓 `due_of` 回傳 MM/DD。`overdue` 在 H1 已審過、這次沒有改動，拿 `due_of` 的結果與 ISO 日期比較；在 H2 上，到期日 2026-12-01 的待辦會被誤判為逾期，違反 SCN-002。`python3 -m unittest -v` 在 H2 仍是 3 項全數通過（測試只有 2026-11-01 那筆）。
 - wf36b：修正只新增 `test_render_without_due`，程式不變，4 項全數通過。
 - wf36c：同 wf36b，但 main 多一個只改根目錄 README 的提交，issue 分支 rebase 到新的 main；原 H1 不是 HEAD 的祖先，merge-base 改成新的 main。
+- （2026-11-19 補記）fixture 先提交「保存報告並記錄決定」，再另外提交修正。這個提交形狀早於 dev-cycle「結論與修正放在同一個提交」的規定，只用來測 review 端，不是示範寫法。
 
 ## 通過條件
 

@@ -129,6 +129,7 @@ Feature: 修正之後以增量覆審取得完整範圍的審查證據
 |------|------|------|------|
 | TBD-1 | 流程契約升到 2.6 後，review、dev-cycle 的最低需求維持現值，契約 2.5 以下的專案沒有「增量覆審」章節時照舊完整審查；這個相容做法要在下游試用確認 | 待確認 | SCN-001、SCN-003 |
 | TBD-2 | [review-40f9475](review-40f9475.md) 的 9 項建議怎麼處理 | 已解決：2026-11-19 使用者照建議決定。修正：SHOULD FIX 1～3（3 一併修「需決策」列的同一缺口）、NICE TO HAVE 1、2、4、5、6；不修：NICE TO HAVE 3（根目錄 README 的流程圖本來就省略需決策分支）。SHOULD FIX 1 改了規則語意，重跑 WF-36 影響組與對照組各 1 輪 | SCN-001～004 |
+| TBD-3 | [review-09b22fb](review-09b22fb.md) 的 4 項建議怎麼處理 | 已解決：2026-11-19 使用者照建議決定，SHOULD FIX 1、2 與 NICE TO HAVE 1、2 都修正。只改文字、不改規則語意，不重跑 WF | 無 |
 
 ## Timeline
 
@@ -139,9 +140,10 @@ Feature: 修正之後以增量覆審取得完整範圍的審查證據
 | 2026-11-19 | 獨立審查 [review-40f9475](review-40f9475.md) PASS，沒有 MUST FIX；SHOULD FIX 3 項（1 項需決策）、NICE TO HAVE 6 項待使用者決定 | Claude Code |
 | 2026-11-19 | 使用者照建議決定審查建議（TBD-2），修正與結論同一提交 | 使用者 |
 | 2026-11-19 | 增量覆審 [review-09b22fb](review-09b22fb.md) PASS（上一份 review-40f9475，增量 `40f9475..09b22fb`），沒有 MUST FIX；SHOULD FIX 2 項、NICE TO HAVE 2 項待使用者決定 | Claude Code |
+| 2026-11-19 | 使用者照建議決定（TBD-3），修正與結論同一提交 | 使用者 |
 
 ---
 **建立日期**: 2026-11-19  
 **分級**: Medium — 修改 review-evidence.md、review 與 dev-cycle 技能與相關文件，不改檢查器；不需 Phase／Task 拆解  
 **風險**: Medium\
-**狀態**: 審查通過，建議待使用者決定
+**狀態**: 依審查建議修正，待覆審

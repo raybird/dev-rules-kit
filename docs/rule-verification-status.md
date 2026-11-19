@@ -340,7 +340,7 @@
 
 | 規則 | 狀態 | 驗證來源 |
 |---|---|---|
-| 修正後條件成立時做增量覆審：報告記完整範圍，另記上一份報告與增量範圍；變動影響到的既有內容重新查核，其餘寫明沿用 | 已實跑驗證（回歸案例） | WF-36 影響組 2／2、對照組修正 fixture 後 2／2（docs/issues/issue-0010/evidence/s2-wf36/），kit `b3ae52f`／`04feb29`，早於 dev-cycle 的變更（`d104509`），review-evidence.md 與 review 技能在那之後到審查前沒有再改；只測 Claude Code；下游未試用 |
+| 修正後條件成立時做增量覆審：報告記完整範圍，另記上一份報告與增量範圍；變動影響到的既有內容重新查核，其餘寫明沿用 | 已實跑驗證（回歸案例） | WF-36 影響組 2／2、對照組修正 fixture 後 2／2（docs/issues/issue-0010/evidence/s2-wf36/），kit `b3ae52f`／`04feb29`，早於 dev-cycle 的變更（`d104509`）；review-40f9475 修正條件 1 與觸發條件的措辭後（kit `1800523`／`1dd86c2`）：影響組 1／1，對照組 r5 因 fixture 沒有依 project.md 更新根目錄 README 而失敗，補 fixture 後 r6 1／1（docs/issues/issue-0010/evidence/s6-wf36/）；只測 Claude Code；下游未試用 |
 | 條件不成立（rebase、merge-base 改變）時完整審查並寫原因 | 已實跑驗證（回歸案例） | WF-36c 2／2；merge-base 改變、找不到有效報告兩種情況只靜態覆核 |
 | PASS 附建議時同一則訊息列出、附建議答案與三種去向；沒有建議時直接進 create-pr | 已實跑驗證（回歸案例） | WF-37 兩組各 2／2（docs/issues/issue-0010/evidence/s4-wf37/）；選了修正之後的送審、project.md 固定做法、與需決策合併提問未實跑 |
 | 外部審查之後的修正同樣走增量覆審 | 僅靜態撰寫 | 來源為 v5.1.0 下游試用回報；未實跑 |
