@@ -36,6 +36,7 @@ new-issue → decompose（Large，在原計畫細化）
           → execute-task（包含 code-simplify 與驗證）
           → create-commit（還有 Task 時回到 execute-task）
           → 全部 Task 完成後 review
+              ├─ 需決策 → 協調者逐題確認，再依決策修正或記錄
               ├─ 退回 → 修正、驗證、提交，再審查
               └─ 通過 → create-pr → 等待合併
 ```

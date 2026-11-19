@@ -66,9 +66,10 @@ Start a new agent session after installation and drive the process naturally:
 ```text
 new-issue → decompose (Large issues only)
           → execute-task (Test, implement, refine)
-          → create-commit → review the complete change
-                                          ├─ On rejection: fix, verify, commit and re-review
-                                          └─ On approval: create-pr and wait for merge
+          → create-commit (back to execute-task while Tasks remain)
+          → review once all Tasks are done
+              ├─ On rejection: fix, verify, commit and re-review
+              └─ On approval: create-pr and wait for merge
 ```
 
 Each skill can also be executed individually. For full workflows and detailed skill descriptions, see the [Usage Guide](docs/usage.md).
