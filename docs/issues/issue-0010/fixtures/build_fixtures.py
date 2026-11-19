@@ -87,6 +87,14 @@ if __name__ == "__main__":
     unittest.main()
 '''
 
+# 對照組（wf36b、wf36c）的 H1 測試照 SCN-002 的 Given 寫，並涵蓋已完成的待辦（2026-11-19 第一次實跑後補，見 expected.md）
+TEST_H1_CONTROL = TEST_H1.replace('''        items = [{"id": 1, "title": "繳費", "done": False, "due": "2026-11-01"},
+                 {"id": 2, "title": "買牛奶", "done": False}]''', '''        items = [{"id": 1, "title": "繳費", "done": False, "due": "2026-11-01"},
+                 {"id": 2, "title": "續約", "done": False, "due": "2026-12-01"},
+                 {"id": 3, "title": "報稅", "done": True, "due": "2026-11-01"},
+                 {"id": 4, "title": "買牛奶", "done": False}]''')
+assert TEST_H1_CONTROL != TEST_H1
+
 TEST_NO_DUE = '''
     def test_render_without_due(self):
         items = [{"id": 2, "title": "寫週報", "done": False}]
@@ -151,7 +159,7 @@ def build(kit, path, kind, rebase=False):
     assert RENDER_OLD in src
     src = src.replace(RENDER_OLD, DUE_H1 + '\n\n\n' + RENDER_H1)
     write(path / 'todo.py', src)
-    write(path / 'test_due.py', TEST_H1)
+    write(path / 'test_due.py', TEST_H1 if kind == 'impact' else TEST_H1_CONTROL)
     text = readme.read_text().replace('**核准 commit**: 待提交', f'**核准 commit**: {spec}')
     write(readme, text.replace('**狀態**: 待實作', '**狀態**: 審查中'))
     write(path / DIR / 'implementation-plan.md', plan(ID, [
