@@ -168,6 +168,11 @@ def build(kit, path, kind, rebase=False):
     src = src.replace(RENDER_OLD, DUE_H1 + '\n\n\n' + RENDER_H1)
     write(path / 'todo.py', src)
     write(path / 'test_due.py', TEST_H1 if kind == 'impact' else TEST_H1_CONTROL)
+    if kind != 'impact':
+        usage = '- `python3 todo.py`：列出\n'
+        root = (path / 'README.md').read_text()
+        assert root.count(usage) == 1
+        write(path / 'README.md', root.replace(usage, usage + '  - 有到期日的待辦在結尾顯示「（到期 MM/DD）」\n'))
     text = readme.read_text().replace('**核准 commit**: 待提交', f'**核准 commit**: {spec}')
     write(readme, text.replace('**狀態**: 待實作', '**狀態**: 審查中'))
     write(path / DIR / 'implementation-plan.md', plan(ID, [
