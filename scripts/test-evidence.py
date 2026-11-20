@@ -988,6 +988,13 @@ class BookkeepingTests(unittest.TestCase):
                     self.commit('bad backfill')
                     self.assertInvalid(self.verify(), '核准 commit')
 
+    def test_quoted_approval_sha_replaced_invalid(self):
+        self.reviewed_with('- **核准 commit**: 待提交', f'- **核准 commit**: `{self.approval[:7]}`')
+        self.add_report()
+        self.edit(f'- **核准 commit**: `{self.approval[:7]}`', f'- **核准 commit**: `{self.reviewed[:7]}`')
+        self.commit('repoint quoted approval')
+        self.assertInvalid(self.verify(), '核准 commit')
+
     def test_approval_backfill_descendant_invalid(self):
         self.add_report()
         self.commit('report')
