@@ -20,7 +20,7 @@
 
 ## 現況
 
-**現行 review**: review-004e551.md
+**現行 review**: review-e8daf73.md
 
 ## 關鍵差異
 
@@ -160,6 +160,7 @@ Feature: 會變的狀態只寫一處，合併後不必回頭改 README
 | 2026-11-20 | 增量覆審 review-da37945：PASS，附 SHOULD FIX 1 項、NICE TO HAVE 7 項 |
 | 2026-11-20 | 增量覆審 review-004e551：PASS，附 NICE TO HAVE 3 項 |
 | 2026-11-20 | 記錄 review-004e551 建議的結論：N1 補待確認事項的理由與影響，N2、N3 不修（TBD-4） |
+| 2026-11-20 | 增量覆審 review-e8daf73：PASS，附 NICE TO HAVE 2 項 |
 
 ---
 **建立日期**: 2026-11-20  
