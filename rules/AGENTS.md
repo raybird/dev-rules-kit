@@ -122,7 +122,7 @@ If verification cannot be fully automated, provide explicit manual steps.
 
 **External state is whatever a live check says.** Merge, push, deployment, platform issue/PR status, and similar state that other people or other processes can change: any value found in documents, memory, or someone else's report is a dated lead. Re-check it with a verification command before stating it or acting on it; when the result differs from the lead, go with the check and point out the difference. When it cannot be checked, say so and cite where the lead came from and when.
 
-**Progress that changes lives in one place.** Within one document or issue, record progress in a single spot (for example a task table or a status field) and point to it from everywhere else. An opening note or warning states only the rule, such as "confirm each item before acting". When an item is done, update the spot that records progress; if the opening note states progress (for example "none of these has run yet"), rewrite it at the same time so only the rule remains, such as "confirm each item before acting; see the task table for status".
+**When you update progress, keep it in one place.** Within one document or issue, record progress in a single spot (for example a task table or a status field) and point to it from everywhere else; an opening note or warning states only the rule, such as "confirm each item before acting; see the task table for status". After editing, check each paragraph: outside the spot that records progress, no sentence says which items are done or still pending; any sentence that did (for example "none of these has run yet") now states only the rule.
 
 ---
 
