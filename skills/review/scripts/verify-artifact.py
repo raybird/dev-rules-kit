@@ -345,7 +345,7 @@ def compare_readme(git, reviewed, readme, before, after, sections, addable):
             continue
         if name == '核准 commit':
             sha = SHA.match(new)
-            if not old.startswith('待提交') or not sha:
+            if not old.lstrip('`').startswith('待提交') or not sha:
                 raise Invalid(f'核准 commit 只能由「待提交」改成被審查提交或其祖先，目前為「{old}」→「{new}」；需重新審查')
             target = git('rev-parse', '--verify', '--quiet', sha.group(1) + '^{commit}', check=False)
             if target.returncode or git('merge-base', '--is-ancestor', target.stdout.strip(),

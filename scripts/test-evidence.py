@@ -956,6 +956,45 @@ class BookkeepingTests(unittest.TestCase):
                 self.commit('bad backfill')
                 self.assertInvalid(self.verify(), '核准 commit')
 
+    PENDING_FORMS = ('`待提交`', '待提交（實作提交時回填）', '`待提交`（實作提交時回填）')
+
+    def test_approval_backfill_from_quoted_or_annotated_pending(self):
+        # issue #11 SCN-007：帶反引號或附註的「待提交」同樣可以回填被審查提交或其祖先。
+        base = self.reviewed
+        for pending in self.PENDING_FORMS:
+            for kind in ('approval', 'reviewed'):
+                with self.subTest(pending=pending, kind=kind):
+                    self.git('reset', '-q', '--hard', base)
+                    self.git('clean', '-qfd')
+                    self.reviewed_with('- **核准 commit**: 待提交', f'- **核准 commit**: {pending}')
+                    self.add_report()
+                    value = self.approval[:7] if kind == 'approval' else f'`{self.reviewed}`'
+                    self.edit(f'- **核准 commit**: {pending}', f'- **核准 commit**: {value}')
+                    self.commit('backfill quoted pending')
+                    self.assertBookkeepingValid(self.verify())
+
+    def test_approval_backfill_from_quoted_pending_must_be_ancestor(self):
+        base = self.reviewed
+        for pending in self.PENDING_FORMS:
+            for kind in ('descendant', 'missing'):
+                with self.subTest(pending=pending, kind=kind):
+                    self.git('reset', '-q', '--hard', base)
+                    self.git('clean', '-qfd')
+                    self.reviewed_with('- **核准 commit**: 待提交', f'- **核准 commit**: {pending}')
+                    self.add_report()
+                    self.commit('report')
+                    value = self.git('rev-parse', '--short', 'HEAD') if kind == 'descendant' else 'deadbeef'
+                    self.edit(f'- **核准 commit**: {pending}', f'- **核准 commit**: {value}')
+                    self.commit('bad backfill')
+                    self.assertInvalid(self.verify(), '核准 commit')
+
+    def test_approval_backfill_descendant_invalid(self):
+        self.add_report()
+        self.commit('report')
+        self.edit('- **核准 commit**: 待提交', f'- **核准 commit**: {self.git("rev-parse", "--short", "HEAD")}')
+        self.commit('backfill descendant')
+        self.assertInvalid(self.verify(), '核准 commit')
+
     def test_platform_mode_rejects_semantic_change(self):
         self.edit('    Then 看到結果', '    Then 看到另一個結果')
         self.record_decision()
