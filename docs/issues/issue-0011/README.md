@@ -20,7 +20,7 @@
 
 ## 現況
 
-**現行 review**: review-67e37e0.md
+**現行 review**: review-6681a19.md
 
 ## 關鍵差異
 
@@ -137,6 +137,7 @@ Feature: 會變的狀態只寫一處，合併後不必回頭改 README
 |------|------|
 | 2026-11-20 | 依五個下游專案的唯讀回覆建立 issue 與 GitHub #11；使用者對 Q1～Q4 選建議答案，核准 SCN-001～008 |
 | 2026-11-20 | 獨立審查 review-67e37e0：RETURN TO execute-task（M1 需決策） |
+| 2026-11-20 | 增量覆審 review-6681a19：RETURN TO execute-task（S1 需決策） |
 
 ---
 **建立日期**: 2026-11-20  
