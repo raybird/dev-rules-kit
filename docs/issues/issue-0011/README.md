@@ -18,6 +18,10 @@
 
 不在範圍：審查報告累積與記帳提交數量（[#12](https://github.com/raybird/dev-rules-kit/issues/12)，本 issue 合併後再規劃）、下游部署內容瘦身（[#13](https://github.com/raybird/dev-rules-kit/issues/13)）。
 
+## 現況
+
+**現行 review**: review-67e37e0.md
+
 ## 關鍵差異
 
 | 項目 | 變更前 | 變更後 |
@@ -128,9 +132,10 @@ Feature: 會變的狀態只寫一處，合併後不必回頭改 README
 | 日期 | 異動 |
 |------|------|
 | 2026-11-20 | 依五個下游專案的唯讀回覆建立 issue 與 GitHub #11；使用者對 Q1～Q4 選建議答案，核准 SCN-001～008 |
+| 2026-11-20 | 獨立審查 review-67e37e0：RETURN TO execute-task（M1 需決策） |
 
 ---
 **建立日期**: 2026-11-20  
 **分級**: Medium — 規則、範本、dev-cycle 與一處判定腳本多檔修改，邏輯直接，不需 Phase／Task 拆解  
 **風險**: Medium  
-**狀態**: 待實作
+**狀態**: 實作中
