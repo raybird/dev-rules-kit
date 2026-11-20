@@ -1,0 +1,19 @@
+diff --git a/docs/issue-12-description.md b/docs/issue-12-description.md
+index a6bc42c..da0e5d9 100644
+--- a/docs/issue-12-description.md
++++ b/docs/issue-12-description.md
+@@ -2,12 +2,12 @@
+ 
+ 本檔是平台 issue #12 的描述，更新後貼回平台。
+ 
+-**以下指令都還沒執行**，每一項確認後才動手。
++A 已於 2026-11-20 執行；**B、C 還沒執行**，每一項確認後才動手。
+ 
+ ## 待辦
+ 
+ | 項目 | 指令 | 狀態 |
+ |---|---|---|
+-| A | `python3 tools/prune_exports.py --days 30` | 待執行 |
++| A | `python3 tools/prune_exports.py --days 30` | 已執行（2026-11-20），輸出正常 |
+ | B | 刪除 `exports/` 底下的 `.bak` 檔 | 待執行 |
+ | C | 確認 `todo.json` 已備份 | 待執行 |
