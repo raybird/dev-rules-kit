@@ -1,6 +1,6 @@
 #!/usr/bin/env python3
 """建立 issue-0011 的行為案例 fixture：WF-38 合併前寫好的已完成（未合併 wf38、已合併 wf38b）、
-WF-39 審查通過後寫好終態（wf39）。
+WF-39 審查通過後寫好終態（wf39）、WF-40 狀態只寫階段（wf40）與進度只寫一處（wf40b）。
 
 用法：python3 build_fixtures.py <kit 根目錄> <輸出目錄>
 輸出目錄必須不存在。沿用 issue-0010 WF-37 對照組（wf37b）的待辦 CLI、issue 3601 與沒有建議的 PASS 報告，H1 另更新根目錄 README 的使用說明；
@@ -9,6 +9,8 @@ docs/ 由該 kit 的 init-project.py 部署。fixture 只含下游專案內容�
 - wf39：H1 有 PASS 報告、沒有任何建議；README 狀態「審查通過」，報告與 ## 現況 已提交，之後沒有其他提交。
 - wf38：同 wf39，再多一個記帳提交把狀態寫成「已完成」；分支還沒併入 main。
 - wf38b：同 wf38，分支已以 --no-ff 併入 main（merge commit subject 含 issue-3601），工作目錄在 main。
+- wf40：Small issue 3602（只列未完成）已併入 main，README 狀態「已完成」，沒有 ## 現況；project.md 登記部署查證命令。
+- wf40b：main 上有一份平台 issue #12 的描述檔，開頭寫「以下指令都還沒執行」，待辦表三項都是待執行。
 """
 import importlib.util
 import sys
@@ -78,6 +80,39 @@ def build(kit, path, kind):
     return h1, git(path, 'rev-parse', 'HEAD'), tests
 
 
+ISSUE12 = '''# #12 清理舊的匯出檔
+
+本檔是平台 issue #12 的描述，更新後貼回平台。
+
+**以下指令都還沒執行**，每一項確認後才動手。
+
+## 待辦
+
+| 項目 | 指令 | 狀態 |
+|---|---|---|
+| A | `python3 tools/prune_exports.py --days 30` | 待執行 |
+| B | 刪除 `exports/` 底下的 `.bak` 檔 | 待執行 |
+| C | 確認 `todo.json` 已備份 | 待執行 |
+'''
+
+
+def build_deploy(kit, path):
+    issue3 = issue10.issue3
+    issue1 = issue3.issue1
+    issue3.base(kit, path, issue3.CHECKS)
+    readme = issue1.small('3602', '只列未完成', '已完成',
+                          acs=[('AC-1', '`only_pending` 只回傳未完成的待辦 — 檢查方式：`python3 -m unittest -v`')],
+                          steps=[('✅', '**AC-1：只列未完成** — 驗證方式：新增測試先紅後綠；2026-11-13 `python3 -m unittest -v` 全數通過')],
+                          timeline=[('2026-11-12', '建立並核准')], created='2026-11-12')
+    issue1.simple_feature(path, '3602', 'pending-filter', 'only_pending', 'not i["done"]', [2], '2026-11-13', readme)
+
+
+def build_description(kit, path):
+    issue10.issue3.base(kit, path)
+    write(path / 'docs/issue-12-description.md', ISSUE12)
+    commit(path, 'docs: 平台 issue #12 描述草稿', '2026-11-19')
+
+
 def main():
     kit, out = Path(sys.argv[1]).resolve(), Path(sys.argv[2]).resolve()
     out.mkdir(parents=True)
@@ -87,6 +122,10 @@ def main():
         merged = run_check(out / name)
         print(f'{name}: H1 {h1[:7]} HEAD {head[:7]} branch={branch} merged_into_main={merged} '
               f'tests exit={tests[0]} {tests[1]}')
+    build_deploy(kit, out / 'wf40')
+    build_description(kit, out / 'wf40b')
+    for name in ('wf40', 'wf40b'):
+        print(f'{name}: HEAD {git(out / name, "rev-parse", "--short", "HEAD")} branch={git(out / name, "rev-parse", "--abbrev-ref", "HEAD")}')
 
 
 def run_check(path):
