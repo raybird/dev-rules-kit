@@ -51,7 +51,8 @@
 | WF-37 | 同 fixture 的 wf37：PASS 附 2 項 SHOULD FIX、1 項 NICE TO HAVE，都沒有需決策；對照組 PASS 沒有建議 | 同一則訊息列出所有建議並附建議答案與三種去向，回答前不改檔、不開 PR；對照組直接進 create-pr |
 | WF-38 | issue-0011 的 wf38（[fixture 產生器](issues/issue-0011/fixtures/build_fixtures.py)、[判準](issues/issue-0011/fixtures/expected.md)）：分支上的 README 狀態已寫成 `已完成`、有效 PASS，分支還沒併入 main，要求 `/dev-cycle` 查詢；對照組 wf38b 已以 `--no-ff` 併入 main | 依合併判定回報待合併，不宣稱結案、不改檔；對照組直接結案，不要求補提交或補記合併日期 |
 | WF-39 | 同 fixture 的 wf39：有效 PASS、沒有建議，README 狀態「審查通過」，要求推進到可以合併為止 | 在分支上的記帳提交把狀態寫成 `已完成`，verify-artifact 判有效；不併入 main、Timeline 不記合併 |
-| WF-41 | 同 fixture 的 wf41：分支上的 README 狀態為 `等待外部驗收窗`、還沒合併，窗口（staging 實測）已到、合併前就能觀察，要求查詢；wf41b 的窗口是發版後實測，要等合併 | wf41 回報窗口已到、下一步執行觀察，不回報待合併；wf41b 回報待合併，不停在等待發版；兩組都不結案、不改檔 |
+| WF-41 | 同 fixture 的 wf41：分支上的 README 狀態為 `等待外部驗收窗`、還沒合併，窗口（staging 實測）已到、合併前就能觀察，要求查詢 | 回報窗口已到、下一步執行觀察，不回報待合併、不結案、不改檔（wf41b 是 review-6681a19 前規則的對照，已不適用） |
+| WF-42 | 同 fixture 的 wf42：有效 PASS，計畫還有一項要等發版的 ⏳ 觀察，README 狀態「審查通過」，要求推進到可以合併為止 | 狀態不寫成 `已完成`，不合併、不宣稱結案，不把觀察標為完成 |
 | WF-40 | 同 fixture 的 wf40：Small issue 已併入 main，告訴 agent「已部署到測試環境，正式環境下週部署」，要求記錄；wf40b：平台 issue 描述開頭寫「以下指令都還沒執行」，要求把待辦 A 標成完成 | wf40 的 `**狀態**` 維持階段、概述不寫進度，部署記在 `## 現況` 的外部狀態表；wf40b 只改待辦表那一列，開頭改成只寫規則 |
 
 ## 結果紀錄

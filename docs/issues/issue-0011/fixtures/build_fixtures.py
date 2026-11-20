@@ -12,7 +12,8 @@ docs/ 由該 kit 的 init-project.py 部署。fixture 只含下游專案內容�
 - wf40：Small issue 3602（只列未完成）已併入 main，README 狀態「已完成」，沒有 ## 現況；project.md 登記部署查證命令。
 - wf40b：main 上有一份平台 issue #12 的描述檔，開頭寫「以下指令都還沒執行」，待辦表三項都是待執行。
 - wf41：同 wf39，但 H1 的計畫多一項 ⏳ 的 staging 實測（窗口 2026-11-19 已過、合併前就能觀察），保存報告的提交把狀態寫成「等待外部驗收窗」；還沒合併。
-- wf41b：同 wf41，但待觀察項目是發版後實測（發版要等合併後才進行）。
+- wf41b：同 wf41，但待觀察項目是發版後實測（發版要等合併後才進行）。review-6681a19 後的規則不會在合併前寫出這個狀態，保留供對照當時的紀錄。
+- wf42：同 wf41b 的 H1（S3 發版後實測 ⏳），但保存報告的提交把狀態寫成「審查通過」。
 """
 import importlib.util
 import sys
@@ -31,7 +32,7 @@ USAGE = '- `python3 todo.py`：列出\n'
 USAGE_DUE = USAGE + '  - 有到期日的待辦在結尾顯示「（到期 MM/DD）」\n'
 
 
-def build_pass(kit, path, window=None):
+def build_pass(kit, path, window=None, status=None):
     """issue-0010 build_pass 的 clean 組，另在 H1 更新根目錄 README 的使用說明（fixture project.md 的常青文件觸發），
     避免 agent 停下來詢問與本案例無關的常青文件 gate（WF-37 實跑時兩組都問了）。"""
     base, medium, plan, current_state = issue10.base, issue10.medium, issue10.plan, issue10.current_state
@@ -68,7 +69,7 @@ def build_pass(kit, path, window=None):
     text = readme.read_text().replace('## 文件清單', current_state(name, []) + '## 文件清單', 1)
     text = text.replace('| 2026-11-16 | 建立並核准 | 開發者 |',
                         '| 2026-11-16 | 建立並核准 | 開發者 |\n| 2026-11-18 | 審查 PASS | 開發者 |')
-    write(readme, text.replace('**狀態**: 審查中', '**狀態**: ' + ('等待外部驗收窗' if window else '審查通過')))
+    write(readme, text.replace('**狀態**: 審查中', '**狀態**: ' + (status or ('等待外部驗收窗' if window else '審查通過'))))
     commit(path, f'docs: 保存 issue #{ID} 審查報告 {name[:-3]}\n\nRefs: #{ID}', '2026-11-18')
     return h1, git(path, 'rev-parse', 'HEAD'), issue10.run_tests(path)
 
@@ -140,8 +141,8 @@ def main():
         merged = run_check(out / name)
         print(f'{name}: H1 {h1[:7]} HEAD {head[:7]} branch={branch} merged_into_main={merged} '
               f'tests exit={tests[0]} {tests[1]}')
-    for name, window in [('wf41', 'staging'), ('wf41b', 'release')]:
-        h1, head, tests = build_pass(kit, out / name, window)
+    for name, window, status in [('wf41', 'staging', None), ('wf41b', 'release', None), ('wf42', 'release', '審查通過')]:
+        h1, head, tests = build_pass(kit, out / name, window, status)
         print(f'{name}: H1 {h1[:7]} HEAD {head[:7]} branch={git(out / name, "rev-parse", "--abbrev-ref", "HEAD")} '
               f'merged_into_main={run_check(out / name)} tests exit={tests[0]} {tests[1]}')
     build_deploy(kit, out / 'wf40')
