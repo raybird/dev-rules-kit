@@ -16,7 +16,7 @@
 
 收錄依據（AGENTS.md「範圍」）：四個下游專案實際發生，project.md 登記解決不了範本與 dev-cycle 的結案語意。
 
-不在範圍：審查報告累積與記帳提交數量、下游安裝內容瘦身，各自另開 issue。
+不在範圍：審查報告累積與記帳提交數量（[#12](https://github.com/raybird/dev-rules-kit/issues/12)，本 issue 合併後再規劃）、下游部署內容瘦身（[#13](https://github.com/raybird/dev-rules-kit/issues/13)）。
 
 ## 關鍵差異
 
