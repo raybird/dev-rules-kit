@@ -20,7 +20,7 @@
 
 ## 現況
 
-**現行 review**: review-da37945.md
+**現行 review**: review-004e551.md
 
 ## 關鍵差異
 
@@ -157,9 +157,10 @@ Feature: 會變的狀態只寫一處，合併後不必回頭改 README
 | 2026-11-20 | 增量覆審 review-6681a19：RETURN TO execute-task（S1 需決策） |
 | 2026-11-20 | SCN-002 修訂並重新核准：有待觀察項目時合併前不寫終態；舊基線 0379d3e |
 | 2026-11-20 | 增量覆審 review-da37945：PASS，附 SHOULD FIX 1 項、NICE TO HAVE 7 項 |
+| 2026-11-20 | 增量覆審 review-004e551：PASS，附 NICE TO HAVE 3 項 |
 
 ---
 **建立日期**: 2026-11-20  
 **分級**: Medium — 規則、範本、dev-cycle 與一處判定腳本多檔修改，邏輯直接，不需 Phase／Task 拆解  
 **風險**: Medium  
-**狀態**: 審查中
+**狀態**: 審查通過
