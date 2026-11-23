@@ -336,6 +336,15 @@
 | project.md 範本提示登記合併判定與推送、部署、平台狀態的查證命令 | 僅靜態撰寫 | WF-29b：沒有登記時兩組都自行找到 `tools/deployed.py`；登記的效果沒有可觀察差異 |
 | 流程契約 2.4 以下的專案維持現行記帳判定，技能最低契約不變 | 僅靜態撰寫 | `test-evidence.py` 的 2.4 案例；沒有以 2.4 docs 配新技能的 agent 實跑 |
 
+## 未發布 — 下游部署內容瘦身（issue #13，2026-11-23）
+
+| 規則 | 狀態 | 驗證來源 |
+|---|---|---|
+| docs/AGENTS.md 不帶修訂紀錄表，改指向 kit CHANGELOG | 本地測試驗證 | 暫存專案以上一版 kit 初始化後用候選版 `--update`：docs/AGENTS.md 更新、沒有衝突，`--check` OK（docs/issues/issue-0013/evidence/s1-s2-upgrade.txt） |
+| project.md 範本刪掉管理說明；舊範本原文仍被認出 | 本地測試驗證 | test-install 的歷代範本雜湊測試；同一暫存專案 project.md 保持舊範本原文並印出提醒 |
+| INSTALL.md：不用 issue 流程時只建立 project.md，之後完整初始化保留它 | 本地測試驗證 | 暫存專案照輕量步驟只建 project.md 後完整初始化，自訂內容保留、`--check` OK；已存在時不覆蓋（docs/issues/issue-0013/evidence/s3-lite.txt）；agent 照 INSTALL.md 執行未實跑 |
+| INSTALL.md：已整套部署的專案確認沒有 issue 目錄後才列出可移除的檔案 | 僅靜態撰寫 | 使用者 2026-11-23 決定視為文字修訂、不做下游試用 |
+
 ## 未發布 — 狀態只寫階段，沒有待觀察項目時合併前寫好終態（issue #11，2026-11-20）
 
 來源為 [issue #11 的實跑](issues/issue-0011/implementation-plan.md#實作步驟)（Claude Code，claude-opus-5-5，隔離設定；每組 2 輪）。基準組不跑：wf38 的情境在現行規則下不存在，WF-40 只量測候選版，改善不能完全歸功於本次規則。

@@ -1,0 +1,15 @@
+## p1：main 初始化 → 本分支更新
+OK：部署／更新 8 份文件，已建立 project.md 範本。
+提醒：project.md 仍是初始化範本原文，常青文件觸發、驗證命令與地雷登記尚無專案內容。
+待部署／更新：docs/AGENTS.md
+dry-run：未寫入任何文件。
+待部署／更新：docs/AGENTS.md
+OK：部署／更新 1 份文件，既有 project.md 保持原樣。
+提醒：project.md 仍是初始化範本原文，常青文件觸發、驗證命令與地雷登記尚無專案內容。
+OK：核心與本 kit 一致，project.md 已存在；客製語意另行覆核。
+提醒：project.md 仍是初始化範本原文，常青文件觸發、驗證命令與地雷登記尚無專案內容。
+check exit=0
+2
+196:**文件版本**: 2.16
+project.md 保持舊範本原文
+heading grep exit=1

@@ -16,6 +16,7 @@
 - `docs/agents/project.md` - 刪掉開頭第一句
 - `scripts/init-project.py` - `PAST_TEMPLATES` 加入修改前的範本雜湊
 - `INSTALL.md` - 第 3 步補上不用 issue 流程時只建立 project.md 的做法，以及已整套部署的專案可以移除哪些檔
+- `docs/usage.md` - 初始化一節補一句指向 INSTALL.md 第 3 步
 - `CHANGELOG.md`、`docs/rule-verification-status.md`
 
 ## 驗收條件
@@ -32,9 +33,9 @@
 4. **AC-4**：agent 的 issue 流程行為不變：skills/ 與 rules/ 不動，流程契約維持 2.7。 — 檢查方式：`git diff --stat main` 不含 skills/、rules/；五項檢查通過
    - 失敗路徑：skills/ 或 rules/ 有變更，或流程契約改變
 
-- **核准日期**: 待核准
-- **核准來源**: 2026-11-23 使用者在逐題確認中選擇：輕量模式選「INSTALL.md 說明，不改安裝器（建議）」；修訂紀錄選「只留版本行加 CHANGELOG 連結（建議）」；project.md 選「刪第一句，留第二句（建議）」。AC-1～AC-4 的細節（版本號、移除清單與前提、驗證方式）待核准
-- **核准 commit**: 待提交
+- **核准日期**: 2026-11-23
+- **核准來源**: 2026-11-23 使用者在逐題確認中選擇：輕量模式選「INSTALL.md 說明，不改安裝器（建議）」；修訂紀錄選「只留版本行加 CHANGELOG 連結（建議）」；project.md 選「刪第一句，留第二句（建議）」。AC-1～AC-4 的細節（版本號、移除清單與前提、驗證方式）同日使用者選「核准 AC-1～AC-4（建議）」
+- **核准 commit**: ac42c5f
 
 ## 風險與首要驗證
 
@@ -48,27 +49,28 @@
 
 | 編號 | 事項 | 狀態 | 影響 |
 |------|------|------|------|
-| TBD-1 | INSTALL.md 的輕量步驟算不算改變 agent 行為、要不要在發布前於下游試用 | 待確認 | 決定發版前是否需要下游試用；AC-3 |
+| TBD-1 | INSTALL.md 的輕量步驟算不算改變 agent 行為、要不要在發布前於下游試用 | 已解決：2026-11-23 使用者選「視為文字修訂，不試用（建議）」；第 3 步原本就是使用 issue 流程時才執行，這次只補另一種情況的做法，以暫存專案驗證；發版後請回報問題的下游專案照新說明更新 | 決定發版前是否需要下游試用；AC-3 |
 
 ## 實作與驗證步驟
 
-1. 📝 **AC-1：移除修訂紀錄** — 驗證方式：同 AC-1 的檢查方式
-   - 完成證據：執行時回寫
-2. 📝 **AC-2：project.md 範本與 PAST_TEMPLATES** — 驗證方式：同 AC-2 的檢查方式
-   - 完成證據：執行時回寫
-3. 📝 **AC-3：INSTALL.md 輕量步驟與移除說明** — 驗證方式：同 AC-3 的檢查方式
-   - 完成證據：執行時回寫
-4. 📝 **AC-4：CHANGELOG、rule-verification-status 與整體檢查** — 驗證方式：同 AC-4 的檢查方式
-   - 完成證據：執行時回寫
+1. ✅ **AC-1：移除修訂紀錄** — 驗證方式：同 AC-1 的檢查方式
+   - 完成證據：2026-11-23 [evidence/s1-s2-upgrade.txt](evidence/s1-s2-upgrade.txt)：暫存專案以 main 的 kit 初始化後用本分支 `--update`，只更新 docs/AGENTS.md、沒有衝突，`--check` exit 0，文件版本 2.16；check-kit 通過（讀得到流程契約）。AC-1 寫的 `grep -n '修訂紀錄'` 會命中第 169、186 行講下游常青文件修訂紀錄的既有句子，與移除的表無關，改用 `grep -n '^## 修訂紀錄' docs/AGENTS.md`，沒有輸出（exit 1）
+2. ✅ **AC-2：project.md 範本與 PAST_TEMPLATES** — 驗證方式：同 AC-2 的檢查方式
+   - 完成證據：2026-11-23 同上檔：project.md 與 main 的範本逐位元組相同（保持原樣），`--update` 與 `--check` 都印出「project.md 仍是初始化範本原文」；test-install 通過（含歷代範本雜湊測試）
+3. ✅ **AC-3：INSTALL.md 輕量步驟與移除說明** — 驗證方式：同 AC-3 的檢查方式
+   - 完成證據：2026-11-23 [evidence/s3-lite.txt](evidence/s3-lite.txt)：只建 project.md（加一行自訂內容）後執行 `init-project.py`，自訂內容保留，`--check` exit 0；project.md 已存在時輕量步驟不覆蓋。`--dry-run` 不印「既有 project.md 保持原樣」，改為待部署清單不含 project.md，正式執行時才印出該句，視為等價證據。移除說明只靜態核對：有 issue 目錄時不移除的前提寫在步驟本身
+4. ✅ **AC-4：CHANGELOG、rule-verification-status 與整體檢查** — 驗證方式：同 AC-4 的檢查方式
+   - 完成證據：2026-11-23 `git diff --stat main` 不含 skills/、rules/；流程契約 2.7；check-kit、check-links、`bash -n scripts/install.sh`、test-install、test-evidence 全部通過
 
 ## Timeline
 
 | 日期 | 異動 |
 |------|------|
 | 2026-11-23 | 建立 |
+| 2026-11-23 | 核准 AC-1～AC-4 |
 
 ---
 **建立日期**: 2026-11-23  
 **分級**: Small  
 **風險**: Medium\
-**狀態**: 待核准
+**狀態**: 審查中

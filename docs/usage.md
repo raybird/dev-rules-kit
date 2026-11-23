@@ -12,6 +12,8 @@ python3 scripts/init-project.py /path/to/project
 
 專案目錄須已存在。首次部署建立核心規範、`docs/agents/project.md` 與部署基線；把專案驗證命令、邊界與本地 gate 放 project.md。
 
+不用 issue 流程的專案只需要 project.md，做法見 [INSTALL.md](../INSTALL.md#3-初始化或更新專案文件) 第 3 步。
+
 ```bash
 python3 scripts/init-project.py /path/to/project --update --dry-run
 python3 scripts/init-project.py /path/to/project --update
