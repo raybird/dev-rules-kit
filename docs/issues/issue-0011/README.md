@@ -20,7 +20,7 @@
 
 ## 現況
 
-**現行 review**: review-1f90337.md
+**現行 review**: review-0bfbc8b.md
 
 ## 關鍵差異
 
@@ -174,9 +174,10 @@ Feature: 會變的狀態只寫一處，合併後不必回頭改 README
 | 2026-11-23 | S8 完成：下游專案 B 走完主路徑；試用結果與摩擦記在計畫 S8、evidence/s8-downstream.md 與 TBD-9、TBD-10；計畫更新後 PASS 失效，送增量覆審 |
 | 2026-11-23 | 增量覆審 review-1f90337：PASS，附 SHOULD FIX 2 項、NICE TO HAVE 3 項 |
 | 2026-11-23 | 記錄 review-1f90337 建議的結論並修正（TBD-11）；CHANGELOG 與 rule-verification-status 修改後 PASS 失效，送增量覆審 |
+| 2026-11-23 | 增量覆審 review-0bfbc8b：PASS，沒有建議；沒有未豁免的待觀察項目，狀態寫成已完成，是否結案依合併判定 |
 
 ---
 **建立日期**: 2026-11-20  
 **分級**: Medium — 規則、範本、dev-cycle 與一處判定腳本多檔修改，邏輯直接，不需 Phase／Task 拆解  
 **風險**: Medium  
-**狀態**: 審查中
+**狀態**: 已完成
