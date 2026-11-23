@@ -1,0 +1,25 @@
+diff --git a/docs/issues/issue-3602/README.md b/docs/issues/issue-3602/README.md
+index 61b52c4..580fe1b 100644
+--- a/docs/issues/issue-3602/README.md
++++ b/docs/issues/issue-3602/README.md
+@@ -4,6 +4,12 @@
+ 
+ 只列未完成。
+ 
++## 現況
++
++| 外部狀態 | 查證命令 | 上次結果 | 查證日期 |
++|---|---|---|---|
++| 正式環境部署 | `python3 tools/deployed.py` | production：尚無部署紀錄 | 2026-11-20 |
++
+ ## 驗收條件
+ 
+ 1. **AC-1**：`only_pending` 只回傳未完成的待辦 — 檢查方式：`python3 -m unittest -v`
+@@ -20,6 +26,7 @@
+ | 日期 | 異動 | 負責人 |
+ |---|---|---|
+ | 2026-11-12 | 建立並核准 | 開發者 |
++| 2026-11-20 | 已部署至測試環境（使用者回報）；正式環境預計 2026-11-23（週一）部署 | 開發者 |
+ 
+ ---
+ **建立日期**: 2026-11-12  

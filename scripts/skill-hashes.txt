@@ -87,6 +87,7 @@ d84c28c890043184eece40d6a74ad151e310daa88a43f848fd4babf274513ca8  dev-cycle/SKIL
 98914e5297332fe21231250242fc483e8930f6fd5575c4b5cde1e0d9e3ecfc7e  dev-cycle/SKILL.md  v4.7.0  v4.8.1
 f32747ef6fb4723a55021ee9be6bef2f09ffbb5ecc5c1c70e30b32f8eee3347b  dev-cycle/SKILL.md  v4.9.0  v4.9.0
 f43e55f00b039babd861cfdcd6ad93abb7500fb1f007ed81f6f449f22b949f2e  dev-cycle/SKILL.md  v5.1.0  v5.1.0
+00c78b89f931e3589db5e9cff208887074898169eb3fd3babe552948272f432a  dev-cycle/SKILL.md  v5.2.0  v5.2.0
 03eb5b3a81917e7c074de0708fc4cde0d18e9c6eb1e74b1988872fe65104ce94  dev-cycle/SKILL.md  v5.2.0  v5.2.0
 fb92d2ebe9316e266d7b246fb3b1882f77b54663a21bcde61e4d1ad0af75759a  dev-cycle/references/pending-scan.md  v4.10.0  v4.10.0
 f1a03accca42595a00b89a2d258d3af4b8336d76327b978b9f52167542f1d29d  dev-cycle/references/pending-scan.md  v4.11.0  v5.2.0
@@ -94,6 +95,7 @@ f1a03accca42595a00b89a2d258d3af4b8336d76327b978b9f52167542f1d29d  dev-cycle/refe
 8b40d2aa279005438ecd29eb37ee7220fa75df92f31cf9b5a301b90a76ca889b  dev-cycle/references/pending-scan.md  v4.7.1  v4.7.1
 07fa633d1cb5acdb1cd4251351b82a102f1ecd14b1c0f5319cca8152a49212f7  dev-cycle/references/pending-scan.md  v4.7.2  v4.7.2
 f8913b70a517da63e519724c490e059b799e35338087444964eb0ce635051be3  dev-cycle/references/pending-scan.md  v4.8.0  v4.9.0
+0aca57fc55c24a9fdbac846d9dfd1be5f868705069c415faa468151e16a0fe8e  dev-cycle/references/pending-scan.md  v5.2.0  v5.2.0
 0e3475738554e44a9171f82b49c8ec91a48aa5232372a08c3706c04737e1d461  execute-task/SKILL.md  v1.0.0  v1.0.0
 a1cf685b4a2212eebdb3e8e8c326918faef91839f54c6572b45052dc9be8fc65  execute-task/SKILL.md  v1.1.0  v1.1.0
 819ea35fe962b307ce11b13d77c971e93bbcb44112859c7afe55823a8ef43e64  execute-task/SKILL.md  v1.2.0  v1.3.0
@@ -188,6 +190,7 @@ a23c2cc49370e09d24773715c291fc8860cce0181153d53e08d31ba8efb96f33  review/SKILL.m
 445f851492ab011f3ff388ff08fd0d881b259d02ee1ff2b57be4a58c0d40fa95  review/scripts/verify-artifact.py  v4.10.0  v4.10.0
 7b6ef4e24b234c1bba92b20480379ceaec0556d2e0a24163983eca239a24f21c  review/scripts/verify-artifact.py  v4.11.0  v5.2.0
 2aba7968aa2229bef3a384ef3e2e3c21900060968734bd07196c3a94c1978a82  review/scripts/verify-artifact.py  v4.9.0  v4.9.0
+017b8c12d60c6d124db91be471a4cdd3f788a8c8fe3b52f33aa781926b1968af  review/scripts/verify-artifact.py  v5.2.0  v5.2.0
 4a1d383b0e388ede282f92fa565fb1eacfe94423ad6b81e64592a8b357c18aa8  writing-rules/SKILL.md  v2.13.0  v2.13.0
 6d165b9f6bc6c70633824557c1f7d54f0f9046cc7ffc1ae0298a92c313a156b4  writing-rules/SKILL.md  v2.14.0  v2.14.0
 9f155f1832b18211c197e964fd398dd0632a61db088bbf4dda9f7976420f670a  writing-rules/SKILL.md  v2.15.0  v2.16.0

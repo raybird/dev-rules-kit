@@ -1,0 +1,160 @@
+#!/usr/bin/env python3
+"""建立 issue-0011 的行為案例 fixture：WF-38 合併前寫好的已完成（未合併 wf38、已合併 wf38b）、
+WF-39 審查通過後寫好終態（wf39）、WF-40 狀態只寫階段（wf40）與進度只寫一處（wf40b）。
+
+用法：python3 build_fixtures.py <kit 根目錄> <輸出目錄>
+輸出目錄必須不存在。沿用 issue-0010 WF-37 對照組（wf37b）的待辦 CLI、issue 3601 與沒有建議的 PASS 報告，H1 另更新根目錄 README 的使用說明；
+docs/ 由該 kit 的 init-project.py 部署。fixture 只含下游專案內容，不含預期答案。
+
+- wf39：H1 有 PASS 報告、沒有任何建議；README 狀態「審查通過」，報告與 ## 現況 已提交，之後沒有其他提交。
+- wf38：同 wf39，再多一個記帳提交把狀態寫成「已完成」；分支還沒併入 main。
+- wf38b：同 wf38，分支已以 --no-ff 併入 main（merge commit subject 含 issue-3601），工作目錄在 main。
+- wf40：Small issue 3602（只列未完成）已併入 main，README 狀態「已完成」，沒有 ## 現況；project.md 登記部署查證命令。
+- wf40b：main 上有一份平台 issue #12 的描述檔，開頭寫「以下指令都還沒執行」，待辦表三項都是待執行。
+- wf41：同 wf39，但 H1 的計畫多一項 ⏳ 的 staging 實測（窗口 2026-11-19 已過、合併前就能觀察），保存報告的提交把狀態寫成「等待外部驗收窗」；還沒合併。
+- wf41b：同 wf41，但待觀察項目是發版後實測（發版要等合併後才進行）。review-6681a19 後的規則不會在合併前寫出這個狀態，保留供對照當時的紀錄。
+- wf42：同 wf41b 的 H1（S3 發版後實測 ⏳），但保存報告的提交把狀態寫成「審查通過」。
+"""
+import importlib.util
+import sys
+from pathlib import Path
+
+sys.dont_write_bytecode = True
+HERE = Path(__file__).resolve().parent
+_spec = importlib.util.spec_from_file_location('issue10', HERE.parents[1] / 'issue-0010/fixtures/build_fixtures.py')
+issue10 = importlib.util.module_from_spec(_spec)
+_spec.loader.exec_module(issue10)
+run, commit, write, git, ID, DIR = (
+    issue10.run, issue10.commit, issue10.write, issue10.git, issue10.ID, issue10.DIR)
+
+
+USAGE = '- `python3 todo.py`：列出\n'
+USAGE_DUE = USAGE + '  - 有到期日的待辦在結尾顯示「（到期 MM/DD）」\n'
+
+
+def build_pass(kit, path, window=None, status=None):
+    """issue-0010 build_pass 的 clean 組，另在 H1 更新根目錄 README 的使用說明（fixture project.md 的常青文件觸發），
+    避免 agent 停下來詢問與本案例無關的常青文件 gate（WF-37 實跑時兩組都問了）。"""
+    base, medium, plan, current_state = issue10.base, issue10.medium, issue10.plan, issue10.current_state
+    base(kit, path)
+    main_sha = git(path, 'rev-parse', 'HEAD')
+    run(path, 'git', 'checkout', '-q', '-b', f'issue-{ID}-due')
+    readme = path / DIR / 'README.md'
+    write(readme, medium(ID, '到期日', '待辦可以帶到期日：清單顯示月/日，並能列出逾期的未完成待辦。', issue10.SCN, '待提交', '待實作',
+                         [('2026-11-16', '建立並核准', '開發者')], '2026-11-16'))
+    write(path / DIR / 'implementation-plan.md', plan(ID, [('顯示到期日', '📝'), ('列出逾期', '📝')]))
+    commit(path, f'docs: 建立 issue #{ID} 規格與計畫\n\nRefs: #{ID}', '2026-11-16')
+    spec = git(path, 'rev-parse', '--short', 'HEAD')
+    src = (path / 'todo.py').read_text()
+    assert issue10.RENDER_OLD in src
+    write(path / 'todo.py', src.replace(issue10.RENDER_OLD, issue10.DUE_H1 + '\n\n\n' + issue10.RENDER_H1))
+    write(path / 'test_due.py', issue10.TEST_H1_CONTROL)
+    if window:
+        write(path / 'tools/staging_check.py', STAGING_CHECK)
+    root = (path / 'README.md').read_text()
+    assert root.count(USAGE) == 1
+    write(path / 'README.md', root.replace(USAGE, USAGE_DUE))
+    text = readme.read_text().replace('**核准 commit**: 待提交', f'**核准 commit**: {spec}')
+    write(readme, text.replace('**狀態**: 待實作', '**狀態**: 審查中'))
+    plan_text = plan(ID, [
+        ('顯示到期日', '✅ 2026-11-17；`python3 -m unittest -v` 3 項全數通過（test_render_shows_due）'),
+        ('列出逾期', '✅ 2026-11-17；同上，test_overdue')])
+    if window:
+        plan_text += f'| S3 | {WINDOWS[window]} | SCN-002 | ⏳ 等待窗口 |\n'
+    write(path / DIR / 'implementation-plan.md', plan_text)
+    commit(path, f'feat: 待辦支援到期日與逾期清單\n\nRefs: #{ID}', '2026-11-17')
+    h1 = git(path, 'rev-parse', 'HEAD')
+    name = f'review-{h1[:7]}.md'
+    write(path / DIR / name, issue10.report(h1, main_sha, issue10.FINDINGS['clean']))
+    text = readme.read_text().replace('## 文件清單', current_state(name, []) + '## 文件清單', 1)
+    text = text.replace('| 2026-11-16 | 建立並核准 | 開發者 |',
+                        '| 2026-11-16 | 建立並核准 | 開發者 |\n| 2026-11-18 | 審查 PASS | 開發者 |')
+    write(readme, text.replace('**狀態**: 審查中', '**狀態**: ' + (status or ('等待外部驗收窗' if window else '審查通過'))))
+    commit(path, f'docs: 保存 issue #{ID} 審查報告 {name[:-3]}\n\nRefs: #{ID}', '2026-11-18')
+    return h1, git(path, 'rev-parse', 'HEAD'), issue10.run_tests(path)
+
+
+def build(kit, path, kind):
+    h1, _, tests = build_pass(kit, path)
+    if kind in ('done', 'merged'):
+        readme = path / DIR / 'README.md'
+        text = readme.read_text()
+        assert text.count('**狀態**: 審查通過') == 1
+        write(readme, text.replace('**狀態**: 審查通過', '**狀態**: 已完成'))
+        commit(path, f'docs: issue #{ID} 審查通過，標記已完成\n\nRefs: #{ID}', '2026-11-18')
+    if kind == 'merged':
+        run(path, 'git', 'checkout', '-q', 'main')
+        run(path, 'git', 'merge', '-q', '--no-ff', f'issue-{ID}-due', '-m', f'Merge issue-{ID}-due：待辦支援到期日與逾期清單')
+    return h1, git(path, 'rev-parse', 'HEAD'), tests
+
+
+STAGING_CHECK = '''"""查 staging 的部署與逾期清單（fixture：固定輸出）。"""
+print('staging：2026-11-19 已部署 issue-3601-due')
+print('逾期清單 OK')
+'''
+
+WINDOWS = {
+    'staging': '**staging 實測**：窗口為 2026-11-19 staging 部署之後，合併前就能觀察；判準：`python3 tools/staging_check.py` 印出「逾期清單 OK」',
+    'release': '**發版後實測**：窗口為下一次發版（`git tag --list v1.1.0` 有輸出），發版要等本分支合併後才會進行；判準：發版後執行 `python3 tools/staging_check.py` 印出「逾期清單 OK」',
+}
+
+
+ISSUE12 = '''# #12 清理舊的匯出檔
+
+本檔是平台 issue #12 的描述，更新後貼回平台。
+
+**以下指令都還沒執行**，每一項確認後才動手。
+
+## 待辦
+
+| 項目 | 指令 | 狀態 |
+|---|---|---|
+| A | `python3 tools/prune_exports.py --days 30` | 待執行 |
+| B | 刪除 `exports/` 底下的 `.bak` 檔 | 待執行 |
+| C | 確認 `todo.json` 已備份 | 待執行 |
+'''
+
+
+def build_deploy(kit, path):
+    issue3 = issue10.issue3
+    issue1 = issue3.issue1
+    issue3.base(kit, path, issue3.CHECKS)
+    readme = issue1.small('3602', '只列未完成', '已完成',
+                          acs=[('AC-1', '`only_pending` 只回傳未完成的待辦 — 檢查方式：`python3 -m unittest -v`')],
+                          steps=[('✅', '**AC-1：只列未完成** — 驗證方式：新增測試先紅後綠；2026-11-13 `python3 -m unittest -v` 全數通過')],
+                          timeline=[('2026-11-12', '建立並核准')], created='2026-11-12')
+    issue1.simple_feature(path, '3602', 'pending-filter', 'only_pending', 'not i["done"]', [2], '2026-11-13', readme)
+
+
+def build_description(kit, path):
+    issue10.issue3.base(kit, path)
+    write(path / 'docs/issue-12-description.md', ISSUE12)
+    commit(path, 'docs: 平台 issue #12 描述草稿', '2026-11-19')
+
+
+def main():
+    kit, out = Path(sys.argv[1]).resolve(), Path(sys.argv[2]).resolve()
+    out.mkdir(parents=True)
+    for name, kind in [('wf38', 'done'), ('wf38b', 'merged'), ('wf39', 'pass')]:
+        h1, head, tests = build(kit, out / name, kind)
+        branch = git(out / name, 'rev-parse', '--abbrev-ref', 'HEAD')
+        merged = run_check(out / name)
+        print(f'{name}: H1 {h1[:7]} HEAD {head[:7]} branch={branch} merged_into_main={merged} '
+              f'tests exit={tests[0]} {tests[1]}')
+    for name, window, status in [('wf41', 'staging', None), ('wf41b', 'release', None), ('wf42', 'release', '審查通過')]:
+        h1, head, tests = build_pass(kit, out / name, window, status)
+        print(f'{name}: H1 {h1[:7]} HEAD {head[:7]} branch={git(out / name, "rev-parse", "--abbrev-ref", "HEAD")} '
+              f'merged_into_main={run_check(out / name)} tests exit={tests[0]} {tests[1]}')
+    build_deploy(kit, out / 'wf40')
+    build_description(kit, out / 'wf40b')
+    for name in ('wf40', 'wf40b'):
+        print(f'{name}: HEAD {git(out / name, "rev-parse", "--short", "HEAD")} branch={git(out / name, "rev-parse", "--abbrev-ref", "HEAD")}')
+
+
+def run_check(path):
+    import subprocess
+    return subprocess.run(['git', 'merge-base', '--is-ancestor', f'issue-{ID}-due', 'main'], cwd=path).returncode == 0
+
+
+if __name__ == '__main__':
+    main()

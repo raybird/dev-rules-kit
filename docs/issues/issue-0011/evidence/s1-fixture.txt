@@ -1,0 +1,52 @@
+# S1 fixture 檢查（2026-11-20，kit 工作樹 3be99fb 加上未提交的 S1 修改）
+$ python3 docs/issues/issue-0011/fixtures/build_fixtures.py . <暫存目錄>
+wf38: H1 7c47fcc HEAD a71d294 branch=issue-3601-due merged_into_main=False tests exit=0 OK
+wf38b: H1 7c47fcc HEAD 623123d branch=main merged_into_main=True tests exit=0 OK
+wf39: H1 7c47fcc HEAD b4f569b branch=issue-3601-due merged_into_main=False tests exit=0 OK
+
+## wf38
+$ git log --oneline --graph --all
+* a71d294 docs: issue #3601 審查通過，標記已完成
+* b4f569b docs: 保存 issue #3601 審查報告 review-7c47fcc
+* 7c47fcc feat: 待辦支援到期日與逾期清單
+* 6eb0ded docs: 建立 issue #3601 規格與計畫
+* f9de3a6 chore: 初始化待辦 CLI 與流程規範
+$ grep 流程契約與狀態
+197:**流程契約**: 2.7
+59:**狀態**: 已完成
+$ git merge-base --is-ancestor issue-3601-due main
+exit=1
+$ verify-artifact.py --reviewed 7c47fcc --head issue-3601-due
+OK：被審查提交之後只有記帳變更，原 review 可依其真實判定沿用。變更：新增報告 docs/issues/issue-3601/review-7c47fcc.md、狀態（審查中 → 已完成）、Timeline、現況、現行 review（（無） → review-7c47fcc.md）
+
+## wf38b
+$ git log --oneline --graph --all
+*   623123d Merge issue-3601-due：待辦支援到期日與逾期清單
+|\  
+| * a71d294 docs: issue #3601 審查通過，標記已完成
+| * b4f569b docs: 保存 issue #3601 審查報告 review-7c47fcc
+| * 7c47fcc feat: 待辦支援到期日與逾期清單
+| * 6eb0ded docs: 建立 issue #3601 規格與計畫
+|/  
+* f9de3a6 chore: 初始化待辦 CLI 與流程規範
+$ grep 流程契約與狀態
+197:**流程契約**: 2.7
+59:**狀態**: 已完成
+$ git merge-base --is-ancestor issue-3601-due main
+exit=0
+$ verify-artifact.py --reviewed 7c47fcc --head issue-3601-due
+OK：被審查提交之後只有記帳變更，原 review 可依其真實判定沿用。變更：新增報告 docs/issues/issue-3601/review-7c47fcc.md、狀態（審查中 → 已完成）、Timeline、現況、現行 review（（無） → review-7c47fcc.md）
+
+## wf39
+$ git log --oneline --graph --all
+* b4f569b docs: 保存 issue #3601 審查報告 review-7c47fcc
+* 7c47fcc feat: 待辦支援到期日與逾期清單
+* 6eb0ded docs: 建立 issue #3601 規格與計畫
+* f9de3a6 chore: 初始化待辦 CLI 與流程規範
+$ grep 流程契約與狀態
+197:**流程契約**: 2.7
+59:**狀態**: 審查通過
+$ git merge-base --is-ancestor issue-3601-due main
+exit=1
+$ verify-artifact.py --reviewed 7c47fcc --head issue-3601-due
+OK：被審查提交之後只有記帳變更，原 review 可依其真實判定沿用。變更：新增報告 docs/issues/issue-3601/review-7c47fcc.md、狀態（審查中 → 審查通過）、Timeline、現況、現行 review（（無） → review-7c47fcc.md）
