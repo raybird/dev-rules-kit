@@ -137,6 +137,7 @@ Feature: 審查在處理建議後收斂，報告只寫本輪的內容
 | TBD-4 | WF-43 的誘餌沒有鑑別力（基準組也沒有對它提建議），要不要換更強的誘餌重跑 | 已解決：2026-11-24 使用者選「照實記錄，交給下游試用觀察（建議）」。限制已記在 evidence/s2-results.md、規則驗證狀態與 CHANGELOG；收斂效果改由下游試用的實際覆審觀察 | SCN-001；S4 的觀察項目 |
 | TBD-5 | 下游試用看到建議連鎖：照 NICE TO HAVE 修正後，下一輪對那次修正提出新的、只影響閱讀的 NICE TO HAVE，收斂靠使用者選不修 | 已解決：2026-11-24 使用者選「只記錄，不追蹤」，記在 evidence/s4-downstream-trial.md，不改規則、不另開 issue | SCN-001 |
 | TBD-6 | review-03fb11b（PASS）附 SHOULD FIX 2 項、NICE TO HAVE 5 項，要修哪些 | 已解決：2026-11-24 使用者選 7 項都修正：範本補舊流程契約的寫法、補齊未實跑揭露、MUST FIX 例外補例子、記帳提交不算夾帶修改、usage.md 補 2.8 說明、s2-results 補重跑版本、s4 對 2.7 的說法改準；修正在 `e10971e`，增量覆審 review-e10971e | SCN-001～007 |
+| TBD-7 | review-e10971e（PASS）附 NICE TO HAVE 1 項（usage.md 新加的說明沒寫 MUST FIX 照常列出），要不要修 | 已解決：2026-11-24 使用者選「不修，審查收斂」。權威定義在 review-evidence.md「增量覆審」已寫明 MUST FIX 照常列出；計畫 S5 的列不改，以免 PASS 失效，審查證據見 `## 現況` | SCN-003 |
 
 ## Timeline
 
@@ -152,4 +153,4 @@ Feature: 審查在處理建議後收斂，報告只寫本輪的內容
 **建立日期**: 2026-11-24  
 **分級**: Medium — 修改 review-evidence.md、review 與 dev-cycle 技能，加兩個回歸案例；不改檢查器、不需 Phase／Task 拆解  
 **風險**: Medium\
-**狀態**: 審查通過（review-e10971e）
+**狀態**: 已完成
