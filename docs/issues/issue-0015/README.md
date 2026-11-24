@@ -17,7 +17,7 @@
 
 ## 現況
 
-**現行 review**: review-fbaac77.md
+**現行 review**: review-7cc8801.md
 
 ## 快速導覽
 
@@ -131,9 +131,10 @@ Feature: 下游試用候選版有固定、可重現的做法
 | 2026-11-24 | 建立；使用者決定 docs 放法、用法錯誤、試用設定與試用需求 | 使用者／Claude Code |
 | 2026-11-24 | 使用者核准 SCN-001～005 | 使用者 |
 | 2026-11-24 | 審查 review-fbaac77：RETURN，MUST FIX 2 項（試用腳本遇到 symlink 會寫到原處、相對連結的技能斷掉） | Claude Code |
+| 2026-11-24 | 增量覆審 review-7cc8801：PASS，附 NICE TO HAVE 1 項 | Claude Code |
 
 ---
 **建立日期**: 2026-11-24  
 **分級**: Medium — 維護文件、一支新腳本與 verify-artifact 的錯誤分類，不改 docs/AGENTS.md 與流程契約；不需 Phase／Task 拆解  
 **風險**: Medium\
-**狀態**: 審查中
+**狀態**: 審查通過
