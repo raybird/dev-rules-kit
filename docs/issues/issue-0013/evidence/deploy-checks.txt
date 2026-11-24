@@ -1,0 +1,114 @@
+上一版 kit：071fa2811ad504cad15383fe93820756f605b55d
+候選版 kit：591cdc9fd8b32cf4859135608ad826fd40c8c564
+
+## p1：上一版初始化 → 候選版更新（AC-1、AC-2）
+$ python3 <暫存目錄>/old/scripts/init-project.py .
+待部署／更新：docs/AGENTS.md
+待部署／更新：docs/agents/acceptance.md
+待部署／更新：docs/agents/document-types.md
+待部署／更新：docs/agents/issue-checklist.md
+待部署／更新：docs/agents/project.md
+待部署／更新：docs/agents/readme-templates.md
+待部署／更新：docs/agents/review-evidence.md
+待部署／更新：docs/agents/verification.md
+OK：部署／更新 8 份文件，已建立 project.md 範本。
+提醒：project.md 仍是初始化範本原文，常青文件觸發、驗證命令與地雷登記尚無專案內容。
+[exit 0]
+$ python3 <暫存目錄>/new/scripts/init-project.py . --update --dry-run
+待部署／更新：docs/AGENTS.md
+dry-run：未寫入任何文件。
+[exit 0]
+$ python3 <暫存目錄>/new/scripts/init-project.py . --update
+待部署／更新：docs/AGENTS.md
+OK：部署／更新 1 份文件，既有 project.md 保持原樣。
+提醒：project.md 仍是初始化範本原文，常青文件觸發、驗證命令與地雷登記尚無專案內容。
+[exit 0]
+$ python3 <暫存目錄>/new/scripts/init-project.py . --check
+OK：核心與本 kit 一致，project.md 已存在；客製語意另行覆核。
+提醒：project.md 仍是初始化範本原文，常青文件觸發、驗證命令與地雷登記尚無專案內容。
+[exit 0]
+$ grep -n ^## 修訂紀錄 docs/AGENTS.md
+[exit 1]
+$ grep -n ^\*\*文件版本\*\*\|^\*\*流程契約\*\*\|CHANGELOG docs/AGENTS.md
+196:**文件版本**: 2.16
+197:**流程契約**: 2.7
+200:各版異動見 kit 的 [CHANGELOG](https://github.com/raybird/dev-rules-kit/blob/main/CHANGELOG.md)。
+[exit 0]
+$ cmp docs/agents/project.md <暫存目錄>/old/docs/agents/project.md
+[exit 0]
+
+## p2：輕量步驟只建 project.md → 之後完整初始化（AC-3）
+$ [ -e docs/agents/project.md ] || cp <候選版>/docs/agents/project.md docs/agents/project.md
+[exit 0]
+$ echo "自訂：測試命令 make test" >> docs/agents/project.md
+$ ls docs/agents
+project.md
+[exit 0]
+$ python3 <暫存目錄>/new/scripts/init-project.py . --dry-run
+待部署／更新：docs/AGENTS.md
+待部署／更新：docs/agents/acceptance.md
+待部署／更新：docs/agents/document-types.md
+待部署／更新：docs/agents/issue-checklist.md
+待部署／更新：docs/agents/readme-templates.md
+待部署／更新：docs/agents/review-evidence.md
+待部署／更新：docs/agents/verification.md
+dry-run：未寫入任何文件。
+[exit 0]
+$ python3 <暫存目錄>/new/scripts/init-project.py .
+待部署／更新：docs/AGENTS.md
+待部署／更新：docs/agents/acceptance.md
+待部署／更新：docs/agents/document-types.md
+待部署／更新：docs/agents/issue-checklist.md
+待部署／更新：docs/agents/readme-templates.md
+待部署／更新：docs/agents/review-evidence.md
+待部署／更新：docs/agents/verification.md
+OK：部署／更新 7 份文件，既有 project.md 保持原樣。
+[exit 0]
+$ python3 <暫存目錄>/new/scripts/init-project.py . --check
+OK：核心與本 kit 一致，project.md 已存在；客製語意另行覆核。
+[exit 0]
+$ tail -1 docs/agents/project.md
+自訂：測試命令 make test
+[exit 0]
+
+## p3：輕量步驟遇到已存在的 project.md 不覆蓋（AC-3）
+$ printf "# 既有的專案規範\n" > docs/agents/project.md
+$ [ -e docs/agents/project.md ] || cp <候選版>/docs/agents/project.md docs/agents/project.md
+[exit 0]
+$ cat docs/agents/project.md
+# 既有的專案規範
+[exit 0]
+
+## p4：已整套部署的專案，可移除清單取自 manifest 的 files（AC-3 修訂）
+$ python3 <暫存目錄>/new/scripts/init-project.py .
+待部署／更新：docs/AGENTS.md
+待部署／更新：docs/agents/acceptance.md
+待部署／更新：docs/agents/document-types.md
+待部署／更新：docs/agents/issue-checklist.md
+待部署／更新：docs/agents/project.md
+待部署／更新：docs/agents/readme-templates.md
+待部署／更新：docs/agents/review-evidence.md
+待部署／更新：docs/agents/verification.md
+OK：部署／更新 8 份文件，已建立 project.md 範本。
+提醒：project.md 仍是初始化範本原文，常青文件觸發、驗證命令與地雷登記尚無專案內容。
+[exit 0]
+$ printf "# 專案地雷\n" > docs/agents/pitfalls.md
+$ python3 -c "列出 docs/.dev-rules-kit.json 的 files"
+docs/AGENTS.md
+docs/agents/acceptance.md
+docs/agents/document-types.md
+docs/agents/issue-checklist.md
+docs/agents/readme-templates.md
+docs/agents/review-evidence.md
+docs/agents/verification.md
+[exit 0]
+$ ls docs/agents
+acceptance.md
+document-types.md
+issue-checklist.md
+pitfalls.md
+project.md
+readme-templates.md
+review-evidence.md
+verification.md
+[exit 0]

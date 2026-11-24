@@ -39,7 +39,7 @@
 
 - **核准日期**: 2026-11-24
 - **核准來源**: 2026-11-23 使用者在逐題確認中選擇：輕量模式選「INSTALL.md 說明，不改安裝器（建議）」；修訂紀錄選「只留版本行加 CHANGELOG 連結（建議）」；project.md 選「刪第一句，留第二句（建議）」。AC-1～AC-4 的細節（版本號、移除清單與前提、驗證方式）同日使用者選「核准 AC-1～AC-4（建議）」。2026-11-24 AC-3 依 review-26bf4a4 S1 修訂，使用者選「限定為 manifest 列出的檔案（建議）」（選項寫明 AC-3 修訂為只列 manifest `files` 記錄的檔案與 manifest 本身），視為重新核准
-- **核准 commit**: 待提交
+- **核准 commit**: 591cdc9
 
 ## 風險與首要驗證
 
@@ -59,13 +59,13 @@
 ## 實作與驗證步驟
 
 1. ✅ **AC-1：移除修訂紀錄** — 驗證方式：同 AC-1 的檢查方式
-   - 完成證據：2026-11-23 [evidence/s1-s2-upgrade.txt](evidence/s1-s2-upgrade.txt)：暫存專案以 main 的 kit 初始化後用本分支 `--update`，只更新 docs/AGENTS.md、沒有衝突，`--check` exit 0，文件版本 2.16；check-kit 通過（讀得到流程契約）。AC-1 寫的 `grep -n '修訂紀錄'` 會命中第 169、186 行講下游常青文件修訂紀錄的既有句子，與移除的表無關，改用 `grep -n '^## 修訂紀錄' docs/AGENTS.md`，沒有輸出（exit 1）
+   - 完成證據：2026-11-24 [evidence/deploy-checks.txt](evidence/deploy-checks.txt)（[run_deploy_checks.sh](evidence/run_deploy_checks.sh) 以 `git archive` 取出上一版 `071fa28` 與候選版 `591cdc9`，每條命令附 exit code） p1：上一版初始化後用候選版 `--update`，只更新 docs/AGENTS.md、沒有衝突，`--check` exit 0，文件版本 2.16；check-kit 通過（讀得到流程契約）。AC-1 寫的 `grep -n '修訂紀錄'` 會命中第 169、186 行講下游常青文件修訂紀錄的既有句子，與移除的表無關，改用 `grep -n '^## 修訂紀錄' docs/AGENTS.md`，沒有輸出（exit 1）
 2. ✅ **AC-2：project.md 範本與 PAST_TEMPLATES** — 驗證方式：同 AC-2 的檢查方式
-   - 完成證據：2026-11-23 同上檔：project.md 與 main 的範本逐位元組相同（保持原樣），`--update` 與 `--check` 都印出「project.md 仍是初始化範本原文」；test-install 通過（含歷代範本雜湊測試）
+   - 完成證據：2026-11-24 同上檔 p1：project.md 與 main 的範本逐位元組相同（保持原樣），`--update` 與 `--check` 都印出「project.md 仍是初始化範本原文」；test-install 通過（含歷代範本雜湊測試）
 3. ✅ **AC-3：INSTALL.md 輕量步驟與移除說明** — 驗證方式：同 AC-3 的檢查方式
-   - 完成證據：2026-11-23 [evidence/s3-lite.txt](evidence/s3-lite.txt)：只建 project.md（加一行自訂內容）後執行 `init-project.py`，自訂內容保留，`--check` exit 0；project.md 已存在時輕量步驟不覆蓋。`--dry-run` 不印「既有 project.md 保持原樣」，改為待部署清單不含 project.md，正式執行時才印出該句，視為等價證據。移除說明只靜態核對：有 issue 目錄時不移除的前提寫在步驟本身
+   - 完成證據：2026-11-24 同上檔 p2～p4：只建 project.md（加一行自訂內容）後執行 `init-project.py`，自訂內容保留，`--check` exit 0（p2）；project.md 已存在時輕量步驟不覆蓋（p3）；整套部署後專案自加的 docs/agents/pitfalls.md 不在 manifest `files` 裡，修訂後的可移除清單不會列它（p4）。`--dry-run` 不印「既有 project.md 保持原樣」，改為待部署清單不含 project.md，正式執行時才印出該句，視為等價證據。移除說明只靜態核對：有 issue 目錄時不移除的前提寫在步驟本身
 4. ✅ **AC-4：CHANGELOG、rule-verification-status 與整體檢查** — 驗證方式：同 AC-4 的檢查方式
-   - 完成證據：2026-11-23 `git diff --stat main` 不含 skills/、rules/；流程契約 2.7；check-kit、check-links、`bash -n scripts/install.sh`、test-install、test-evidence 全部通過
+   - 完成證據：2026-11-24 `git diff --stat main` 不含 skills/、rules/；流程契約 2.7；五項檢查在 `591cdc9` 全部 exit 0（test-install 32 項、test-evidence 312 項），輸出見 [evidence/kit-checks.txt](evidence/kit-checks.txt)
 
 ## Timeline
 
@@ -75,9 +75,10 @@
 | 2026-11-23 | 核准 AC-1～AC-4 |
 | 2026-11-23 | 審查 review-26bf4a4：PASS，附 SHOULD FIX 2 項（1 項需決策）、NICE TO HAVE 4 項 |
 | 2026-11-24 | AC-3 依 review-26bf4a4 S1 修訂並重新核准（舊基線 ac42c5f）；記錄建議的結論（TBD-2） |
+| 2026-11-24 | 依 review-26bf4a4 S2 重跑暫存專案驗證並保存命令與版本；送增量覆審 |
 
 ---
 **建立日期**: 2026-11-23  
 **分級**: Small  
 **風險**: Medium\
-**狀態**: 修正中
+**狀態**: 審查中

@@ -340,10 +340,10 @@
 
 | 規則 | 狀態 | 驗證來源 |
 |---|---|---|
-| docs/AGENTS.md 不帶修訂紀錄表，改指向 kit CHANGELOG | 本地測試驗證 | 暫存專案以上一版 kit 初始化後用候選版 `--update`：docs/AGENTS.md 更新、沒有衝突，`--check` OK（docs/issues/issue-0013/evidence/s1-s2-upgrade.txt） |
+| docs/AGENTS.md 不帶修訂紀錄表，改指向 kit CHANGELOG | 本地測試驗證 | 暫存專案以上一版 kit 初始化後用候選版 `--update`：docs/AGENTS.md 更新、沒有衝突，`--check` OK（docs/issues/issue-0013/evidence/deploy-checks.txt p1） |
 | project.md 範本刪掉管理說明；舊範本原文仍被認出 | 本地測試驗證 | test-install 的歷代範本雜湊測試；同一暫存專案 project.md 保持舊範本原文並印出提醒 |
-| INSTALL.md：不用 issue 流程時只建立 project.md，之後完整初始化保留它 | 本地測試驗證 | 暫存專案照輕量步驟只建 project.md 後完整初始化，自訂內容保留、`--check` OK；已存在時不覆蓋（docs/issues/issue-0013/evidence/s3-lite.txt）；agent 照 INSTALL.md 執行未實跑 |
-| INSTALL.md：已整套部署的專案確認沒有 issue 目錄後才列出可移除的檔案 | 僅靜態撰寫 | 使用者 2026-11-23 決定視為文字修訂、不做下游試用 |
+| INSTALL.md：不用 issue 流程時只建立 project.md，之後完整初始化保留它 | 本地測試驗證 | 暫存專案照輕量步驟只建 project.md 後完整初始化，自訂內容保留、`--check` OK；已存在時不覆蓋（docs/issues/issue-0013/evidence/deploy-checks.txt p2、p3）；agent 照 INSTALL.md 執行未實跑 |
+| INSTALL.md：已整套部署的專案確認沒有 issue 目錄後，只列出 manifest `files` 記錄的檔案與 manifest 本身 | 本地測試驗證（清單來源）；判斷與刪除未實跑 | deploy-checks.txt p4：專案自加的 docs/agents/ 檔案不在 `files`；agent 照步驟判斷 issue 目錄並列清單未實跑；使用者 2026-11-23 決定視為文字修訂、不做下游試用 |
 
 ## 未發布 — 狀態只寫階段，沒有待觀察項目時合併前寫好終態（issue #11，2026-11-20）
 
