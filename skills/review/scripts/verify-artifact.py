@@ -12,6 +12,8 @@
 不模擬 CommonMark 的 code span 與 HTML 區塊，寧可多凍結，避免藏住或偽造凍結章節。
 
 判定之後另印提醒（不影響判定與 exit code）：待確認事項新增或修改的列，狀態不是規定的三個值之一。
+
+exit code：0 沿用、1 INVALID（需重新審查）、2 用法錯誤（參數本身有誤，修正後重跑，不是有效性判定）。
 """
 import argparse
 from pathlib import PurePosixPath
@@ -53,6 +55,10 @@ class Invalid(ValueError):
     pass
 
 
+class UsageError(Exception):
+    """參數本身有誤；在任何有效性檢查之前判定。"""
+
+
 def make_git(repo):
     def git(*args, check=True):
         result = subprocess.run(['git', '-C', repo, *args], capture_output=True, text=True)
@@ -65,7 +71,7 @@ def make_git(repo):
 def issue_dir(path):
     parts = PurePosixPath(path).parts
     if len(parts) < 3 or parts[:2] != ('docs', 'issues') or not parts[2].startswith('issue-'):
-        raise Invalid(f'無法辨認 issue 目錄：{path}')
+        raise UsageError(f'無法辨認 issue 目錄：{path}')
     return '/'.join(parts[:3])
 
 
@@ -392,21 +398,31 @@ def bookkeeping(git, reviewed, head, artifact, issue, version):
     return f'OK：被審查提交之後只有記帳變更，原 review 可依其真實判定沿用。變更：{summary}'
 
 
+def commit_of(git, option, value):
+    result = git('rev-parse', '--verify', '--quiet', value + '^{commit}', check=False)
+    if result.returncode:
+        raise UsageError(f'{option} 不是存在的提交：{value}')
+    return result.stdout.strip()
+
+
 def verify(repo, reviewed, head, artifact=None, issue=None):
-    git = make_git(make_git(repo)('rev-parse', '--show-toplevel').stdout.strip())
-    reviewed = git('rev-parse', '--verify', reviewed + '^{commit}').stdout.strip()
-    head = git('rev-parse', '--verify', head + '^{commit}').stdout.strip()
+    top = make_git(repo)('rev-parse', '--show-toplevel', check=False)
+    if top.returncode:
+        raise UsageError(f'--repo 不是 Git repo：{repo}')
+    git = make_git(top.stdout.strip())
+    reviewed = commit_of(git, '--reviewed', reviewed)
+    head = commit_of(git, '--head', head)
     if artifact is None and issue is None:
-        raise Invalid('需要 --artifact 或 --issue')
+        raise UsageError('需要 --artifact 或 --issue')
     if artifact is not None:
         path = PurePosixPath(artifact)
         if (len(path.parts) != 4 or path.parts[:2] != ('docs', 'issues')
                 or not path.parts[2].startswith('issue-')
                 or path.name != f'review-{reviewed[:7]}.md' or str(path) != artifact):
-            raise Invalid('artifact 路徑與被審查 SHA 不符')
+            raise UsageError('artifact 路徑與被審查 SHA 不符')
     target = issue_dir(artifact or issue)
     if artifact is not None and issue is not None and issue_dir(issue) != target:
-        raise Invalid('--artifact 與 --issue 指向不同 issue')
+        raise UsageError('--artifact 與 --issue 指向不同 issue')
     version = contract_of(git, reviewed)
     if version is None or version[0] != 2 or version < (2, 4):
         found = '讀不到流程契約' if version is None else f'流程契約 {version[0]}.{version[1]}'
@@ -476,6 +492,9 @@ def main():
     code = 0
     try:
         print(verify(args.repo, args.reviewed, args.head, args.artifact, args.issue))
+    except UsageError as error:
+        print(f'用法錯誤：{error}；修正參數後重跑，這不是有效性判定。', file=sys.stderr)
+        return 2
     except (ValueError, subprocess.CalledProcessError) as error:
         print(f'INVALID：{error}', file=sys.stderr)
         code = 1

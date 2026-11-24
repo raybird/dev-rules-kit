@@ -40,6 +40,11 @@ issue README 的 `**狀態**` 只寫階段；沒有待觀察項目時，`已完�
 - project.md 範本刪掉開頭的管理說明（「本檔由專案維護…更新上游時保留」；專案內容集中於 project.md、`--update` 保留既有 project.md 已寫在 docs/AGENTS.md「客製邊界與同步策略」，初始化只在不存在時建立寫在 INSTALL.md 第 3 步），保留給 agent 的讀取與不猜測說明；修改前的範本雜湊加入 `init-project.py`，舊範本原文的 project.md 仍會收到「仍是初始化範本原文」提醒。
 - INSTALL.md 第 3 步：不用 issue 流程的專案只建立 project.md（不存在時複製範本，不執行 `init-project.py`），之後要用 issue 流程再照常初始化；先前已整套部署的專案，確認沒有 issue 目錄後，由使用者決定是否移除 `docs/.dev-rules-kit.json` 的 `files` 記錄的檔案與這個 manifest 本身；不確定要不要用 issue 流程時先問使用者。
 
+### 變更（`skills/review/`、維護工具，[issue #15](https://github.com/raybird/dev-rules-kit/issues/15)）
+
+- verify-artifact.py：參數本身有誤時（`--issue` 不是 `docs/issues/issue-{ID}`、artifact 檔名與 `--reviewed` 不符、`--reviewed`／`--head` 不是存在的提交、`--artifact` 與 `--issue` 指向不同 issue、兩者都沒給、`--repo` 不是 Git repo）改回 exit 2，訊息以「用法錯誤：」開頭並說明這不是有效性判定。原本和「需重新審查」一樣回 exit 1 與 `INVALID：`，看起來像 PASS 失效。有效性判定與 exit 0／1 不變；review 技能補一句 exit 2 的意思。
+- 維護者的下游試用：新增 `scripts/trial-session.sh <候選版 SHA>`，在下游 worktree 開一個只把 kit 技能換成該 SHA 的 Claude Code session，設定目錄在 `~/.cache`；技能目錄解參照複製，腳本本身不修改原本的 `~/.claude` 與 `~/.claude.json`（session 執行中對以 symlink 共用的記憶、settings 等的寫入會進原檔）；workflow-regression 新增「下游試用」，試用開始時請下游使用者選候選版 docs 隨交付分支合併或合併前 revert（各附代價）。根目錄 AGENTS.md 原本要求試用結果記在 `## 現況`，與 `## 現況` 的格式矛盾，改記在該 kit issue 的 evidence 檔。不部署到下游。
+
 ### 驗證
 
 - 五項檢查通過。
@@ -51,6 +56,7 @@ issue README 的 `**狀態**` 只寫階段；沒有待觀察項目時，`已完�
 - 未實跑：合併前觀察做完之後的推進（寫證據、重新審查、在保存 PASS 的提交寫 `已完成`）、快轉合併的合併判定、合併後記錄觀察時一併寫 `已完成`、懸置掃描讀目標分支、新範本建立 issue、合併後是 `待提交` 時 reviewer 與 dev-cycle 的判讀、下游 docs 仍是流程契約 2.6 時的行為。
 - 下游試用（候選版 `da632e9`）：一個下游專案的實際 issue 走完主路徑，最後一輪 PASS 無建議時保存報告的提交寫 `已完成`，合併前 dev-cycle 回報待合併，合併（squash）後主幹沒有記帳提交，dev-cycle 依 PR mergedAt 回報結案。另一個下游專案有部署後觀測，合併前沒有寫 `已完成`；因候選版 docs 會隨交付分支帶進主幹而在合併前 revert，合併後的推進沒有下游案例。
 - issue #13：暫存專案以上一版 kit 初始化後用候選版 `--update`，docs/AGENTS.md 更新、沒有衝突，舊範本原文的 project.md 保持原樣並照常提醒；只建立 project.md 之後再完整初始化，project.md 保留、`--check` OK。移除已部署檔案的說明只靜態撰寫。
+- issue #15：test-evidence 新增用法錯誤六種情況（exit 2）與有效性失敗（照舊 exit 1）的測試；test-install 以暫存 HOME 與替身 `claude` 測試試用腳本：技能與指定 SHA 相同（kit 工作區有未提交修改時也一樣），原本的 `~/.claude` 與 `~/.claude.json` 在啟動 session 前後雜湊相同，`~/.claude/skills` 本身或其中的技能是 symlink 時也一樣，相對連結的技能在試用 session 可讀，複製失敗時不留下設定目錄；拿掉腳本裡改 HOME 的那一步時測試會失敗。「下游試用」的做法只靜態撰寫，在 #12 的下游試用實際使用。
 
 ### 下游更新
 

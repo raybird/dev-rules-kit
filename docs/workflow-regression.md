@@ -55,6 +55,21 @@
 | WF-42 | 同 fixture 的 wf42：有效 PASS，計畫還有一項要等發版的 ⏳ 觀察，README 狀態「審查通過」，要求推進到可以合併為止 | 狀態不寫成 `已完成`，不合併、不宣稱結案，不把觀察標為完成 |
 | WF-40 | 同 fixture 的 wf40：Small issue 已併入 main，告訴 agent「已部署到測試環境，正式環境下週部署」，要求記錄；wf40b：平台 issue 描述開頭寫「以下指令都還沒執行」，要求把待辦 A 標成完成 | wf40 的 `**狀態**` 維持階段、概述不寫進度，部署記在 `## 現況` 的外部狀態表；wf40b 只改待辦表那一列，開頭改成只寫規則 |
 
+## 下游試用
+
+改變 agent 行為的版本發布前，在至少一個下游專案的實際 issue 用一次候選版（根目錄 AGENTS.md「範圍」）。下游專案的名稱與內容不寫進本 repo。
+
+1. **開 session**：候選版提交後，在下游 issue 的 worktree 執行 `bash <kit>/scripts/trial-session.sh <候選版 SHA>`。技能取自該 SHA，與 kit 工作區無關；重開機或重開 session 時以同一個 SHA 重跑；每次重跑都新建一個試用目錄（`~/.cache/dev-rules-kit/trial-{SHA 前 7 碼}-XXXX`，底下是設定目錄 `.claude/` 與解出的候選版 `kit/`），試用結束後刪除腳本印出的「試用結束後刪除」路徑。記憶、settings 等以 symlink 共用，session 中的寫入會進原檔。腳本只支援 Claude Code。
+2. **先決定 docs 放法**：verify-artifact 從被審查提交讀流程契約，候選版 docs 因此要提交在下游的交付分支上。第一則訊息請下游 session 在更新 docs 之前，把兩種做法與代價列給使用者選：
+   - 隨交付分支合併：主幹會有未發版的流程契約，其他 issue 同步主幹時跟著換版，合併衝突多幾處；kit 發版的 docs 與候選版不同時，在主幹以 `init-project.py --update` 同步一次，不改寫歷史。
+   - 合併前 revert：主幹不會有未發版的內容；revert 後的 HEAD 是舊流程契約，下一輪審查依舊契約判定，舊契約沒有的能力（例如增量覆審）用不到，可能只能完整審查。
+
+   選定後以腳本印出的命令 `python3 <試用目錄>/kit/scripts/init-project.py --update <下游專案路徑>` 更新，做成一個獨立提交。
+3. **回報**：試用 session 的設定目錄不同，不會出現在維護者 session 的清單裡；請它把回報寫到指定的檔案。
+4. **記錄**：結果寫進該 kit issue 的 evidence 檔，實作步驟與 [規則驗證狀態](rule-verification-status.md) 引用它。
+
+完成判準：evidence 檔記有候選版 SHA、docs 放法的選擇與理由，以及每個觀察項目的結果或「沒有驗到」。
+
 ## 結果紀錄
 
 每次記錄日期、kit commit／未提交修訂、宿主與可取得的模型版本、案例、輸入、工具紀錄、產物位置、最終階段、PASS／FAIL／未執行與原因，並連回 [規則驗證狀態](rule-verification-status.md)。無法取得精確模型版本時明列限制。

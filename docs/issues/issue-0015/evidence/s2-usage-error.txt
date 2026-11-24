@@ -1,0 +1,32 @@
+## 紅燈：修改 verify-artifact.py 之前（2026-11-24）
+$ python3 scripts/test-evidence.py EvidenceTests.test_usage_errors_exit_2 EvidenceTests.test_usage_error_wins_over_validity_failure EvidenceTests.test_validity_failure_still_exit_1
+1 AssertionError: 1 != 2 : INVALID：--artifact 與 --issue 指向不同 issue
+1 AssertionError: 1 != 2 : INVALID：artifact 路徑與被審查 SHA 不符
+2 AssertionError: 1 != 2 : INVALID：Command '('rev-parse', '--verify', 'deadbeef^{commit}')' returned non-zero exit status 128.
+1 AssertionError: 1 != 2 : INVALID：無法辨認 issue 目錄：1
+1 AssertionError: 1 != 2 : INVALID：無法辨認 issue 目錄：15
+1 AssertionError: 1 != 2 : INVALID：需要 --artifact 或 --issue
+1 FAILED (failures=7)
+1 FAIL: test_usage_errors_exit_2 (__main__.EvidenceTests.test_usage_errors_exit_2) (args=['--reviewed', '434c22c23f83bcf2ecc00fa2516b9dcedb09853f', '--head', '710e0eebddb9bf027edae283a5ce7deb9346ebcd'])
+1 FAIL: test_usage_errors_exit_2 (__main__.EvidenceTests.test_usage_errors_exit_2) (args=['--reviewed', '434c22c23f83bcf2ecc00fa2516b9dcedb09853f', '--head', '710e0eebddb9bf027edae283a5ce7deb9346ebcd', '--artifact', 'docs/issues/issue-1/review-0000000.md'])
+1 FAIL: test_usage_errors_exit_2 (__main__.EvidenceTests.test_usage_errors_exit_2) (args=['--reviewed', '434c22c23f83bcf2ecc00fa2516b9dcedb09853f', '--head', '710e0eebddb9bf027edae283a5ce7deb9346ebcd', '--artifact', 'docs/issues/issue-1/review-434c22c.md', '--issue', 'docs/issues/issue-2'])
+1 FAIL: test_usage_errors_exit_2 (__main__.EvidenceTests.test_usage_errors_exit_2) (args=['--reviewed', '434c22c23f83bcf2ecc00fa2516b9dcedb09853f', '--head', '710e0eebddb9bf027edae283a5ce7deb9346ebcd', '--issue', '15'])
+1 FAIL: test_usage_errors_exit_2 (__main__.EvidenceTests.test_usage_errors_exit_2) (args=['--reviewed', '434c22c23f83bcf2ecc00fa2516b9dcedb09853f', '--head', 'deadbeef', '--artifact', 'docs/issues/issue-1/review-434c22c.md'])
+1 FAIL: test_usage_errors_exit_2 (__main__.EvidenceTests.test_usage_errors_exit_2) (args=['--reviewed', 'deadbeef', '--head', '710e0eebddb9bf027edae283a5ce7deb9346ebcd', '--artifact', 'docs/issues/issue-1/review-434c22c.md'])
+1 FAIL: test_usage_error_wins_over_validity_failure (__main__.EvidenceTests.test_usage_error_wins_over_validity_failure)
+1 Ran 3 tests in 0.531s
+[exit 1]
+
+## 綠燈：UsageError 改 exit 2
+$ python3 scripts/test-evidence.py EvidenceTests.test_usage_errors_exit_2 EvidenceTests.test_usage_error_wins_over_validity_failure EvidenceTests.test_validity_failure_still_exit_1
+Ran 3 tests in 0.343s
+
+OK
+[exit 0]
+
+## 全部測試
+$ python3 scripts/test-evidence.py
+Ran 315 tests in 50.379s
+
+OK
+[exit 0]

@@ -1,0 +1,14 @@
+## 紅燈：review-7cc8801 N3，trial-session.sh 修改前（2026-11-24）
+$ python3 scripts/test-install.py InstallTests.test_trial_session_uses_pinned_skills_and_keeps_real_config
+FAIL: test_trial_session_uses_pinned_skills_and_keeps_real_config (__main__.InstallTests.test_trial_session_uses_pinned_skills_and_keeps_real_config)
+AssertionError: '試用結束後刪除：/tmp/dev-rules-test-sjaesufi/home/.cache/dev-rules-kit/trial-348e2cb-y7oG\n' not found in '候選版 kit：348e2cbd49247eeff1337ff0757e81c607107e47\n設定目錄：/tmp/dev-rules-test-sjaesufi/
+Ran 1 test in 0.362s
+FAILED (failures=1)
+[exit 1]
+
+## 綠燈：多印「試用結束後刪除：{試用目錄}」
+$ python3 scripts/test-install.py
+Ran 36 tests in 15.477s
+
+OK
+[exit 0]
