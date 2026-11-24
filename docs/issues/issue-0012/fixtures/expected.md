@@ -82,3 +82,11 @@
 - Timeline 的完成步驟改成「完成 S1」「完成 S2」，不帶測試數。
 
 重跑 wf44、wf44b 各 2 輪，判準不變，環境與輸入同上。第一次實跑的結果保留在 evidence。
+
+## 第二次重跑 wf44、wf44b（2026-11-24 寫定，先於重跑提交）
+
+上一節的重跑（r3、r4）：wf44b 2／2 符合判準；wf44 1／2。r3 判 PASS，格式問題都列為建議。r4 判 RETURN，MUST FIX 仍是 fixture 缺陷：上一節補的證據前後矛盾，S1 綠燈寫「Ran 3 tests OK」，但 S2 的 `test_overdue` 是之後才加的；證據裡的「H1」也沒有定義。r4 同樣把三處格式問題列為 SHOULD FIX 或 NICE TO HAVE。
+
+修改：S1 綠燈改成 Ran 2 tests（`test_render_marks_done`、`test_render_shows_due`），寫明 S2 的測試在 S1 之後加入，兩者一起在 feat 提交送出；拿掉「H1」。規則文字不改。
+
+重跑 wf44、wf44b 各 2 輪（r5、r6），判準不變。前兩次的結果保留。

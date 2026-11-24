@@ -117,12 +117,13 @@ FORMAT_TIMELINE = [('2026-11-16', '建立並核准', '開發者'), ('2026-11-17'
 # 2026-11-24 第一次實跑後補完整的紅綠重構證據，見 expected.md「第一次實跑後重跑 wf44、wf44b」
 FORMAT_EVIDENCE = [
     ('顯示到期日', '✅ 2026-11-17。單迴圈合併：`render` 的回傳值就是 CLI 列出的輸出，`test_render_shows_due` 直接斷言整行字串，'
-     '沒有另一層整合責任。紅燈：先加 test_due.py，`python3 -m unittest test_due.DueTest.test_render_shows_due` exit 1，'
+     '沒有另一層整合責任。紅燈：先在 test_due.py 只加 `test_render_shows_due`，`python3 -m unittest test_due` exit 1，'
      'AssertionError，輸出少了「（到期 11/20）」。綠燈：加入 `due_of` 與 `render` 的到期日後 `python3 -m unittest -v` exit 0，'
-     'Ran 3 tests OK（被測內容即 H1 的 todo.py）。重構：no-op，`render` 只多一段判斷，沒有可抽出的重複'),
+     'Ran 2 tests OK（test_render_marks_done、test_render_shows_due；未提交的工作樹）。重構：no-op，`render` 只多一段判斷，沒有可抽出的重複'),
     ('列出逾期', '✅ 2026-11-17。單迴圈合併：`overdue` 是函式層級的驗收（SCN-002 的 When 是「呼叫 overdue」）。'
-     '紅燈：先放回傳 `[]` 的 `overdue`，`python3 -m unittest test_due.DueTest.test_overdue` exit 1，AssertionError `[] != [1]`。'
-     '綠燈：實作後 `python3 -m unittest -v` exit 0，Ran 3 tests OK。重構：no-op，只有一行 list comprehension')]
+     '紅燈：S1 之後加 `test_overdue`，並先放回傳 `[]` 的 `overdue`，`python3 -m unittest test_due.DueTest.test_overdue` exit 1，'
+     'AssertionError `[] != [1]`。綠燈：實作後 `python3 -m unittest -v` exit 0，Ran 3 tests OK，與 S1 一起在 feat 提交送出，'
+     '提交內容即這次執行的工作樹。重構：no-op，只有一行 list comprehension')]
 FORMAT_TBD = ('## 待確認事項\n\n| 編號 | 事項 | 狀態 | 影響 |\n|---|---|---|---|\n'
               '| TBD-1 | 沒有到期日的待辦要不要顯示「（無到期日）」 | 已解決：2026-11-16 | 使用者選不顯示，維持原本的輸出；SCN-001 |\n')
 GATE_TBD = '| TBD-2 | SCN-002 逾期要以今天還是明天為界，等使用者確認 | 待確認 | SCN-002 |\n'
