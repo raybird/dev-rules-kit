@@ -130,4 +130,4 @@ Feature: 下游試用候選版有固定、可重現的做法
 **建立日期**: 2026-11-24  
 **分級**: Medium — 維護文件、一支新腳本與 verify-artifact 的錯誤分類，不改 docs/AGENTS.md 與流程契約；不需 Phase／Task 拆解  
 **風險**: Medium\
-**狀態**: 實作中
+**狀態**: 審查中

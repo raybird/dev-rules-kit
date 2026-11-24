@@ -1,0 +1,21 @@
+被測內容：e316bf7113f67c221373134b2760f367274be699 加上 S3、S4 未提交修改（CHANGELOG、rule-verification-status、AGENTS.md、workflow-regression、計畫），與本步驟同一提交；2026-11-24
+$ python3 scripts/check-kit.py
+OK: skill frontmatter 完整且 name 一致，skill 的最低流程契約相容，雙語規則章節數一致，install.sh 安裝路徑與 README 一致，技能歷代雜湊清單涵蓋目前版本。
+[exit 0]
+$ python3 scripts/check-links.py
+OK: 所有 Markdown 相對連結皆有效。
+[exit 0]
+$ bash -n scripts/install.sh
+[exit 0]
+$ bash -n scripts/trial-session.sh
+[exit 0]
+$ python3 scripts/test-install.py
+Ran 34 tests in 14.101s
+
+OK
+[exit 0]
+$ python3 scripts/test-evidence.py
+Ran 315 tests in 47.273s
+
+OK
+[exit 0]

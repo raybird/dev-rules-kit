@@ -38,7 +38,7 @@ python3 scripts/test-evidence.py
 
 新增規則、gate、技能或檢查腳本前確認兩件事：至少一個下游專案已經發生對應的問題，或 kit 的規則互相矛盾；而且 project.md 的登記解決不了。覆審時構造出來的寫法不算實際案例。
 
-改變 agent 行為的版本，先在至少一個下游專案的實際 issue 用過再推送發布：以隔離設定載入未發布的版本，結果記在該 kit issue 的 `## 現況`。只改文字的修訂直接發布。
+改變 agent 行為的版本，先在至少一個下游專案的實際 issue 用過再推送發布：做法見 [workflow-regression「下游試用」](docs/workflow-regression.md#下游試用)，結果記在該 kit issue 的 evidence 檔。只改文字的修訂直接發布。
 
 **檢查工具防護的對象**是疏忽與誤用：
 
