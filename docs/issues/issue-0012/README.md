@@ -15,6 +15,10 @@
 
 收錄依據（AGENTS.md「範圍」）：四個下游專案實際發生，kit 自己的 issue 也重複發生；收斂要求目前只靠協調者手動寫進派工 prompt，project.md 登記解決不了跨專案的審查規則。
 
+## 現況
+
+**現行 review**: review-03fb11b.md
+
 ## 快速導覽
 
 ### 當前流程
@@ -147,4 +151,4 @@ Feature: 審查在處理建議後收斂，報告只寫本輪的內容
 **建立日期**: 2026-11-24  
 **分級**: Medium — 修改 review-evidence.md、review 與 dev-cycle 技能，加兩個回歸案例；不改檢查器、不需 Phase／Task 拆解  
 **風險**: Medium\
-**狀態**: 實作中
+**狀態**: 審查通過（review-03fb11b）
