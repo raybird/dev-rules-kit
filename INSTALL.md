@@ -32,7 +32,7 @@
 
 ## 3. 初始化或更新專案文件
 
-使用者要在某個專案使用 issue 流程（new-issue、dev-cycle 等）時執行；只安裝技能時略過本步並告知使用者。
+使用者要在某個專案使用 issue 流程（new-issue、dev-cycle 等）時執行下列初始化或更新；不用 issue 流程時改照本步最後的「不用 issue 流程的專案」。只安裝技能、也不需要記錄專案慣例時略過本步並告知使用者。不確定專案要不要用 issue 流程時，先問使用者。
 
 - `<project>/docs/.dev-rules-kit.json` 不存在：首次初始化，執行 `python3 <kit>/scripts/init-project.py <project> --dry-run`，確認後去掉 `--dry-run`。
 - 已存在：更新，執行 `python3 <kit>/scripts/init-project.py <project> --update --dry-run`，確認後去掉 `--dry-run`。
@@ -41,6 +41,13 @@
 完成判準：`python3 <kit>/scripts/init-project.py <project> --check` 輸出 `OK`。專案是 Git repo 時，告訴使用者異動的檔案；要提交到哪個分支由使用者決定。
 
 `docs/agents/project.md` 是專案自己的客製檔，初始化只在不存在時建立、更新時保留；提醒使用者可在其中記錄測試命令、專案邊界、已知地雷，以及合併、部署、平台狀態的查證命令（既有 project.md 更新時不會自動補上這項），agent 不需要為填表猜測內容。`--check` 印出「project.md 仍是初始化範本原文」時照實轉告，不算失敗；印出「落後本 kit」時執行 `--update`，印出「衝突」才需要人工合併。
+
+**不用 issue 流程的專案**：issue 只在平台上追蹤、沒有 issue 目錄時，只需要 project.md，create-commit 與 project-worktrees 會讀它記錄的提交與 worktree 慣例。
+
+- `<project>/docs/agents/project.md` 不存在時，把 `<kit>/docs/agents/project.md` 複製過去；已存在就不動。不執行 `init-project.py`。範本裡提到 issue 流程文件的段落（document-types.md、`## 現況`、懸置掃描等）在這類專案可以忽略。之後要用 issue 流程時照本步前面的方式初始化，既有 project.md 會保留。
+- 專案先前已整套部署：先確認 `docs/issues/`（或 project.md 登記的 issue 目錄）不存在或底下沒有任何 issue 目錄；有的話不移除任何檔案，告知使用者。確認沒有之後，把可移除的檔案列給使用者決定：`docs/.dev-rules-kit.json` 的 `files` 記錄的檔案（kit 部署的核心，project.md 不在其中），以及這個 manifest 本身。不在 `files` 裡的檔案（例如專案自己放在 `docs/agents/` 的地雷檔）不列。
+
+完成判準：project.md 存在且原有內容沒有被覆蓋；使用者決定移除時，只移除上列檔案。
 
 ## 4. 通用規則（選用，先問使用者）
 
