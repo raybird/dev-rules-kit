@@ -6,7 +6,7 @@
 
 1. **不用 issue 流程也整套部署**：docs/agents/ 底下的 acceptance、document-types、issue-checklist、readme-templates、review-evidence、verification 共約 570 行，該專案從沒建過 issue 目錄。人打開 docs/ 會以為要照做，而且版本會落後。INSTALL.md 第 3 步雖然寫了「使用 issue 流程時才執行」，但只想用 project.md 的專案沒有別的做法。create-commit 與 project-worktrees 會讀 project.md，不讀核心文件。
 2. **下游 docs/AGENTS.md 帶著 kit 自己的修訂紀錄**：檔尾的修訂紀錄有 16 列、約 6.4KB，記的是 kit 的設計歷程，內容與 kit 的 CHANGELOG 重複。沒有腳本或技能讀取這張表，check-kit 只讀 `**流程契約**` 那一行。
-3. **project.md 範本開頭的管理說明**：第一句「本檔由專案維護，初始化只在不存在時建立，更新上游時保留」講的是 kit 怎麼管理這個檔，docs/AGENTS.md「客製邊界與同步策略」已經寫過。第二句「規劃與交付前讀取；未填內容從 repo 的設定、現有文件與命令取得，不為填表猜測」是給 agent 的行為指示。
+3. **project.md 範本開頭的管理說明**：第一句「本檔由專案維護，初始化只在不存在時建立，更新上游時保留」講的是 kit 怎麼管理這個檔：專案內容集中於 project.md、`--update` 保留既有 project.md 已寫在 docs/AGENTS.md「客製邊界與同步策略」，初始化只在不存在時建立寫在 INSTALL.md 第 3 步。第二句「規劃與交付前讀取；未填內容從 repo 的設定、現有文件與命令取得，不為填表猜測」是給 agent 的行為指示。
 
 本 issue 只改部署內容與文字，不改變 agent 的 issue 流程行為，流程契約維持 2.7。
 
@@ -31,15 +31,15 @@
    - 失敗路徑：舊範本原文的 project.md 不再被認出，或 `--update` 改到既有 project.md
 3. **AC-3**：INSTALL.md 第 3 步補上兩件事。
    - 不用 issue 流程、但要讓 create-commit 與 project-worktrees 讀到專案慣例時：只在 `<project>/docs/agents/project.md` 不存在時，複製 `<kit>/docs/agents/project.md`，不執行 init-project。之後要用 issue 流程，照常執行 init-project，既有 project.md 會保留。
-   - 專案已整套部署、確定不用 issue 流程時，可以移除 `docs/AGENTS.md`、`docs/agents/` 底下 project.md 以外的檔案，以及 `docs/.dev-rules-kit.json`。前提是 `docs/issues/` 不存在或沒有 issue 目錄；有的話不移除，並先告知使用者。是否移除由使用者決定。
+   - 專案已整套部署、確定不用 issue 流程時，可以移除 `docs/.dev-rules-kit.json` 的 `files` 記錄的檔案（kit 部署的核心，project.md 不在其中）與這個 manifest 本身；不在 `files` 裡的檔案不列。前提是 `docs/issues/` 不存在或沒有 issue 目錄；有的話不移除，並先告知使用者。是否移除由使用者決定。（2026-11-24 依 review-26bf4a4 S1 修訂：原為「`docs/AGENTS.md`、`docs/agents/` 底下 project.md 以外的檔案，以及 `docs/.dev-rules-kit.json`」，會涵蓋專案自己放在 docs/agents/ 的檔案）
    — 檢查方式：靜態核對文字；暫存專案照 INSTALL.md 的輕量步驟只建立 project.md，之後執行 `init-project.py --dry-run`，輸出「既有 project.md 保持原樣」，正式執行後 `--check` 輸出 OK
-   - 失敗路徑：輕量步驟會覆蓋既有 project.md；移除說明沒有寫出「有 issue 目錄時不移除」的前提；之後補完整初始化時判衝突
+   - 失敗路徑：輕量步驟會覆蓋既有 project.md；移除說明沒有寫出「有 issue 目錄時不移除」的前提，或列出 manifest `files` 以外的檔案；之後補完整初始化時判衝突
 4. **AC-4**：agent 的 issue 流程行為不變：skills/ 與 rules/ 不動，流程契約維持 2.7。 — 檢查方式：`git diff --stat main` 不含 skills/、rules/；五項檢查通過
    - 失敗路徑：skills/ 或 rules/ 有變更，或流程契約改變
 
-- **核准日期**: 2026-11-23
-- **核准來源**: 2026-11-23 使用者在逐題確認中選擇：輕量模式選「INSTALL.md 說明，不改安裝器（建議）」；修訂紀錄選「只留版本行加 CHANGELOG 連結（建議）」；project.md 選「刪第一句，留第二句（建議）」。AC-1～AC-4 的細節（版本號、移除清單與前提、驗證方式）同日使用者選「核准 AC-1～AC-4（建議）」
-- **核准 commit**: ac42c5f
+- **核准日期**: 2026-11-24
+- **核准來源**: 2026-11-23 使用者在逐題確認中選擇：輕量模式選「INSTALL.md 說明，不改安裝器（建議）」；修訂紀錄選「只留版本行加 CHANGELOG 連結（建議）」；project.md 選「刪第一句，留第二句（建議）」。AC-1～AC-4 的細節（版本號、移除清單與前提、驗證方式）同日使用者選「核准 AC-1～AC-4（建議）」。2026-11-24 AC-3 依 review-26bf4a4 S1 修訂，使用者選「限定為 manifest 列出的檔案（建議）」（選項寫明 AC-3 修訂為只列 manifest `files` 記錄的檔案與 manifest 本身），視為重新核准
+- **核准 commit**: 待提交
 
 ## 風險與首要驗證
 
@@ -54,6 +54,7 @@
 | 編號 | 事項 | 狀態 | 影響 |
 |------|------|------|------|
 | TBD-1 | INSTALL.md 的輕量步驟算不算改變 agent 行為、要不要在發布前於下游試用 | 已解決：2026-11-23 使用者選「視為文字修訂，不試用（建議）」；第 3 步原本就是使用 issue 流程時才執行，這次只補另一種情況的做法，以暫存專案驗證；發版後請回報問題的下游專案照新說明更新 | 決定發版前是否需要下游試用；AC-3 |
+| TBD-2 | review-26bf4a4 的 S1（需決策）、S2、N1～N4 | 已解決：2026-11-24 使用者選 S1「限定為 manifest 列出的檔案（建議）」（AC-3 修訂並重新核准）、S2「重跑並補齊（建議）」、N2 與 N3「都修正（建議）」、N1 與 N4「都修正（建議）」；修正後送增量覆審 | 未修正時 agent 可能把專案自訂的 docs/agents/ 檔案列為可移除，證據無法照著重跑；AC-3 |
 
 ## 實作與驗證步驟
 
@@ -73,9 +74,10 @@
 | 2026-11-23 | 建立 |
 | 2026-11-23 | 核准 AC-1～AC-4 |
 | 2026-11-23 | 審查 review-26bf4a4：PASS，附 SHOULD FIX 2 項（1 項需決策）、NICE TO HAVE 4 項 |
+| 2026-11-24 | AC-3 依 review-26bf4a4 S1 修訂並重新核准（舊基線 ac42c5f）；記錄建議的結論（TBD-2） |
 
 ---
 **建立日期**: 2026-11-23  
 **分級**: Small  
 **風險**: Medium\
-**狀態**: 審查通過
+**狀態**: 修正中
