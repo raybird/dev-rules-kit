@@ -336,6 +336,15 @@
 | project.md 範本提示登記合併判定與推送、部署、平台狀態的查證命令 | 僅靜態撰寫 | WF-29b：沒有登記時兩組都自行找到 `tools/deployed.py`；登記的效果沒有可觀察差異 |
 | 流程契約 2.4 以下的專案維持現行記帳判定，技能最低契約不變 | 僅靜態撰寫 | `test-evidence.py` 的 2.4 案例；沒有以 2.4 docs 配新技能的 agent 實跑 |
 
+## 未發布 — 審查收斂與報告變輕（issue #12，2026-11-24）
+
+| 規則 | 狀態 | 驗證來源 |
+|---|---|---|
+| 上一份 PASS、增量只處理它的建議時，reviewer 逐項確認修正並查核受影響之處，新建議只限增量引入的問題 | 宿主實跑（Claude Code，隔離設定） | WF-43 wf43 2／2 沒有對未改動的內容提新建議、判 PASS；wf43b 2／2 指出修正引入的缺陷（docs/issues/issue-0012/evidence/s2-results.md）。基準組同樣沒有提建議，收斂效果沒有量到 |
+| 沒動到的內容有 MUST FIX 等級的問題時照常列出，並寫明上一個 HEAD 就已存在 | 僅靜態撰寫 | fixture 難以在不讓上一份 PASS 失真的情況下成立；由下游試用觀察 |
+| 增量覆審的已查核維度與限制只寫本輪內容並加一行沿用；本機報告不寫 Review artifact 行；PASS 後一句提醒 | 宿主實跑（Claude Code，隔離設定） | WF-43 wf43 2／2 報告符合格式，verify-artifact exit 0；WF-32 以一句提醒重跑 2／2 提交前告知 PASS 會失效 |
+| issue 文件的格式、措辭與欄位寫法列建議，缺核准或必要證據、不實回報、會讓 gate 判斷錯誤時才是 MUST FIX | 宿主實跑（Claude Code，隔離設定） | WF-44 wf44 六輪沒有一輪把格式問題列 MUST FIX，fixture 修正後 2／2 判 PASS；wf44b 6／6 把待核准卻已實作的 Scenario 列 MUST FIX |
+
 ## 未發布 — 下游試用的方式與 verify-artifact 用法錯誤（issue #15，2026-11-24）
 
 | 規則 | 狀態 | 驗證來源 |
