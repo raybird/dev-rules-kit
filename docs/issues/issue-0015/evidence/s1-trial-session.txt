@@ -1,0 +1,27 @@
+## 紅燈：scripts/trial-session.sh 不存在（2026-11-24）
+$ python3 scripts/test-install.py InstallTests.test_trial_session_uses_pinned_skills_and_keeps_real_config InstallTests.test_trial_session_rejects_unknown_sha
+FAIL: test_trial_session_uses_pinned_skills_and_keeps_real_config (__main__.InstallTests.test_trial_session_uses_pinned_skills_and_keeps_real_config)
+AssertionError: 127 != 0 : bash: /tmp/dev-rules-test-dcrt3mty/trial kit/scripts/trial-session.sh: No such file or directory
+FAIL: test_trial_session_rejects_unknown_sha (__main__.InstallTests.test_trial_session_rejects_unknown_sha)
+AssertionError: '不是' not found in 'bash: /tmp/dev-rules-test-jnyi9tk6/trial kit/scripts/trial-session.sh: No such file or directory\n'
+Ran 2 tests in 0.375s
+FAILED (failures=2)
+[exit 1]
+
+## 綠燈：加入 scripts/trial-session.sh
+$ python3 scripts/test-install.py InstallTests.test_trial_session_uses_pinned_skills_and_keeps_real_config InstallTests.test_trial_session_rejects_unknown_sha
+----------------------------------------------------------------------
+Ran 2 tests in 0.618s
+
+OK
+[exit 0]
+
+## 反向檢查：拿掉 install.sh 那行的 HOME="$SP"（候選版會裝進原本的 ~/.claude）
+$ sed -i 's/^HOME="\$SP" bash /bash /' scripts/trial-session.sh
+$ python3 scripts/test-install.py InstallTests.test_trial_session_uses_pinned_skills_and_keeps_real_config
+FAIL: test_trial_session_uses_pinned_skills_and_keeps_real_config (__main__.InstallTests.test_trial_session_uses_pinned_skills_and_keeps_real_config)
+AssertionError: {'.cl[266 chars]aude/skill-backups/review.bak-20261124-104536/[2095 chars]8db'} != {'.cl[266 chars]aude/projects/p/memory.md': '7d42fa739e7d4cc31[253 chars]8db'}
+Ran 1 test in 0.347s
+FAILED (failures=1)
+[exit 1]
+（測試後還原腳本）

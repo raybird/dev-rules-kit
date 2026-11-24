@@ -256,6 +256,89 @@ class InstallTests(unittest.TestCase):
         self.assertFalse((target / 'stray.pyc').exists())
         self.assertEqual(self.install('claude', '--check').returncode, 0)
 
+    def make_trial_kit(self):
+        # 試用腳本以 git archive 取技能，需要一份有提交的 kit；install.sh 用未替換 $HOME 的原檔。
+        kit = self.base / 'trial kit'
+        for name in ('scripts', 'skills', 'rules', 'docs'):
+            shutil.copytree(ROOT / name, kit / name, ignore=shutil.ignore_patterns('__pycache__', '*.pyc'))
+        env = dict(os.environ, GIT_AUTHOR_NAME='t', GIT_AUTHOR_EMAIL='t@example.invalid',
+                   GIT_COMMITTER_NAME='t', GIT_COMMITTER_EMAIL='t@example.invalid')
+        for args in (['init', '-q'], ['add', '-A'], ['commit', '-qm', 'kit']):
+            subprocess.run(['git', '-C', str(kit), *args], env=env, check=True, capture_output=True)
+        sha = subprocess.run(['git', '-C', str(kit), 'rev-parse', 'HEAD'], check=True,
+                             capture_output=True, text=True).stdout.strip()
+        return kit, sha
+
+    def trial(self, kit, home, *args):
+        # PATH 最前面放替身 claude：記下 CLAUDE_CONFIG_DIR 與參數，不啟動真的 session。
+        bin_dir = self.base / 'bin'
+        bin_dir.mkdir(exist_ok=True)
+        stub = bin_dir / 'claude'
+        stub.write_text('#!/bin/bash\nprintf "%s\\n" "$CLAUDE_CONFIG_DIR" "$@" > "$TRIAL_CALLED"\n')
+        stub.chmod(0o755)
+        env = dict(os.environ, HOME=str(home), PATH=f'{bin_dir}:{os.environ["PATH"]}',
+                   TRIAL_CALLED=str(self.base / 'claude-called.txt'))
+        return subprocess.run(['bash', str(kit / 'scripts/trial-session.sh'), *args],
+                              cwd=self.project, env=env, capture_output=True, text=True)
+
+    def test_trial_session_uses_pinned_skills_and_keeps_real_config(self):
+        # issue #15：試用 session 只把 kit 技能換成指定 SHA，原本的 ~/.claude 與 ~/.claude.json 不變。
+        kit, sha = self.make_trial_kit()
+        (kit / 'skills/review/SKILL.md').write_text('工作區未提交的修改\n')
+        home = self.base / 'home'
+        real = home / '.claude'
+        (real / 'skills/other-skill').mkdir(parents=True)
+        (real / 'skills/other-skill/SKILL.md').write_text('其他全域技能\n')
+        (real / 'skills/review').mkdir()
+        (real / 'skills/review/SKILL.md').write_text('舊版 review\n')
+        (real / 'projects/p').mkdir(parents=True)
+        (real / 'projects/p/memory.md').write_text('記憶\n')
+        (real / 'CLAUDE.md').write_text('全域指示\n')
+        (real / 'settings.json').write_text('{}\n')
+        (home / '.claude.json').write_text('{"mcpServers": {}}\n')
+
+        def snapshot():
+            files = [p for p in home.rglob('*') if p.is_file() and '.cache' not in p.relative_to(home).parts]
+            return {str(p.relative_to(home)): hashlib.sha256(p.read_bytes()).hexdigest() for p in files}
+        before = snapshot()
+        result = self.trial(kit, home, sha[:7], '--resume')
+        self.assertEqual(result.returncode, 0, result.stdout + result.stderr)
+        self.assertEqual(snapshot(), before)
+        self.assertIn(sha, result.stdout)
+        called = (self.base / 'claude-called.txt').read_text().splitlines()
+        config = Path(called[0])
+        self.assertEqual(called[1:], ['--resume'])
+        self.assertEqual(config.parent.parent, home / '.cache/dev-rules-kit')
+        self.assertTrue(config.parent.name.startswith(f'trial-{sha[:7]}-'))
+        self.assertIn(str(config), result.stdout)
+
+        pinned = self.base / 'pinned'
+        pinned.mkdir()
+        archive = subprocess.run(['git', '-C', str(kit), 'archive', sha, 'skills'], check=True, capture_output=True)
+        subprocess.run(['tar', '-x', '-C', str(pinned)], input=archive.stdout, check=True)
+        for skill in sorted((pinned / 'skills').iterdir()):
+            for path in sorted(p for p in skill.rglob('*') if p.is_file()):
+                installed = config / 'skills' / path.relative_to(pinned / 'skills')
+                self.assertEqual(installed.read_bytes(), path.read_bytes(), installed)
+        self.assertEqual((config / 'skills/other-skill/SKILL.md').read_text(), '其他全域技能\n')
+        for name in ('CLAUDE.md', 'settings.json', 'projects'):
+            self.assertTrue((config / name).is_symlink(), name)
+            self.assertEqual((config / name).resolve(), (real / name).resolve())
+        self.assertFalse((config / 'hooks').exists())
+        self.assertFalse((config / '.claude.json').is_symlink())
+        self.assertEqual((config / '.claude.json').read_text(), '{"mcpServers": {}}\n')
+
+    def test_trial_session_rejects_unknown_sha(self):
+        kit, _ = self.make_trial_kit()
+        home = self.base / 'home'
+        (home / '.claude').mkdir(parents=True)
+        result = self.trial(kit, home, 'deadbeef')
+        self.assertNotEqual(result.returncode, 0)
+        self.assertIn('不是', result.stderr)
+        self.assertFalse((home / '.cache/dev-rules-kit').exists())
+        self.assertFalse((self.base / 'claude-called.txt').exists())
+        self.assertEqual(self.trial(kit, home).returncode, 2)
+
     def test_symlinked_subdir_backed_up(self):
         # 審查 cf36828：技能內的子目錄是 symlink、裡面的檔案被改過時，先備份再覆蓋。
         self.assertEqual(self.install('claude').returncode, 0)
