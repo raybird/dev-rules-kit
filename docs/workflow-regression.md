@@ -66,7 +66,7 @@
    - 隨交付分支合併：主幹會有未發版的流程契約，其他 issue 同步主幹時跟著換版，合併衝突多幾處；kit 發版的 docs 與候選版不同時，在主幹以 `init-project.py --update` 同步一次，不改寫歷史。
    - 合併前 revert：主幹不會有未發版的內容；revert 後的 HEAD 是舊流程契約，下一輪審查依舊契約判定，舊契約沒有的能力（例如增量覆審）用不到，可能只能完整審查。
 
-   選定後以腳本印出的命令 `python3 <試用目錄>/kit/scripts/init-project.py --update <下游專案路徑>` 更新，做成一個獨立提交。
+   選定後以腳本印出的命令 `python3 <試用目錄>/kit/scripts/init-project.py --update <下游專案路徑>` 更新，做成一個獨立提交，提交訊息依下游專案的規範。
 3. **回報**：試用 session 的設定目錄不同，不會出現在維護者 session 的清單裡；請它把回報寫到指定的檔案。
 4. **記錄**：結果寫進該 kit issue 的 evidence 檔，實作步驟與 [規則驗證狀態](rule-verification-status.md) 引用它。
 
