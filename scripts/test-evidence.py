@@ -82,6 +82,11 @@ class EvidenceTests(unittest.TestCase):
         self.assertIn('不是有效性判定', result.stderr)
         self.assertNotIn('INVALID', result.stdout + result.stderr)
 
+    def not_repo(self):
+        temp = tempfile.TemporaryDirectory(prefix='kit-not-repo-')
+        self.addCleanup(temp.cleanup)
+        return Path(temp.name)
+
     def test_usage_errors_exit_2(self):
         # issue #15：參數有誤時與有效性判定分開，exit 2、以「用法錯誤：」開頭。
         reviewed, rel = self.local_artifact()
@@ -95,6 +100,9 @@ class EvidenceTests(unittest.TestCase):
             (['--reviewed', reviewed, '--head', head, '--artifact', rel, '--issue', 'docs/issues/issue-2'],
              '指向不同 issue'),
             (['--reviewed', reviewed, '--head', head], '需要 --artifact 或 --issue'),
+            # argparse 取最後一個 --repo：指向不是 Git repo 的目錄
+            (['--repo', str(self.not_repo()), '--reviewed', reviewed, '--head', head, '--artifact', rel],
+             '--repo 不是 Git repo'),
         ]
         for args, mention in cases:
             with self.subTest(args=args):

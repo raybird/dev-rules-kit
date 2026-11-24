@@ -341,7 +341,7 @@
 | 規則 | 狀態 | 驗證來源 |
 |---|---|---|
 | verify-artifact 參數本身有誤時 exit 2、以「用法錯誤：」開頭，有效性判定照舊 exit 0／1 | 本地測試驗證 | test-evidence `test_usage_errors_exit_2`、`test_usage_error_wins_over_validity_failure`、`test_validity_failure_still_exit_1`；修改前 7 項失敗（docs/issues/issue-0015/evidence/s2-usage-error.txt）；agent 看到 exit 2 時修正參數重跑、不判 PASS 失效：未實跑 |
-| `scripts/trial-session.sh` 只把 kit 技能換成指定 SHA，原本的 `~/.claude` 不被修改 | 本地測試驗證 | test-install 兩項試用腳本測試；拿掉改 HOME 的那一步時快照比對失敗（docs/issues/issue-0015/evidence/s1-trial-session.txt） |
+| `scripts/trial-session.sh` 只把 kit 技能換成指定 SHA，腳本本身不修改原本的 `~/.claude` 與 `~/.claude.json` | 本地測試驗證（到啟動 session 為止） | test-install 四項試用腳本測試，含 `~/.claude/skills` 本身是 symlink、kit 技能是指向別處的 symlink、相對連結與斷掉的連結；拿掉改 HOME 的那一步時快照比對失敗（docs/issues/issue-0015/evidence/s1-trial-session.txt、s6-symlink.txt）；session 執行中對以 symlink 共用的檔案的寫入會進原檔，屬設計 |
 | 下游試用開始時請下游使用者選 docs 放法（隨交付分支合併或合併前 revert），結果記在 kit issue 的 evidence 檔 | 僅靜態撰寫 | 來源為 issue #11 的下游試用（docs/issues/issue-0011/evidence/s8-downstream.md）；使用者 2026-11-24 決定本 issue 不另試用，在 #12 的下游試用實際使用 |
 
 ## 未發布 — 下游部署內容瘦身（issue #13，2026-11-23）

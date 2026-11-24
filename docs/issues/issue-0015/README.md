@@ -111,7 +111,7 @@ Feature: 下游試用候選版有固定、可重現的做法
 
 ## 風險與首要驗證
 
-- **最大風險**：trial-session.sh 為了只覆蓋 kit 技能而暫時改 HOME 執行 install.sh；路徑寫錯時會把候選版技能裝進維護者真正的 `~/.claude`，或改到 `~/.claude.json`，之後所有 session 都在跑未發版的技能且沒有提示
+- **最大風險**：trial-session.sh 為了只覆蓋 kit 技能而暫時改 HOME 執行 install.sh；路徑寫錯，或複製的技能目錄帶著 symlink 時會把候選版技能裝進維護者真正的 `~/.claude`，或改到 `~/.claude.json`，之後所有 session 都在跑未發版的技能且沒有提示
 - **風險等級與理由**：Medium。只影響維護者本機，可以重裝復原，但發生時不會報錯，而且會污染之後所有下游 session 的試用與一般工作
 - **首要驗證**：先寫腳本與測試：以暫存目錄當 HOME、PATH 放替身 `claude`，比對執行前後 HOME 底下 `.claude/` 與 `.claude.json` 的雜湊不變，設定目錄裡的 kit 技能與 `git archive <SHA>` 相同
 - **選擇理由**：直接量測最嚴重的失敗（改到真正的設定）；替身 `claude` 讓測試不必真的啟動 session
@@ -122,6 +122,7 @@ Feature: 下游試用候選版有固定、可重現的做法
 | 編號 | 事項 | 狀態 | 影響 |
 |------|------|------|------|
 | TBD-1 | 本 issue 是否需要下游試用 | 已解決：2026-11-24 使用者選「改成記在 evidence 檔；本 issue 不另試用（建議）」；verify-artifact 只區分用法錯誤、判定邏輯不變，以 test-evidence 驗證；試用腳本與文件在 #12 的下游試用實際使用，結果記在 #12 | 決定發版前是否需要下游試用；SCN-001～005 |
+| TBD-2 | review-fbaac77 的 SHOULD FIX S1、NICE TO HAVE N1、N2 | 已解決：2026-11-24 使用者選「S1、N1、N2 都一起修（建議）」，與 MUST FIX M1、M2 一起修正後送增量覆審 | 未修正時文件說法過頭、`--repo` 用法錯誤沒有測試、試用設定目錄越積越多；SCN-001、003 |
 
 ## Timeline
 
@@ -135,4 +136,4 @@ Feature: 下游試用候選版有固定、可重現的做法
 **建立日期**: 2026-11-24  
 **分級**: Medium — 維護文件、一支新腳本與 verify-artifact 的錯誤分類，不改 docs/AGENTS.md 與流程契約；不需 Phase／Task 拆解  
 **風險**: Medium\
-**狀態**: 修正中
+**狀態**: 審查中

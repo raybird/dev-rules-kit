@@ -59,7 +59,7 @@
 
 改變 agent 行為的版本發布前，在至少一個下游專案的實際 issue 用一次候選版（根目錄 AGENTS.md「範圍」）。下游專案的名稱與內容不寫進本 repo。
 
-1. **開 session**：候選版提交後，在下游 issue 的 worktree 執行 `bash <kit>/scripts/trial-session.sh <候選版 SHA>`。技能取自該 SHA，與 kit 工作區無關；重開機或重開 session 時以同一個 SHA 重跑。腳本只支援 Claude Code。
+1. **開 session**：候選版提交後，在下游 issue 的 worktree 執行 `bash <kit>/scripts/trial-session.sh <候選版 SHA>`。技能取自該 SHA，與 kit 工作區無關；重開機或重開 session 時以同一個 SHA 重跑；每次重跑都新建一個設定目錄（`~/.cache/dev-rules-kit/trial-{SHA 前 7 碼}-XXXX`），試用結束後刪除。記憶、settings 等以 symlink 共用，session 中的寫入會進原檔。腳本只支援 Claude Code。
 2. **先決定 docs 放法**：verify-artifact 從被審查提交讀流程契約，候選版 docs 因此要提交在下游的交付分支上。第一則訊息請下游 session 在更新 docs 之前，把兩種做法與代價列給使用者選：
    - 隨交付分支合併：主幹會有未發版的流程契約，其他 issue 同步主幹時跟著換版，合併衝突多幾處；kit 發版的 docs 與候選版不同時，在主幹以 `init-project.py --update` 同步一次，不改寫歷史。
    - 合併前 revert：主幹不會有未發版的內容；revert 後的 HEAD 是舊流程契約，下一輪審查依舊契約判定，舊契約沒有的能力（例如增量覆審）用不到，可能只能完整審查。

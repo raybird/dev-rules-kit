@@ -296,6 +296,14 @@ class InstallTests(unittest.TestCase):
         (real / 'CLAUDE.md').write_text('全域指示\n')
         (real / 'settings.json').write_text('{}\n')
         (home / '.claude.json').write_text('{"mcpServers": {}}\n')
+        # review-fbaac77 M1、M2：指向別處的 kit 技能、相對連結的其他技能、斷掉的連結
+        (home / 'kitclone/skills/create-commit').mkdir(parents=True)
+        (home / 'kitclone/skills/create-commit/SKILL.md').write_text('本地修改的 create-commit\n')
+        (real / 'skills/create-commit').symlink_to(home / 'kitclone/skills/create-commit')
+        (home / '.agents/skills/linked-skill').mkdir(parents=True)
+        (home / '.agents/skills/linked-skill/SKILL.md').write_text('相對連結的技能\n')
+        (real / 'skills/linked-skill').symlink_to('../../.agents/skills/linked-skill')
+        (real / 'skills/broken-skill').symlink_to('../../.agents/skills/missing')
 
         def snapshot():
             files = [p for p in home.rglob('*') if p.is_file() and '.cache' not in p.relative_to(home).parts]
@@ -321,12 +329,43 @@ class InstallTests(unittest.TestCase):
                 installed = config / 'skills' / path.relative_to(pinned / 'skills')
                 self.assertEqual(installed.read_bytes(), path.read_bytes(), installed)
         self.assertEqual((config / 'skills/other-skill/SKILL.md').read_text(), '其他全域技能\n')
+        self.assertEqual((config / 'skills/linked-skill/SKILL.md').read_text(), '相對連結的技能\n')
+        self.assertFalse(any(p.is_symlink() for p in (config / 'skills').rglob('*')))
+        self.assertFalse((config / 'skills/broken-skill').exists())
+        self.assertIn('broken-skill', result.stderr)
         for name in ('CLAUDE.md', 'settings.json', 'projects'):
             self.assertTrue((config / name).is_symlink(), name)
             self.assertEqual((config / name).resolve(), (real / name).resolve())
         self.assertFalse((config / 'hooks').exists())
         self.assertFalse((config / '.claude.json').is_symlink())
         self.assertEqual((config / '.claude.json').read_text(), '{"mcpServers": {}}\n')
+
+    def test_trial_session_skills_dir_symlink_left_untouched(self):
+        # review-fbaac77 M1 情況 A：~/.claude/skills 本身是 symlink 時，候選版不寫進連結目標。
+        kit, sha = self.make_trial_kit()
+        home = self.base / 'home'
+        (home / 'dotfiles/skills/review').mkdir(parents=True)
+        (home / 'dotfiles/skills/review/SKILL.md').write_text('舊版 review\n')
+        (home / '.claude').mkdir()
+        (home / '.claude/skills').symlink_to(home / 'dotfiles/skills')
+        result = self.trial(kit, home, sha)
+        self.assertEqual(result.returncode, 0, result.stdout + result.stderr)
+        self.assertEqual((home / 'dotfiles/skills/review/SKILL.md').read_text(), '舊版 review\n')
+        self.assertEqual(sorted(p.name for p in (home / 'dotfiles/skills').iterdir()), ['review'])
+        config = Path((self.base / 'claude-called.txt').read_text().splitlines()[0])
+        self.assertFalse((config / 'skills').is_symlink())
+        self.assertEqual((config / 'skills/review/SKILL.md').read_bytes(), (ROOT / 'skills/review/SKILL.md').read_bytes())
+
+    def test_trial_session_failure_removes_partial_config(self):
+        # 複製失敗（技能目錄裡有斷掉的連結）時不留下建一半的設定目錄，也不啟動 claude。
+        kit, sha = self.make_trial_kit()
+        home = self.base / 'home'
+        (home / '.claude/skills/odd').mkdir(parents=True)
+        (home / '.claude/skills/odd/dangling').symlink_to('missing')
+        result = self.trial(kit, home, sha)
+        self.assertNotEqual(result.returncode, 0)
+        self.assertEqual(list((home / '.cache/dev-rules-kit').iterdir()), [])
+        self.assertFalse((self.base / 'claude-called.txt').exists())
 
     def test_trial_session_rejects_unknown_sha(self):
         kit, _ = self.make_trial_kit()
