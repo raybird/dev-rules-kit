@@ -1,4 +1,4 @@
-被測內容：3a10bea5677a4c5f2e1657b4340615852a90cb54 加上 S6 未提交修改，與 S6 同一提交；2026-11-24
+被測內容：479c74008904e3732975eb7ea8e02a113785ea06 加上 S7 未提交修改，與 S7 同一提交；2026-11-24
 $ python3 scripts/check-kit.py
 OK: skill frontmatter 完整且 name 一致，skill 的最低流程契約相容，雙語規則章節數一致，install.sh 安裝路徑與 README 一致，技能歷代雜湊清單涵蓋目前版本。
 [exit 0]
@@ -10,12 +10,12 @@ $ bash -n scripts/install.sh
 $ bash -n scripts/trial-session.sh
 [exit 0]
 $ python3 scripts/test-install.py
-Ran 36 tests in 14.534s
+Ran 36 tests in 16.204s
 
 OK
 [exit 0]
 $ python3 scripts/test-evidence.py
-Ran 315 tests in 48.461s
+Ran 315 tests in 49.867s
 
 OK
 [exit 0]

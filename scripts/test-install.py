@@ -319,6 +319,8 @@ class InstallTests(unittest.TestCase):
         self.assertEqual(config.parent.parent, home / '.cache/dev-rules-kit')
         self.assertTrue(config.parent.name.startswith(f'trial-{sha[:7]}-'))
         self.assertIn(str(config), result.stdout)
+        # review-7cc8801 N3：印出的刪除路徑是整個試用目錄（含解出的 kit/），不是設定目錄。
+        self.assertIn(f'試用結束後刪除：{config.parent}\n', result.stdout)
 
         pinned = self.base / 'pinned'
         pinned.mkdir()

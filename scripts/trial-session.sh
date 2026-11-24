@@ -9,9 +9,9 @@
 #   技能目錄解參照複製（symlink 的技能變成複本，斷掉的連結略過），候選版只寫進設定目錄。
 #   CLAUDE.md、settings、projects、plugins、hooks 以 symlink 共用，~/.claude.json 用複本：腳本本身不修改
 #   原本的 ~/.claude 與 ~/.claude.json，但 session 執行中對共用檔案（記憶、settings 等）的寫入會進原檔。
-# - 設定目錄在 ~/.cache/dev-rules-kit/trial-<SHA 前 7 碼>-XXXX，重開機不會被清掉，試用結束後自行刪除；
-#   解出的候選版 kit 在同一層的 kit/，下游以它的 scripts/init-project.py 更新 docs。
-#   中途失敗時刪除這次建的目錄，不啟動 claude。
+# - 試用目錄 ~/.cache/dev-rules-kit/trial-<SHA 前 7 碼>-XXXX 重開機不會被清掉，底下有設定目錄 .claude/
+#   （CLAUDE_CONFIG_DIR）與解出的候選版 kit/，下游以 kit/scripts/init-project.py 更新 docs；
+#   試用結束後刪除整個試用目錄（腳本會印出路徑）。中途失敗時刪除這次建的試用目錄，不啟動 claude。
 # - 只支援 Claude Code。
 set -euo pipefail
 
@@ -59,5 +59,6 @@ fi
 trap - EXIT
 echo "候選版 kit：$SHA"
 echo "設定目錄：$C"
+echo "試用結束後刪除：$SP"
 echo "更新下游 docs：python3 $SP/kit/scripts/init-project.py --update <下游專案路徑>"
 exec env CLAUDE_CONFIG_DIR="$C" claude "$@"
