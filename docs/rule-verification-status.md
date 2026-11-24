@@ -336,7 +336,7 @@
 | project.md 範本提示登記合併判定與推送、部署、平台狀態的查證命令 | 僅靜態撰寫 | WF-29b：沒有登記時兩組都自行找到 `tools/deployed.py`；登記的效果沒有可觀察差異 |
 | 流程契約 2.4 以下的專案維持現行記帳判定，技能最低契約不變 | 僅靜態撰寫 | `test-evidence.py` 的 2.4 案例；沒有以 2.4 docs 配新技能的 agent 實跑 |
 
-## 未發布 — 審查收斂與報告變輕（issue #12，2026-11-24）
+## v5.3.0 — 審查收斂與報告變輕（issue #12，2026-11-24）
 
 | 規則 | 狀態 | 驗證來源 |
 |---|---|---|
@@ -345,7 +345,7 @@
 | 增量覆審的已查核維度與限制只寫本輪內容並加一行沿用；本機報告不寫 Review artifact 行；PASS 後一句提醒 | 宿主實跑（Claude Code，隔離設定） | WF-43 wf43 2／2 報告符合格式，verify-artifact exit 0；WF-32 以一句提醒重跑 2／2 提交前告知 PASS 會失效；下游試用 3 份報告都符合格式、verify-artifact 有效。create-pr 以這份報告作為完整範圍證據：未實跑（WF-43 與下游試用都沒有進到 PR） |
 | issue 文件的格式、措辭與欄位寫法列建議，缺核准或必要證據、不實回報、會讓 gate 判斷錯誤時才是 MUST FIX | 宿主實跑（Claude Code，隔離設定） | WF-44 wf44 六輪沒有一輪把格式問題列 MUST FIX，fixture 修正後 2／2 判 PASS；wf44b 6／6 把待核准卻已實作的 Scenario 列 MUST FIX；下游試用把文件與程式不一致、狀態括號寫法列建議，沒有會讓 gate 誤判卻降級的問題。MUST FIX 例外只實跑缺少核准來源一支；狀態值、`**核准 commit**`、待確認事項狀態寫錯未實跑 |
 
-## 未發布 — 下游試用的方式與 verify-artifact 用法錯誤（issue #15，2026-11-24）
+## v5.3.0 — 下游試用的方式與 verify-artifact 用法錯誤（issue #15，2026-11-24）
 
 | 規則 | 狀態 | 驗證來源 |
 |---|---|---|
@@ -353,7 +353,7 @@
 | `scripts/trial-session.sh` 只把 kit 技能換成指定 SHA，腳本本身不修改原本的 `~/.claude` 與 `~/.claude.json` | 本地測試驗證（到啟動 session 為止） | test-install 四項試用腳本測試，含 `~/.claude/skills` 本身是 symlink、kit 技能是指向別處的 symlink、相對連結與斷掉的連結；拿掉改 HOME 的那一步時快照比對失敗（docs/issues/issue-0015/evidence/s1-trial-session.txt、s6-symlink.txt）；session 執行中對以 symlink 共用的檔案的寫入會進原檔，屬設計 |
 | 下游試用開始時請下游使用者選 docs 放法（隨交付分支合併或合併前 revert），結果記在 kit issue 的 evidence 檔 | 僅靜態撰寫 | 來源為 issue #11 的下游試用（docs/issues/issue-0011/evidence/s8-downstream.md）；使用者 2026-11-24 決定本 issue 不另試用，在 #12 的下游試用實際使用 |
 
-## 未發布 — 下游部署內容瘦身（issue #13，2026-11-23）
+## v5.3.0 — 下游部署內容瘦身（issue #13，2026-11-23）
 
 | 規則 | 狀態 | 驗證來源 |
 |---|---|---|
@@ -362,7 +362,7 @@
 | INSTALL.md：不用 issue 流程時只建立 project.md，之後完整初始化保留它 | 本地測試驗證 | 暫存專案照輕量步驟只建 project.md 後完整初始化，自訂內容保留、`--check` OK；已存在時不覆蓋（docs/issues/issue-0013/evidence/deploy-checks.txt p2、p3）；agent 照 INSTALL.md 執行未實跑 |
 | INSTALL.md：已整套部署的專案確認沒有 issue 目錄後，只列出 manifest `files` 記錄的檔案與 manifest 本身 | 本地測試驗證（清單來源）；判斷與刪除未實跑 | deploy-checks.txt p4：專案自加的 docs/agents/ 檔案不在 `files`；agent 照步驟判斷 issue 目錄並列清單未實跑；使用者 2026-11-23 決定視為文字修訂、不做下游試用 |
 
-## 未發布 — 狀態只寫階段，沒有待觀察項目時合併前寫好終態（issue #11，2026-11-20）
+## v5.3.0 — 狀態只寫階段，沒有待觀察項目時合併前寫好終態（issue #11，2026-11-20）
 
 來源為 [issue #11 的實跑](issues/issue-0011/implementation-plan.md#實作步驟)（Claude Code，claude-opus-5-5，隔離設定；每組 2 輪）。基準組不跑：wf38 的情境在現行規則下不存在，WF-40 只量測候選版，改善不能完全歸功於本次規則。
 

@@ -12,9 +12,9 @@
 
 ---
 
-## [未發布]
+## [5.3.0] - 2026-11-24
 
-issue README 的 `**狀態**` 只寫階段；沒有待觀察項目時，`已完成` 在合併前寫好，合併後不必回頭改 README（[issue #11](https://github.com/raybird/dev-rules-kit/issues/11)）。
+issue README 的 `**狀態**` 只寫階段；沒有待觀察項目時，`已完成` 在合併前寫好，合併後不必回頭改 README（[issue #11](https://github.com/raybird/dev-rules-kit/issues/11)）。處理建議後的增量覆審只查修正，增量報告精簡，格式問題列建議（[issue #12](https://github.com/raybird/dev-rules-kit/issues/12)）。下游部署內容瘦身（[issue #13](https://github.com/raybird/dev-rules-kit/issues/13)）；維護者的下游試用改用 `scripts/trial-session.sh`，verify-artifact 的用法錯誤改回 exit 2（[issue #15](https://github.com/raybird/dev-rules-kit/issues/15)）。流程契約 2.6 → 2.8。
 
 ### 變更（`docs/AGENTS.md`、`skills/dev-cycle/`）
 
