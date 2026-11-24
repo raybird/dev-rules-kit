@@ -71,6 +71,48 @@ class EvidenceTests(unittest.TestCase):
                                '--head', self.git('rev-parse', 'HEAD'), '--artifact', rel],
                               capture_output=True, text=True)
 
+    def run_verify(self, *args):
+        return subprocess.run(['python3', str(ROOT / 'skills/review/scripts/verify-artifact.py'),
+                               '--repo', str(self.repo), *args], capture_output=True, text=True)
+
+    def assertUsageError(self, result, mention):
+        self.assertEqual(result.returncode, 2, result.stdout + result.stderr)
+        self.assertTrue(result.stderr.startswith('用法錯誤：'), result.stderr)
+        self.assertIn(mention, result.stderr)
+        self.assertIn('不是有效性判定', result.stderr)
+        self.assertNotIn('INVALID', result.stdout + result.stderr)
+
+    def test_usage_errors_exit_2(self):
+        # issue #15：參數有誤時與有效性判定分開，exit 2、以「用法錯誤：」開頭。
+        reviewed, rel = self.local_artifact()
+        head = self.git('rev-parse', 'HEAD')
+        cases = [
+            (['--reviewed', reviewed, '--head', head, '--issue', '15'], '無法辨認 issue 目錄'),
+            (['--reviewed', reviewed, '--head', head, '--artifact', 'docs/issues/issue-1/review-0000000.md'],
+             'artifact 路徑與被審查 SHA 不符'),
+            (['--reviewed', 'deadbeef', '--head', head, '--artifact', rel], '--reviewed'),
+            (['--reviewed', reviewed, '--head', 'deadbeef', '--artifact', rel], '--head'),
+            (['--reviewed', reviewed, '--head', head, '--artifact', rel, '--issue', 'docs/issues/issue-2'],
+             '指向不同 issue'),
+            (['--reviewed', reviewed, '--head', head], '需要 --artifact 或 --issue'),
+        ]
+        for args, mention in cases:
+            with self.subTest(args=args):
+                self.assertUsageError(self.run_verify(*args), mention)
+
+    def test_usage_error_wins_over_validity_failure(self):
+        # 有效性檢查會失敗的範圍，參數有誤時仍判用法錯誤，不因檢查順序改變結束碼。
+        reviewed, _ = self.local_artifact(extra_change=True)
+        result = self.run_verify('--reviewed', reviewed, '--head', self.git('rev-parse', 'HEAD'), '--issue', '1')
+        self.assertUsageError(result, '無法辨認 issue 目錄')
+
+    def test_validity_failure_still_exit_1(self):
+        reviewed, rel = self.local_artifact(extra_change=True)
+        result = self.verify(reviewed, rel)
+        self.assertEqual(result.returncode, 1, result.stdout + result.stderr)
+        self.assertTrue(result.stderr.startswith('INVALID：'), result.stderr)
+        self.assertNotIn('用法錯誤', result.stderr)
+
     def test_artifact_only_commit_keeps_review_valid(self):
         reviewed, rel = self.local_artifact()
         self.assertNotEqual(reviewed, self.git('rev-parse', 'HEAD'))
