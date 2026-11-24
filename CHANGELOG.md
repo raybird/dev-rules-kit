@@ -50,7 +50,7 @@ issue README 的 `**狀態**` 只寫階段；沒有待觀察項目時，`已完�
 - 增量覆審：上一份報告判 PASS、增量只處理它的建議時，reviewer 逐項確認修正並查核受影響之處，新提出的 SHOULD FIX／NICE TO HAVE 只限增量引入的問題；MUST FIX 等級的問題照常列出。原本每輪都可能對沒動到的內容提新建議，處理完建議又要再審，下游有 issue 審到第 6 輪才收斂。dev-cycle 的「PASS 附建議」列派工時寫明這一點。
 - 增量覆審的報告：「已查核維度」與「限制」只寫本輪查核的內容，加一行沿用上一份報告。本機保存的報告不再寫指向自己的 `Review artifact` 行；PASS 判定後的固定段落縮成一句。
 - 審查強度：issue 文件的格式、措辭與欄位寫法列 SHOULD FIX 或 NICE TO HAVE；缺少新行為的核准來源或必要證據、不實回報，或會讓 verify-artifact、dev-cycle、懸置掃描判斷錯誤時才是 MUST FIX。
-- docs/AGENTS.md 文件版本 2.17，流程契約 2.7 → 2.8。技能最低需求不變；2.7 以下的專案照舊完整查核。verify-artifact 不變。
+- docs/AGENTS.md 文件版本 2.17，流程契約 2.7 → 2.8。技能最低需求不變；下游 docs 仍是 2.7 以下時，處理建議後的增量覆審與格式問題的判定照舊，review 範本依該專案的流程契約照寫 Review artifact 行，2.3 以下的 PASS 提醒照舊只允許單獨新增報告的提交。verify-artifact 不變。
 
 ### 驗證
 
@@ -63,7 +63,7 @@ issue README 的 `**狀態**` 只寫階段；沒有待觀察項目時，`已完�
 - 未實跑：合併前觀察做完之後的推進（寫證據、重新審查、在保存 PASS 的提交寫 `已完成`）、快轉合併的合併判定、合併後記錄觀察時一併寫 `已完成`、懸置掃描讀目標分支、新範本建立 issue、合併後是 `待提交` 時 reviewer 與 dev-cycle 的判讀、下游 docs 仍是流程契約 2.6 時的行為。
 - 下游試用（候選版 `da632e9`）：一個下游專案的實際 issue 走完主路徑，最後一輪 PASS 無建議時保存報告的提交寫 `已完成`，合併前 dev-cycle 回報待合併，合併（squash）後主幹沒有記帳提交，dev-cycle 依 PR mergedAt 回報結案。另一個下游專案有部署後觀測，合併前沒有寫 `已完成`；因候選版 docs 會隨交付分支帶進主幹而在合併前 revert，合併後的推進沒有下游案例。
 - issue #13：暫存專案以上一版 kit 初始化後用候選版 `--update`，docs/AGENTS.md 更新、沒有衝突，舊範本原文的 project.md 保持原樣並照常提醒；只建立 project.md 之後再完整初始化，project.md 保留、`--check` OK。移除已部署檔案的說明只靜態撰寫。
-- issue #12（隔離設定、Claude Code）：WF-43 處理建議後的增量覆審 2／2 沒有對未改動的內容提新建議、判 PASS，報告符合新格式、verify-artifact 判有效；修正引入缺陷的對照組 2／2 指出缺陷。基準組（2.7）同樣沒有提建議，收斂效果沒有量到。WF-44 格式問題在六輪裡都沒有列 MUST FIX，fixture 補齊證據後 2／2 判 PASS；待核准卻已實作的 Scenario 6／6 列 MUST FIX。WF-32 以一句提醒重跑 2／2。未實跑：沒動到的內容有 MUST FIX 等級問題時的列法。
+- issue #12（隔離設定、Claude Code）：WF-43 處理建議後的增量覆審 2／2 沒有對未改動的內容提新建議、判 PASS，報告符合新格式、verify-artifact 判有效；修正引入缺陷的對照組 2／2 指出缺陷。基準組（2.7）同樣沒有提建議，收斂效果沒有量到。WF-44 格式問題在六輪裡都沒有列 MUST FIX，fixture 補齊證據後 2／2 判 PASS；待核准卻已實作的 Scenario 6／6 列 MUST FIX。WF-32 以一句提醒重跑 2／2。未實跑：沒動到的內容有 MUST FIX 等級問題時的列法；SCN-007 只跑了缺少核准來源，狀態值、`**核准 commit**`、待確認事項狀態寫錯的情況沒有實跑；create-pr 以精簡後的增量報告作為完整範圍證據沒有實跑（WF-43 與下游試用都沒有進到 PR）。
 - issue #12 下游試用（候選版 `43bc4be`）：下游專案新開的 issue，1 輪完整審查與 2 輪處理建議後的增量覆審都判 PASS；增量覆審只查修正與受影響之處，新建議都是增量引入，報告符合新格式，verify-artifact 判有效；文件與程式不一致、狀態括號寫法列建議。照 NICE TO HAVE 修正會在下一輪帶出新的 NICE TO HAVE，這次由使用者選不修收斂。沒動到的內容有 MUST FIX 等級問題的情況沒有驗到。
 - issue #15：test-evidence 新增用法錯誤六種情況（exit 2）與有效性失敗（照舊 exit 1）的測試；test-install 以暫存 HOME 與替身 `claude` 測試試用腳本：技能與指定 SHA 相同（kit 工作區有未提交修改時也一樣），原本的 `~/.claude` 與 `~/.claude.json` 在啟動 session 前後雜湊相同，`~/.claude/skills` 本身或其中的技能是 symlink 時也一樣，相對連結的技能在試用 session 可讀，複製失敗時不留下設定目錄；拿掉腳本裡改 HOME 的那一步時測試會失敗。「下游試用」的做法只靜態撰寫，在 #12 的下游試用實際使用。
 

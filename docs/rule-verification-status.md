@@ -342,8 +342,8 @@
 |---|---|---|
 | 上一份 PASS、增量只處理它的建議時，reviewer 逐項確認修正並查核受影響之處，新建議只限增量引入的問題 | 宿主實跑（Claude Code，隔離設定） | WF-43 wf43 2／2 沒有對未改動的內容提新建議、判 PASS；wf43b 2／2 指出修正引入的缺陷（docs/issues/issue-0012/evidence/s2-results.md）。基準組同樣沒有提建議，收斂效果沒有量到。下游試用（候選版 `43bc4be`）2 輪增量覆審只查修正、新建議都是增量引入；照 NICE TO HAVE 修正會在下一輪帶出新的 NICE TO HAVE，收斂靠使用者選不修（docs/issues/issue-0012/evidence/s4-downstream-trial.md） |
 | 沒動到的內容有 MUST FIX 等級的問題時照常列出，並寫明上一個 HEAD 就已存在 | 僅靜態撰寫 | fixture 難以在不讓上一份 PASS 失真的情況下成立；下游試用的 2 輪增量覆審沒有出現這類問題，沒有驗到 |
-| 增量覆審的已查核維度與限制只寫本輪內容並加一行沿用；本機報告不寫 Review artifact 行；PASS 後一句提醒 | 宿主實跑（Claude Code，隔離設定） | WF-43 wf43 2／2 報告符合格式，verify-artifact exit 0；WF-32 以一句提醒重跑 2／2 提交前告知 PASS 會失效；下游試用 3 份報告都符合格式、verify-artifact 有效 |
-| issue 文件的格式、措辭與欄位寫法列建議，缺核准或必要證據、不實回報、會讓 gate 判斷錯誤時才是 MUST FIX | 宿主實跑（Claude Code，隔離設定） | WF-44 wf44 六輪沒有一輪把格式問題列 MUST FIX，fixture 修正後 2／2 判 PASS；wf44b 6／6 把待核准卻已實作的 Scenario 列 MUST FIX；下游試用把文件與程式不一致、狀態括號寫法列建議，沒有會讓 gate 誤判卻降級的問題 |
+| 增量覆審的已查核維度與限制只寫本輪內容並加一行沿用；本機報告不寫 Review artifact 行；PASS 後一句提醒 | 宿主實跑（Claude Code，隔離設定） | WF-43 wf43 2／2 報告符合格式，verify-artifact exit 0；WF-32 以一句提醒重跑 2／2 提交前告知 PASS 會失效；下游試用 3 份報告都符合格式、verify-artifact 有效。create-pr 以這份報告作為完整範圍證據：未實跑（WF-43 與下游試用都沒有進到 PR） |
+| issue 文件的格式、措辭與欄位寫法列建議，缺核准或必要證據、不實回報、會讓 gate 判斷錯誤時才是 MUST FIX | 宿主實跑（Claude Code，隔離設定） | WF-44 wf44 六輪沒有一輪把格式問題列 MUST FIX，fixture 修正後 2／2 判 PASS；wf44b 6／6 把待核准卻已實作的 Scenario 列 MUST FIX；下游試用把文件與程式不一致、狀態括號寫法列建議，沒有會讓 gate 誤判卻降級的問題。MUST FIX 例外只實跑缺少核准來源一支；狀態值、`**核准 commit**`、待確認事項狀態寫錯未實跑 |
 
 ## 未發布 — 下游試用的方式與 verify-artifact 用法錯誤（issue #15，2026-11-24）
 

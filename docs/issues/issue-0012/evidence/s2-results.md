@@ -1,6 +1,6 @@
 # S2 實跑結果（2026-11-24）
 
-判準見 [fixtures/expected.md](../fixtures/expected.md)。環境：候選版 kit `e857e33`、基準版 `cd25225`（main，流程契約 2.7），各以 `git archive` 取出並 `install.sh claude` 到 session 暫存區的隔離設定；`run_case.py`，模型 `claude-opus-5-5`；每輪重新產生 fixture。每輪的工具動作與輸出在 `s2-wf*/{案例}-r{n}.md`，回合中保存的報告在 `{案例}-r{n}-review-{SHA}.md`。
+判準見 [fixtures/expected.md](../fixtures/expected.md)。環境：候選版 kit `e857e33`（wf44、wf44b 的第一次重跑 r3、r4 在 `d4c5bd9`，第二次重跑 r5、r6 在 `066ef00`；這兩個提交只改 fixture 與判準，技能與 `e857e33` 相同）、基準版 `cd25225`（main，流程契約 2.7），各以 `git archive` 取出並 `install.sh claude` 到 session 暫存區的隔離設定；`run_case.py`，模型 `claude-opus-5-5`；每輪重新產生 fixture。每輪的工具動作與輸出在 `s2-wf*/{案例}-r{n}.md`，回合中保存的報告在 `{案例}-r{n}-review-{SHA}.md`。
 
 | 案例 | 輪次 | 結果 | 說明 |
 |---|---|---|---|

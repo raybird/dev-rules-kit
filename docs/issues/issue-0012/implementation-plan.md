@@ -24,7 +24,7 @@ issue 文件的格式、措辭與欄位寫法列 SHOULD FIX 或 NICE TO HAVE。�
 
 ### 相容性
 
-docs/AGENTS.md 文件版本 2.17，流程契約 2.7 → 2.8（minor，向後相容）。review、dev-cycle 的最低需求不變：下游 docs 仍是 2.7 以下時沒有這幾段，reviewer 照舊完整查核，行為與現在相同。
+docs/AGENTS.md 文件版本 2.17，流程契約 2.7 → 2.8（minor，向後相容）。review、dev-cycle 的最低需求不變：下游 docs 仍是 2.7 以下時沒有這幾段，處理建議後的增量覆審與格式問題的判定照舊；review 範本的 Review artifact 行與 PASS 提醒依被審查專案的流程契約寫（2.7 以下照寫 Review artifact 行，2.3 以下的提醒只允許單獨新增報告的提交）。
 
 ### 回歸案例
 

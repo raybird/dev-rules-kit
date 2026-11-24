@@ -151,4 +151,4 @@ Feature: 審查在處理建議後收斂，報告只寫本輪的內容
 **建立日期**: 2026-11-24  
 **分級**: Medium — 修改 review-evidence.md、review 與 dev-cycle 技能，加兩個回歸案例；不改檢查器、不需 Phase／Task 拆解  
 **風險**: Medium\
-**狀態**: 審查通過（review-03fb11b）
+**狀態**: 實作中

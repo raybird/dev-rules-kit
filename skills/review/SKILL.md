@@ -30,7 +30,7 @@ description: 由獨立 reviewer 審查變更或不修復決策，核對驗收、
 - Reviewed HEAD SHA：...
 - Reviewed patch-id：...（無程式 diff 的決策審查可記不適用與理由）
 - 獨立 reviewer：...
-- Review artifact：...（只在報告保存在平台時寫連結；本機保存時省略本行）
+- Review artifact：...（流程契約 2.8 起只在報告保存在平台時寫連結，本機保存時省略本行；2.7 以下照寫報告路徑或連結）
 - 核准基線：...（核准 commit 為 `待提交` 時必填：推導出的 SHA，或「缺少」與原因；其他情況省略）
 - 增量覆審：上一份報告與增量範圍 `H1..HEAD`；曾經審查過，但完整審查（條件不成立、找不到或不適用上一份報告）時寫原因；第一次審查時省略
 
@@ -47,7 +47,7 @@ description: 由獨立 reviewer 審查變更或不修復決策，核對驗收、
 ## 流程判定
 PASS／RETURN TO execute-task／UNPERSISTED（依 review-evidence.md）
 
-（PASS 時照抄下一行）
+（PASS 時照抄下一行；流程契約 2.3 以下把「提交 README 記帳區段與本報告以外的檔案」改成「提交本報告以外的任何變更」，章節名改為「本機 artifact 提交後的有效性」）
 PASS 只適用於上列 Reviewed HEAD SHA；之後提交 README 記帳區段與本報告以外的檔案會讓它失效，提交前先告知使用者（review-evidence.md「審查之後的提交」）。
 ```
 
