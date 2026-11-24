@@ -193,8 +193,8 @@ issue 中實際出事或差點出事、其他 issue 可能重踩的坑，依 [do
 
 ---
 
-**文件版本**: 2.16
-**流程契約**: 2.7
-**最後更新**: 2026-11-23
+**文件版本**: 2.17
+**流程契約**: 2.8
+**最後更新**: 2026-11-24
 
 各版異動見 kit 的 [CHANGELOG](https://github.com/raybird/dev-rules-kit/blob/main/CHANGELOG.md)。

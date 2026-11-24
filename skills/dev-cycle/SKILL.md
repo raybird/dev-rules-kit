@@ -41,7 +41,7 @@ description: 查詢 issue 進度或依既有授權自動推進需求、實作、
 | 任務全部完成但交付變更尚未提交 | 依 create-commit 準備並提交已授權的交付內容 |
 | 完整交付範圍缺少有效的持久化審查報告，且獨立審查未獲明確豁免 | review |
 | 有效 review 有 `需決策` 發現，README 待確認事項尚無對應結論 | 依 acceptance.md「逐題確認」取得決策並記入待確認事項；規格變更依規格修訂處理，需修正者回 execute-task，結論與修正放在同一個提交，接受未修的 MUST FIX 記入 Gate 豁免紀錄；記錄提交後，原判定為 PASS 且依 review-evidence.md「審查之後的提交」（流程契約 2.3 以下為「本機 artifact 提交後的有效性」）判定有效時沿用 PASS；其他情況依新範圍重新 review；同一份 PASS 報告另有建議時，併入下一列的同一則訊息 |
-| 有效 PASS 附 SHOULD FIX／NICE TO HAVE，README 尚無對應結論 | 依 acceptance.md「逐題確認」把所有建議列在同一則訊息，每項附建議答案，選項為修正、記入待確認、不修；project.md 登記固定做法時照登記並說明。結論記入待確認事項；沒有選修正時，依 review-evidence.md「審查之後的提交」判定有效即沿用 PASS；選了修正的一起修完，結論與修正放在同一個提交，再送審新範圍 |
+| 有效 PASS 附 SHOULD FIX／NICE TO HAVE，README 尚無對應結論 | 依 acceptance.md「逐題確認」把所有建議列在同一則訊息，每項附建議答案，選項為修正、記入待確認、不修；project.md 登記固定做法時照登記並說明。結論記入待確認事項；沒有選修正時，依 review-evidence.md「審查之後的提交」判定有效即沿用 PASS；選了修正的一起修完，結論與修正放在同一個提交，再送審新範圍；流程契約 2.8 起，派工時寫明這是處理建議後的增量覆審，查核範圍依 review-evidence.md「增量覆審」 |
 | 有效 review 為 RETURN TO execute-task | 修正問題、更新證據與提交，再審查新範圍 |
 | 完整交付範圍有有效 PASS 或明確審查豁免，且 PR 尚未建立或待同步（範圍、Proof、審查證據） | create-pr，建立或更新後依 review-evidence.md 重新核對目標與 source HEAD |
 | 審查已通過或明確豁免，且 open PR（project.md 登記不開 PR 時為已推送的分支）與交付證據一致 | 等待合併，回報後結束本次調用 |

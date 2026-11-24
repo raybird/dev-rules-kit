@@ -22,7 +22,7 @@ issue README 的 `**狀態**` 只寫階段；沒有待觀察項目時，`已完�
 - dev-cycle 狀態表：`已完成` 的結案列只限不經合併的結案依據；分支上還沒合併的 `已完成` 回報待合併，不宣稱結案、不改欄位；等待列不變。推進步驟在沒有待觀察項目時，於保存 PASS 報告的提交或之後的記帳提交寫好終態；合併後才需要的提交（改記等待、記錄到期觀察）同時更新狀態。
 - dev-cycle 懸置掃描（`references/pending-scan.md`）：讀目標分支上的 README，目標分支還不包含的 `已完成` 不算終態；未登記合併判定時，預設順序多一項「現行審查報告的 Reviewed HEAD 是目標分支的祖先」，可辨認快轉合併。
 - 工作流程第 3 項：Timeline 不記合併，合併時間以 Git 為準。待確認事項的結論寫在狀態欄，影響欄只寫影響與關聯驗收編號。
-- docs/AGENTS.md 文件版本 2.15（本版發布時為 2.16，見下方 issue #13），流程契約 2.6 → 2.7。技能最低需求不變；2.6 以下的專案照舊在合併後標記，dev-cycle 對所有版本都以合併判定確認結案。
+- docs/AGENTS.md 文件版本 2.15（本版發布時為 2.17、流程契約 2.8，見下方 issue #13、#12），流程契約 2.6 → 2.7。技能最低需求不變；2.6 以下的專案照舊在合併後標記，dev-cycle 對所有版本都以合併判定確認結案。
 
 ### 變更（`rules/`、`docs/agents/`）
 
@@ -43,7 +43,14 @@ issue README 的 `**狀態**` 只寫階段；沒有待觀察項目時，`已完�
 ### 變更（`skills/review/`、維護工具，[issue #15](https://github.com/raybird/dev-rules-kit/issues/15)）
 
 - verify-artifact.py：參數本身有誤時（`--issue` 不是 `docs/issues/issue-{ID}`、artifact 檔名與 `--reviewed` 不符、`--reviewed`／`--head` 不是存在的提交、`--artifact` 與 `--issue` 指向不同 issue、兩者都沒給、`--repo` 不是 Git repo）改回 exit 2，訊息以「用法錯誤：」開頭並說明這不是有效性判定。原本和「需重新審查」一樣回 exit 1 與 `INVALID：`，看起來像 PASS 失效。有效性判定與 exit 0／1 不變；review 技能補一句 exit 2 的意思。
-- 維護者的下游試用：新增 `scripts/trial-session.sh <候選版 SHA>`，在下游 worktree 開一個只把 kit 技能換成該 SHA 的 Claude Code session，設定目錄在 `~/.cache`；技能目錄解參照複製，腳本本身不修改原本的 `~/.claude` 與 `~/.claude.json`（session 執行中對以 symlink 共用的記憶、settings 等的寫入會進原檔）；workflow-regression 新增「下游試用」，試用開始時請下游使用者選候選版 docs 隨交付分支合併或合併前 revert（各附代價）。根目錄 AGENTS.md 原本要求試用結果記在 `## 現況`，與 `## 現況` 的格式矛盾，改記在該 kit issue 的 evidence 檔。不部署到下游。
+- 維護者的下游試用：新增 `scripts/trial-session.sh <候選版 SHA>`，在下游 worktree 開一個只把 kit 技能換成該 SHA 的 Claude Code session，設定目錄在 `~/.cache`；技能目錄解參照複製，腳本本身不修改原本的 `~/.claude` 與 `~/.claude.json`（session 執行中對以 symlink 共用的記憶、settings 等的寫入會進原檔）；workflow-regression 新增「下游試用」（試用的 issue 要選還沒上線、試用期間不需部署的，issue #12 補上），試用開始時請下游使用者選候選版 docs 隨交付分支合併或合併前 revert（各附代價）。根目錄 AGENTS.md 原本要求試用結果記在 `## 現況`，與 `## 現況` 的格式矛盾，改記在該 kit issue 的 evidence 檔。不部署到下游。
+
+### 變更（`docs/agents/review-evidence.md`、`skills/review/`、`skills/dev-cycle/`，[issue #12](https://github.com/raybird/dev-rules-kit/issues/12)）
+
+- 增量覆審：上一份報告判 PASS、增量只處理它的建議時，reviewer 逐項確認修正並查核受影響之處，新提出的 SHOULD FIX／NICE TO HAVE 只限增量引入的問題；MUST FIX 等級的問題照常列出。原本每輪都可能對沒動到的內容提新建議，處理完建議又要再審，下游有 issue 審到第 6 輪才收斂。dev-cycle 的「PASS 附建議」列派工時寫明這一點。
+- 增量覆審的報告：「已查核維度」與「限制」只寫本輪查核的內容，加一行沿用上一份報告。本機保存的報告不再寫指向自己的 `Review artifact` 行；PASS 判定後的固定段落縮成一句。
+- 審查強度：issue 文件的格式、措辭與欄位寫法列 SHOULD FIX 或 NICE TO HAVE；缺少新行為的核准來源或必要證據、不實回報，或會讓 verify-artifact、dev-cycle、懸置掃描判斷錯誤時才是 MUST FIX。
+- docs/AGENTS.md 文件版本 2.17，流程契約 2.7 → 2.8。技能最低需求不變；下游 docs 仍是 2.7 以下時，處理建議後的增量覆審與格式問題的判定照舊，review 範本依該專案的流程契約照寫 Review artifact 行，2.3 以下的 PASS 提醒照舊只允許單獨新增報告的提交。verify-artifact 不變。
 
 ### 驗證
 
@@ -56,12 +63,15 @@ issue README 的 `**狀態**` 只寫階段；沒有待觀察項目時，`已完�
 - 未實跑：合併前觀察做完之後的推進（寫證據、重新審查、在保存 PASS 的提交寫 `已完成`）、快轉合併的合併判定、合併後記錄觀察時一併寫 `已完成`、懸置掃描讀目標分支、新範本建立 issue、合併後是 `待提交` 時 reviewer 與 dev-cycle 的判讀、下游 docs 仍是流程契約 2.6 時的行為。
 - 下游試用（候選版 `da632e9`）：一個下游專案的實際 issue 走完主路徑，最後一輪 PASS 無建議時保存報告的提交寫 `已完成`，合併前 dev-cycle 回報待合併，合併（squash）後主幹沒有記帳提交，dev-cycle 依 PR mergedAt 回報結案。另一個下游專案有部署後觀測，合併前沒有寫 `已完成`；因候選版 docs 會隨交付分支帶進主幹而在合併前 revert，合併後的推進沒有下游案例。
 - issue #13：暫存專案以上一版 kit 初始化後用候選版 `--update`，docs/AGENTS.md 更新、沒有衝突，舊範本原文的 project.md 保持原樣並照常提醒；只建立 project.md 之後再完整初始化，project.md 保留、`--check` OK。移除已部署檔案的說明只靜態撰寫。
+- issue #12（隔離設定、Claude Code）：WF-43 處理建議後的增量覆審 2／2 沒有對未改動的內容提新建議、判 PASS，報告符合新格式、verify-artifact 判有效；修正引入缺陷的對照組 2／2 指出缺陷。基準組（2.7）同樣沒有提建議，收斂效果沒有量到。WF-44 格式問題在六輪裡都沒有列 MUST FIX，fixture 補齊證據後 2／2 判 PASS；待核准卻已實作的 Scenario 6／6 列 MUST FIX。WF-32 以一句提醒重跑 2／2。未實跑：沒動到的內容有 MUST FIX 等級問題時的列法；SCN-007 只跑了缺少核准來源，狀態值、`**核准 commit**`、待確認事項狀態寫錯的情況沒有實跑；create-pr 以精簡後的增量報告作為完整範圍證據沒有實跑（WF-43 與下游試用都沒有進到 PR）。
+- issue #12 下游試用（候選版 `43bc4be`）：下游專案新開的 issue，1 輪完整審查與 2 輪處理建議後的增量覆審都判 PASS；增量覆審只查修正與受影響之處，新建議都是增量引入，報告符合新格式，verify-artifact 判有效；文件與程式不一致、狀態括號寫法列建議。照 NICE TO HAVE 修正會在下一輪帶出新的 NICE TO HAVE，這次由使用者選不修收斂。沒動到的內容有 MUST FIX 等級問題的情況沒有驗到。
 - issue #15：test-evidence 新增用法錯誤六種情況（exit 2）與有效性失敗（照舊 exit 1）的測試；test-install 以暫存 HOME 與替身 `claude` 測試試用腳本：技能與指定 SHA 相同（kit 工作區有未提交修改時也一樣），原本的 `~/.claude` 與 `~/.claude.json` 在啟動 session 前後雜湊相同，`~/.claude/skills` 本身或其中的技能是 symlink 時也一樣，相對連結的技能在試用 session 可讀，複製失敗時不留下設定目錄；拿掉腳本裡改 HOME 的那一步時測試會失敗。「下游試用」的做法只靜態撰寫，在 #12 的下游試用實際使用。
 
 ### 下游更新
 
-- 技能照平常的安裝方式更新；核心 `docs/` 以 `init-project.py --update` 更新到 2.16 後，審查通過且沒有待觀察項目時就在分支上寫 `已完成`；有待觀察項目時照舊。更新之前照舊在合併後標記。
+- 技能照平常的安裝方式更新；核心 `docs/` 以 `init-project.py --update` 更新到 2.17 後，審查通過且沒有待觀察項目時就在分支上寫 `已完成`；有待觀察項目時照舊。更新之前照舊在合併後標記。
 - 既有 README 不需要遷移。project.md 拿 `**狀態**` 判斷是否已合併的專案，包括從狀態欄取 PR 編號或合併日期的，改成只看 Git 或平台：例如依分支名稱或 head SHA 找 PR 再看合併時間（squash 合併也適用）；快轉或 merge commit 合併時，也可以看現行審查報告的 Reviewed HEAD 是不是主幹的祖先。
+- issue #12：docs 更新到流程契約 2.8 後，處理建議後的覆審只查修正，格式問題列建議；既有報告不需改。
 - issue #13：`--update` 會移除 docs/AGENTS.md 的修訂紀錄表（未客製時自動更新）。既有 project.md 不會改，開頭的管理說明可自行刪除。不用 issue 流程、先前已整套部署的專案，可依 INSTALL.md 第 3 步移除不需要的檔案。
 
 ## [5.2.0] - 2026-11-19
