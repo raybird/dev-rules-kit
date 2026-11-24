@@ -49,8 +49,9 @@ USAGE = '- `python3 todo.py`：列出\n'
 USAGE_DUE = USAGE + '  - 有到期日的待辦在結尾顯示「（到期 MM/DD）」\n'
 
 
-def h1(kit, path, readme_text, edit=None):
-    """main 與 issue 分支：規格提交、H1 實作提交（edit 可在實作提交前改 README）。回傳 main 的 SHA 與 H1。"""
+def h1(kit, path, readme_text, edit=None, evidence=None):
+    """main 與 issue 分支：規格提交、H1 實作提交（edit 可在實作提交前改 README，evidence 取代計畫的證據欄）。
+    回傳 main 的 SHA 與 H1。"""
     base(kit, path)
     main_sha = git(path, 'rev-parse', 'HEAD')
     run(path, 'git', 'checkout', '-q', '-b', f'issue-{ID}-due')
@@ -69,7 +70,7 @@ def h1(kit, path, readme_text, edit=None):
     text = readme.read_text().replace('**核准 commit**: 待提交', f'**核准 commit**: {spec}')
     text = text.replace('**狀態**: 待實作', '**狀態**: 審查中')
     write(readme, edit(text) if edit else text)
-    write(path / DIR / 'implementation-plan.md', plan(ID, [
+    write(path / DIR / 'implementation-plan.md', plan(ID, evidence or [
         ('顯示到期日', '✅ 2026-11-17；`python3 -m unittest -v` 3 項全數通過（test_render_shows_due）'),
         ('列出逾期', '✅ 2026-11-17；同上，test_overdue')]))
     commit(path, f'feat: 待辦支援到期日與逾期清單\n\nRefs: #{ID}', '2026-11-17')
@@ -111,8 +112,17 @@ def build_suggestions(kit, path, defect):
 
 
 FORMAT_OVERVIEW = '待辦可以帶到期日：清單顯示月/日，並能列出逾期的未完成待辦。目前 S1、S2 都已完成，測試全數通過，等待審查。'
-FORMAT_TIMELINE = [('2026-11-16', '建立並核准', '開發者'), ('2026-11-17', '完成 S1，測試 3 項通過', '開發者'),
+FORMAT_TIMELINE = [('2026-11-16', '建立並核准', '開發者'), ('2026-11-17', '完成 S1', '開發者'),
                    ('2026-11-17', '完成 S2', '開發者')]
+# 2026-11-24 第一次實跑後補完整的紅綠重構證據，見 expected.md「第一次實跑後重跑 wf44、wf44b」
+FORMAT_EVIDENCE = [
+    ('顯示到期日', '✅ 2026-11-17。單迴圈合併：`render` 的回傳值就是 CLI 列出的輸出，`test_render_shows_due` 直接斷言整行字串，'
+     '沒有另一層整合責任。紅燈：先加 test_due.py，`python3 -m unittest test_due.DueTest.test_render_shows_due` exit 1，'
+     'AssertionError，輸出少了「（到期 11/20）」。綠燈：加入 `due_of` 與 `render` 的到期日後 `python3 -m unittest -v` exit 0，'
+     'Ran 3 tests OK（被測內容即 H1 的 todo.py）。重構：no-op，`render` 只多一段判斷，沒有可抽出的重複'),
+    ('列出逾期', '✅ 2026-11-17。單迴圈合併：`overdue` 是函式層級的驗收（SCN-002 的 When 是「呼叫 overdue」）。'
+     '紅燈：先放回傳 `[]` 的 `overdue`，`python3 -m unittest test_due.DueTest.test_overdue` exit 1，AssertionError `[] != [1]`。'
+     '綠燈：實作後 `python3 -m unittest -v` exit 0，Ran 3 tests OK。重構：no-op，只有一行 list comprehension')]
 FORMAT_TBD = ('## 待確認事項\n\n| 編號 | 事項 | 狀態 | 影響 |\n|---|---|---|---|\n'
               '| TBD-1 | 沒有到期日的待辦要不要顯示「（無到期日）」 | 已解決：2026-11-16 | 使用者選不顯示，維持原本的輸出；SCN-001 |\n')
 GATE_TBD = '| TBD-2 | SCN-002 逾期要以今天還是明天為界，等使用者確認 | 待確認 | SCN-002 |\n'
@@ -130,7 +140,7 @@ def build_format(kit, path, gate):
     tbd = FORMAT_TBD + (GATE_TBD if gate else '')
     text = text.replace('## Timeline', tbd + '\n## Timeline', 1)
     rows = '\n'.join(f'| {d} | {e} | {who} |' for d, e, who in FORMAT_TIMELINE)
-    _, head1 = h1(kit, path, text, lambda t: t.replace('| 2026-11-16 | 建立並核准 | 開發者 |', rows))
+    _, head1 = h1(kit, path, text, lambda t: t.replace('| 2026-11-16 | 建立並核准 | 開發者 |', rows), FORMAT_EVIDENCE)
     return head1, head1, m10.run_tests(path)
 
 
