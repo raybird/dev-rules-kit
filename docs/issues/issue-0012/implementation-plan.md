@@ -43,7 +43,7 @@ fixture 放在本 issue 的 `fixtures/`；判準寫進 `fixtures/expected.md`，
 
 | 編號 | 工作與產出 | 相依／啟用條件 | 驗收編號 | 完成判準 | 狀態／證據 |
 |---|---|---|---|---|---|
-| S1 | review-evidence.md 三段；docs/AGENTS.md 2.17／契約 2.8；review 技能（派工、範本、步驟 4）；dev-cycle「PASS 附建議」列；重產技能雜湊；WF-43、WF-44 fixture 與 expected.md 先提交 | SCN-001～007 已核准 | SCN-001～007 | 文字涵蓋上方定義；fixture 以腳本確認：wf43 誘餌函式在 H1..H2 沒變、wf43b 的缺陷在 H2 現有測試下仍通過、wf44b 的 Scenario 在核准紀錄是待核准；判準在 S2 前提交 | ⏳ |
+| S1 | review-evidence.md 三段；docs/AGENTS.md 2.17／契約 2.8；review 技能（派工、範本、步驟 4）；dev-cycle「PASS 附建議」列；重產技能雜湊；WF-43、WF-44 fixture 與 expected.md 先提交 | SCN-001～007 已核准 | SCN-001～007 | 文字涵蓋上方定義；fixture 以腳本確認：wf43 誘餌函式在 H1..H2 沒變、wf43b 的缺陷在 H2 現有測試下仍通過、wf44b 的 Scenario 在核准紀錄是待核准；判準在 S2 前提交 | ✅ 2026-11-24；規則文字見本提交的 review-evidence.md「增量覆審」「Review artifact 的存放」「審查強度與流程判定」與兩個技能；`build_fixtures.py` 產生四組，H2／H1 上測試皆 exit 0；腳本核對：wf43 的 H1..H2 中 `overdue` 只出現在 diff 上下文、wf43b 的 `short_date("2026-01-05")` 回傳 `1/5`（wf43 回傳 `01/05`）、wf44b 核准紀錄 SCN-002 為待核准且 S2 標 ✅；五項檢查通過 |
 | S2 | 隔離設定實跑 WF-43 兩組、WF-44 兩組、WF-32，各 2 輪 | S1 | SCN-001、002、004～007 | 每組 2／2 符合判準；未達成時修正文字後重跑，記錄每一輪 | ⏳ |
 | S3 | workflow-regression 新增 WF-43、44 與結果連結；rule-verification-status；CHANGELOG `[未發布]`；docs/usage.md 與 README.md 的影響檢查；五項檢查 | S2 | SCN-001～007 | 五項檢查通過；SCN-003 標「僅靜態撰寫」 | ⏳ |
 | S4 | 下游試用：依 workflow-regression「下游試用」，以 `scripts/trial-session.sh` 在下游實際 issue 試用候選版 | S3、README TBD-3 | SCN-001～007 | evidence 檔記有候選版 SHA、docs 放法的選擇與理由、每個觀察項目的結果或「沒有驗到」 | ⏳ |

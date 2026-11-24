@@ -29,7 +29,7 @@ git diff "${base_sha}" "${head_sha}" | git patch-id --stable
 
 - Reviewed BASE SHA、Reviewed HEAD SHA、Reviewed patch-id。
 - 獨立 reviewer 識別、審查範圍與風險、證據及發現。
-- `PASS`／`RETURN TO execute-task` 判定與 artifact URL／路徑。
+- `PASS`／`RETURN TO execute-task` 判定；保存在平台時另記連結（本機報告的路徑就是檔案本身，不另寫）。
 - 核准 commit 為 `待提交` 時，依 [acceptance.md](acceptance.md#規格修訂的查核)推導出的核准基線 SHA。
 
 流程契約 2.5 起，保存報告的同一個提交把 issue README `## 現況` 的 `**現行 review**` 改成這份報告的檔名或平台連結；README 還沒有 `## 現況` 時，依 [document-types.md](document-types.md#readmemd必備) 在 `## 概述` 之後建立。報告保存在平台時，由更新 README 的那個提交寫入平台連結。讀者以這個欄位找現行報告，舊報告留在原處作為歷史。
@@ -62,9 +62,11 @@ git diff "${base_sha}" "${head_sha}" | git patch-id --stable
 2. 目標分支與新 HEAD 的 merge-base 仍是那份報告的 Reviewed BASE。
 3. 協調者把那份報告與新範圍一起交給獨立 reviewer，不限原 reviewer。
 
-報告照完整範圍記：Reviewed BASE 是原 BASE，Reviewed HEAD 是新 HEAD，patch-id 依 `BASE..新 HEAD` 計算，所以它就是完整範圍的審查證據。另記上一份報告、增量範圍 `H1..新 HEAD`、重新查核的項目與沿用的結論。
+報告照完整範圍記：Reviewed BASE 是原 BASE，Reviewed HEAD 是新 HEAD，patch-id 依 `BASE..新 HEAD` 計算，所以它就是完整範圍的審查證據。另記上一份報告、增量範圍 `H1..新 HEAD`、重新查核的項目與沿用的結論。流程契約 2.8 起，「已查核維度」與「限制」只寫本輪查核的項目、結論與新增的限制，加一行寫明其餘沿用上一份報告的檔名，不重抄上一份的內容。
 
 reviewer 讀上一份報告與增量 diff，增量範圍內每個變動檔案都給結論，上一份報告的 MUST FIX 與決定要修的建議逐項確認已修好。變動會影響未改動的程式或上一份報告的結論時——例如呼叫被修改函式的程式、依賴被修改的設定或資料格式的程式、前提被改變的測試——在整個新 HEAD 找出這些地方並重新查核，寫明理由；只有確認不受影響的結論才寫為沿用。受影響的測試在新 HEAD 重跑並引用輸出。
+
+流程契約 2.8 起，上一份報告判 PASS、增量範圍只為處理它的建議（使用者選了修正的項目）時，reviewer 逐項確認這些建議已修好，並照上段查核受影響之處；新提出的 SHOULD FIX／NICE TO HAVE 只限增量引入的問題，沒動到也不受影響的內容不再提新建議。MUST FIX 等級的問題不受此限，照常列出並寫明在上一個 HEAD 就已存在。增量同時夾帶其他修改時照一般增量覆審。
 
 任一條件不成立就完整審查，報告寫明不採增量的原因。只把上一個 HEAD 記為 Reviewed BASE 的報告屬於局部審查。
 
@@ -75,6 +77,7 @@ reviewer 讀上一份報告與增量 diff，增量範圍內每個變動檔案都
 - `PASS`：獨立審查完成、報告已保存、無 MUST FIX，必要驗收及失敗面具證據或明確豁免。Gate 豁免紀錄明列接受不修的 MUST FIX 不阻擋 PASS，報告照列並註明依據的豁免。
 - `RETURN TO execute-task`：有安全／邏輯錯誤、架構違規、不實回報、必要驗收或風險覆蓋缺口。
 - 純可讀性建議與證據持久力改善不阻塞；揭露測試限制不構成缺失。
+- 流程契約 2.8 起，issue 文件的格式、措辭與欄位寫法列 SHOULD FIX 或 NICE TO HAVE。以下才列 MUST FIX：缺少新行為的核准來源或必要證據、不實回報，或會讓 verify-artifact、dev-cycle、懸置掃描判斷錯誤的寫法（例如狀態值、`**核准 commit**`、待確認事項的狀態寫錯）。
 
 發現需要使用者決定需求邊界、接受風險或不修復才能處理時，在該項加註 `需決策`，寫明待決問題、可選做法與 reviewer 建議；判定仍依上列條件。協調者依 [acceptance.md](acceptance.md)「逐題確認」取得答案，結論記入 README `## 待確認事項`。
 
