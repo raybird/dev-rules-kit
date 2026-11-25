@@ -29,8 +29,8 @@
 
 | 編號 | 工作與產出 | 相依／啟用條件 | 驗收編號 | 完成判準 | 狀態／證據 |
 |---|---|---|---|---|---|
-| S1 | 現行「審查之後的提交」與 docs/AGENTS.md「待確認事項」的寫法限制逐句拆成判定規則，建立「規則 → 新位置」對照表（首要驗證） | SCN-007 已核准 | SCN-007 | `evidence/s1-rule-map.md` 每一條規則都有編號、原文出處與預定的新位置（review-evidence.md 或技能參考檔）；沒有規則被標為刪除 | ⏳ |
-| S2 | 改寫 review-evidence.md「審查之後的提交」與 docs/AGENTS.md「待確認事項」的寫法限制；新增 review 技能參考檔；SKILL.md 步驟 5 指向它；重產技能歷代雜湊 | S1 | SCN-005、006、007 | 對照表每列的新位置都找得到對應文字；邊界細節只在參考檔；verify-artifact.py 無 diff；test-evidence 全部通過 | ⏳ |
+| S1 | 現行「審查之後的提交」與 docs/AGENTS.md「待確認事項」的寫法限制逐句拆成判定規則，建立「規則 → 新位置」對照表（首要驗證） | SCN-007 已核准 | SCN-007 | `evidence/s1-rule-map.md` 每一條規則都有編號、原文出處與預定的新位置（review-evidence.md 或技能參考檔）；沒有規則被標為刪除 | ✅ 2026-11-25 [s1-rule-map.md](evidence/s1-rule-map.md)：review-evidence.md 拆成 R1～R26（另拆出 R5a、R7a、R10a），docs/AGENTS.md 拆成 A1～A5、G1，另列新增的 N1～N3；每列都有新位置，沒有一條刪除 |
+| S2 | 改寫 review-evidence.md「審查之後的提交」與 docs/AGENTS.md「待確認事項」的寫法限制；新增 review 技能參考檔；SKILL.md 步驟 5 指向它；重產技能歷代雜湊 | S1 | SCN-005、006、007 | 對照表每列的新位置都找得到對應文字；邊界細節只在參考檔；verify-artifact.py 無 diff；test-evidence 全部通過 | ✅ 2026-11-25 review-evidence.md「審查之後的提交」改成先列可以改的內容、再列沿用條件，新增凍結內容寫錯時的兩種做法，約 2150 字減為 1555 字；`<`、`[`、段落與表格的邊界移到新增的 `skills/review/references/frozen-content.md`；docs/AGENTS.md「待確認事項」的寫法限制精簡成一句；review 技能步驟 5 指向參考檔。對照表「S2 核對」欄逐列填上新位置。重產技能歷代雜湊；install.sh 安裝後 review 技能含 `references/frozen-content.md`。五項檢查見 [kit-checks.txt](evidence/kit-checks.txt)（test-evidence 315 項通過，verify-artifact.py 對 `9318f69` 無 diff） |
 | S3 | acceptance.md、readme-templates.md 的核准來源與核准表；issue-checklist、new-issue 的影響檢查 | SCN-001～004 已核准 | SCN-001～004 | 靜態核對：「核准來源記原話、日期、題號、建議內容」的要求已移除；單行與表格的使用條件、舊格式相容規則與新規則一致；全 repo 沒有其他要求逐題轉述的寫法 | ⏳ |
 | S4 | WF 案例 fixture、判準與實跑：核准紀錄（SCN-001、002、003、004）、PASS 之後的補記與凍結內容有錯（SCN-005、006） | S2、S3 | SCN-001～006 | 每個案例在隔離設定實跑候選版 2 輪並保存輸出；SCN-005 另跑基準版（main）對照；結果與判準寫在 `evidence/s4-results.md`，未達標的照實記錄 | ⏳ |
 | S5 | 文件版本、workflow-regression、CHANGELOG `[未發布]`、rule-verification-status、docs/usage.md、README.md 的影響檢查；五項檢查 | S2～S4 | SCN-001～007 | 五項檢查通過；rule-verification-status 記下沒有下游試用（Gate 豁免）與未達標項目 | ⏳ |

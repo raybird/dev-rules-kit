@@ -187,6 +187,8 @@ fbdcdfe222564f6101ce749a639ccab08dac59c2daaba0b0e9f251e7fd938384  review/SKILL.m
 e9038d5e115ae6fa8887e81cf7957840a79b0cdb9617a48565cbb16442de7bf3  review/SKILL.md  v5.1.0  v5.1.0
 a23c2cc49370e09d24773715c291fc8860cce0181153d53e08d31ba8efb96f33  review/SKILL.md  v5.2.0  v5.2.0
 7174c5e58bec5c19c75ca878479c8753c846c35b0ef6f8995b13687388ad76cc  review/SKILL.md  v5.3.0  v5.3.0
+764fe7839b7571738c32071fa1399d9a730681da3ade4b108145f365004bd2b4  review/SKILL.md  v5.3.0  v5.3.0
+e2d596af74cf241689c23dbda61bff53714a15d3904581e203bfd34f8e55fd90  review/references/frozen-content.md  v5.3.0  v5.3.0
 2d1075d6853c8f2fe11ed03e88cce1c916e427c676283658685b1d952ee4c612  review/scripts/verify-artifact.py  v4.0.0  v4.8.1
 445f851492ab011f3ff388ff08fd0d881b259d02ee1ff2b57be4a58c0d40fa95  review/scripts/verify-artifact.py  v4.10.0  v4.10.0
 7b6ef4e24b234c1bba92b20480379ceaec0556d2e0a24163983eca239a24f21c  review/scripts/verify-artifact.py  v4.11.0  v5.2.0
