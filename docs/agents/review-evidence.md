@@ -45,7 +45,7 @@ git diff "${base_sha}" "${head_sha}" | git patch-id --stable
 
 記帳區段依 [docs/AGENTS.md](../AGENTS.md#待確認事項)「待確認事項」的寫法書寫：一般段落、表格列與清單，照範本寫成的表格直接補列。保存報告、記下使用者對 `需決策` 的答案、回填核准 commit 可以併在同一個提交。其他內容都是凍結內容：其他章節、所有 `##` 標題與其順序、code fence、其他粗體欄位（包括寫在記帳章節底下的 `**分級**`、`**風險**`）、implementation-plan.md、evidence、既有報告與 issue 目錄外的檔案；標題名稱與範本不同的章節同樣凍結。
 
-能否沿用一律以 review 技能的 `verify-artifact.py` 判定，依被審查提交上 `docs/AGENTS.md` 的流程契約：
+能否沿用一律以 review 技能目錄下的 `scripts/verify-artifact.py` 判定（參數見 review 技能步驟 5；不知道技能目錄時載入 review 技能取得），依被審查提交上 `docs/AGENTS.md` 的流程契約：
 
 **流程契約 2.4 起**，下列三項全部成立時沿用：
 
