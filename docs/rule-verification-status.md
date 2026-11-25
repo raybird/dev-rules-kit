@@ -348,6 +348,8 @@
 | 審查之後的提交先列可以改的內容；`<`、`[`、段落與表格的邊界移到 review 技能的 `references/frozen-content.md`，判定不變 | 本地測試驗證 | 規則對照表（docs/issues/issue-0017/evidence/s1-rule-map.md）每條都有新位置；verify-artifact.py 沒有修改，test-evidence 315 項通過 |
 | PASS 之後補記記帳區段不重審，以 verify-artifact 確認 | 宿主實跑（Claude Code，隔離設定） | WF-48 修正前 0／2（找不到 verify-artifact），補寫腳本位置後 2／2 執行並 OK。基準組 2 輪同樣直接補記，「不敢補 README」在 fixture 重現不了，重排的效果沒有量到 |
 | PASS 之後發現凍結內容寫錯：先告知，列出記在待確認事項或修正後重新審查 | 宿主實跑（Claude Code，隔離設定） | WF-48b 2／2；沒有跑基準組 |
+| 已知限制：只以逐題答案核准、使用者沒看過驗收條件清單時，核准來源只記題號對應的驗收編號 | 僅靜態撰寫 | 答案內容只留在 agent 寫的 Scenario 裡，沒有登記成待確認事項的提問，reviewer 無從核對核准範圍只含使用者接受的答案（review-a42f00e NICE TO HAVE 5）。2026-11-25 使用者選列為已知限制：這是選「每次核准一句」時接受的取捨，多數情況會走看過清單後核准 |
+| 單行的前提：每個現存 Scenario 都出現在核准來源的某一句 | 僅靜態撰寫 | review-a42f00e NICE TO HAVE 4 後補，讓 reviewer 不必實跑就能核對分批時誤用單行；沒有實跑案例 |
 
 ## v5.3.0 — 審查收斂與報告變輕（issue #12，2026-11-24）
 
