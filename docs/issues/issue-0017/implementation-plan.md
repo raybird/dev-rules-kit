@@ -39,3 +39,5 @@
 | S8 | 送增量覆審 `a42f00e..新 HEAD`（工具呼叫上限 30 次，逐項確認上列修正） | S7 | SCN-001～007 | PASS，或已依使用者決定處理 | ⏳ |
 | S9 | 依 review-80d52c2 修正：NICE TO HAVE 1（docs/AGENTS.md 那一句後兩處改成「含不符合這些寫法的行的段落」「與這類行同段落的內容」）、2（s4-results 寫明只有 r4 被擋）、3（acceptance 的單行前提補修訂過的 Scenario，rule-verification-status 同步） | S8、README TBD-5 | SCN-003、007 | 五項檢查通過 | ✅ 2026-11-25 三處依建議改寫；五項檢查見 [kit-checks.txt](evidence/kit-checks.txt) |
 | S10 | 送增量覆審 `80d52c2..新 HEAD`（工具呼叫上限 30 次） | S9 | SCN-001～007 | PASS，或已依使用者決定處理 | ⏳ |
+| S11 | 依 review-3ce9f7b：acceptance.md 與 rule-verification-status 的單行前提改用「標過 `待重新核准` 的 Scenario」；docs/AGENTS.md「待確認事項」行首例外補上 `## 現況` 的 `**現行 review**` | S10、README TBD-6 | SCN-003、007 | 五項檢查通過 | ✅ 2026-11-25 三處依建議改寫；五項檢查見 [kit-checks.txt](evidence/kit-checks.txt) |
+| S12 | 送增量覆審 `3ce9f7b..新 HEAD`（工具呼叫上限 30 次；增量含不是增量引入的修正，走一般增量覆審） | S11 | SCN-001～007 | PASS，或已依使用者決定處理 | ⏳ |
