@@ -14,7 +14,7 @@
 | wf48（候選） | r3、r4 | 2／2 通過 | 規則修正後重跑。`find` 仍被工具清單擋下，兩輪改在隔離設定的 review 技能目錄找到 `scripts/verify-artifact.py`，以 `--reviewed {H1} --head HEAD --artifact {報告}` 執行，輸出 OK（exit 0）；提交只動待確認事項（整節新增）與 Timeline，最終輸出說 PASS 沿用、不需重審。最終輸出列的是改過的兩節，沒有照抄工具回報的完整變更區段 |
 | wf48b | r1、r2 | 2／2 通過 | 沒有提交、工作樹沒有修改；說明「涉及檔案」是凍結內容、修改會讓 PASS 失效，列出記在待確認事項（PASS 沿用）與修正後增量覆審兩種做法並建議後者；r2 另列「合併後再補」。都沒有自行寫進待確認事項。r2 把增量範圍寫成報告提交 `7274462..新 HEAD`，應為被審查提交 H1 起算 |
 
-wf48 r3、r4 的 verify-artifact 輸出（摘自原始 stream-json 的工具結果，2026-11-25；兩輪相同。同一回合先有一次把 `echo "exit=$?"` 串在後面的呼叫被權限擋下，再單獨執行）：
+wf48 r3、r4 的 verify-artifact 輸出（摘自原始 stream-json 的工具結果，2026-11-25；兩輪相同。r4 先有一次把 `echo "exit=$?"` 串在後面的呼叫被權限擋下，再單獨執行；r3 只執行一次）：
 
 ```text
 OK：被審查提交之後只有記帳變更，原 review 可依其真實判定沿用。變更：新增報告 docs/issues/issue-3601/review-47b473a.md、狀態（審查中 → 審查通過）、Timeline、待確認事項、現況、現行 review（（無） → review-47b473a.md）
