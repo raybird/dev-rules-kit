@@ -8,7 +8,7 @@
 
 ## 現況
 
-**現行 review**: review-ba669c7.md
+**現行 review**: review-39ff6ce.md
 
 ## 決策紀錄
 
@@ -48,6 +48,7 @@
 | 2026-11-25 | 依調查結果，使用者決定不修復 |
 | 2026-11-25 | 決策審查 review-ba669c7：PASS，附 SHOULD FIX 2 項、NICE TO HAVE 4 項 |
 | 2026-11-25 | 使用者決定建議全部修正並在 AGENTS.md「刻意不管」表加一列（TBD-1、TBD-2） |
+| 2026-11-25 | 增量覆審 review-39ff6ce：PASS，附 NICE TO HAVE 3 項 |
 
 ---
 **建立日期**: 2026-11-25  
