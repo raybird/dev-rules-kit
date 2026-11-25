@@ -12,6 +12,21 @@
 
 ---
 
+## [未發布]
+
+核准紀錄與審查之後的提交規則精簡（[issue #17](https://github.com/raybird/dev-rules-kit/issues/17)，由 #12 的問題 6、7 分出）。文件版本 2.17 → 2.18，流程契約不變。
+
+### 變更（`docs/agents/`、`docs/AGENTS.md`、`skills/review/`）
+
+- acceptance.md：核准來源每次核准寫一句（日期、使用者核准的原話、涵蓋的驗收編號），不再逐題轉述題目、選項與建議內容；答案寫進驗收條件，沒寫進驗收條件的範圍決定寫在概述或對應章節；規格修訂後重新核准加一句，指向待確認事項編號，選項原文與代價只留在該項。只以逐題答案核准、使用者沒看過驗收條件清單時，另寫各題對應的驗收編號。原本要記「原話、日期、題號、建議內容與對應驗收編號」，下游的核准來源中位數 78～236 字、最長約 1000 字，每次修訂往後追加。
+- acceptance.md：核准表只在有 `待核准`／`待重新核准` 時使用，全部核准後收回單行「全部 Scenario 於 YYYY-MM-DD 核准」（日期為最後一次核准）。Timeline 與已解決的待確認事項提過的待核准是歷史，不再要求展開表格；仍為 `待確認` 的項目寫明待核准時與單行矛盾，先核對核准來源。readme-templates 兩份範本同步。
+- review-evidence.md「審查之後的提交」：先列審查之後可以改的內容，再列沿用條件；新增 PASS 之後才發現凍結內容寫錯時的做法（記在待確認事項，或修正後重新審查）。`<`、`[`、段落、表格與空白的邊界移到 review 技能新增的 `references/frozen-content.md`，review 技能步驟 5 在檢查器判需重審時指向它。verify-artifact 不變，判定結果不變。
+- docs/AGENTS.md「待確認事項」：記帳區段的寫法限制精簡成一句，其餘依 review-evidence.md。
+
+### 驗證
+
+- WF-45～WF-48 在隔離設定實跑（docs/issues/issue-0017/evidence/s4-results.md）：核准來源一句、重新核准加一句、全部核准後收回單行、讀單行與待核准表格、PASS 後補記與凍結內容寫錯都通過；兩處規則文字是在第一次實跑後補的（待確認事項的狀態改為 `已解決`、verify-artifact 的位置）。SCN-001 的「改變範圍卻沒寫進驗收條件的答案寫在概述」只記錄、沒有判定（2 輪中 1 輪有寫）。沒有做下游試用（使用者決定），「不敢補 README」在 fixture 重現不了。
+
 ## [5.3.0] - 2026-11-24
 
 issue README 的 `**狀態**` 只寫階段；沒有待觀察項目時，`已完成` 在合併前寫好，合併後不必回頭改 README（[issue #11](https://github.com/raybird/dev-rules-kit/issues/11)）。處理建議後的增量覆審只查修正，增量報告精簡，格式問題列建議（[issue #12](https://github.com/raybird/dev-rules-kit/issues/12)）。下游部署內容瘦身（[issue #13](https://github.com/raybird/dev-rules-kit/issues/13)）；維護者的下游試用改用 `scripts/trial-session.sh`，verify-artifact 的用法錯誤改回 exit 2（[issue #15](https://github.com/raybird/dev-rules-kit/issues/15)）。流程契約 2.6 → 2.8。
